@@ -1,0 +1,112 @@
+<html>
+
+<!-- $Id: readme.html,v 1.1 2004-07-13 19:41:02 marcus256 Exp $ -->
+
+<head>
+  <title>GLFW Readme file for Lua</title>
+</head>
+<body>
+
+<!-- TITLE -------------------------------------------------------------->
+<center>
+<font face="bookman old style,arial" size=+4><b>GLFW v2.5</b></font><br>
+<font face="bookman old style,arial" size=+3>for Lua</font>
+</center>
+
+<!-- CONTENTS ----------------------------------------------------------->
+<p>
+<center>
+<table border=0><tr><td>
+<b>
+<ol>
+ <li><a href="#sec1">Introduction</li></a>
+ <li><a href="#sec2">Compiling the luaglfw library</li></a>
+ <li><a href="#sec3">Using GLFW from Lua</li></a>
+ <li><a href="#sec4">The author</li></a>
+</ol>
+</b>
+</td></tr></table>
+</center>
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec1">
+<p><h2>1. Introduction</h2>
+
+<p>This directory contains a Lua library that exposes most of the GLFW API
+functionality to the Lua programming language.
+
+<p>For further information on how to use GLFW you should read the GLFW
+documentation.
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec2">
+<p><h2>2. Compiling the luaglfw library</h2>
+
+<p>The GLFW interface library for Lua that you can find in the <b>src</b>
+directory is a stand alone component, without any dependencies on other
+Lua extensions. However it is fairly useless without Lua itself and some
+kind of Lua library for OpenGL.
+
+<p>You will most likely want to build a stand alone Lua interpreter that
+is linked with the luaglfw library and some OpenGL library for Lua. If
+you are doing something more advanced, such as integrating Lua into your
+own C/C++ application, you probably know how to do it, so I will not go
+into all the details.
+
+<p>There is a very simple Lua interpreter included in the <b>src</b>
+directory. To build it you need the following software compiled and
+installed:
+
+<ul>
+  <li><a href="http://glfw.sf.net/">GLFW</a> (of course)</li>
+  <li><a href="http://www.lua.org/">Lua</a> - A free light-weight
+      programming language.</li>
+  <li><a href="http://luagl.sourceforge.net/">LuaGL</a> - A free library
+      that provides access to OpenGL.</li>
+</ul>
+
+<p>With the compiled interpreter, you should be able to run the example
+programs in the <b>examples</b> directory.
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec3">
+<p><h2>3. Using GLFW from Lua</h2>
+
+<p>TODO
+
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+<a name="sec4">
+<p><h2>4. The author</h2>
+
+<p>My name is Marcus Geelnard, <a href="mailto:marcus.geelnard@home.se">marcus.geelnard@home.se</a>.
+Please contact me if you have any problems with GLFW, or any questions at
+all concerning compiling or using GLFW.
+
+<p>The GLFW web site can be found here:
+<a href="http://glfw.sourceforge.net/">http://glfw.sourceforge.net/</a>.
+It contains the latest version of GLFW, news and other information that is
+useful for OpenGL development.
+
+<!----------------------------------------------------------------------->
+<p><hr>
+<!----------------------------------------------------------------------->
+
+</body>
+</html>
+
