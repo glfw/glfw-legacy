@@ -31,7 +31,7 @@ Attribute VB_Name = "GLFW"
 ' Marcus Geelnard
 ' marcus.geelnard at home.se
 '------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.2 2004-02-29 20:42:21 marcus256 Exp $
+' $Id: glfw.bas,v 1.3 2004-04-09 11:22:05 marcus256 Exp $
 '========================================================================
 
 '========================================================================
@@ -259,6 +259,7 @@ Public Declare Sub glfwGetDesktopMode Lib "glfw.dll" (mode As GLFWvidmode)
 
 ' Input handling
 Public Declare Sub glfwPollEvents Lib "glfw.dll" ()
+Public Declare Sub glfwWaitEvents Lib "glfw.dll" ()
 Public Declare Function glfwGetKey Lib "glfw.dll" (ByVal key As Long) As Long
 Public Declare Function glfwGetMouseButton Lib "glfw.dll" (ByVal button As Long) As Long
 Public Declare Sub glfwGetMousePos Lib "glfw.dll" (xpos As Long, ypos As Long)

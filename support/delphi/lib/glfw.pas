@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.2 2004-02-29 20:40:51 marcus256 Exp $
+// $Id: glfw.pas,v 1.3 2004-04-09 11:21:26 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -278,6 +278,7 @@ procedure glfwGetDesktopMode(mode: PGLFWvidmode); stdcall;
 
 // Input handling
 procedure glfwPollEvents; stdcall;
+procedure glfwWaitEvents; stdcall;
 function  glfwGetKey(key: Integer): Integer; stdcall;
 function  glfwGetMouseButton(button: Integer): Integer; stdcall;
 procedure glfwGetMousePos(var xpos: Integer; var ypos: Integer); stdcall;
@@ -361,6 +362,7 @@ procedure glfwGetDesktopMode; external DLLNAME;
 
 // Input handling
 procedure glfwPollEvents; external DLLNAME;
+procedure glfwWaitEvents; external DLLNAME;
 function  glfwGetKey; external DLLNAME;
 function  glfwGetMouseButton; external DLLNAME;
 procedure glfwGetMousePos; external DLLNAME;

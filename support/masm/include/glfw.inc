@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.3 2004-03-04 21:37:30 marcus256 Exp $
+; $Id: glfw.inc,v 1.4 2004-04-09 11:21:43 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
@@ -265,6 +265,7 @@ glfwGetDesktopMode          PROTO   STDCALL :DWORD
 
 ; Input handling
 glfwPollEvents              PROTO   STDCALL
+glfwWaitEvents              PROTO   STDCALL
 glfwGetKey                  PROTO   STDCALL :DWORD
 glfwGetMouseButton          PROTO   STDCALL :DWORD
 glfwGetMousePos             PROTO   STDCALL :DWORD, :DWORD

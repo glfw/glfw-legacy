@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.d,v 1.1 2004-03-04 21:32:29 marcus256 Exp $
+// $Id: glfw.d,v 1.2 2004-04-09 11:20:52 marcus256 Exp $
 //========================================================================
 
 import gl, glu;
@@ -282,6 +282,7 @@ void  glfwGetDesktopMode( GLFWvidmode *mode );
 
 // Input handling
 void  glfwPollEvents();
+void  glfwWaitEvents();
 int   glfwGetKey( int key );
 int   glfwGetMouseButton( int button );
 void  glfwGetMousePos( int *xpos, int *ypos );

@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        window.c
 // Platform:    Any
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.7 2004-02-25 22:24:30 marcus256 Exp $
+// $Id: window.c,v 1.8 2004-04-09 11:25:09 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -629,4 +629,21 @@ GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 
     // Poll for new events
     _glfwPlatformPollEvents();
+}
+
+
+//========================================================================
+// glfwWaitEvents() - Wait for new window and input events
+//========================================================================
+
+GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
+{
+    // Is GLFW initialized?
+    if( !_glfwInitialized || !_glfwWin.Opened )
+    {
+        return;
+    }
+
+    // Poll for new events
+    _glfwPlatformWaitEvents();
 }
