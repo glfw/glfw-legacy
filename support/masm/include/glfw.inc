@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.6 2004-04-11 11:40:32 marcus256 Exp $
+; $Id: glfw.inc,v 1.7 2004-07-09 20:29:24 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
@@ -120,11 +120,21 @@ GLFW_KEY_KP_EQUAL     equ   (GLFW_KEY_SPECIAL+61)
 GLFW_KEY_KP_ENTER     equ   (GLFW_KEY_SPECIAL+62)
 GLFW_KEY_LAST         equ   GLFW_KEY_KP_ENTER
 
-; Mouse-button definitions
-GLFW_MOUSE_BUTTON_LEFT    equ   0
-GLFW_MOUSE_BUTTON_RIGHT   equ   1
-GLFW_MOUSE_BUTTON_MIDDLE  equ   2
-GLFW_MOUSE_BUTTON_LAST    equ   GLFW_MOUSE_BUTTON_MIDDLE
+; Mouse button definitions
+GLFW_MOUSE_BUTTON_1      equ  0
+GLFW_MOUSE_BUTTON_2      equ  1
+GLFW_MOUSE_BUTTON_3      equ  2
+GLFW_MOUSE_BUTTON_4      equ  3
+GLFW_MOUSE_BUTTON_5      equ  4
+GLFW_MOUSE_BUTTON_6      equ  5
+GLFW_MOUSE_BUTTON_7      equ  6
+GLFW_MOUSE_BUTTON_8      equ  7
+GLFW_MOUSE_BUTTON_LAST   equ  GLFW_MOUSE_BUTTON_8
+
+; Mouse button aliases
+GLFW_MOUSE_BUTTON_LEFT   equ  GLFW_MOUSE_BUTTON_1
+GLFW_MOUSE_BUTTON_RIGHT  equ  GLFW_MOUSE_BUTTON_2
+GLFW_MOUSE_BUTTON_MIDDLE equ  GLFW_MOUSE_BUTTON_3
 
 ; Joystick identifiers
 GLFW_JOYSTICK_1           equ   0

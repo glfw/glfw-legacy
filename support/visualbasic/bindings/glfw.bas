@@ -31,7 +31,7 @@ Attribute VB_Name = "GLFW"
 ' Marcus Geelnard
 ' marcus.geelnard at home.se
 '------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.5 2004-04-11 11:40:33 marcus256 Exp $
+' $Id: glfw.bas,v 1.6 2004-07-09 20:29:24 marcus256 Exp $
 '========================================================================
 
 '========================================================================
@@ -122,10 +122,20 @@ Public Const GLFW_KEY_KP_ENTER = (GLFW_KEY_SPECIAL + 62)
 Public Const GLFW_KEY_LAST = GLFW_KEY_KP_ENTER
 
 ' Mouse button definitions
-Public Const GLFW_MOUSE_BUTTON_LEFT = 0
-Public Const GLFW_MOUSE_BUTTON_RIGHT = 1
-Public Const GLFW_MOUSE_BUTTON_MIDDLE = 2
-Public Const GLFW_MOUSE_BUTTON_LAST = GLFW_MOUSE_BUTTON_MIDDLE
+Public Const GLFW_MOUSE_BUTTON_1 = 0
+Public Const GLFW_MOUSE_BUTTON_2 = 1
+Public Const GLFW_MOUSE_BUTTON_3 = 2
+Public Const GLFW_MOUSE_BUTTON_4 = 3
+Public Const GLFW_MOUSE_BUTTON_5 = 4
+Public Const GLFW_MOUSE_BUTTON_6 = 5
+Public Const GLFW_MOUSE_BUTTON_7 = 6
+Public Const GLFW_MOUSE_BUTTON_8 = 7
+Public Const GLFW_MOUSE_BUTTON_LAST = GLFW_MOUSE_BUTTON_8
+
+' Mouse button aliases
+Public Const GLFW_MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_1
+Public Const GLFW_MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_2
+Public Const GLFW_MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_3
 
 ' Joystick identifiers
 Public Const GLFW_JOYSTICK_1 = 0
