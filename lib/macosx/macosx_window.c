@@ -8,7 +8,7 @@
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.15 2005-02-27 19:18:36 elmindreda Exp $
+// $Id: macosx_window.c,v 1.16 2005-03-19 19:09:41 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"

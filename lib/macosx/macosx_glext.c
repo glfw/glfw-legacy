@@ -2,13 +2,13 @@
 // GLFW - An OpenGL framework
 // File:        macosx_glext.c
 // Platform:    Mac OS X
-// API Version: 2.4
+// API Version: 2.5
 // Authors:     Keith Bauer (onesadcookie at hotmail.com)
 //              Camilla Berglund (elmindreda at users.sourceforge.net)
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_glext.c,v 1.5 2005-02-27 19:18:35 elmindreda Exp $
+// $Id: macosx_glext.c,v 1.6 2005-03-19 19:09:41 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
