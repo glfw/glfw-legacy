@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        x11_time.c
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_time.c,v 1.6 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_time.c,v 1.7 2004-12-31 21:58:14 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -92,7 +92,7 @@ typedef struct {
 
 // List of known Intel Mobile CPU identifications
 // NOTE: This list is untested and probably incomplete
-#define _NUM_KNOWN_MOBILE_CPUS 10
+#define _NUM_KNOWN_MOBILE_CPUS 9
 static const _GLFWcpuid _glfw_mobile_cpus[ _NUM_KNOWN_MOBILE_CPUS ] = {
     // Mobile Pentium / Mobile Pentium MMX
     { 0x00, 0x570, 0x58F },
@@ -109,10 +109,7 @@ static const _GLFWcpuid _glfw_mobile_cpus[ _NUM_KNOWN_MOBILE_CPUS ] = {
     // Mobile Pentium III (? - used in IBM ThinkPad)
     { 0x02, 0x68A, 0x68A },
 
-    // Mobile Pentium III (Banias according to WCPUID?!)
-    { 0x02, 0x690, 0x69F },
-
-    // Mobile Pentium III-M
+    // Mobile Pentium III-M (including Banias/Centrino: 0x690-0x69F)
     { 0x06, 0x000, 0xFFF },
 
     // Mobile Celeron (III?)
@@ -210,7 +207,8 @@ static int _glfwHasRDTSC( void )
 
     unsigned int cpu_name1, cpu_name2, cpu_name3;
     unsigned int cpu_signature, cpu_brandID;
-    unsigned int max_base, feature_flags, has_rdtsc, has_htt, num_logical;
+    unsigned int max_base, feature_flags1, feature_flags2, has_rdtsc;
+    unsigned int has_htt, has_eist, num_logical;
     unsigned int dummy;
 
     // Get processor vendor string (will return 0 if CPUID is not
@@ -227,12 +225,14 @@ static int _glfwHasRDTSC( void )
     }
 
     // Get CPU capabilities, CPU Brand ID & CPU Signature
-    _glfwCPUID( 1, &cpu_signature, &cpu_brandID, &dummy, &feature_flags );
+    _glfwCPUID( 1, &cpu_signature, &cpu_brandID, &feature_flags2,
+                &feature_flags1 );
     cpu_signature &= 0x00000fff;
     num_logical    = (cpu_brandID & 0x00ff0000) >> 16;
     cpu_brandID   &= 0x000000ff;
-    has_rdtsc      = feature_flags & 0x00000010;
-    has_htt        = feature_flags & 0x10000000;
+    has_rdtsc      = feature_flags1 & 0x00000010;
+    has_htt        = feature_flags1 & 0x10000000;
+    has_eist       = feature_flags2 & 0x00000080;
     if( num_logical == 0 ) num_logical = 1;
 
     // Is RDTSC supported?
@@ -249,7 +249,14 @@ static int _glfwHasRDTSC( void )
     {
         unsigned int i, max_ext;
 
-        // Method 1: Check if this is a known Intel "Mobile" CPU - disable
+        // Method 1: Check if the EIST (Enhanced Intel SpeedStep) flag is
+        // set. Only works for modern CPUs (Centrino+ ?).
+        if( has_eist )
+        {
+            return GL_FALSE;
+        }
+
+        // Method 2: Check if this is a known Intel "Mobile" CPU - disable
         // RDTSC on those since they MAY have a variable core frequency
         // (there is no way of knowing for sure)
         for( i = 0; i < _NUM_KNOWN_MOBILE_CPUS; i ++ )
@@ -262,9 +269,9 @@ static int _glfwHasRDTSC( void )
             }
         }
 
-        // Method 2: Search Brand String for "mobile" (should work on
-        // Intel P4 processors and later, so this way we should be future
-        // compatible)
+        // Method 3: Search Brand String for "mobile" and " m " (should
+        // work on Intel P4 processors and later, so this way we should be
+        // future compatible (?!))
         _glfwCPUID( 0x80000000, &max_ext, &dummy, &dummy, &dummy );
         if( max_ext >= 0x80000004 )
         {
@@ -294,8 +301,8 @@ static int _glfwHasRDTSC( void )
                 }
             }
 
-            // Check if "mobile" is in the string
-            if( strstr( str, "mobile" ) )
+            // Check if "mobile" or " m " is in the string
+            if( strstr( str, "mobile" ) || strstr( str, " m " ) )
             {
                 return GL_FALSE;
             }
@@ -307,22 +314,22 @@ static int _glfwHasRDTSC( void )
         has_htt = 0;
     }
 
-    // Detect AMD PowerNOW! support
+    // Detect AMD PowerNOW! and Cool'n'Quiet support
     if( cpu_name1 == 0x68747541 &&  // Auth
         cpu_name2 == 0x69746e65 &&  // enti
         cpu_name3 == 0x444d4163 )   // cAMD
     {
         unsigned int max_ext, has_fidctl;
 
-        // Get bit #1 of CPUID 0x80000007 (FID control == AMD PowerNOW!)
+        // Get bit #1 of CPUID 0x80000007 (FID control)
         _glfwCPUID( 0x80000000, &max_ext, &dummy, &dummy, &dummy );
         if( max_ext >= 0x80000007 )
         {
             _glfwCPUID( 0x80000007, &dummy, &dummy, &dummy, &has_fidctl );
             if( has_fidctl & 0x00000002 )
             {
-                // The CPU is a mobile AMD with support for a variable
-                // core frequency - disable RDTSC
+                // The CPU is an AMD with support for a variable core
+                // frequency - disable RDTSC
                 return GL_FALSE;
             }
         }
