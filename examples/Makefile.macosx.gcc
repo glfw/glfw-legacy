@@ -4,7 +4,7 @@
 # To compile the test files using this makefile, run:
 #  make -f Makefile.macosx.gcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.macosx.gcc,v 1.2 2003-02-02 22:28:25 marcus256 Exp $
+# $Id: Makefile.macosx.gcc,v 1.3 2003-02-03 20:59:10 onesadcookie Exp $
 ##########################################################################
 
 # Compiler settings
@@ -12,72 +12,85 @@ CC     = gcc
 CFLAGS = -I../include
 
 # Linker settings
-LFLAGS = -L../lib/macosx/ -lglfw -framework OpenGL -framework Carbon
+LFLAGS = -L../lib/macosx/ -lglfw -framework AGL -framework OpenGL -framework Carbon
 
 # Default: Build all tests
-all: triangle listmodes mthello pong3d mtbench \
-     particles splitview mipmaps keytest gears \
-     boing wave
-
+all: Triangle.app/Contents/MacOS/GLFWApplication \
+     ListModes.app/Contents/MacOS/GLFWApplication \
+     MTHello.app/Contents/MacOS/GLFWApplication \
+     Pong3D.app/Contents/MacOS/GLFWApplication \
+     MTBench.app/Contents/MacOS/GLFWApplication \
+     Particles.app/Contents/MacOS/GLFWApplication \
+     SplitView.app/Contents/MacOS/GLFWApplication \
+     Mipmaps.app/Contents/MacOS/GLFWApplication \
+     KeyTest.app/Contents/MacOS/GLFWApplication \
+     Gears.app/Contents/MacOS/GLFWApplication \
+     Boing.app/Contents/MacOS/GLFWApplication \
+     Wave.app/Contents/MacOS/GLFWApplication
 
 # Rule for triangle
-triangle: triangle.c
+Triangle.app/Contents/MacOS/GLFWApplication: triangle.c
 	./MakeBundle.sh Triangle
 	$(CC) $(CFLAGS) triangle.c $(LFLAGS) -o Triangle.app/Contents/MacOS/GLFWApplication
 
 # Rule for listmodes
-listmodes: listmodes.c
+ListModes.app/Contents/MacOS/GLFWApplication: listmodes.c
 	./MakeBundle.sh ListModes
 	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o ListModes.app/Contents/MacOS/GLFWApplication
 
 # Rule for mthello
-mthello: mthello.c
+MTHello.app/Contents/MacOS/GLFWApplication: mthello.c
 	./MakeBundle.sh MTHello
 	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o MTHello.app/Contents/MacOS/GLFWApplication
 
 # Rule for pong3d
-pong3d: pong3d.c
+Pong3D.app/Contents/MacOS/GLFWApplication: pong3d.c
 	./MakeBundle.sh Pong3D
 	cp pong3d_*.tga Pong3D.app/Contents/Resources/
 	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o Pong3D.app/Contents/MacOS/GLFWApplication
 
 # Rule for mtbench
-mtbench: mtbench.c
+MTBench.app/Contents/MacOS/GLFWApplication: mtbench.c
 	./MakeBundle.sh MTBench
 	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o MTBench.app/Contents/MacOS/GLFWApplication
 
 # Rule for particles
-particles: particles.c
+Particles.app/Contents/MacOS/GLFWApplication: particles.c
 	./MakeBundle.sh Particles
 	$(CC) $(CFLAGS) particles.c $(LFLAGS) -o Particles.app/Contents/MacOS/GLFWApplication
 
 # Rule for splitview
-splitview: splitview.c
+SplitView.app/Contents/MacOS/GLFWApplication: splitview.c
 	./MakeBundle.sh SplitView
 	$(CC) $(CFLAGS) splitview.c $(LFLAGS) -o SplitView.app/Contents/MacOS/GLFWApplication
 
 # Rule for mipmaps
-mipmaps: mipmaps.c
+Mipmaps.app/Contents/MacOS/GLFWApplication: mipmaps.c
 	./MakeBundle.sh Mipmaps
 	cp mipmaps.tga Mipmaps.app/Contents/Resources/
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o Mipmaps.app/Contents/MacOS/GLFWApplication
 
 # Rule for keytest
-keytest: keytest.c
+KeyTest.app/Contents/MacOS/GLFWApplication: keytest.c
 	./MakeBundle.sh KeyTest
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o KeyTest.app/Contents/MacOS/GLFWApplication
 
 # Rule for gears
-gears: gears.c
+Gears.app/Contents/MacOS/GLFWApplication: gears.c
 	./MakeBundle.sh Gears
 	$(CC) $(CFLAGS) gears.c $(LFLAGS) -o Gears.app/Contents/MacOS/GLFWApplication
 
 # Rule for boing
-boing: boing.c
+Boing.app/Contents/MacOS/GLFWApplication: boing.c
 	./MakeBundle.sh Boing
 	$(CC) $(CFLAGS) boing.c $(LFLAGS) -o Boing.app/Contents/MacOS/GLFWApplication
 
 # Rule for wave
-wave: wave.c
+Wave.app/Contents/MacOS/GLFWApplication: wave.c
 	./MakeBundle.sh Wave
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o Wave.app/Contents/MacOS/GLFWApplication
+
+
+# Clean
+clean:
+	rm -rf Triangle.app ListModes.app MTHello.app Pong3D.app MTBench.app Particles.app SplitView.app Mipmaps.app KeyTest.app Gears.app Boing.app Wave.app

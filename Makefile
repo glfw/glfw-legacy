@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2003-02-02 20:51:40 $
-# $Revision: 1.2 $
+# $Date: 2003-02-03 20:59:09 $
+# $Revision: 1.3 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -155,7 +155,7 @@ x11-gcc: $(MAKEFILES_X11_GCC)
 macosx-clean:
 	@rm -f lib/macosx/*.o
 	@rm -f lib/macosx/libglfw.a
-	@cd examples; rm -f $(EXAMPLES)
+	@cd examples; $(MAKE) -f Makefile.macosx.gcc clean
 
 
 # Mac OS X, GCC

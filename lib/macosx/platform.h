@@ -3,8 +3,9 @@
 // File:     platform.h
 // Platform: Mac OS X
 // Version:  2.4
-// Date:     2002.12.13
+// Date:     2002.12.31
 // Author:   Marcus Geelnard (marcus.geelnard@home.se)
+//           Keith Bauer (onesadcookie@hotmail.com)
 // WWW:      http://hem.passagen.se/opengl/glfw/
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
@@ -36,63 +37,109 @@
 
 
 // This is the Mac OS X version of GLFW
-#define _GLFW_MACOSX
+#define _GLFW_MAC_OS_X
 
 
 // Include files
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <sys/time.h>
+#include <Carbon/Carbon.h>
+#include <AGL/agl.h>
 #include <pthread.h>
-#include <signal.h>
+#include <sys/sysctl.h>
 #include "../../include/GL/glfw.h"
-
-// Hack to allow inclusion of this file in both C and ObjC Source
-#if defined(__OBJC__)
-#include <Cocoa/Cocoa.h>
-#else
-typedef void* CFBundleRef;
-typedef void* NSOpenGLContext;
-typedef void* NSWindow;
-typedef void* NSDictionary;
-typedef void* NSAutoreleasePool;
-#endif
 
 
 //========================================================================
 // Defines
 //========================================================================
 
-#define _GLFW_WINDOW_STYLE (NSTitledWindowMask |         \
-                            NSMiniaturizableWindowMask | \
-                            NSResizableWindowMask |      \
-                            NSClosableWindowMask )
+#define GLFW_WINDOW_ATTRIBUTES ( kWindowFullZoomAttribute        \
+                               | kWindowCollapseBoxAttribute     \
+                               | kWindowResizableAttribute       \
+                               | kWindowStandardHandlerAttribute \
+                               | kWindowLiveResizeAttribute )
+
+#define GLFW_MAX_PATH_LENGTH (8192)
+
+#define MAC_KEY_ESC         0x35
+#define MAC_KEY_F1          0x7A
+#define MAC_KEY_F2          0x78
+#define MAC_KEY_F3          0x63
+#define MAC_KEY_F4          0x76
+#define MAC_KEY_F5          0x60
+#define MAC_KEY_F6          0x61
+#define MAC_KEY_F7          0x62
+#define MAC_KEY_F8          0x64
+#define MAC_KEY_F9          0x65
+#define MAC_KEY_F10         0x6D
+#define MAC_KEY_F11         0x67
+#define MAC_KEY_F12         0x6F
+#define MAC_KEY_F13         0x69
+#define MAC_KEY_F14         0x6B
+#define MAC_KEY_F15         0x71
+#define MAC_KEY_UP          0x7E
+#define MAC_KEY_DOWN        0x7D
+#define MAC_KEY_LEFT        0x7B
+#define MAC_KEY_RIGHT       0x7C
+#define MAC_KEY_TAB         0x30
+#define MAC_KEY_BACKSPACE   0x33
+#define MAC_KEY_HELP        0x72
+#define MAC_KEY_DEL         0x75
+#define MAC_KEY_PAGEUP      0x74
+#define MAC_KEY_PAGEDOWN    0x79
+#define MAC_KEY_HOME        0x73
+#define MAC_KEY_END         0x77
+#define MAC_KEY_KP_0        0x52
+#define MAC_KEY_KP_1        0x53
+#define MAC_KEY_KP_2        0x54
+#define MAC_KEY_KP_3        0x55
+#define MAC_KEY_KP_4        0x56
+#define MAC_KEY_KP_5        0x57
+#define MAC_KEY_KP_6        0x58
+#define MAC_KEY_KP_7        0x59
+#define MAC_KEY_KP_8        0x5B
+#define MAC_KEY_KP_9        0x5C
+#define MAC_KEY_KP_DIVIDE   0x4B
+#define MAC_KEY_KP_MULTIPLY 0x43
+#define MAC_KEY_KP_SUBTRACT 0x4E
+#define MAC_KEY_KP_ADD      0x45
+#define MAC_KEY_KP_DECIMAL  0x41
+#define MAC_KEY_KP_EQUAL    0x51
+#define MAC_KEY_KP_ENTER    0x4C
+
+//========================================================================
+// full-screen/desktop-window "virtual" function table
+//========================================================================
+
+typedef int  ( * GLFWmacopenwindowfun )( int, int, int, int, int, int, int, int, int, int, int, int, int, int, int );
+typedef void ( * GLFWmacclosewindowfun )( void );
+typedef void ( * GLFWmacsetwindowtitlefun )( const char * );
+typedef void ( * GLFWmacsetwindowsizefun )( int, int );
+typedef void ( * GLFWmacsetwindowposfun )( int, int );
+typedef void ( * GLFWmaciconifywindowfun )( void );
+typedef void ( * GLFWmacrestorewindowfun )( void );
+typedef void ( * GLFWmacrefreshwindowparamsfun )( void );
+typedef void ( * GLFWmacsetmousecursorposfun )( int, int );
+
+typedef struct
+{
+    GLFWmacopenwindowfun          OpenWindow;
+    GLFWmacclosewindowfun         CloseWindow;
+    GLFWmacsetwindowtitlefun      SetWindowTitle;
+    GLFWmacsetwindowsizefun       SetWindowSize;
+    GLFWmacsetwindowposfun        SetWindowPos;
+    GLFWmaciconifywindowfun       IconifyWindow;
+    GLFWmacrestorewindowfun       RestoreWindow;
+    GLFWmacrefreshwindowparamsfun RefreshWindowParams;
+    GLFWmacsetmousecursorposfun   SetMouseCursorPos;
+}
+_GLFWmacwindowfunctions;
 
 
 //========================================================================
 // Global variables (GLFW internals)
 //========================================================================
 
-#if defined( _init_c_ )
-#define GLFWGLOBAL
-#else
-#define GLFWGLOBAL extern
-#endif
-
-
-// Flag indicating if glfw has been initialised
-#if defined( _init_c_ )
-GLFWGLOBAL int _glfwInitialized = GL_FALSE;
-#else
-GLFWGLOBAL int _glfwInitialized;
-#endif
-
-// Autorelease pool
-GLFWGLOBAL NSAutoreleasePool *_glfwPool;
-
+CFDictionaryRef _glfwDesktopVideoMode;
 
 //------------------------------------------------------------------------
 // Window structure
@@ -100,10 +147,13 @@ GLFWGLOBAL NSAutoreleasePool *_glfwPool;
 typedef struct _GLFWwin_struct _GLFWwin;
 
 struct _GLFWwin_struct {
+
+    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+
     // Window states
-    int         Opened;          // True if window is opened
-    int         Iconified;       // True if window is iconified
-    int         Active;          // True if window is active (in focus)
+    int       Opened;          // Flag telling if window is opened or not
+    int       Active;          // Application active flag
+    int       Iconified;       // Window iconified flag
 
     // User callback functions
     GLFWwindowsizefun  WindowSizeCallback;
@@ -111,31 +161,37 @@ struct _GLFWwin_struct {
     GLFWmouseposfun    MousePosCallback;
     GLFWmousewheelfun  MouseWheelCallback;
     GLFWkeyfun         KeyCallback;
+    GLFWcharfun        CharCallback;
 
     // User selected window settings
-    int         Fullscreen;      // Fullscreen flag
-    int         MouseLock;       // Mouse-lock flag
-
-    // Window resources
-    NSOpenGLContext *Context;
-    NSWindow        *Window;
-    NSDictionary    *DesktopMode;
+    int       Fullscreen;      // Fullscreen flag
+    int       MouseLock;       // Mouse-lock flag
+    int       AutoPollEvents;  // Auto polling flag
+    int       SysKeysDisabled; // System keys disabled flag
+    int       RefreshRate;     // Refresh rate (for fullscreen mode)
 
     // Window status
-    int         Width, Height;   // Window width and heigth
+    int       Width, Height;   // Window width and heigth
 
     // Extensions
-    int         Has_GL_SGIS_generate_mipmap;
+    int       Has_GL_SGIS_generate_mipmap;
 
-    // Window Parameters
-    int         Accelerated;
-    int         ColorBits;
-    int         AlphaBits;
-    int         DepthBits;
-    int         StencilBits;
 
-    // Various internal variables
-    // ...
+    // ========= PLATFORM SPECIFIC PART ======================================
+
+    WindowRef               MacWindow;
+    AGLContext              AGLContext;
+
+    _GLFWmacwindowfunctions WindowFunctions;
+
+    // for easy access by _glfwPlatformGetWindowParam
+    int Accelerated;
+    int RedBits, GreenBits, BlueBits, AlphaBits;
+    int DepthBits;
+    int StencilBits;
+    int AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits;
+    int AuxBuffers;
+    int Stereo;
 };
 
 GLFWGLOBAL _GLFWwin _glfwWin;
@@ -145,6 +201,9 @@ GLFWGLOBAL _GLFWwin _glfwWin;
 // User input status (some of this should go in _GLFWwin)
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
+
+    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+
     // Mouse status
     int  MousePosX, MousePosY;
     int  WheelPos;
@@ -152,37 +211,26 @@ GLFWGLOBAL struct {
 
     // Keyboard status
     char Key[ GLFW_KEY_LAST+1 ];
+    int  LastChar;
 
     // User selected settings
     int  StickyKeys;
     int  StickyMouseButtons;
     int  KeyRepeat;
 
-    // Internal variables
-    // ...
+
+    // ========= PLATFORM SPECIFIC PART ======================================
+
+    UInt32 Modifiers;
+    
 } _glfwInput;
-
-
-//------------------------------------------------------------------------
-// Window hints (set by glfwOpenWindowHint)
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-    int          RefreshRate;
-    int          AccumRedBits;
-    int          AccumGreenBits;
-    int          AccumBlueBits;
-    int          AccumAlphaBits;
-    int          AuxBuffers;
-    int          Stereo;
-} _glfwWinHints;
 
 
 //------------------------------------------------------------------------
 // Timer status
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    double       Resolution;
-    long long    t0;
+    double       t0;
 } _glfwTimer;
 
 
@@ -193,15 +241,15 @@ typedef struct _GLFWthread_struct _GLFWthread;
 
 // Thread record (one for each thread)
 struct _GLFWthread_struct {
+    // Pointer to previous and next threads in linked list
+    _GLFWthread   *Previous, *Next;
+
     // GLFW user side thread information
     GLFWthread    ID;
     GLFWthreadfun Function;
 
     // System side thread information
     pthread_t     PosixID;
-
-    // Pointer to previous and next threads in linked list
-    _GLFWthread   *Previous, *Next;
 };
 
 // General thread information
@@ -217,12 +265,14 @@ GLFWGLOBAL struct {
 } _glfwThrd;
 
 
+
 //------------------------------------------------------------------------
-// Mac OS X bundles
+// Dynamically loaded libraries
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    CFBundleRef OpenGL;  // Handle for OpenGL
-} _glfwBundles;
+    // Bundle for dynamically-loading extension function pointers
+    CFBundleRef OpenGLFramework;
+} _glfwLibs;
 
 
 //========================================================================
@@ -230,25 +280,62 @@ GLFWGLOBAL struct {
 // of GLFW thread safe)
 //========================================================================
 
+// Define so we can use the same thread code as X11
+#define _glfw_numprocessors(n) { \
+    int mib[2], ncpu; \
+    size_t len = 1; \
+    mib[0] = CTL_HW; \
+    mib[1] = HW_NCPU; \
+    n      = 1; \
+    if( sysctl( mib, 2, &ncpu, &len, NULL, 0 ) != -1 ) \
+    { \
+        if( len > 0 ) \
+        { \
+            n = ncpu; \
+        } \
+    } \
+}
+
 // Thread list management
 #define ENTER_THREAD_CRITICAL_SECTION \
-        pthread_mutex_lock( &_glfwThrd.CriticalSection );
+pthread_mutex_lock( &_glfwThrd.CriticalSection );
 #define LEAVE_THREAD_CRITICAL_SECTION \
-        pthread_mutex_unlock( &_glfwThrd.CriticalSection );
+pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 
 
 //========================================================================
-// Prototypes for GLFW internal functions
+// Prototypes for platform specific internal functions
 //========================================================================
 
-// Time
-void _glfwInitTimer( void );
+int  _glfwChangeToResourcesDirectory( void );
 
-// Fullscreen support
-// ...
+int  _glfwInstallEventHandlers( void );
 
-// Image/texture I/O support
-int _glfwReadTGA( FILE *f, GLFWimage *img, int flags );
+void _glfwCGToGLFWVideoMode( CFDictionaryRef cgMode,
+                             GLFWvidmode* glfwMode );
 
+//========================================================================
+// Prototypes for full-screen/desktop-window "virtual" functions
+//========================================================================
+
+int  _glfwMacFSOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int accumredbits, int accumgreenbits, int accumbluebits, int accumalphabits, int auxbuffers, int stereo, int refreshrate );
+void _glfwMacFSCloseWindow( void );
+void _glfwMacFSSetWindowTitle( const char *title );
+void _glfwMacFSSetWindowSize( int width, int height );
+void _glfwMacFSSetWindowPos( int x, int y );
+void _glfwMacFSIconifyWindow( void );
+void _glfwMacFSRestoreWindow( void );
+void _glfwMacFSRefreshWindowParams( void );
+void _glfwMacFSSetMouseCursorPos( int x, int y );
+
+int  _glfwMacDWOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int accumredbits, int accumgreenbits, int accumbluebits, int accumalphabits, int auxbuffers, int stereo, int refreshrate );
+void _glfwMacDWCloseWindow( void );
+void _glfwMacDWSetWindowTitle( const char *title );
+void _glfwMacDWSetWindowSize( int width, int height );
+void _glfwMacDWSetWindowPos( int x, int y );
+void _glfwMacDWIconifyWindow( void );
+void _glfwMacDWRestoreWindow( void );
+void _glfwMacDWRefreshWindowParams( void );
+void _glfwMacDWSetMouseCursorPos( int x, int y );
 
 #endif // _platform_h_
