@@ -1,7 +1,7 @@
 ##########################################################################
 # Makefile for the GLFW documentation.
 #-------------------------------------------------------------------------
-# $Id: Makefile,v 1.2 2003-11-04 23:01:32 marcus256 Exp $
+# $Id: Makefile,v 1.3 2003-11-07 08:43:40 marcus256 Exp $
 ##########################################################################
 
 PDFDOCS = glfwrm.pdf glfwug.pdf
@@ -20,7 +20,7 @@ dvi:     $(DVIDOCS)
 # Clean macros
 ##########################################################################
 clean:
-	rm -f glfwrm.dvi glfwrm.aux glfwrm.log glfwrm.out glfwrm.pdf glfwrm.toc
+	rm -f glfwrm.dvi glfwrm.aux glfwrm.log glfwrm.out glfwrm.pdf glfwrm.toc glfwrm.lot
 	rm -f glfwug.dvi glfwug.aux glfwug.log glfwug.out glfwug.pdf glfwug.toc
 
 clean-win:
@@ -31,13 +31,16 @@ clean-win:
 # Rules for building the GLFW Reference Manual
 ##########################################################################
 
-glfwrm.pdf: glfwrm.tex glfwrm.toc glfwdoc.sty
+glfwrm.pdf: glfwrm.tex glfwrm.toc glfwrm.lot glfwdoc.sty
 	pdflatex glfwrm.tex
 
-glfwrm.dvi: glfwrm.tex glfwrm.toc glfwdoc.sty
+glfwrm.dvi: glfwrm.tex glfwrm.toc glfwrm.lot glfwdoc.sty
 	latex glfwrm.tex
 
 glfwrm.toc: glfwrm.tex glfwdoc.sty
+	latex glfwrm.tex
+
+glfwrm.lot: glfwrm.tex glfwdoc.sty
 	latex glfwrm.tex
 
 
@@ -53,3 +56,4 @@ glfwug.dvi: glfwug.tex glfwug.toc glfwdoc.sty
 
 glfwug.toc: glfwug.tex glfwdoc.sty
 	latex glfwug.tex
+
