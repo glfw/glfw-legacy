@@ -6,7 +6,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: pong3d.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ * $Id: pong3d.c,v 1.3 2003-12-09 21:37:03 marcus256 Exp $
  ************************************************************************/
 
 #include <GL/glfw.h>
@@ -20,8 +20,8 @@
 //========================================================================
 
 // Screen resolution
-#define WIDTH        1024
-#define HEIGHT       768
+#define WIDTH        640
+#define HEIGHT       480
 
 // Player size (units)
 #define PLAYER_XSIZE  0.05
@@ -807,7 +807,7 @@ int main( void )
     }
 
     // Open OpenGL window
-    if( !glfwOpenWindow( WIDTH, HEIGHT, 8,8,8,0, 16,0, GLFW_FULLSCREEN ) )
+    if( !glfwOpenWindow( WIDTH, HEIGHT, 0,0,0,0, 16,0, GLFW_FULLSCREEN ) )
     {
         glfwTerminate();
         exit( 0 );
