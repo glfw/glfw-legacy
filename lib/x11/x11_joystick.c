@@ -2,11 +2,11 @@
 // GLFW - An OpenGL framework
 // File:        x11_joystick.c
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_joystick.c,v 1.4 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_joystick.c,v 1.5 2005-02-16 19:45:06 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -90,8 +90,8 @@ struct js_event {
 void _glfwInitJoysticks( void )
 {
 #ifdef _GLFW_USE_LINUX_JOYSTICKS
-    int  n, fd;
-    char joy_dev_name[ 16 ];
+    int  n, fd, js_count, input_js_count;
+    char *joy_base_name, joy_dev_name[ 20 ];
     int  driver_version = 0x000800;
     char ret_data;
 #endif // _GLFW_USE_LINUX_JOYSTICKS
@@ -105,10 +105,42 @@ void _glfwInitJoysticks( void )
 
 #ifdef _GLFW_USE_LINUX_JOYSTICKS
 
-    // Try to open joysticks (nonblocking)
+    // Kind of hackish: /dev/js* or /dev/input/js* (we don't support both...) :(
+    js_count = 0;
     for( i = 0; i <= GLFW_JOYSTICK_LAST; i ++ )
     {
         sprintf( joy_dev_name, "/dev/js%d", i );
+        fd = open( joy_dev_name, O_NONBLOCK );
+        if( fd != -1 )
+        {
+            js_count ++;
+        }
+        close( fd );
+    }
+    input_js_count = 0;
+    for( i = 0; i <= GLFW_JOYSTICK_LAST; i ++ )
+    {
+        sprintf( joy_dev_name, "/dev/input/js%d", i );
+        fd = open( joy_dev_name, O_NONBLOCK );
+        if( fd != -1 )
+        {
+            input_js_count ++;
+        }
+        close( fd );
+    }
+    if( input_js_count > js_count )
+    {
+        joy_base_name = "/dev/input/js";
+    }
+    else
+    {
+        joy_base_name = "/dev/js";
+    }
+
+    // Try to open joysticks (nonblocking)
+    for( i = 0; i <= GLFW_JOYSTICK_LAST; i ++ )
+    {
+        sprintf( joy_dev_name, "%s%d", joy_base_name, i );
         fd = open( joy_dev_name, O_NONBLOCK );
         if( fd != -1 )
         {
