@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.5
-% $Id: glfwug.tex,v 1.11 2004-02-29 20:52:14 marcus256 Exp $
+% $Id: glfwug.tex,v 1.12 2004-02-29 21:05:31 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -116,6 +116,7 @@ Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
 Mac OS\textsuperscript{\textregistered} X.
 \item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Only a subset of the \GLFW\ API is supported for this platform at the time of writing.}
 \item AmigaOS\footnotemark[\value{footnote}]
+\item MD--DOS\textsuperscript{\textregistered}\footnotemark[\value{footnote}]
 \end{itemize}
 
 
@@ -1079,16 +1080,17 @@ This function reads a 2D image from a Truevision Targa format file (.TGA)
 with the name given by \textit{name}, and uploads it to texture memory.
 It is similar to the \OpenGL\ function \textbf{glTexImage2D}, except that
 the image data is read from a file instead of from main memory, and all
-the pixel format and data storage flags are handled automatically.
+the pixel format and data storage flags are handled automatically. The
+\textit{flags} argument can be used to control how the texture is
+loaded.
 
-The \textit{flags} argument can be used to control how the texture is
-loaded. If \textit{flags} is zero, the origin of the texture will be the
-lower left corner, and only one mipmap level is loaded. If \textit{flags}
-is GLFW\_ORIGIN\_UL\_BIT the origin of the texture will be the upper left
-corner. If \textit{flags} is GLFW\_BUILD\_MIPMAPS\_BIT, all mipmap levels
-will be generated and uploaded to texture memory. If \textit{flags} is
-GLFW\_ALPHA\_MAP\_BIT, then any gray scale images will be loaded as alpha
-maps rather than luminance maps.
+If \textit{flags} is GLFW\_ORIGIN\_UL\_BIT, the origin of the
+texture will be the upper left corner (otherwise it is the lower left
+corner). If \textit{flags} is GLFW\_BUILD\_MIPMAPS\_BIT, all mipmap levels
+will be generated and uploaded to texture memory (otherwise only one
+mipmap level is loaded). If \textit{flags} is GLFW\_ALPHA\_MAP\_BIT, then
+any gray scale images will be loaded as alpha maps rather than luminance
+maps.
 
 To make combinations of the flags, or them together (e.g. like this:
 \texttt{GLFW\_ORIGIN\_UL\_BIT | GLFW\_BUILD\_MIPMAPS\_BIT}).
@@ -1097,15 +1099,8 @@ Here is an example of how to upload a texture from a file to \OpenGL\
 texture memroy, and configure the texture for trilinear interpolation
 (assuming an \OpenGL\ window has been opened successfully):
 
+\begin{mysamepage}[10]
 \begin{lstlisting}
-    GLuint  texid;
-
-    // Generate texture object for one texture
-    glGenTextures( 1, &texid );
-
-    // Bind texture object
-    glBindTexture( GL_TEXTURE_2D, texid );
-
     // Load texture from file, and build all mipmap levels
     glfwLoadTexture2D( "mytexture.tga", GLFW_BUILD_MIPMAPS_BIT );
 
@@ -1120,6 +1115,7 @@ texture memroy, and configure the texture for trilinear interpolation
     // Enable texturing
     glEnable( GL_TEXTURE_2D );
 \end{lstlisting}
+\end{mysamepage}
 
 As you can see, \textbf{glfwLoadTexture2D} is very easy to use. Since it
 can also automatically create mipmaps when required, it is also a very
