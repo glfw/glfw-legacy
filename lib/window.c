@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.4 2003-11-03 22:27:34 marcus256 Exp $
+// $Id: window.c,v 1.5 2004-01-13 20:00:57 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -419,9 +419,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
     // Refresh window parameters (may have changed due to changed video
     // modes)
     _glfwPlatformRefreshWindowParams();
-
-    // Call window size callback
-    _glfwWin.WindowSizeCallback( _glfwWin.Width, _glfwWin.Height );
 }
 
 
