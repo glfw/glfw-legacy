@@ -1,6 +1,6 @@
 %-------------------------------------------------------------------------
 % Common document formatting and macros for GLFW manuals
-% $Id: glfwdoc.sty,v 1.5 2003-11-07 08:45:20 marcus256 Exp $
+% $Id: glfwdoc.sty,v 1.6 2003-11-12 22:30:45 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Misc. document info
@@ -56,6 +56,7 @@
 
 % Colors
 \definecolor{code}{rgb}{0.9,0.9,1.0}
+\definecolor{link}{rgb}{0.6,0.0,0.0}
 
 % Code listings
 \lstset{frame=single,backgroundcolor=\color{code},language=C,%
@@ -71,5 +72,6 @@
 \newenvironment{refnotes}[1][0]{\begin{mysamepage}\textbf{Notes}\\}{\end{mysamepage}\bigskip}
 
 % hyperref (bookmarks, links etc) - use this package last
-\usepackage[colorlinks=true,linkcolor=black,bookmarks=true,bookmarksopen=true,%
-            pdfhighlight=/N,bookmarksnumbered=true,pdfview=FitH,pdfstartview=FitH]{hyperref}
+\usepackage[colorlinks=true,linkcolor=link,bookmarks=true,bookmarksopen=true,%
+            pdfhighlight=/N,bookmarksnumbered=true,bookmarksopenlevel=1,%
+            pdfview=FitH,pdfstartview=FitH]{hyperref}
