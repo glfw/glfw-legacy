@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_joystick.c,v 1.5 2005-02-16 19:45:06 marcus256 Exp $
+// $Id: x11_joystick.c,v 1.6 2005-02-16 19:48:08 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -114,8 +114,8 @@ void _glfwInitJoysticks( void )
         if( fd != -1 )
         {
             js_count ++;
+            close( fd );
         }
-        close( fd );
     }
     input_js_count = 0;
     for( i = 0; i <= GLFW_JOYSTICK_LAST; i ++ )
@@ -125,8 +125,8 @@ void _glfwInitJoysticks( void )
         if( fd != -1 )
         {
             input_js_count ++;
+            close( fd );
         }
-        close( fd );
     }
     if( input_js_count > js_count )
     {
