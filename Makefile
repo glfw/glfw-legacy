@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2004-01-06 08:51:39 $
-# $Revision: 1.6 $
+# $Date: 2004-01-06 19:31:54 $
+# $Revision: 1.7 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -36,12 +36,15 @@ default:
 	@echo "  $(MAKE) x11-gcc         for Unix/X11 (auto-configuring, force using GCC)"
 	@echo "  $(MAKE) x11-clean       to remove any compiled files for Unix/X11"
 	@echo "-----------------------------------------------------------------------------"
+	@echo "  $(MAKE) macosx-gcc      for GCC for Mac OS X (free Apple SDK)"
+	@echo "  $(MAKE) macosx-clean    to remove any compiled files for Mac OS X"
+	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) amigaos-gcc     for AmigaOS for GCC (Geek Gadgets)"
 	@echo "  $(MAKE) amigaos-vbcc    for AmigaOS for VBCC"
 	@echo "  $(MAKE) amigaos-clean   to remove any compiled files for AmigaOS"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx-gcc      for GCC for Mac OS X (free Apple SDK)"
-	@echo "  $(MAKE) macosx-clean    to remove any compiled files for Mac OS X"
+	@echo "  $(MAKE) dos-djgpp       for DOS for DJGPP"
+	@echo "  $(MAKE) dos-clean       to remove any compiled files for DOS"
 	@echo "-----------------------------------------------------------------------------"
 
 
@@ -184,6 +187,24 @@ amigaos-clean:
 amigaos-vbcc:
 	@execute compile.ami $(MAKE) vbcc
 
+
 # AmigaOS, GCC
 amigaos-gcc:
 	@execute compile.ami $(MAKE) gcc
+
+
+###########################################################################
+# DOS
+###########################################################################
+
+# Cleanup for DOS
+dos-clean:
+	@rm -f lib/dos/*.o
+	@rm -f lib/dos/libglfw.a
+	@rm -f examples/*.exe
+
+
+# DOS, DJGPP (GCC)
+dos-djgpp:
+	@cd lib\dos;  $(MAKE) -f Makefile.dos.djgpp
+	@cd examples; $(MAKE) -f Makefile.dos.djgpp
