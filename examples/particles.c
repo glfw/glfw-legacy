@@ -32,12 +32,13 @@
 //
 //  CPU               GFX                   1 thread      2 threads
 //  Athlon XP 2700+   GeForce Ti4200 (oc)    757 FPS        759 FPS
+//  P4 2.8 GHz (SMT)  GeForce FX5600         548 FPS        550 FPS
 //
 // One more thing: Press 'w' during the demo to toggle wireframe mode.
 //========================================================================
 
 /************************************************************************
- * $Id: particles.c,v 1.3 2003-06-30 20:12:52 marcus256 Exp $
+ * $Id: particles.c,v 1.4 2003-07-12 21:10:14 marcus256 Exp $
  ************************************************************************/
 
 #include <stdlib.h>
