@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.6 2003-11-06 14:44:04 elmindreda Exp $
+// $Id: macosx_window.c,v 1.7 2003-11-06 14:56:42 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -311,6 +311,11 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                     GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
                     _glfwInput.MousePosX = mouseLocation.x - content.left + structure.left;
                     _glfwInput.MousePosY = mouseLocation.y - content.top + structure.top;
+                    if( _glfwWin.MousePosCallback )
+                    {
+                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                                   _glfwInput.MousePosY );
+                    }
                     return noErr;
                 }
             }
@@ -337,6 +342,10 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                             &wheelDelta ) == noErr )
                     {
                         _glfwInput.WheelPos += wheelDelta;
+                        if( _glfwWin.MouseWheelCallback )
+                        {
+                            _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+                        }
                         return noErr;
                     }
                 }
