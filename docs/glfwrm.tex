@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.2 2003-11-04 22:14:46 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.3 2003-11-04 23:16:06 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -229,29 +229,36 @@ int glfwOpenWindow( int width, int height, int redbits,
 \begin{refparameters}
 \begin{description}
 \item [\textit{width}]\ \\
-  The width of the window. If \textit{width} is zero, it will be calculated
-  as \textit{4/3*height} if \textit{height} is not zero. If both \textit{width}
-  and \textit{height} are zero, \textit{width} will be set to 640.
+  The width of the window. If \textit{width} is zero, it will be
+  calculated as ${width=\frac{4}{3}height}$, if \textit{height} is not
+  zero. If both \textit{width} and \textit{height} are zero, then
+  \textit{width} will be set to 640.
 \item [\textit{hieght}]\ \\
-  The height of the window. If \textit{height} is zero, it will be calculated as
-  \textit{3/4*width} if \textit{width} is not zero. If both \textit{width} and
-  \textit{height} are zero, \textit{height} will be set to 480.
+  The height of the window. If \textit{height} is zero, it will be
+  calculated as ${height=\frac{3}{4}width}$, if \textit{width} is not
+  zero. If both \textit{width} and \textit{height} are zero, then
+  \textit{height} will be set to 480.
 \item [\textit{redbits, greenbits, bluebits}]\ \\
-  The number of bits to use for each color component of the color buffer (0 means
-  default color depth). For instance, setting \textit{redbits=5, greenbits=6,
-  and bluebits=5} will generate a 16-­bit color buffer, if possible.
+  The number of bits to use for each color component of the color buffer
+  (0 means default color depth). For instance, setting \textit{redbits=5,
+  greenbits=6, and bluebits=5} will generate a 16-­bit color buffer, if
+  possible.
 \item [\textit{alphabits}]\ \\
-  The number of bits to use for the alpha buffer (0 means no alpha buffer).
+  The number of bits to use for the alpha buffer (0 means no alpha
+  buffer).
 \item [\textit{depthbits}]\ \\
-  The number of bits to use for the depth buffer (0 means no depth buffer).
+  The number of bits to use for the depth buffer (0 means no depth
+  buffer).
 \item [\textit{stencilbits}]\ \\
-  The number of bits to use for the stencil buffer (0 means no stencil buffer).
+  The number of bits to use for the stencil buffer (0 means no stencil
+  buffer).
 \item [\textit{mode}]\ \\
-  Selects which type of \OpenGL\ window to use. \textit{mode} can be either
-  GLFW\_WINDOW, which will generate a normal desktop window, or GLFW\_FULLSCREEN,
-  which will generate a window which covers the entire screen. When
-  GLFW\_FULLSCREEN is selected, the video mode will be changed to the resolution
-  that closest matches the \textit{width} and \textit{height} parameters.
+  Selects which type of \OpenGL\ window to use. \textit{mode} can be
+  either GLFW\_WINDOW, which will generate a normal desktop window, or
+  GLFW\_FULLSCREEN, which will generate a window which covers the entire
+  screen. When GLFW\_FULLSCREEN is selected, the video mode will be
+  changed to the resolution that closest matches the \textit{width} and
+  \textit{height} parameters.
 \end{description}
 \end{refparameters}
 
@@ -261,21 +268,24 @@ If the function fails, GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function opens a window that best matches the parameters given to the function.
-How well the resulting window matches the desired window depends mostly on the
-available hardware and \OpenGL\ drivers. In general, selecting a fullscreen mode has
-better chances of generating a close match than does a normal desktop window, since
-\GLFW\ can freely select from all the available video modes. A desktop window is
-normally restricted to the video mode of the desktop.
+The function opens a window that best matches the parameters given to the
+function. How well the resulting window matches the desired window depends
+mostly on the available hardware and \OpenGL\ drivers. In general,
+selecting a fullscreen mode has better chances of generating a close match
+than does a normal desktop window, since \GLFW\ can freely select from all
+the available video modes. A desktop window is normally restricted to the
+video mode of the desktop.
 \end{refdescription}
 
 \begin{refnotes}
-For additional control of window properties, see \textbf{glfwOpenWindowHint}.
+For additional control of window properties, see
+\textbf{glfwOpenWindowHint}.
 
-In fullscreen mode the mouse cursor is hidden by default, and any system screensavers
-are prohibited from starting. In windowed mode the mouse cursor is visible, and
-screensavers are allowed to start. To change the visibility of the mouse cursor, use
-\textbf{glfwEnable} or \textbf{glfwDisable} with the argument GLFW\_MOUSE\_CURSOR.
+In fullscreen mode the mouse cursor is hidden by default, and any system
+screensavers are prohibited from starting. In windowed mode the mouse
+cursor is visible, and screensavers are allowed to start. To change the
+visibility of the mouse cursor, use \textbf{glfwEnable} or
+\textbf{glfwDisable} with the argument GLFW\_MOUSE\_CURSOR.
 
 In order to determine the actual properties of an opened window, use
 \textbf{glfwGetWindowParam} and \textbf{glfwGetWindowSize} (or
@@ -322,7 +332,7 @@ For a hint to be registered, the function must be called before calling
 \textbf{glfwOpenWindow}. When the \textbf{glfwOpenWindow} function is
 called, any hints that were registered with the \textbf{glfwOpenWindowHint}
 function are used for setting the corresponding window properties, and
-then all hints are reset to "do not care".
+then all hints are reset to ``do not care''.
 \end{refdescription}
 
 \begin{refnotes}
@@ -594,11 +604,11 @@ The function is used for acquiring various properties of an opened window.
 \end{refdescription}
 
 \begin{refnotes}
-GLFW\_ACCELERATED is only supported under Windows. Other systems will always
-return GL\_TRUE. Under Windows, GLFW\_ACCELERATED means that the \OpenGL\
-renderer is a 3rd party renderer, rather than the fallback Microsoft software
-\OpenGL\ renderer. In other words, it is not a real guarantee that the \OpenGL\
-renderer is actually hardware accelerated.
+GLFW\_ACCELERATED is only supported under Windows. Other systems will
+always return GL\_TRUE. Under Windows, GLFW\_ACCELERATED means that the
+\OpenGL\ renderer is a 3rd party renderer, rather than the fallback
+Microsoft software \OpenGL\ renderer. In other words, it is not a real
+guarantee that the \OpenGL\ renderer is actually hardware accelerated.
 
 GLFW\_REFRESH\_RATE is only supported under Windows, XFree86 and AmigaOS.
 Other systems will always return zero (0). With some Windows drivers, zero
@@ -1063,7 +1073,7 @@ void glfwSetKeyCallback( GLFWkeyfun cbfun )
 \begin{refparameters}
 \begin{description}
 \item [\textit{cbfun}]\ \\
-  Pointer to a callback function which will be called every time a key is
+  Pointer to a callback function that will be called every time a key is
   pressed or released. The function should have the following C language
   prototype:
 
@@ -1071,8 +1081,9 @@ void glfwSetKeyCallback( GLFWkeyfun cbfun )
 
   Where \textit{functionname} is the name of the callback function,
   \textit{key} is a key identifier, which is an uppercase printable
-  ISO~8859-1 character or a special key identifier (see \textbf{glfwGetKey}
-  for more information), and action is either GLFW\_PRESS or GLFW\_RELEASE.
+  ISO~8859-1 character or a special key identifier (see
+  \textbf{glfwGetKey} for more information), and \textit{action} is either
+  GLFW\_PRESS or GLFW\_RELEASE.
 
   If \textit{cbfun} is NULL, any previously selected callback function
   will be deselected.
@@ -1107,15 +1118,15 @@ void glfwSetCharCallback( GLFWcharfun cbfun )
 \begin{refparameters}
 \begin{description}
 \item [\textit{cbfun}]\ \\
-  Pointer to a callback function which will be called every time a
+  Pointer to a callback function that will be called every time a
   printable character is generated by the keyboard. The function should
   have the following C language prototype:
 
   \texttt{void GLFWCALL functionname( int character, int action );}
 
   Where \textit{functionname} is the name of the callback function,
-  \textit{character} is a Unicode (ISO~10646) character, and action is
-  either GLFW\_PRESS or GLFW\_RELEASE.
+  \textit{character} is a Unicode (ISO~10646) character, and
+  \textit{action} is either GLFW\_PRESS or GLFW\_RELEASE.
 
   If \textit{cbfun} is NULL, any previously selected callback function
   will be deselected.
