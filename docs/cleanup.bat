@@ -3,7 +3,7 @@
 REM ----------------------------------------------------------------------
 REM Windows cleanup batch file for the GLFW documentation.
 REM ----------------------------------------------------------------------
-REM $Id: cleanup.bat,v 1.1 2003-11-03 21:23:21 marcus256 Exp $
+REM $Id: cleanup.bat,v 1.2 2003-11-07 08:44:06 marcus256 Exp $
 REM ----------------------------------------------------------------------
 
 REM GLFW Reference Manual
@@ -13,6 +13,7 @@ if exist glfwrm.log del glfwrm.log
 if exist glfwrm.out del glfwrm.out
 if exist glfwrm.pdf del glfwrm.pdf
 if exist glfwrm.toc del glfwrm.toc
+if exist glfwrm.lot del glfwrm.lot
 
 REM GLFW Users Guide
 if exist glfwug.dvi del glfwug.dvi
