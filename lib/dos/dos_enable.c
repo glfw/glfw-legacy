@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        dos_enable.c
-// Platforms:   DOS
+// Platform:    DOS
 // API version: 2.4
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_enable.c,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+// $Id: dos_enable.c,v 1.2 2003-12-07 22:45:06 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"

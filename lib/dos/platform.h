@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        platform.h
-// Platforms:   DOS
+// Platform:    DOS
 // API version: 2.4
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.4 2003-12-07 22:22:27 marcus256 Exp $
+// $Id: platform.h,v 1.5 2003-12-07 22:45:06 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
