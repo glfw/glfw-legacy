@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: image.c,v 1.4 2004-02-14 20:50:10 marcus256 Exp $
+// $Id: image.c,v 1.5 2004-02-25 22:23:12 marcus256 Exp $
 //========================================================================
 
 //========================================================================
@@ -63,10 +63,16 @@
 
 // We want to support automatic mipmap generation
 #ifndef GL_SGIS_generate_mipmap
-#define GL_GENERATE_MIPMAP_SGIS       0x8191
-#define GL_GENERATE_MIPMAP_HINT_SGIS  0x8192
-#define GL_SGIS_generate_mipmap    1
+ #define GL_GENERATE_MIPMAP_SGIS       0x8191
+ #define GL_GENERATE_MIPMAP_HINT_SGIS  0x8192
+ #define GL_SGIS_generate_mipmap    1
 #endif // GL_SGIS_generate_mipmap
+
+
+// Do OpenGL 1.0 headers define GL_ALPHA?
+#ifndef GL_ALPHA
+ #define GL_ALPHA 0x1906
+#endif
 
 
 //************************************************************************
@@ -223,7 +229,7 @@ static int _glfwHalveImage( GLubyte *src, int *width, int *height,
 GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     int flags )
 {
-    int     success, width, height, log2, newsize;
+    int     success, width, height, log2, newsize, n;
     FILE    *f;
     unsigned char *data;
 
@@ -301,12 +307,51 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
         img->Height = height;
     }
 
+    // Do we need to convert the alpha map to RGBA format (OpenGL 1.0)?
+    if( (flags & GLFW_ALPHA_MAP_BIT) && (img->BytesPerPixel == 1) &&
+        (_glfwWin.GLVerMajor == 1) && (_glfwWin.GLVerMinor == 0) )
+    {
+        // We go to RGBA representation instead
+        img->BytesPerPixel = 4;
+
+        // Allocate memory for new RGBA image data
+        newsize = width * height * img->BytesPerPixel;
+        data = (unsigned char *) malloc( newsize );
+        if( data == NULL )
+        {
+            free( img->Data );
+            return GL_FALSE;
+        }
+
+        // Convert to RGBA
+        for( n = 0; n < (width*height); ++ n )
+        {
+            data[n*4]   = 255;
+            data[n*4+1] = 255;
+            data[n*4+2] = 255;
+            data[n*4+3] = img->Data[n];
+        }
+
+        // Free memory for old image data (not needed anymore)
+        free( img->Data );
+
+        // Set pointer to new image data
+        img->Data = data;
+    }
+
     // Interpret BytesPerPixel as an OpenGL format
     switch( img->BytesPerPixel )
     {
         default:
         case 1:
-            img->Format = GL_LUMINANCE;
+            if( flags & GLFW_ALPHA_MAP_BIT )
+            {
+                img->Format = GL_ALPHA;
+            }
+            else
+            {
+                img->Format = GL_LUMINANCE;
+            }
             break;
         case 3:
             img->Format = GL_RGB;
@@ -350,7 +395,7 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
 {
     GLFWimage img;
     GLint   UnpackAlignment, GenMipMap;
-    int     level, AutoGen;
+    int     level, format, AutoGen;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -362,13 +407,6 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     if( !glfwReadImage( name, &img, flags & (~GLFW_NO_RESCALE_BIT) ) )
     {
         return GL_FALSE;
-    }
-
-    // Is the GL_SGIS_generate_mipmap extension initialized?
-    if( _glfwWin.Has_GL_SGIS_generate_mipmap < 0 )
-    {
-        _glfwWin.Has_GL_SGIS_generate_mipmap =
-            glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
     }
 
     // Set unpack alignment to one byte
@@ -388,13 +426,23 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
             GL_TRUE );
     }
 
+    // Format specification is different for OpenGL 1.0
+    if( _glfwWin.GLVerMajor == 1 && _glfwWin.GLVerMinor == 0 )
+    {
+        format = img.BytesPerPixel;
+    }
+    else
+    {
+        format = img.Format;
+    }
+
     // Upload to texture memeory
     level = 0;
     do
     {
         // Upload this mipmap level
-        glTexImage2D( GL_TEXTURE_2D, level, img.BytesPerPixel,
-            img.Width, img.Height, 0, img.Format,
+        glTexImage2D( GL_TEXTURE_2D, level, format,
+            img.Width, img.Height, 0, format,
             GL_UNSIGNED_BYTE, (void*) img.Data );
 
         // Build next mipmap level manually, if required
