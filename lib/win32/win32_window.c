@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.11 2004-07-09 20:12:19 marcus256 Exp $
+// $Id: win32_window.c,v 1.12 2004-07-11 20:37:34 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -511,12 +511,12 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
             return 0;
         case WM_XBUTTONDOWN:
-            if( (wParam >> 8) == XBUTTON1 )
+            if( HIWORD(wParam) == XBUTTON1 )
             {
                 SetCapture(hWnd);
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_4, GLFW_PRESS );
             }
-            else if( (wParam >> 8) == XBUTTON2 )
+            else if( HIWORD(wParam) == XBUTTON2 )
             {
                 SetCapture(hWnd);
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_PRESS );
@@ -537,12 +537,12 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE );
             return 0;
         case WM_XBUTTONUP:
-            if( (wParam >> 8) == XBUTTON1 )
+            if( HIWORD(wParam) == XBUTTON1 )
             {
                 ReleaseCapture();
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_4, GLFW_RELEASE );
             }
-            else if( (wParam >> 8) == XBUTTON2 )
+            else if( HIWORD(wParam) == XBUTTON2 )
             {
                 ReleaseCapture();
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_RELEASE );
