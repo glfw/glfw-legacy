@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_time.c,v 1.2 2003-11-28 13:50:12 marcus256 Exp $
+// $Id: dos_time.c,v 1.3 2003-11-28 22:01:30 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -141,9 +141,8 @@ static int _glfwHasRDTSC( void )
 
     unsigned int cpu_name1, cpu_name2, cpu_name3;
     unsigned int cpu_signature, cpu_brandID;
-    unsigned int max_base, feature_flags, has_rdtsc, has_htt, num_logical;
+    unsigned int max_base, feature_flags;
     unsigned int dummy;
-    SYSTEM_INFO  si;
 
     // Get processor vendor string (will return 0 if CPUID is not
     // supported)
@@ -210,6 +209,9 @@ static int _glfwHasRDTSC( void )
 int _glfwInitTimer( void )
 {
     // TODO
+    _glfwTimer.Period = 1.0/1193181.0;
+    _glfwTimer.t0 = 0;
+
     return 1;
 }
 
@@ -235,7 +237,9 @@ void _glfwTerminateTimer( void )
 double _glfwPlatformGetTime( void )
 {
     // TODO
-    return 0.0;
+    static long long t = 0;
+    t += 20000;
+    return (t-_glfwTimer.t0)*_glfwTimer.Period;
 }
 
 
