@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.10 2003-11-14 22:22:08 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.11 2003-11-15 21:51:45 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -75,11 +75,11 @@ All other trademarks mentioned in this document are the property of their respec
 \pagebreak
 
 
-
 % Document chapters starts here...
-\pagestyle{fancy}
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+\pagestyle{fancy}
 
 
 %-------------------------------------------------------------------------
@@ -1614,6 +1614,193 @@ should only happen when very short sleep times are specified, if at all.
 
 %-------------------------------------------------------------------------
 \pagebreak
+\section{Image and Texture Loading}
+In order to aid texture file loading, \GLFW\ has basic support for loading
+images from files.
+
+
+%-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
+\textbf{Name}          & \textbf{Description}\\ \hline
+GLFW\_NO\_RESCALE\_BIT & Do not rescale image to closest $2^m\times2^n$ resolution.\\ \hline
+GLFW\_ORIGIN\_UL\_BIT  & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
+\end{tabular}
+\end{center}
+\caption{Flags for \textbf{glfwReadImage}}
+\label{tab:rdimgflags}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwReadImage}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwReadImage( const char *name, GLFWimage *img, int flags )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{name}]\ \\
+  A null terminated ISO~8859-1 string holding the name of the file that
+  should be read.
+\item [\textit{img}]\ \\
+  Pointer to a GLFWimage struct, which will hold the information about
+  the loaded image (if the read was successful).
+\item [\textit{flags}]\ \\
+  Flags for controlling the image reading process. Valid flags are listed
+  in table \ref{tab:rdimgflags}
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GL\_TRUE if the image was loaded successfully.
+Otherwise GL\_FALSE is returned.
+\end{refreturn}
+
+\begin{refdescription}
+The function reads an image from the file specified by the parameter
+\textit{name} and returns the image information and data in a GLFWimage
+structure, which has the following definition:
+
+\begin{lstlisting}
+typedef struct {
+    int Width, Height;    // Image dimensions
+    int Format;           // OpenGL pixel format
+    int BytesPerPixel;    // Number of bytes per pixel
+    unsigned char *Data;  // Pointer to pixel data
+} GLFWimage;
+\end{lstlisting}
+
+\textit{Width} and \textit{Height} give the dimensions of the image.
+\textit{Format} specifies an \OpenGL\ pixel format, which can be
+GL\_LUMINANCE (for gray scale images), GL\_RGB or GL\_RGBA.
+\textit{BytesPerPixel} specifies the number of bytes per pixel.
+\textit{Data} is a pointer to the actual pixel data.
+
+By default the read image is rescaled to the nearest larger $2^m\times2^n$
+resolution using bilinear interpolation, if necessary, which is useful if
+the image is to be used as an \OpenGL\ texture. This behavior can be
+disabled by setting the GLFW\_NO\_RESCALE\_BIT flag.
+
+Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
+\textit{img->Data} is the lower left corner of the image. If the flag
+GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
+corner.
+\end{refdescription}
+
+\begin{refnotes}
+\textbf{glfwReadImage} supports the Truevision Targa version 1 file format
+(.TGA). Supported pixel formats are: 8-bit gray scale, 8-bit paletted
+(24/32-bit color), 24-bit true color and 32-bit true color + alpha.
+
+Paletted images are translated into true color or true color + alpha pixel
+formats.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwFreeImage}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwFreeImage( GLFWimage *img )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{img}]\ \\
+  Pointer to a GLFWimage struct.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function frees any memory occupied by a loaded image, and clears all
+the fields of the GLFWimage struct. Any image that has been loaded by the
+\textbf{glfwReadImage} function should be deallocated using this function,
+once the image is not needed anymore.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
+\textbf{Name}             & \textbf{Description}\\ \hline
+GLFW\_BUILD\_MIPMAPS\_BIT & Automatically build and upload all mipmap levels.\\ \hline
+GLFW\_ORIGIN\_UL\_BIT     & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
+\end{tabular}
+\end{center}
+\caption{Flags for \textbf{glfwLoadTexture2D}}
+\label{tab:ldtexflags}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwLoadTexture2D}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+nt glfwLoadTexture2D( const char *name, int flags )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{name}]\ \\
+  An ISO~8859-1 string holding the name of the file that should be loaded.
+\item [\textit{flags}]\ \\
+  Flags for controlling the texture loading process. Valid flags are
+  listed in table \ref{tab:ldtexflags}.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GL\_TRUE if the texture was loaded successfully.
+Otherwise GL\_FALSE is returned.
+\end{refreturn}
+
+\begin{refdescription}
+The function reads an image from the file specified by the parameter
+\textit{name} and uploads the image to \OpenGL\ texture memory (using the
+\textbf{glTexImage2D} function).
+
+If the GLFW\_BUILD\_MIPMAPS\_BIT flag is set, all mipmap levels for the
+loaded texture are generated and uploaded to texture memory.
+
+Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
+\textit{img->Data} is the lower left corner of the image. If the flag
+GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
+corner.
+\end{refdescription}
+
+\begin{refnotes}
+\textbf{glfwLoadTexture2D} supports the Truevision Targa version 1 file
+format (.TGA). Supported pixel formats are: 8-bit gray scale, 8-bit
+paletted (24/32-bit color), 24-bit true color and 32-bit true color +
+alpha.
+
+Paletted images are translated into true color or true color + alpha pixel
+formats.
+
+The read texture is always rescaled to the nearest larger $2^m\times2^n$
+resolution using bilinear interpolation, if necessary, since \OpenGL\
+requires textures to have a $2^m\times2^n$ resolution.
+
+If the GL\_SGIS\_generate\_mipmap extension, which is usually hardware
+accelerated, is supported by the \OpenGL\ implementation it will be used
+for mipmap generation. Otherwise the mipmaps will be generated by \GLFW\
+in software.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\pagebreak
 \section{OpenGL Extension Support}
 One of the great features of \OpenGL\ is its support for extensions, which
 allow independent vendors to supply non-standard functionality in their
@@ -2157,193 +2344,6 @@ nothing happens.
 When several threads are waiting for the condition variable, the order in
 which threads are started depends on operating system scheduling rules,
 and may vary from system to system and from time to time.
-\end{refnotes}
-
-
-%-------------------------------------------------------------------------
-\pagebreak
-\section{Image and Texture Loading}
-In order to aid texture file loading, \GLFW\ has basic support for loading
-images from files.
-
-
-%-------------------------------------------------------------------------
-\begin{table}[bhtp]
-\begin{center}
-\begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
-\textbf{Name}          & \textbf{Description}\\ \hline
-GLFW\_NO\_RESCALE\_BIT & Do not rescale image to closest $2^m\times2^n$ resolution.\\ \hline
-GLFW\_ORIGIN\_UL\_BIT  & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
-\end{tabular}
-\end{center}
-\caption{Flags for \textbf{glfwReadImage}}
-\label{tab:rdimgflags}
-\end{table}
-
-
-%-------------------------------------------------------------------------
-\subsection{glfwReadImage}
-
-\textbf{C language syntax}
-\begin{lstlisting}
-int glfwReadImage( const char *name, GLFWimage *img, int flags )
-\end{lstlisting}
-
-\begin{refparameters}
-\begin{description}
-\item [\textit{name}]\ \\
-  A null terminated ISO~8859-1 string holding the name of the file that
-  should be read.
-\item [\textit{img}]\ \\
-  Pointer to a GLFWimage struct, which will hold the information about
-  the loaded image (if the read was successful).
-\item [\textit{flags}]\ \\
-  Flags for controlling the image reading process. Valid flags are listed
-  in table \ref{tab:rdimgflags}
-\end{description}
-\end{refparameters}
-
-\begin{refreturn}
-The function returns GL\_TRUE if the image was loaded successfully.
-Otherwise GL\_FALSE is returned.
-\end{refreturn}
-
-\begin{refdescription}
-The function reads an image from the file specified by the parameter
-\textit{name} and returns the image information and data in a GLFWimage
-structure, which has the following definition:
-
-\begin{lstlisting}
-typedef struct {
-    int Width, Height;    // Image dimensions
-    int Format;           // OpenGL pixel format
-    int BytesPerPixel;    // Number of bytes per pixel
-    unsigned char *Data;  // Pointer to pixel data
-} GLFWimage;
-\end{lstlisting}
-
-\textit{Width} and \textit{Height} give the dimensions of the image.
-\textit{Format} specifies an \OpenGL\ pixel format, which can be
-GL\_LUMINANCE (for gray scale images), GL\_RGB or GL\_RGBA.
-\textit{BytesPerPixel} specifies the number of bytes per pixel.
-\textit{Data} is a pointer to the actual pixel data.
-
-By default the read image is rescaled to the nearest larger $2^m\times2^n$
-resolution using bilinear interpolation, if necessary, which is useful if
-the image is to be used as an \OpenGL\ texture. This behavior can be
-disabled by setting the GLFW\_NO\_RESCALE\_BIT flag.
-
-Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
-\textit{img->Data} is the lower left corner of the image. If the flag
-GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
-corner.
-\end{refdescription}
-
-\begin{refnotes}
-\textbf{glfwReadImage} supports the Truevision Targa version 1 file format
-(.TGA). Supported pixel formats are: 8-bit gray scale, 8-bit paletted
-(24/32-bit color), 24-bit true color and 32-bit true color + alpha.
-
-Paletted images are translated into true color or true color + alpha pixel
-formats.
-\end{refnotes}
-
-
-%-------------------------------------------------------------------------
-\subsection{glfwFreeImage}
-
-\textbf{C language syntax}
-\begin{lstlisting}
-void glfwFreeImage( GLFWimage *img )
-\end{lstlisting}
-
-\begin{refparameters}
-\begin{description}
-\item [\textit{img}]\ \\
-  Pointer to a GLFWimage struct.
-\end{description}
-\end{refparameters}
-
-\begin{refreturn}
-none
-\end{refreturn}
-
-\begin{refdescription}
-The function frees any memory occupied by a loaded image, and clears all
-the fields of the GLFWimage struct. Any image that has been loaded by the
-\textbf{glfwReadImage} function should be deallocated using this function,
-once the image is not needed anymore.
-\end{refdescription}
-
-
-%-------------------------------------------------------------------------
-\begin{table}[bhtp]
-\begin{center}
-\begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
-\textbf{Name}             & \textbf{Description}\\ \hline
-GLFW\_BUILD\_MIPMAPS\_BIT & Automatically build and upload all mipmap levels.\\ \hline
-GLFW\_ORIGIN\_UL\_BIT     & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
-\end{tabular}
-\end{center}
-\caption{Flags for \textbf{glfwLoadTexture2D}}
-\label{tab:ldtexflags}
-\end{table}
-
-
-%-------------------------------------------------------------------------
-\subsection{glfwLoadTexture2D}
-
-\textbf{C language syntax}
-\begin{lstlisting}
-nt glfwLoadTexture2D( const char *name, int flags )
-\end{lstlisting}
-
-\begin{refparameters}
-\begin{description}
-\item [\textit{name}]\ \\
-  An ISO~8859-1 string holding the name of the file that should be loaded.
-\item [\textit{flags}]\ \\
-  Flags for controlling the texture loading process. Valid flags are
-  listed in table \ref{tab:ldtexflags}.
-\end{description}
-\end{refparameters}
-
-\begin{refreturn}
-The function returns GL\_TRUE if the texture was loaded successfully.
-Otherwise GL\_FALSE is returned.
-\end{refreturn}
-
-\begin{refdescription}
-The function reads an image from the file specified by the parameter
-\textit{name} and uploads the image to \OpenGL\ texture memory (using the
-\textbf{glTexImage2D} function).
-
-If the GLFW\_BUILD\_MIPMAPS\_BIT flag is set, all mipmap levels for the
-loaded texture are generated and uploaded to texture memory.
-
-Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
-\textit{img->Data} is the lower left corner of the image. If the flag
-GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
-corner.
-\end{refdescription}
-
-\begin{refnotes}
-\textbf{glfwLoadTexture2D} supports the Truevision Targa version 1 file
-format (.TGA). Supported pixel formats are: 8-bit gray scale, 8-bit
-paletted (24/32-bit color), 24-bit true color and 32-bit true color +
-alpha.
-
-Paletted images are translated into true color or true color + alpha pixel
-formats.
-
-The read texture is always rescaled to the nearest larger $2^m\times2^n$
-resolution using bilinear interpolation, if necessary, since \OpenGL\
-requires textures to have a $2^m\times2^n$ resolution.
-
-If the GL\_SGIS\_generate\_mipmap extension, which is usually hardware
-accelerated, is supported by the \OpenGL\ implementation it will be used
-for mipmap generation. Otherwise the mipmaps will be generated by \GLFW\
-in software.
 \end{refnotes}
 
 
