@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        image.c
 // Platform:    Any
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: image.c,v 1.5 2004-02-25 22:23:12 marcus256 Exp $
+// $Id: image.c,v 1.6 2004-05-05 19:37:39 marcus256 Exp $
 //========================================================================
 
 //========================================================================
@@ -67,12 +67,6 @@
  #define GL_GENERATE_MIPMAP_HINT_SGIS  0x8192
  #define GL_SGIS_generate_mipmap    1
 #endif // GL_SGIS_generate_mipmap
-
-
-// Do OpenGL 1.0 headers define GL_ALPHA?
-#ifndef GL_ALPHA
- #define GL_ALPHA 0x1906
-#endif
 
 
 //************************************************************************
@@ -229,7 +223,7 @@ static int _glfwHalveImage( GLubyte *src, int *width, int *height,
 GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     int flags )
 {
-    int     success, width, height, log2, newsize, n;
+    int     success, width, height, log2, newsize;
     FILE    *f;
     unsigned char *data;
 
@@ -307,38 +301,6 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
         img->Height = height;
     }
 
-    // Do we need to convert the alpha map to RGBA format (OpenGL 1.0)?
-    if( (flags & GLFW_ALPHA_MAP_BIT) && (img->BytesPerPixel == 1) &&
-        (_glfwWin.GLVerMajor == 1) && (_glfwWin.GLVerMinor == 0) )
-    {
-        // We go to RGBA representation instead
-        img->BytesPerPixel = 4;
-
-        // Allocate memory for new RGBA image data
-        newsize = width * height * img->BytesPerPixel;
-        data = (unsigned char *) malloc( newsize );
-        if( data == NULL )
-        {
-            free( img->Data );
-            return GL_FALSE;
-        }
-
-        // Convert to RGBA
-        for( n = 0; n < (width*height); ++ n )
-        {
-            data[n*4]   = 255;
-            data[n*4+1] = 255;
-            data[n*4+2] = 255;
-            data[n*4+3] = img->Data[n];
-        }
-
-        // Free memory for old image data (not needed anymore)
-        free( img->Data );
-
-        // Set pointer to new image data
-        img->Data = data;
-    }
-
     // Interpret BytesPerPixel as an OpenGL format
     switch( img->BytesPerPixel )
     {
@@ -395,7 +357,8 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
 {
     GLFWimage img;
     GLint   UnpackAlignment, GenMipMap;
-    int     level, format, AutoGen;
+    int     level, format, AutoGen, newsize, n;
+    unsigned char *data, *dataptr;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -407,6 +370,39 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     if( !glfwReadImage( name, &img, flags & (~GLFW_NO_RESCALE_BIT) ) )
     {
         return GL_FALSE;
+    }
+
+    // Do we need to convert the alpha map to RGBA format (OpenGL 1.0)?
+    if( (_glfwWin.GLVerMajor == 1) && (_glfwWin.GLVerMinor == 0) &&
+        (img.Format == GL_ALPHA) )
+    {
+        // We go to RGBA representation instead
+        img.BytesPerPixel = 4;
+
+        // Allocate memory for new RGBA image data
+        newsize = img.Width * img.Height * img.BytesPerPixel;
+        data = (unsigned char *) malloc( newsize );
+        if( data == NULL )
+        {
+            free( img.Data );
+            return GL_FALSE;
+        }
+
+        // Convert Alpha map to RGBA
+        dataptr = data;
+        for( n = 0; n < (img.Width*img.Height); ++ n )
+        {
+            *dataptr ++ = 255;
+            *dataptr ++ = 255;
+            *dataptr ++ = 255;
+            *dataptr ++ = img.Data[n];
+        }
+
+        // Free memory for old image data (not needed anymore)
+        free( img.Data );
+
+        // Set pointer to new image data
+        img.Data = data;
     }
 
     // Set unpack alignment to one byte
