@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.5 2003-05-23 22:05:02 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.6 2003-06-14 20:30:17 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -135,11 +135,11 @@ option.
 <p><br><h3>2.3 Note for Unix/X11 users</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <b>compile.sh</b>. It has only been tested under Linux Mandrake 8.0
-with GCC, Mac OS X 10.2, SunOS 5.6 with GCC, IRIX 5.3 and QNX, but should
-run on the majority of available Unix/Unix-like systems and generate
-functional Makefiles. You do not have to run the script manually, since it
-is called from the top level Makefile.
+called <b>compile.sh</b>. It has been tested under Linux Mandrake 9.1,
+Mac OS X 10.2, SunOS 5.6 (GCC), IRIX 5.3, FreeBSD 5.0 and QNX, but should
+hopefully run on the majority of available Unix/Unix-like systems and
+generate functional Makefiles. You do not have to run the script manually,
+since it is called from the top level Makefile.
 
 
 <p><br><h3>2.4 Note for AmigaOS users</h3>
@@ -387,6 +387,7 @@ style comments.
  <li>Bugfix: [Win32] glfwSetWindowSize now sets the size of the client
      area, NOT the entire window, meaning that there is a 1:1 relationship
      between glfwSetWindowSize and glfwGetWindowSize</li>
+ <li>[X11] Added FreeBSD support</li>
  <li>[X11] Added QNX support</li>
  <li>Bugfix: [X11] When mouse cursor is hidden, mouse sensitivity is no
      longer degraded (not 100% true - still some occasional jerks)</li>
