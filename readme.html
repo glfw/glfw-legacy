@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.2 2003-03-08 13:04:36 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.3 2003-05-04 21:15:53 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -10,7 +10,7 @@
 
 <!-- TITLE -------------------------------------------------------------->
 <center>
-<font face="bookman old style,arial" size=+4><b>GLFW v2.4.1</b></font><br>
+<font face="bookman old style,arial" size=+4><b>GLFW v2.4.2</b></font><br>
 <font face="bookman old style,arial" size=+3>source distribution</font>
 </center>
 
@@ -42,7 +42,7 @@
 <a name="sec1">
 <p><h2>1. Introduction</h2>
 
-<p>Welcome to version 2.4.1 of the GLFW OpenGL framework. GLFW is a free,
+<p>Welcome to version 2.4.2 of the GLFW OpenGL framework. GLFW is a free,
 open source, portable framework for OpenGL application development. In
 short, it is a library that constitutes a powerful API for handling
 operating system specific tasks, such as opening an OpenGL window, reading
@@ -83,7 +83,7 @@ Windows compilers, a Win32 DLL will also be compiled.
 </ol>
 
 <p>If your compiler/system is not in the list, you will have to create new
-makefiles in the <b>lib\win32</b> or <b>lib/x11</b> <!--or <b>lib/macosx</b>-->
+makefiles in the <b>lib\win32</b>, <b>lib/x11</b> or <b>lib/amigaos</b> <!--or <b>lib/macosx</b>-->
 directory, and in the <b>examples</b> directory. If you have any problems,
 do not hesitate to contact me (I may not know how your compiler works, but
 I know the GLFW source code). I would also like to add support for more
@@ -135,8 +135,8 @@ option.
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has only been tested under Linux Mandrake 8.0
-with GCC, Mac OS X 10.2, SunOS 5.6 with GCC and IRIX 5.3, but should run
-on the majority of available Unix/Unix-like systems and generate
+with GCC, Mac OS X 10.2, SunOS 5.6 with GCC, IRIX 5.3 and QNX, but should
+run on the majority of available Unix/Unix-like systems and generate
 functional Makefiles. You do not have to run the script manually, since it
 is called from the top level Makefile.
 
@@ -243,13 +243,12 @@ in the following sections.
 
 <p><br><h3>4.1 Include &lt;GL/glfw.h&gt;</h3>
 
-<p>In your program, your first included file (and sometimes the only
-included file) should be &lt;GL/glfw.h&gt;. This include file defines all
-the necessary constants, types and prototypes that are used to interact
-with the GLFW API. It also includes &lt;GL/gl.h&gt; and &lt;GL/glu.h&gt;,
-and - <u>this is very important</u> - <i><b>it defines all the necessary
-constants and types that are necessary for OpenGL to work on different
-platforms</b></i>.
+<p>In your program, you should include &lt;GL/glfw.h&gt;. This include
+file defines all the necessary constants, types and prototypes that are
+used to interact with the GLFW API. It also includes &lt;GL/gl.h&gt; and
+&lt;GL/glu.h&gt;, and - <u>this is very important</u> - <i><b>it defines
+all the necessary constants and types that are necessary for OpenGL to
+work on different platforms</b></i>.
 
 <p>For instance, under Windows you are normally required to include
 &lt;windows.h&gt; before you include &lt;GL/gl.h&gt;. If you write such a
@@ -378,6 +377,18 @@ style comments.
 <a name="sec5">
 <p><h2>5. Version history</h2>
 
+<p><h3>v2.4.2</h3>
+<ul>
+ <li>Added QNX support</li>
+ <li>Bugfix: [X11] CR/LF was PC style (blame my WinCVS configuration)</li>
+ <li>Bugfix: [X11] If a fullscreen window loses focus, it is properly
+     iconified</li>
+ <li>Bugfix: [X11] When a GLFW window is closed, input focus is properly
+     released</li>
+ <li>Bugfix: [AmigaOS] glfwGetWindowParam now returns proper values for
+     all parameters (except for ACCELERATED)</li>
+</ul>
+
 <p><h3>v2.4.1</h3>
 <ul>
  <li>Added AmigaOS support (preliminary)</li>
@@ -387,7 +398,6 @@ style comments.
  <li>Bugfix: [X11] GLFW should now compile under IRIX v5.3</li>
  <li>Bugfix: [X11] GLFW should now compile with Kylix</li>
 </ul>
-
 
 <p><h3>v2.4</h3>
 <ul>
@@ -414,7 +424,6 @@ style comments.
      compilers (e.g. .NET) - Thanks Tim Little!</li>
 </ul>
 
-
 <p><h3>v2.3.2</h3>
 <ul>
  <li>Removed the silly limitation of 100 threads (the thread information
@@ -427,7 +436,6 @@ style comments.
      and 'make x11-gcc' should now really force GCC)</li>
 </ul>
 
-
 <p><h3>v2.3.1</h3>
 <ul>
  <li>[X11] A minimalist configuration script was added that solves the
@@ -435,7 +443,6 @@ style comments.
      into one template Makefile (well, one for GLFW, and one for the
      examples)</li>
 </ul>
-
 
 <p><h3>v2.3</h3>
 <ul>
@@ -454,7 +461,6 @@ style comments.
      know if you have any related problems).</li>
 </ul>
 
-
 <p><h3>v2.2.3</h3>
 <ul>
  <li>Bugfix: Checking for GL_SGIS_generate_mipmap is more robust</li>
@@ -468,7 +474,6 @@ style comments.
      pong3d should work on 16-bit displays).</li>
 </ul>
 
-
 <p><h3>v2.2.2</h3>
 <ul>
  <li>Bugfix: [Win32] Windows did not always get focus (this was a tough
@@ -478,12 +483,10 @@ style comments.
  <li>Bugfix: [X11] Linux joystick Y axis positions were reversed</li>
 </ul>
 
-
 <p><h3>v2.2.1</h3>
 <ul>
  <li>[X11] Added joystick support for Linux</li>
 </ul>
-
 
 <p><h3>v2.2</h3>
 <ul>
@@ -512,7 +515,6 @@ style comments.
  <li>Bugfix: [X11] glfwGetDesktopMode and glfwGetVideoModes no longer give
      segmentation faults if no X server is available</li>
 </ul>
-
 
 <p><h3>v2.1</h3>
 <ul>
