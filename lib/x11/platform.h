@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.7 2004-02-25 22:26:44 marcus256 Exp $
+// $Id: platform.h,v 1.8 2004-03-07 21:12:09 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -198,7 +198,7 @@ struct _GLFWwin_struct {
 
     // Platform specific window resources
     Window      Win;             // Window
-    Display     *Dpy;            // Display
+    int         Scrn;            // Screen ID
     XVisualInfo *VI;             // Visual
     GLXContext  CX;              // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
@@ -256,6 +256,17 @@ GLFWGLOBAL struct {
     XF86VidModeModeInfo OldMode;
 #endif
 } _glfwFS;
+
+
+//------------------------------------------------------------------------
+// Display info
+//------------------------------------------------------------------------
+GLFWGLOBAL struct {
+    Display     *Dpy;
+    int         NumScreens;
+    int         DefaultScreen;
+    int         Has_XF86VidMode;
+} _glfwDisplay;
 
 
 //------------------------------------------------------------------------
@@ -383,9 +394,9 @@ GLFWGLOBAL struct {
 void _glfwInitTimer( void );
 
 // Fullscreen support
-int  _glfwGetClosestVideoMode( int *w, int *h );
-void _glfwSetVideoModeMODE( int mode );
-void _glfwSetVideoMode( int *w, int *h );
+int  _glfwGetClosestVideoMode( int scrn, int *w, int *h );
+void _glfwSetVideoModeMODE( int scrn, int mode );
+void _glfwSetVideoMode( int scrn, int *w, int *h );
 
 // Cursor handling
 Cursor _glfwCreateNULLCursor( Display *display, Window root );
