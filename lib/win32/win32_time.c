@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.8 2004-02-14 20:59:29 marcus256 Exp $
+// $Id: win32_time.c,v 1.9 2004-04-05 20:29:59 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -43,6 +43,7 @@
 // by GLFW when compiling with Borland.
 //************************************************************************
 
+// TODO: Add support for OpenWatcom and Pelles C inline assembly!!
 
 
 // We use the __i386 define later in the code. Check if there are any
