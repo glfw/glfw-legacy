@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        glfw.h
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.8 2004-02-25 22:04:24 marcus256 Exp $
+// $Id: glfw.h,v 1.9 2004-02-29 20:37:46 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -174,8 +174,8 @@ extern "C" {
 //========================================================================
 
 #define GLFW_VERSION_MAJOR    2
-#define GLFW_VERSION_MINOR    4
-#define GLFW_VERSION_REVISION 2
+#define GLFW_VERSION_MINOR    5
+#define GLFW_VERSION_REVISION 0
 
 
 //========================================================================
