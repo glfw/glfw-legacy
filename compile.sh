@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-09-04 19:56:16 $
-# $Revision: 1.9 $
+# $Date: 2003-09-04 20:04:05 $
+# $Revision: 1.10 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -183,41 +183,36 @@ else
   echo "$config_script: failed program was:" >&5
   cat conftest.c >&5
 fi
-if [ "x$has_pthread" = xno ]; then
-  LIBS="$LIBS_OLD"
-fi
 
 # Try -pthread (e.g. FreeBSD)
-LIBS_OLD="$LIBS"
-LIBS="$LIBS -pthread"
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_pthread=yes
-else
-  echo "$config_script: failed program was:" >&5
-  cat conftest.c >&5
-fi
 if [ "x$has_pthread" = xno ]; then
-  LIBS="$LIBS_OLD"
+  LIBS="$LIBS_OLD -pthread"
+  if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_pthread=yes
+  else
+    echo "$config_script: failed program was:" >&5
+    cat conftest.c >&5
+  fi
 fi
 
 # Try -lsocket (e.g. QNX)
-LIBS_OLD="$LIBS"
-LIBS="$LIBS -lsocket"
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_pthread=yes
-else
-  echo "$config_script: failed program was:" >&5
-  cat conftest.c >&5
-fi
 if [ "x$has_pthread" = xno ]; then
-  LIBS="$LIBS_OLD"
+  LIBS="$LIBS_OLD -lsocket"
+  if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_pthread=yes
+  else
+    echo "$config_script: failed program was:" >&5
+    cat conftest.c >&5
+  fi
 fi
 
 echo " pthread support: ""$has_pthread" 1>&6
 if [ "x$has_pthread" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_PTHREAD"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_PTHREAD"
+else
+  LIBS="$LIBS_OLD"
 fi
 echo " " 1>&6
 
@@ -251,8 +246,8 @@ rm -f conftest*
 
 echo " XFree86 VidMode extension: ""$has_xf86vm" 1>&6
 if [ "x$has_xf86vm" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
-   LIBS="$LIBS -lXxf86vm -lXext"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
+  LIBS="$LIBS -lXxf86vm -lXext"
 fi
 echo " " 1>&6
 
@@ -321,13 +316,13 @@ echo " glXGetProcAddress extension:    ""$has_glXGetProcAddress" 1>&6
 echo " glXGetProcAddressARB extension: ""$has_glXGetProcAddressARB" 1>&6
 echo " glXGetProcAddressEXT extension: ""$has_glXGetProcAddressEXT" 1>&6
 if [ "x$has_glXGetProcAddress" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
 fi
 if [ "x$has_glXGetProcAddressARB" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
 fi
 if [ "x$has_glXGetProcAddressEXT" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
 fi
 echo " " 1>&6
 
@@ -372,7 +367,7 @@ rm -f conftest*
 
 echo " dlopen support: ""$has_dlopen" 1>&6
 if [ "x$has_dlopen" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_DLOPEN"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_DLOPEN"
 fi
 echo " " 1>&6
 
@@ -405,7 +400,7 @@ rm -f conftest*
 
 echo " sysconf support: ""$has_sysconf" 1>&6
 if [ "x$has_sysconf" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCONF"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCONF"
 fi
 echo " " 1>&6
 
@@ -434,7 +429,7 @@ rm -f conftest*
 
 echo " sysctl support: ""$has_sysctl" 1>&6
 if [ "x$has_sysctl" = xyes ]; then
-   CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCTL"
+  CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCTL"
 fi
 echo " " 1>&6
 
