@@ -2,11 +2,11 @@
 // GLFW - An OpenGL framework
 // File:        x11_glext.c
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_glext.c,v 1.4 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_glext.c,v 1.5 2005-01-23 12:02:28 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -47,7 +47,19 @@
 
 int _glfwPlatformExtensionSupported( const char *extension )
 {
-    // There are no glX specific ways to check for extensions
+    const char *extensions;
+
+    // Get list of GLX extensions
+    extensions = glXQueryExtensionsString( _glfwDisplay.Dpy,
+                                           _glfwWin.Scrn );
+    if( extensions != NULL )
+    {
+        if( _glfwStringInExtensionString( extension, extensions ) )
+        {
+            return GL_TRUE;
+        }
+    }
+
     return GL_FALSE;
 }
 
