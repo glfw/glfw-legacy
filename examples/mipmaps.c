@@ -2,10 +2,12 @@
 // This is a small test application for GLFW.
 // The program shows texture loading with mipmap generation and trilienar
 // filtering.
+// Note: For OpenGL 1.0 compability, we do not use texture objects (this
+// is no issue, since we only have one texture).
 //========================================================================
 
 /************************************************************************
- * $Id: mipmaps.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ * $Id: mipmaps.c,v 1.3 2004-02-25 22:36:32 marcus256 Exp $
  ************************************************************************/
 
 #include <stdio.h>
@@ -21,7 +23,6 @@ int main( void )
     int     width, height, running, frames, x, y;
     double  t, t0, fps;
     char    titlestr[ 200 ];
-    GLuint  texid;
 
     // Initialise GLFW
     glfwInit();
@@ -38,10 +39,6 @@ int main( void )
 
     // Disable vertical sync (on cards that support it)
     glfwSwapInterval( 0 );
-
-    // Get and select a texture object ID
-    glGenTextures( 1, &texid );
-    glBindTexture( GL_TEXTURE_2D, texid );
 
     // Load texture from file, and build all mipmap levels. The
     // texture is automatically uploaded to texture memory.
@@ -107,7 +104,6 @@ int main( void )
 
         // Draw a textured quad
         glRotatef( 0.05*(GLfloat)x + (GLfloat)t*5.0f, 0.0f, 1.0f, 0.0f );
-        glBindTexture( GL_TEXTURE_2D, texid );
         glBegin( GL_QUADS );
           glTexCoord2f( -20.0f,  20.0f );
           glVertex3f( -50.0f, 0.0f, -50.0f );
