@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.13 2003-11-08 12:55:08 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.14 2003-11-12 17:57:08 elmindreda Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -91,7 +91,7 @@ Windows compilers, a Win32 DLL will also be compiled.
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
   <li>VBCC for AmigaOS</li>
-  <li>Apple SDK (GCC) for Mac OS X</li>
+  <li>Apple Developer Tools (GCC) for Mac OS X</li>
 </ol>
 
 <p>If your compiler/system is not in the list, you will have to create new
@@ -168,6 +168,15 @@ been implemented, but there are still some things missing (e.g. hiding the
 mouse cursor in windowed mode, iconification handling etc).
 
 
+<p><br><h3>2.5 Note for Mac OS X users</h3>
+
+<p>To compile GLFW for Mac OS X, you will need to have installed the BSD
+subsystem and the Developer Tools, which can be found on your Mac OS X
+CD:s. When they are installed, simply open Terminal and go to the
+<b>lib/macosx</b> directory. From there, you can build the library by running
+make with the appropriate makefile, i.e. <b>make -f Makefile.macosx.gcc</b>.
+
+
 <!----------------------------------------------------------------------->
 <p><hr>
 <!----------------------------------------------------------------------->
@@ -222,11 +231,24 @@ to the <b>GL</b> directory of your compiler's include directory (where
 gl.h, glu.h etc. are located).
 
 
-<!--
 <p><br><h3>3.4 Mac OS X</h3>
 
-<p><i><b>*** Some words here Keith?? ***</b></i>.
--->
+<p>After compiling GLFW, a file named <b>libglfw.a</b> should have
+appeared in the <b>lib/macosx</b> directory. This is the GLFW static
+library, which should be copied to an appropriate <b>lib</b> directory,
+preferrably <b>/usr/local/lib</b>. Note that you must run <b>ranlib</b>
+on the library after it has been copied, in order for it to be usable, i.e.
+
+<p>&nbsp;&nbsp;<b>sudo mkdir -p /usr/local/lib</b>
+<p>&nbsp;&nbsp;<b>sudo cp libglfw.a /usr/local/lib</b>
+<p>&nbsp;&nbsp;<b>sudo ranlib /usr/local/lib/libglfw.a</b>
+
+<p>You should also copy the GLFW include file, <b>include/GL/glfw.h</b>,
+to the <b>GL</b> directory of an appropriate <b>include</b> directory,
+preferrably <b>/usr/local/include</b>, i.e.:
+
+<p>&nbsp;&nbsp;<b>sudo mkdir -p /usr/local/include/GL</b>
+<p>&nbsp;&nbsp;<b>sudo cp glfw.h /usr/local/include/GL</b>
 
 
 <!----------------------------------------------------------------------->
@@ -391,11 +413,26 @@ which compiler and CPU you use).
 style comments.
 
 
-<!--
 <p><br><h4>4.2.5 Mac OS X static library</h4>
 
-<p><i><b>*** Some words here Keith?? ***</b></i>.
--->
+<p>When compiling and linking a program under AmigaOS that uses GLFW, you
+must also link with the following frameworks: <b>Carbon.framework</b>,
+<b>AGL.framework</b> and <b>OpenGL.framework</b>.
+
+<p>If you are using an IDE, such as Project Builder or Xcode, you simply add
+these frameworks to your project. If, however, you are building your program
+from the command line, you will need to add the frameworks to your command
+line using the Apple gcc <b>-framework</b> switch, i.e.:
+
+<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -framework Carbon -framework AGL -framework OpenGL</b>
+
+<p>Note that you do not add the extension to a framework when adding it from
+the command line.
+
+<p>These frameworks contain all GL and GLU functions, so there is no need to
+add additional libraries or frameworks when using GLU functionality. Also note
+that even though your machine may have Unix-style GL libraries, they are for
+use with the X server, and will <i>not</i> work with the Carbon version of GLFW.
 
 
 <!----------------------------------------------------------------------->
