@@ -4,7 +4,7 @@
 # To compile the test files using this makefile, run:
 #  make -f Makefile.macosx.gcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.macosx.gcc,v 1.3 2003-02-03 20:59:10 onesadcookie Exp $
+# $Id: Makefile.macosx.gcc,v 1.4 2003-02-04 20:52:19 onesadcookie Exp $
 ##########################################################################
 
 # Compiler settings
@@ -30,64 +30,64 @@ all: Triangle.app/Contents/MacOS/GLFWApplication \
 
 # Rule for triangle
 Triangle.app/Contents/MacOS/GLFWApplication: triangle.c
-	./MakeBundle.sh Triangle
+	/bin/sh MakeBundle.sh Triangle
 	$(CC) $(CFLAGS) triangle.c $(LFLAGS) -o Triangle.app/Contents/MacOS/GLFWApplication
 
 # Rule for listmodes
 ListModes.app/Contents/MacOS/GLFWApplication: listmodes.c
-	./MakeBundle.sh ListModes
+	/bin/sh MakeBundle.sh ListModes
 	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o ListModes.app/Contents/MacOS/GLFWApplication
 
 # Rule for mthello
 MTHello.app/Contents/MacOS/GLFWApplication: mthello.c
-	./MakeBundle.sh MTHello
+	/bin/sh MakeBundle.sh MTHello
 	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o MTHello.app/Contents/MacOS/GLFWApplication
 
 # Rule for pong3d
 Pong3D.app/Contents/MacOS/GLFWApplication: pong3d.c
-	./MakeBundle.sh Pong3D
+	/bin/sh MakeBundle.sh Pong3D
 	cp pong3d_*.tga Pong3D.app/Contents/Resources/
 	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o Pong3D.app/Contents/MacOS/GLFWApplication
 
 # Rule for mtbench
 MTBench.app/Contents/MacOS/GLFWApplication: mtbench.c
-	./MakeBundle.sh MTBench
+	/bin/sh MakeBundle.sh MTBench
 	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o MTBench.app/Contents/MacOS/GLFWApplication
 
 # Rule for particles
 Particles.app/Contents/MacOS/GLFWApplication: particles.c
-	./MakeBundle.sh Particles
+	/bin/sh MakeBundle.sh Particles
 	$(CC) $(CFLAGS) particles.c $(LFLAGS) -o Particles.app/Contents/MacOS/GLFWApplication
 
 # Rule for splitview
 SplitView.app/Contents/MacOS/GLFWApplication: splitview.c
-	./MakeBundle.sh SplitView
+	/bin/sh MakeBundle.sh SplitView
 	$(CC) $(CFLAGS) splitview.c $(LFLAGS) -o SplitView.app/Contents/MacOS/GLFWApplication
 
 # Rule for mipmaps
 Mipmaps.app/Contents/MacOS/GLFWApplication: mipmaps.c
-	./MakeBundle.sh Mipmaps
+	/bin/sh MakeBundle.sh Mipmaps
 	cp mipmaps.tga Mipmaps.app/Contents/Resources/
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o Mipmaps.app/Contents/MacOS/GLFWApplication
 
 # Rule for keytest
 KeyTest.app/Contents/MacOS/GLFWApplication: keytest.c
-	./MakeBundle.sh KeyTest
+	/bin/sh MakeBundle.sh KeyTest
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o KeyTest.app/Contents/MacOS/GLFWApplication
 
 # Rule for gears
 Gears.app/Contents/MacOS/GLFWApplication: gears.c
-	./MakeBundle.sh Gears
+	/bin/sh MakeBundle.sh Gears
 	$(CC) $(CFLAGS) gears.c $(LFLAGS) -o Gears.app/Contents/MacOS/GLFWApplication
 
 # Rule for boing
 Boing.app/Contents/MacOS/GLFWApplication: boing.c
-	./MakeBundle.sh Boing
+	/bin/sh MakeBundle.sh Boing
 	$(CC) $(CFLAGS) boing.c $(LFLAGS) -o Boing.app/Contents/MacOS/GLFWApplication
 
 # Rule for wave
 Wave.app/Contents/MacOS/GLFWApplication: wave.c
-	./MakeBundle.sh Wave
+	/bin/sh MakeBundle.sh Wave
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o Wave.app/Contents/MacOS/GLFWApplication
 
 
