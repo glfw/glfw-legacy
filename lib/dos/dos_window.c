@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+// $Id: dos_window.c,v 1.2 2003-11-26 20:50:42 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -44,7 +44,7 @@
 // _glfwTranslateChar() - Translates a DOS key code to Unicode
 //========================================================================
 
-static int _glfwTranslateChar( struct IntuiMessage *msg )
+static int _glfwTranslateChar( int keycode )
 {
     // TODO
     return 'A';
@@ -55,7 +55,7 @@ static int _glfwTranslateChar( struct IntuiMessage *msg )
 // _glfwTranslateKey() - Translates a DOS key code to internal coding
 //========================================================================
 
-static int _glfwTranslateKey( struct IntuiMessage *msg )
+static int _glfwTranslateKey( int keycode )
 {
     // TODO
     return 'A';
