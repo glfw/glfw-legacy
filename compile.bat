@@ -1,21 +1,25 @@
 @echo off
 
 REM **********************************************************************
-REM ** This is a "helper" script for the top-level Makefile for GLFW.   **
-REM ** It was introduced to eliminate incompability issues between      **
-REM ** Windows NT, 2000 and 9x (it's easier to make a script/makefile   **
-REM ** run accross different unices from different vendors than to make **
-REM ** a script/makefile run across different Windows versions from     **
-REM ** Microsoft!).                                                     **
-REM **                                                                  **
-REM ** This batch file has been tested under Windows 98, NT 4.0 and 2k. **
-REM **                                                                  **
-REM ** Usage 1: compile MAKEPROG SUFFIX                                 **
-REM **                                                                  **
-REM ** MAKEPROG  Name of make program (e.g. make or nmake)              **
-REM ** SUFFIX    Makefile suffix for a specific compiler (e.g. msvc)    **
-REM **                                                                  **
-REM ** Usage 2: compile CLEAN                                           **
+REM * compile.bat - MS Windows compilation batch file
+REM * $Date: 2003-02-02 20:51:40 $
+REM * $Revision: 1.2 $
+REM *
+REM * This is a "helper" script for the top-level Makefile for GLFW.
+REM * It was introduced to eliminate incompability issues between
+REM * Windows NT, 2000 and 9x (it's easier to make a script/makefile
+REM * run accross different unices from different vendors than to make
+REM * a script/makefile run across different Windows versions from
+REM * Microsoft!).
+REM *
+REM * This batch file has been tested under Windows 98, NT 4.0 and 2k.
+REM *
+REM * Usage 1: compile MAKEPROG SUFFIX
+REM *
+REM * MAKEPROG  Name of make program (e.g. make or nmake)
+REM * SUFFIX    Makefile suffix for a specific compiler (e.g. msvc)
+REM *
+REM * Usage 2: compile CLEAN
 REM **********************************************************************
 
 REM ----------------------------------------------------------------------

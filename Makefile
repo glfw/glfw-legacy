@@ -1,6 +1,7 @@
 ###########################################################################
-# GLFW v2.4
-# Copyright (c) Marcus Geelnard
+# GLFW top level Makefile
+# $Date: 2003-02-02 20:51:40 $
+# $Revision: 1.2 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example

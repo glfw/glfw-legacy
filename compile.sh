@@ -1,6 +1,10 @@
 #!/bin/sh
 
 ##########################################################################
+# compile.sh - Unix/X11 configuration script
+# $Date: 2003-02-02 20:51:40 $
+# $Revision: 1.2 $
+#
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
 #
