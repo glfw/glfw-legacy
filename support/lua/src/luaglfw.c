@@ -30,11 +30,10 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.1 2004-07-13 19:41:04 marcus256 Exp $
+// $Id: luaglfw.c,v 1.2 2004-07-13 20:04:56 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
-#include <luaGL.h>
 #include <GL/glfw.h>
 #include "luaglfw.h"
 
@@ -59,7 +58,7 @@ static int badArgs( lua_State *L, int n, char const *name )
     if( lua_gettop(L) < n )
     {
         lua_settop( L, 0 );
-        lua_pushstring( L, "Bad arguments passed to function:" );
+        lua_pushstring( L, "Bad arguments passed to function: " );
         lua_pushstring( L, name );
         lua_concat( L, 2 );
         lua_error( L );
@@ -1142,7 +1141,6 @@ int luaopen_glfw( lua_State *L )
 {
     // Store GLFW functions in "glfw" table
     luaL_openlib( L, "glfw", glfwlib, 0 );
-    luaopen_opengl( L );
 
     // Store GLFW constants in "glfw" table
     lua_pushstring( L, "glfw" );
