@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        internal.h
 // Platform:    Any
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: internal.h,v 1.4 2004-02-14 20:50:10 marcus256 Exp $
+// $Id: internal.h,v 1.5 2004-04-09 11:25:34 marcus256 Exp $
 //========================================================================
 
 #ifndef _internal_h_
@@ -150,6 +150,7 @@ void _glfwPlatformSwapBuffers( void );
 void _glfwPlatformSwapInterval( int interval );
 void _glfwPlatformRefreshWindowParams( void );
 void _glfwPlatformPollEvents( void );
+void _glfwPlatformWaitEvents( void );
 void _glfwPlatformHideMouseCursor( void );
 void _glfwPlatformShowMouseCursor( void );
 void _glfwPlatformSetMouseCursorPos( int x, int y );
