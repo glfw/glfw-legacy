@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.2 2003-02-02 21:06:22 marcus256 Exp $
+// $Id: platform.h,v 1.3 2003-07-12 21:18:56 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -185,6 +185,8 @@ struct _GLFWwin_struct {
     HINSTANCE Instance;        // Instance of the application
     int       ModeID;          // Mode ID for fullscreen mode
     HHOOK     KeyboardHook;    // Keyboard hook handle
+    DWORD     dwStyle;         // Window styles used for window creation
+    DWORD     dwExStyle;       // --"--
 
     // Platform specific extensions (context specific)
     WGLSWAPINTERVALEXT_T SwapInterval;
