@@ -10,7 +10,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ * $Id: splitview.c,v 1.3 2004-04-09 11:32:37 marcus256 Exp $
  ************************************************************************/
 
 #include <GL/glfw.h>
@@ -451,6 +451,9 @@ int main( void )
     // Enable mouse cursor (only needed for fullscreen mode)
     glfwEnable( GLFW_MOUSE_CURSOR );
 
+    // Disable automatic event polling
+    glfwDisable( GLFW_AUTO_POLL_EVENTS );
+
     // Set callback functions
     glfwSetWindowSizeCallback( WindowSizeFun );
     glfwSetMousePosCallback( MousePosFun );
@@ -464,6 +467,9 @@ int main( void )
 
         // Swap buffers
         glfwSwapBuffers();
+
+        // Wait for new events
+        glfwWaitEvents();
 
         // Check if the ESC key was pressed or the window was closed
         running = !glfwGetKey( GLFW_KEY_ESC ) &&
