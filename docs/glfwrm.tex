@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
-% API Version: 2.4
-% $Id: glfwrm.tex,v 1.13 2004-01-31 20:15:15 marcus256 Exp $
+% API Version: 2.5
+% $Id: glfwrm.tex,v 1.14 2004-02-28 12:50:15 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -9,7 +9,7 @@
 
 % Document title and API version
 \newcommand{\glfwdoctype}[1][0]{Reference Manual}
-\newcommand{\glfwapiver}[1][0]{2.4}
+\newcommand{\glfwapiver}[1][0]{2.5}
 
 % Common document settings and macros
 \input{glfwdoc.sty}
@@ -121,6 +121,7 @@ Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
 Mac OS\textsuperscript{\textregistered} X.
 \item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Only a subset of the \GLFW\ API is supported for this platform at the time of writing.}
 \item AmigaOS\footnotemark[\value{footnote}]
+\item MS--DOS\textsuperscript{\textregistered}\footnotemark[\value{footnote}]
 \end{itemize}
 
 
@@ -1630,8 +1631,9 @@ images from files.
 \begin{center}
 \begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
 \textbf{Name}          & \textbf{Description}\\ \hline
-GLFW\_NO\_RESCALE\_BIT & Do not rescale image to closest $2^m\times2^n$ resolution.\\ \hline
+GLFW\_NO\_RESCALE\_BIT & Do not rescale image to closest $2^m\times2^n$ resolution\\ \hline
 GLFW\_ORIGIN\_UL\_BIT  & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
+GLFW\_ALPHA\_MAP\_BIT  & Treat single component images as alpha maps rather than luminance maps\\ \hline
 \end{tabular}
 \end{center}
 \caption{Flags for \textbf{glfwReadImage}}
@@ -1682,7 +1684,7 @@ typedef struct {
 
 \textit{Width} and \textit{Height} give the dimensions of the image.
 \textit{Format} specifies an \OpenGL\ pixel format, which can be
-GL\_LUMINANCE (for gray scale images), GL\_RGB or GL\_RGBA.
+GL\_LUMINANCE or GL\_ALPHA (for gray scale images), GL\_RGB or GL\_RGBA.
 \textit{BytesPerPixel} specifies the number of bytes per pixel.
 \textit{Data} is a pointer to the actual pixel data.
 
@@ -1695,6 +1697,10 @@ Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
 \textit{img->Data} is the lower left corner of the image. If the flag
 GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
 corner.
+
+For single component images (i.e. gray scale), \textit{Format} is set
+to GL\_ALPHA if the flag GLFW\_ALPHA\_MAP\_BIT flag is set, otherwise
+\textit{Format} is set to GL\_LUMINANCE.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1704,6 +1710,12 @@ corner.
 
 Paletted images are translated into true color or true color + alpha pixel
 formats.
+
+Since \OpenGL~1.0 does not support single component alpha maps, gray scale
+images are converted to RGBA format under \OpenGL~1.0 when the
+GLFW\_ALPHA\_MAP\_BIT flag is set, where the red, green and blue components
+are set to 255 (=1.0), and the alpha component is copied from the alpha
+map.
 \end{refnotes}
 
 
@@ -1739,8 +1751,9 @@ once the image is not needed anymore.
 \begin{center}
 \begin{tabular}{|l|p{9.0cm}|} \hline \raggedright
 \textbf{Name}             & \textbf{Description}\\ \hline
-GLFW\_BUILD\_MIPMAPS\_BIT & Automatically build and upload all mipmap levels.\\ \hline
+GLFW\_BUILD\_MIPMAPS\_BIT & Automatically build and upload all mipmap levels\\ \hline
 GLFW\_ORIGIN\_UL\_BIT     & Specifies that the origin of the \textit{loaded} image should be in the upper left corner (default is the lower left corner)\\ \hline
+GLFW\_ALPHA\_MAP\_BIT     & Treat single component images as alpha maps rather than luminance maps\\ \hline
 \end{tabular}
 \end{center}
 \caption{Flags for \textbf{glfwLoadTexture2D}}
@@ -1783,6 +1796,10 @@ Unless the flag GLFW\_ORIGIN\_UL\_BIT is set, the first pixel in
 \textit{img->Data} is the lower left corner of the image. If the flag
 GLFW\_ORIGIN\_UL\_BIT is set, however, the first pixel is the upper left
 corner.
+
+For single component images (i.e. gray scale), the texture is uploaded as
+an alpha mask if the flag GLFW\_ALPHA\_MAP\_BIT flag is set, otherwise
+it is uploaded as a luminance texture.
 \end{refdescription}
 
 \begin{refnotes}
