@@ -2,7 +2,9 @@
 # Makefile for GLFW test programs on Windows using MS VC++ 6.x.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  nmake -f Makefile.msvc
+#  nmake -f Makefile.win32.msvc
+#-------------------------------------------------------------------------
+# $Id: Makefile.win32.msvc,v 1.2 2003-02-02 22:28:25 marcus256 Exp $
 ##########################################################################
 
 # Compiler settings

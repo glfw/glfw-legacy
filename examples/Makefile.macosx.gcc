@@ -2,7 +2,9 @@
 # Makefile for GLFW test programs on Windows using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  make -f Makefile.macosx
+#  make -f Makefile.macosx.gcc
+#-------------------------------------------------------------------------
+# $Id: Makefile.macosx.gcc,v 1.2 2003-02-02 22:28:25 marcus256 Exp $
 ##########################################################################
 
 # Compiler settings
@@ -10,7 +12,7 @@ CC     = gcc
 CFLAGS = -I../include
 
 # Linker settings
-LFLAGS = -L../lib/macosx/ -lglfw -framework OpenGL -framework Cocoa
+LFLAGS = -L../lib/macosx/ -lglfw -framework OpenGL -framework Carbon
 
 # Default: Build all tests
 all: triangle listmodes mthello pong3d mtbench \

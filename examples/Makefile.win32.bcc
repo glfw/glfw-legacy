@@ -3,7 +3,9 @@
 # Compiler 5.x.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  make -f Makefile.bcc
+#  make -f Makefile.win32.bcc
+#-------------------------------------------------------------------------
+# $Id: Makefile.win32.bcc,v 1.2 2003-02-02 22:28:25 marcus256 Exp $
 ##########################################################################
 
 # Compiler settings
