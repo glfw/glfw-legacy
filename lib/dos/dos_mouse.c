@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.1 2003-12-07 22:23:59 marcus256 Exp $
+// $Id: dos_mouse.c,v 1.2 2003-12-08 21:56:11 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -44,14 +44,10 @@
 //
 //========================================================================
 
+//========================================================================
+// Definitions
+//========================================================================
 
-static int g_mouse = 0;
-static int old_mouse_x, old_mouse_y, old_mouse_z, old_mouse_b;
-
-
-/*
- * misc C definitions
- */
 #define SQR(x)       ((x) * (x))
 
 #define MIN(x,y)     (((x) < (y)) ? (x) : (y))
@@ -62,11 +58,6 @@ typedef void (*VFUNC) (void);
 typedef void (*PFUNC) (void *);
 typedef void (*MFUNC) (int x, int y, int z, int b);
 
-
-
-
-
-
 #define PC_CUTE_WHEEL 1 /* CuteMouse WheelAPI */
 
 #define MOUSE_STACK_SIZE 16384
@@ -74,69 +65,76 @@ typedef void (*MFUNC) (int x, int y, int z, int b);
 #define CLEAR_MICKEYS() \
         do { \
             __asm __volatile ("movw $0xb, %%ax; int $0x33":::"%eax", "%ecx", "%edx"); \
-            ox = oy = 0; \
+            _glfwMouseDrv.ox = _glfwMouseDrv.oy = 0; \
         } while (0)
 
-extern void mouse_wrap (void);
-extern int mouse_wrap_end[];
 
-static MFUNC mouse_func;
-static long mouse_callback;
-static __dpmi_regs mouse_regs;
-
-static volatile struct {
-       volatile int x, y, z, b;
-} pc_mouse;
-
-static int minx = 0;
-static int maxx = 319;
-static int miny = 0;
-static int maxy = 199;
-static int minz = 0;
-static int maxz = 255;
-
-static int sx = 2;
-static int sy = 2;
-
-static int emulat3 = 0;
-
-static int ox, oy;
+// Assembler function prototypes
+extern void mouse_wrap( void );
+extern int  *mouse_wrap_end;
 
 
-static void mouse (__dpmi_regs *r)
+//========================================================================
+// Global variables
+//========================================================================
+
+static struct {
+    volatile int x, y, z, b;
+    volatile int old_x, old_y, old_z, old_b;
+    MFUNC        mouse_func;
+    long         mouse_callback;
+    __dpmi_regs  mouse_regs;
+
+    int minx, maxx, miny, maxy, minz, maxz;
+    int sx, sy;
+    int emulat3;
+    int ox, oy;
+
+} _glfwMouseDrv;
+
+static int _glfwMouseInstalled = 0;
+
+
+
+//************************************************************************
+//**** Mouse Interrupt ***************************************************
+//************************************************************************
+
+static void mouse( __dpmi_regs *r )
 {
- int nx = (signed short)r->x.si / sx;
- int ny = (signed short)r->x.di / sy;
- int dx = nx - ox;
- int dy = ny - oy;
+ int nx = (signed short)r->x.si / _glfwMouseDrv.sx;
+ int ny = (signed short)r->x.di / _glfwMouseDrv.sy;
+ int dx = nx - _glfwMouseDrv.ox;
+ int dy = ny - _glfwMouseDrv.oy;
 #if PC_CUTE_WHEEL
  int dz = (signed char)r->h.bh;
 #endif
- ox = nx;
- oy = ny;
+ _glfwMouseDrv.ox = nx;
+ _glfwMouseDrv.oy = ny;
 
- pc_mouse.b = r->h.bl;
- pc_mouse.x = MID(minx, pc_mouse.x + dx, maxx);
- pc_mouse.y = MID(miny, pc_mouse.y + dy, maxy);
+ _glfwMouseDrv.b = r->h.bl;
+ _glfwMouseDrv.x = MID(_glfwMouseDrv.minx, _glfwMouseDrv.x + dx, _glfwMouseDrv.maxx);
+ _glfwMouseDrv.y = MID(_glfwMouseDrv.miny, _glfwMouseDrv.y + dy, _glfwMouseDrv.maxy);
 #if PC_CUTE_WHEEL
- pc_mouse.z = MID(minz, pc_mouse.z + dz, maxz);
+ _glfwMouseDrv.z = MID(_glfwMouseDrv.minz, _glfwMouseDrv.z + dz, _glfwMouseDrv.maxz);
 #endif
 
- if (emulat3) {
-    if ((pc_mouse.b&3)==3) {
-       pc_mouse.b = 4;
+ if (_glfwMouseDrv.emulat3) {
+    if ((_glfwMouseDrv.b&3)==3) {
+       _glfwMouseDrv.b = 4;
     }
  }
 
- if (mouse_func) {
-    mouse_func(pc_mouse.x, pc_mouse.y, pc_mouse.z, pc_mouse.b);
+ if (_glfwMouseDrv.mouse_func) {
+    _glfwMouseDrv.mouse_func(_glfwMouseDrv.x, _glfwMouseDrv.y, _glfwMouseDrv.z, _glfwMouseDrv.b);
  }
 } ENDOFUNC(mouse)
 
 
+
 void pc_remove_mouse (void)
 {
- if (mouse_callback) {
+ if (_glfwMouseDrv.mouse_callback) {
 //    pc_clexit(pc_remove_mouse);
     __asm("\n\
                 movl    %%edx, %%ecx    \n\
@@ -146,20 +144,22 @@ void pc_remove_mouse (void)
                 movw    $0x000c, %%ax   \n\
                 xorl    %%ecx, %%ecx    \n\
                 int     $0x33           \n\
-    "::"d"(mouse_callback):"%eax", "%ecx");
+    "::"d"(_glfwMouseDrv.mouse_callback):"%eax", "%ecx");
 
-    mouse_callback = 0;
+    _glfwMouseDrv.mouse_callback = 0;
 
     free((void *)(mouse_wrap_end[0] - MOUSE_STACK_SIZE));
  }
 }
+
+
 
 int pc_install_mouse (void)
 {
  int buttons;
 
  /* fail if already call-backed */
- if (mouse_callback) {
+ if (_glfwMouseDrv.mouse_callback) {
     return 0;
  }
 
@@ -175,21 +175,6 @@ int pc_install_mouse (void)
  }
 
  /* lock wrapper */
- LOCKDATA(mouse_func);
- LOCKDATA(mouse_callback);
- LOCKDATA(mouse_regs);
- LOCKDATA(pc_mouse);
- LOCKDATA(minx);
- LOCKDATA(maxx);
- LOCKDATA(miny);
- LOCKDATA(maxy);
- LOCKDATA(minz);
- LOCKDATA(maxz);
- LOCKDATA(sx);
- LOCKDATA(sy);
- LOCKDATA(emulat3);
- LOCKDATA(ox);
- LOCKDATA(oy);
  LOCKFUNC(mouse);
  LOCKFUNC(mouse_wrap);
 
@@ -220,10 +205,10 @@ int pc_install_mouse (void)
                 movw    %%dx, %%cx      \n\
                 movl    %%ecx, %0       \n\
         0:                              \n\
- ":"=g"(mouse_callback)
-  :"S" (mouse_wrap), "D"(&mouse_regs)
+ ":"=g"(_glfwMouseDrv.mouse_callback)
+  :"S" (mouse_wrap), "D"(&_glfwMouseDrv.mouse_regs)
   :"%eax", "%ecx", "%edx");
- if (!mouse_callback) {
+ if (!_glfwMouseDrv.mouse_callback) {
     free((void *)mouse_wrap_end[0]);
     return 0;
  }
@@ -232,77 +217,23 @@ int pc_install_mouse (void)
  mouse_wrap_end[0] += MOUSE_STACK_SIZE;
 
  /* install the handler */
- mouse_regs.x.ax = 0x000c;
+ _glfwMouseDrv.mouse_regs.x.ax = 0x000c;
 #if PC_CUTE_WHEEL
- mouse_regs.x.cx = 0x7f | 0x80;
+ _glfwMouseDrv.mouse_regs.x.cx = 0x7f | 0x80;
 #else
- mouse_regs.x.cx = 0x7f;
+ _glfwMouseDrv.mouse_regs.x.cx = 0x7f;
 #endif
- mouse_regs.x.dx = mouse_callback&0xffff;
- mouse_regs.x.es = mouse_callback>>16;
- __dpmi_int(0x33, &mouse_regs);
+ _glfwMouseDrv.mouse_regs.x.dx = _glfwMouseDrv.mouse_callback&0xffff;
+ _glfwMouseDrv.mouse_regs.x.es = _glfwMouseDrv.mouse_callback>>16;
+ __dpmi_int(0x33, &_glfwMouseDrv.mouse_regs);
 
  CLEAR_MICKEYS();
 
- emulat3 = buttons<3;
+ _glfwMouseDrv.emulat3 = buttons<3;
 // pc_atexit(pc_remove_mouse);
  return buttons;
 }
 
-/*
-MFUNC pc_install_mouse_handler (MFUNC handler)
-{
- MFUNC old;
-
- if (!mouse_callback && !pc_install_mouse()) {
-    return NULL;
- }
-
- old = mouse_func;
- mouse_func = handler;
- return old;
-}
-*/
-
-void pc_mouse_area (int x1, int y1, int x2, int y2)
-{
- minx = x1;
- maxx = x2;
- miny = y1;
- maxy = y2;
-}
-
-void pc_mouse_speed (int xspeed, int yspeed)
-{
- DISABLE();
-
- sx = MAX(1, xspeed);
- sy = MAX(1, yspeed);
-
- ENABLE();
-}
-
-int pc_query_mouse (int *x, int *y, int *z)
-{
- *x = pc_mouse.x;
- *y = pc_mouse.y;
- *z = pc_mouse.z;
- return pc_mouse.b;
-}
-
-/*
-void pc_warp_mouse (int x, int y)
-{
- CLEAR_MICKEYS();
-
- pc_mouse.x = MID(minx, x, maxx);
- pc_mouse.y = MID(miny, y, maxy);
-
- if (mouse_func) {
-    mouse_func(pc_mouse.x, pc_mouse.y, pc_mouse.z, pc_mouse.b);
- }
-}
-*/
 
 /* Hack alert:
  * `mouse_wrap_end' actually holds the
@@ -351,40 +282,40 @@ void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
     struct mousebutton_event *mousebutton = &event.MouseButton;
 
     /* mouse moved? */
-    if( (mouse_x != old_mouse_x) || (mouse_y != old_mouse_y) )
+    if( (mouse_x != _glfwMouseDrv.old_x) || (mouse_y != _glfwMouseDrv.old_y) )
     {
         mousemove->Type = _GLFW_DOS_MOUSE_MOVE_EVENT;
-        mousemove->DeltaX = mouse_x - old_mouse_x;
-        mousemove->DeltaY = mouse_y - old_mouse_y;
+        mousemove->DeltaX = mouse_x - _glfwMouseDrv.old_x;
+        mousemove->DeltaY = mouse_y - _glfwMouseDrv.old_y;
         _glfwPostDOSEvent( &event );
 
-        old_mouse_x = mouse_x;
-        old_mouse_y = mouse_y;
+        _glfwMouseDrv.old_x = mouse_x;
+        _glfwMouseDrv.old_y = mouse_y;
     }
 
     /* mouse wheel moved? */
-    if( mouse_z != old_mouse_z )
+    if( mouse_z != _glfwMouseDrv.old_z )
     {
         mousewheel->Type = _GLFW_DOS_MOUSE_WHEEL_EVENT;
-        mousewheel->WheelDelta = mouse_z - old_mouse_z;
+        mousewheel->WheelDelta = mouse_z - _glfwMouseDrv.old_z;
         _glfwPostDOSEvent( &event );
 
-        old_mouse_z = mouse_z;
+        _glfwMouseDrv.old_z = mouse_z;
     }
 
     /* button state changed? */
-    if( mouse_b != old_mouse_b )
+    if( mouse_b != _glfwMouseDrv.old_b )
     {
         mousebutton->Type = _GLFW_DOS_MOUSE_BUTTON_EVENT;
 
         // Left mouse button changed?
-        if( (old_mouse_b & 1) && !(mouse_b & 1) )
+        if( (_glfwMouseDrv.old_b & 1) && !(mouse_b & 1) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_LEFT;
             mousebutton->Action = GLFW_RELEASE;
             _glfwPostDOSEvent( &event );
         }
-        else if( !(old_mouse_b & 1) && (mouse_b & 1) )
+        else if( !(_glfwMouseDrv.old_b & 1) && (mouse_b & 1) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_LEFT;
             mousebutton->Action = GLFW_PRESS;
@@ -392,13 +323,13 @@ void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
         }
 
         // Right mouse button changed?
-        if( (old_mouse_b & 2) && !(mouse_b & 2) )
+        if( (_glfwMouseDrv.old_b & 2) && !(mouse_b & 2) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_RIGHT;
             mousebutton->Action = GLFW_RELEASE;
             _glfwPostDOSEvent( &event );
         }
-        else if( !(old_mouse_b & 2) && (mouse_b & 2) )
+        else if( !(_glfwMouseDrv.old_b & 2) && (mouse_b & 2) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_RIGHT;
             mousebutton->Action = GLFW_PRESS;
@@ -406,20 +337,20 @@ void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
         }
 
         // Middle mouse button changed?
-        if( (old_mouse_b & 4) && !(mouse_b & 4) )
+        if( (_glfwMouseDrv.old_b & 4) && !(mouse_b & 4) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_MIDDLE;
             mousebutton->Action = GLFW_RELEASE;
             _glfwPostDOSEvent( &event );
         }
-        else if( !(old_mouse_b & 4) && (mouse_b & 4) )
+        else if( !(_glfwMouseDrv.old_b & 4) && (mouse_b & 4) )
         {
             mousebutton->Button = GLFW_MOUSE_BUTTON_MIDDLE;
             mousebutton->Action = GLFW_PRESS;
             _glfwPostDOSEvent( &event );
         }
 
-        old_mouse_b = mouse_b;
+        _glfwMouseDrv.old_b = mouse_b;
     }
 } ENDOFUNC(_glfwMouseInt)
 
@@ -435,30 +366,33 @@ void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
 
 int _glfwInitMouse( void )
 {
-    if( g_mouse )
+    if( _glfwMouseInstalled )
     {
         return 0;
     }
 
     // Lock data and functions
-    LOCKDATA( old_mouse_x );
-    LOCKDATA( old_mouse_y );
-    LOCKDATA( old_mouse_z );
-    LOCKDATA( old_mouse_b );
+    LOCKDATA( _glfwMouseDrv );
     LOCKFUNC( _glfwMouseInt );
 
-    // Set mouse interrupt handler
-    mouse_func = _glfwMouseInt;
+    // Setup initial mouse driver settings
+    _glfwMouseDrv.minx       = 0;
+    _glfwMouseDrv.maxx       = _glfwWin.Width-1;
+    _glfwMouseDrv.miny       = 0;
+    _glfwMouseDrv.maxy       = _glfwWin.Height-1;
+    _glfwMouseDrv.minz       = 0;
+    _glfwMouseDrv.maxz       = 255;
+    _glfwMouseDrv.sx         = 2;
+    _glfwMouseDrv.sy         = 2;
+    _glfwMouseDrv.emulat3    = 0;
+    _glfwMouseDrv.mouse_func = _glfwMouseInt;
 
     // Install mouse driver
-    g_mouse = pc_install_mouse();
-    if( !g_mouse )
+    _glfwMouseInstalled = pc_install_mouse();
+    if( !_glfwMouseInstalled )
     {
         return 0;
     }
-
-    // Set mouse window area
-    pc_mouse_area( 0, 0, _glfwWin.Width-1, _glfwWin.Height-1 );
 
     return 1;
 }
@@ -470,9 +404,9 @@ int _glfwInitMouse( void )
 
 void _glfwTerminateMouse( void )
 {
-    if( g_mouse )
+    if( _glfwMouseInstalled )
     {
         pc_remove_mouse();
-        g_mouse = 0;
+        _glfwMouseInstalled = 0;
     }
 }
