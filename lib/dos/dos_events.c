@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        dos_events.c
 // Platform:    DOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_events.c,v 1.2 2004-02-14 20:53:15 marcus256 Exp $
+// $Id: dos_events.c,v 1.3 2004-04-09 11:08:12 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -55,6 +55,25 @@ static int _glfwEventsInitialized = 0;
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+//========================================================================
+// _glfwWaitNextEvent() - Wait for an event to appear in the event FIFO
+// NOTE: Must not be called from an interrupt routine
+//========================================================================
+
+void _glfwWaitNextEvent( void )
+{
+    int noevent = 1;
+
+    while( noevent )
+    {
+        DISABLE();
+        noevent = ( _glfwEventBuffer.Start == _glfwEventBuffer.End );
+        ENABLE();
+        // Wait for an interrupt to happen?...
+    }
+}
+
 
 //========================================================================
 // _glfwGetNextEvent() - Get an event from the event FIFO

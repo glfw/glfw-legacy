@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    DOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.8 2004-02-25 22:25:57 marcus256 Exp $
+// $Id: platform.h,v 1.9 2004-04-09 11:08:12 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -305,6 +305,7 @@ void _glfwTerminateTimer( void );
 // Events
 int  _glfwInitEvents( void );
 void _glfwTerminateEvents( void );
+void _glfwWaitNextEvent( void );
 int  _glfwGetNextEvent( _GLFWdosevent *event );
 void _glfwPostDOSEvent( _GLFWdosevent *event );
 
