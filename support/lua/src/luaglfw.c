@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.4 2004-07-16 19:33:18 marcus256 Exp $
+// $Id: luaglfw.c,v 1.5 2004-07-18 20:19:20 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -538,6 +538,85 @@ static int glfw_SetMouseWheel( lua_State *L )
 
 
 //========================================================================
+// Joystick input
+//========================================================================
+
+static int glfw_GetJoystickParam( lua_State *L )
+{
+    lua_Number joy, param;
+    int        res;
+    if( badArgs( L, 2, "GetJoystickParam" ) ) return 0;
+    joy   = lua_tonumber( L, 1 );
+    param = lua_tonumber( L, 2 );
+    lua_settop( L, 0 );
+    res = glfwGetJoystickParam( (int)joy, (int)param );
+    lua_pushnumber( L, (lua_Number)res );
+    return 1;
+}
+
+#define LUAGLFW_MAX_JOY_AXES 256
+
+static int glfw_GetJoystickPos( lua_State *L )
+{
+    int        joy, numaxes, res, i;
+    float      pos[ LUAGLFW_MAX_JOY_AXES ];
+
+    // Get arguments
+    if( badArgs( L, 2, "GetJoystickPos" ) ) return 0;
+    joy     = (int)lua_tonumber( L, 1 );
+    numaxes = (int)lua_tonumber( L, 2 );
+    lua_settop( L, 0 );
+    if( numaxes < 1 ) return 0;
+    if( numaxes > LUAGLFW_MAX_JOY_AXES ) numaxes = LUAGLFW_MAX_JOY_AXES;
+
+    // Call GLFW funciton
+    res = glfwGetJoystickPos( joy, pos, numaxes );
+
+    // Create result array
+    lua_newtable( L );
+    for( i = 0; i < res; ++ i )
+    {
+        lua_pushnumber( L, (lua_Number)(i+1) );
+        lua_pushnumber( L, pos[ i ] );
+        lua_rawset( L, -3 );
+    }
+
+    return 1;
+}
+
+#define LUAGLFW_MAX_JOY_BUTTONS 256
+
+static int glfw_GetJoystickButtons( lua_State *L )
+{
+    int        joy, numbuttons, res, i;
+    float      buttons[ LUAGLFW_MAX_JOY_AXES ];
+
+    // Get arguments
+    if( badArgs( L, 2, "GetJoystickButtons" ) ) return 0;
+    joy        = (int)lua_tonumber( L, 1 );
+    numbuttons = (int)lua_tonumber( L, 2 );
+    lua_settop( L, 0 );
+    if( numbuttons < 1 ) return 0;
+    if( numbuttons > LUAGLFW_MAX_JOY_BUTTONS )
+        numbuttons = LUAGLFW_MAX_JOY_BUTTONS;
+
+    // Call GLFW funciton
+    res = glfwGetJoystickButtons( joy, buttons, numbuttons );
+
+    // Create result array
+    lua_newtable( L );
+    for( i = 0; i < res; ++ i )
+    {
+        lua_pushnumber( L, (lua_Number)(i+1) );
+        lua_pushnumber( L, buttons[ i ] );
+        lua_rawset( L, -3 );
+    }
+
+    return 1;
+}
+
+
+//========================================================================
 // Timing
 //========================================================================
 
@@ -572,28 +651,10 @@ static int glfw_Sleep( lua_State *L )
 
 
 //========================================================================
-// Enable/Disable
+// Threading support
 //========================================================================
 
-static int glfw_Enable( lua_State *L )
-{
-    lua_Number param;
-    if ( badArgs( L, 1, "Enable" ) ) return 0;
-    param = lua_tonumber( L, 1 );
-    lua_settop( L, 0 );
-    glfwEnable( (int)param );
-    return 0;
-}
-
-static int glfw_Disable( lua_State *L )
-{
-    lua_Number param;
-    if ( badArgs( L, 1, "Disable" ) ) return 0;
-    param = lua_tonumber( L, 1 );
-    lua_settop( L, 0 );
-    glfwDisable( (int)param );
-    return 0;
-}
+// Disabled - not possible through Lua
 
 
 //========================================================================
@@ -625,6 +686,52 @@ static int glfw_ExtensionSupported( lua_State *L )
     else lua_pushboolean( L, 0 );
     return 1;
 }
+
+
+//========================================================================
+// Enable/Disable
+//========================================================================
+
+static int glfw_Enable( lua_State *L )
+{
+    lua_Number param;
+    if ( badArgs( L, 1, "Enable" ) ) return 0;
+    param = lua_tonumber( L, 1 );
+    lua_settop( L, 0 );
+    glfwEnable( (int)param );
+    return 0;
+}
+
+static int glfw_Disable( lua_State *L )
+{
+    lua_Number param;
+    if ( badArgs( L, 1, "Disable" ) ) return 0;
+    param = lua_tonumber( L, 1 );
+    lua_settop( L, 0 );
+    glfwDisable( (int)param );
+    return 0;
+}
+
+
+//========================================================================
+// Image/texture I/O support
+//========================================================================
+
+static int glfw_ReadImage( lua_State *L )
+{
+    // TODO
+}
+
+static int glfw_FreeImage( lua_State *L )
+{
+    // TODO
+}
+
+static int glfw_LoadTexture2D( lua_State *L )
+{
+    // TODO
+}
+
 
 
 //========================================================================
@@ -933,13 +1040,19 @@ static const luaL_reg glfwlib[] = {
     { "SetMousePos", glfw_SetMousePos },
     { "GetMouseWheel", glfw_GetMouseWheel };
     { "SetMouseWheel", glfw_SetMouseWheel };
+    { "GetJoystickParam", glfw_GetJoystickParam };
+    { "GetJoystickPos", glfw_GetJoystickPos };
+    { "GetJoystickButtons", glfw_GetJoystickButtons };
     { "GetTime", glfw_GetTime },
     { "SetTime", glfw_SetTime },
     { "Sleep", glfw_Sleep },
-    { "Enable", glfw_Enable },
-    { "Disable", glfw_Disable },
     { "GetGLVersion", glfw_GetGLVersion },
     { "ExtensionSupported", glfw_ExtensionSupported },
+    { "Enable", glfw_Enable },
+    { "Disable", glfw_Disable },
+    { "ReadImage", glfw_ReadImage },
+    { "FreeImage", glfw_FreeImage },
+    { "LoadTexture2D", glfw_LoadTexture2D },
     { "SetWindowSizeCallback", glfw_SetWindowSizeCallback },
     { "SetWindowCloseCallback", glfw_SetWindowCloseCallback },
     { "SetWindowPaintCallback", glfw_SetWindowPaintCallback },
