@@ -29,18 +29,16 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.d,v 1.4 2004-04-11 11:40:32 marcus256 Exp $
+// $Id: glfw.d,v 1.5 2004-07-09 20:21:46 marcus256 Exp $
 //========================================================================
 
 import gl, glu;
 
 
-version (Win32) {
-    extern (Windows):
-}
-version (linux) {
-    extern (C):
-}
+version(Win32)
+   extern(Windows):
+else
+   extern(C):
 
 
 //========================================================================
@@ -131,10 +129,20 @@ const int GLFW_KEY_KP_ENTER    = (GLFW_KEY_SPECIAL+62);
 const int GLFW_KEY_LAST        = GLFW_KEY_KP_ENTER;
 
 // Mouse button definitions
-const int GLFW_MOUSE_BUTTON_LEFT    = 0;
-const int GLFW_MOUSE_BUTTON_RIGHT   = 1;
-const int GLFW_MOUSE_BUTTON_MIDDLE  = 2;
-const int GLFW_MOUSE_BUTTON_LAST    = GLFW_MOUSE_BUTTON_MIDDLE;
+const int GLFW_MOUSE_BUTTON_1      = 0;
+const int GLFW_MOUSE_BUTTON_2      = 1;
+const int GLFW_MOUSE_BUTTON_3      = 2;
+const int GLFW_MOUSE_BUTTON_4      = 3;
+const int GLFW_MOUSE_BUTTON_5      = 4;
+const int GLFW_MOUSE_BUTTON_6      = 5;
+const int GLFW_MOUSE_BUTTON_7      = 6;
+const int GLFW_MOUSE_BUTTON_8      = 7;
+const int GLFW_MOUSE_BUTTON_LAST   = GLFW_MOUSE_BUTTON_8;
+
+// Mouse button aliases
+const int GLFW_MOUSE_BUTTON_LEFT   = GLFW_MOUSE_BUTTON_1;
+const int GLFW_MOUSE_BUTTON_RIGHT  = GLFW_MOUSE_BUTTON_2;
+const int GLFW_MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_3;
 
 // Joystick identifiers
 const int GLFW_JOYSTICK_1         = 0;
