@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.4 2003-11-14 22:20:23 marcus256 Exp $
+% $Id: glfwug.tex,v 1.5 2003-11-15 12:06:28 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -38,9 +38,9 @@
 %-------------------------------------------------------------------------
 \chapter*{Summary}
 
-This document is a users guide for the \GLFW\ API. For a detailed
-description of the \GLFW\ API you should refer to the
-\textit{GLFW Reference Manual}.
+This document is a users guide for the \GLFW\ API that gives a practical
+introduction to using \GLFW . For a more detailed description of the
+\GLFW\ API you should refer to the \textit{GLFW Reference Manual}.
 \vspace{10cm}
 
 \large
@@ -211,8 +211,9 @@ void glfwCloseWindow( void )
 %-------------------------------------------------------------------------
 \section{Using Keyboard Input}
 \GLFW\ provides several means for receiving user input, which will be
-discussed in more detail later on in this manual. One of the simplest ways
-of checking for keyboard input is to use the function \textbf{glfwGetKey}:
+discussed in more detail in chapter \ref{par:inputhandling}. One of the
+simplest ways of checking for keyboard input is to use the function
+\textbf{glfwGetKey}:
 
 \begin{lstlisting}
 int glfwGetKey( int key )
@@ -526,11 +527,12 @@ void glfwSwapInterval( int interval )
 
 If \textit{interval} is zero, the swap will take place immediately when
 \textbf{glfwSwapBuffers} is called, without waiting for a vertical retrace
-(also known as ``vsync off''). Otherwise at least interval retraces will
-pass between each buffer swap (also known as ``vsync on''). Using a swap
-interval of zero can be useful for benchmarking purposes, when it is not
-desirable to measure the time it takes to wait for the vertical retrace.
-However, a swap interval of 1 generally gives better visual quality.
+(also known as ``vsync off''). Otherwise at least \textit{interval}
+retraces will pass between each buffer swap (also known as ``vsync on'').
+Using a swap interval of zero can be useful for benchmarking purposes,
+when it is not desirable to measure the time it takes to wait for the
+vertical retrace. However, a swap interval of 1 generally gives better
+visual quality.
 
 It should be noted that not all \OpenGL\ implementations and hardware
 support this function, in which case \textbf{glfwSwapInterval} will have
@@ -590,6 +592,377 @@ void glfwGetDesktopMode( GLFWvidmode *mode )
 The function returns the resolution and color depth of the user desktop in
 the mode structure. Note that the user desktop mode is independent of the
 current video mode if a \GLFW\ fullscreen window has been opened.
+
+
+%-------------------------------------------------------------------------
+% Input Handling
+%-------------------------------------------------------------------------
+\chapter{Input Handling}
+\label{par:inputhandling}
+\thispagestyle{fancy}
+In this chapter you will learn how to use keyboard, mouse and joystick
+input, using either polling or callback functions.
+
+
+%-------------------------------------------------------------------------
+\section{Event Polling}
+The first thing to know about input handling in \GLFW\ is that all
+keyboard and mouse input is collected by checking for input events. This
+has do be done manually by calling either \textbf{glfwPollEvents} or
+\textbf{glfwSwapBuffers} (which implicitly calls \textbf{glfwPollEvents}
+for you). Normally this does not have to be a concern, since
+\textbf{glfwSwapBuffers} is called every frame, which should be often
+enough (about 10-100 times per second for a normal \OpenGL\ application).
+One exception is when rendering is paused, and then the program waits for
+input to begin animation again. In this case \textbf{glfwPollEvents} has
+to be called repeatedly until any new input events arrive.
+
+If it is not desirable that \textbf{glfwPollEvents is} called implicitly
+from \textbf{glfwSwapBuffers}, call \textbf{glfwDisable} with the argument
+GLFW\_AUTO\_POLL\_EVENTS.
+
+Note that event polling is not needed for joystick input, since all
+relevant joystick state is gathered every time a joystick function is
+called.
+
+
+%-------------------------------------------------------------------------
+\section{Keyboard Input}
+\GLFW\ gives three options for getting keyboard input:
+
+\begin{itemize}
+\item Manually polling the state of individual keys.
+\item Automatically receive new key state for any key, using a callback
+      function.
+\item Automatically receive characters, using a callback function.
+\end{itemize}
+
+Depending on what the keyboard input will be used for, either of the
+methods may be more suitable. The main difference between the two last
+options is that while characters are affected by modifier keys (such as
+shift), key state is independent of any modifier keys. Also, special keys
+(such as function keys, cursor keys and modifier keys) are not reported to
+the character callback function.
+
+%-------------------------------------------------------------------------
+\subsection{Key state}
+To check if a key is held down or not at any given moment, use the
+function \textbf{glfwGetKey}:
+
+\begin{lstlisting}
+int glfwGetKey( int key )
+\end{lstlisting}
+
+It queries the current status of individual keyboard keys. The argument
+\textit{key} specifies which key to check, and it can be either an
+uppercase ISO~8859-1 character, or a special key identifier.
+\textbf{glfwGetKey} returns GLFW\_PRESS (or 1) if the key is currently
+held down, or GLFW\_RELEASE (or 0) if the key is not being held down.
+
+In most situations, it may be useful to know if a key has been pressed and
+released between two calls to \textbf{glfwGetKey} (especially if the
+animation is fairly slow, which may allow the user to press and release a
+key between two calls to \textbf{glfwGetKey}). This can be accomplished by
+enabling sticky keys, which is done by calling \textbf{glfwEnable} with
+the argument GLFW\_STICKY\_KEYS, as in the following example:
+
+\begin{lstlisting}
+glfwEnable( GLFW_STICKY_KEYS );
+\end{lstlisting}
+
+When sticky keys are enabled, a key will not be released until it is
+checked with \textbf{glfwGetKey}. To disable sticky keys, call
+\textbf{glfwDisable} witht the argument GLFW\_STICKY\_KEYS. Then all keys
+that are not currently held down will be released, and future key releases
+will take place immediately when the user releases the key, without
+waiting for \textbf{glfwGetKey} to check the key. By default sticky keys
+are disabled.
+
+Sticky keys are often very useful and should be used in most cases where
+\textbf{glfwGetKey} is used. There is however a danger involved with
+enabling sticky keys, and that is that keys that are pressed by the user
+but are not checked with \textbf{glfwGetKey}, may remain ``pressed'' for a
+very long time. A typical situation where this may be dangerous is in a
+program that consists of two or more sections (e.g. a menu section and a
+game section). If the first section enables sticky keys but does not check
+for keys which the second section checks for, there is a potential of
+recording many key presses in the first section that will be detected in
+the second section. To avoid this problem, always disable sticky keys
+before leaving a section of a program.
+
+An alternative to using \textbf{glfwGetKey} is to register a keyboard
+input callback function with \textbf{glfwSetKeyCallback}:
+
+\begin{lstlisting}
+void glfwSetKeyCallback( GLFWkeyfun cbfun )
+\end{lstlisting}
+
+The argument \textit{fun} is a pointer to a callback function. The
+callback function shall take two integer arguments. The first is the key
+identifier, and the second is the new key state, which can be GLFW\_PRESS
+or GLFW\_RELEASE. To unregister a callback function, call
+\textbf{glfwSetKeyCallback} with \textit{fun} = NULL.
+
+A callback function can be useful in some situations. For instance it can
+replace multiple \textbf{glfwGetKey} calls with a switch/case statement.
+
+%-------------------------------------------------------------------------
+\subsection{Character input}
+If the keyboard is to be used as a text input device (e.g. in a user
+dialog) rather than as a set of independent buttons, a character callback
+function is more suitable. To register a character callback function, use
+\textbf{glfwSetCharCallback}:
+
+\begin{lstlisting}
+void glfwSetCharCallback( GLFWcharfun cbfun )
+\end{lstlisting}
+
+The argument \textit{fun} is a pointer to a callback function. The
+callback function shall take two integer arguments. The first is a Unicode
+character code, and the second is  GLFW\_PRESS if the key that generated
+the character was pressed, or GLFW\_RELEASE if it was released. To
+unregister a callback function, call \textbf{glfwSetCharCallback} with
+\textit{fun} = NULL.
+
+The Unicode character set is an international standard for encoding
+characters. It is much more comprehensive than seven or eight bit
+character sets (e.g. US-ASCII and Latin~1), and includes characters for
+most written languages in the world. It should be noted that Unicode
+character codes 0 to 255 are the same as for ISO~8859-1 (Latin~1), so as
+long as a proper range check is performed on the Unicode character code,
+it can be used just as an eight bit Latin~1 character code (which can be
+useful if full Unicode support is not possible).
+
+
+%-------------------------------------------------------------------------
+\subsection{Key repeat}
+By default, \GLFW\ does not report key repeats when a key is held down.
+To activate key repeat, call \textbf{glfwEnable} with the argument
+GLFW\_KEY\_REPEAT:
+
+\begin{lstlisting}
+glfwEnable( GLFW_KEY_REPEAT );
+\end{lstlisting}
+
+This will let a registered key or character callback function receive key
+repeat events when a key is held down.
+
+
+%-------------------------------------------------------------------------
+\subsection{Special system keys}
+On most systems there are some special system keys that are normally not
+intercepted by an application. For instance, under Windows it is possible
+to switch programs by pressing \texttt{ALT+TAB}, which brings up a list of
+running programs to select from. In certain situations it can be desirable
+to prevent such special system keys from interfering with the program.
+With \GLFW\ it is possible to do by calling \textbf{glfwDisable} with the
+argument GLFW\_SYSTEM\_KEYS:
+
+\begin{lstlisting}
+glfwDisable( GLFW_SYSTEM_KEYS );
+\end{lstlisting}
+
+By doing so, most system keys will have no effect and will not interfere
+with your program. System keys can be re-enabled by calling
+\textbf{glfwEnable} with the argument GLFW\_SYSTEM\_KEYS. By default,
+system keys are enabled.
+
+
+%-------------------------------------------------------------------------
+\section{Mouse Input}
+Just like for keyboard input, mouse input can be realized with either
+polling or callback functions.
+
+
+%-------------------------------------------------------------------------
+\subsection{Mouse position}
+To read the mouse position, you can use the function
+\textbf{glfwGetMousePos}:
+
+\begin{lstlisting}
+void glfwGetMousePos( int *x, int *y )
+\end{lstlisting}
+
+The arguments \textit{x} and \textit{y} point to integer variables that
+will be updated with the current absolute mouse position. An alternative
+is to use a callback function instead, which can be set with
+\textbf{glfwSetMousePosCallback}:
+
+\begin{lstlisting}
+void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
+\end{lstlisting}
+
+The function that \textit{fun} points to will be called every time the
+mouse position changes. The first argument to the callback function is
+the mouse x position, and the second argument is the mouse y position.
+
+
+%-------------------------------------------------------------------------
+\subsection{Mouse buttons}
+To query the state of a mouse button, call \textbf{glfwGetMouseButton}:
+
+\begin{lstlisting}
+int glfwGetMouseButton( int button )
+\end{lstlisting}
+
+The argument \textit{button} can be one of the following mouse button
+identifiers: GLFW\_MOUSE\_BUTTON\_LEFT, GLFW\_MOUSE\_BUTTON\_RIGHT or
+GLFW\_MOUSE\_BUTTON\_MIDDLE. \textbf{glfwGetMouseButton} will return
+GLFW\_PRESS (or 1) if the corresponding mouse button is held down,
+otherwise it will return GLFW\_RELEASE (or 0).
+
+Just as it is possible to make keys ``sticky'', it is also possible to
+make mouse buttons appear as held down until the button is checked for
+with \textbf{glfwGetMouseButton}. To enable sticky mouse buttons, call
+\textbf{glfwEnable} with the argument GLFW\_STICKY\_MOUSE\_BUTTONS. To
+disable sticky mouse buttons, call \textbf{glfwDisable} with the same
+argument.
+
+When sticky mouse buttons are enabled, a mouse button will not be released
+until it is checked with \textbf{glfwGetMouseButton}. To disable sticky
+mouse buttons, call \textbf{glfwDisable} with the argument
+GLFW\_STICKY\_MOUSE\_BUTTONS. Then all mouse buttons that are not
+currently held down will be released, and future mouse button releases
+will take place immediately when the user releases the mouse button,
+without waiting for \textbf{glfwGetMouseButton} to check for the mouse
+button. By default sticky mouse buttons are disabled.
+
+There is also a callback function for mouse button activities, which can
+be set with \textbf{glfwSetMouseButtonCallback}:
+
+\begin{lstlisting}
+void glfwSetMouseButtonCallback( GLFWmousebuttonfun fun )
+\end{lstlisting}
+
+The argument \textit{fun} specifies a function that will be called
+whenever a mouse button is pressed or released, or NULL to unregister a
+callback function. The first argument to the callback function is a mouse
+button identifier, and the second is either GLFW\_PRESS or GLFW\_RELEASE,
+depending on the new state of the corresponding mouse button.
+
+
+%-------------------------------------------------------------------------
+\subsection{Mouse wheel}
+Some mice have a mouse wheel, which can be thought of as a third mouse
+axis. To get the position of the mouse wheel, call
+\textbf{glfwGetMouseWheel}:
+
+\begin{lstlisting}
+int glfwGetMouseWheel( void )
+\end{lstlisting}
+
+The function returns an integer that represents the position of the mouse
+wheel. When the user turns the wheel, the wheel position will increase or
+decrease.
+
+It is also possible to register a callback function for mouse wheel events
+with the \textbf{glfwSetMouseWheelCallback} function:
+
+\begin{lstlisting}
+void glfwSetMouseWheelCallback( GLFWmousewheelfun fun )
+\end{lstlisting}
+
+The argument \textit{fun} specifies a function that will be called
+whenever the mouse wheel is moved, or NULL to unregister a callback
+function. The argument to the callback function is the position of the
+mouse wheel.
+
+
+%-------------------------------------------------------------------------
+\subsection{Hiding the mouse cursor}
+It is possible to hide the mouse cursor with the function call:
+
+\begin{lstlisting}
+glfwDisable( GLFW_MOUSE_CURSOR );
+\end{lstlisting}
+
+Hiding the mouse cursor has three effects:
+
+\begin{enumerate}
+\item The cursor becomes invisible.
+\item The cursor is guaranteed to be confined to the window.
+\item Mouse coordinates are not limited to the window size.
+\end{enumerate}
+
+To show the mouse cursor again, call \textbf{glfwEnable} with the
+argument GLFW\_MOUSE\_CURSOR:
+
+\begin{lstlisting}
+glfwEnable( GLFW_MOUSE_CURSOR );
+\end{lstlisting}
+
+By default the mouse cursor is hidden if a window is opened in fullscreen
+mode, otherwise it is not hidden.
+
+
+%-------------------------------------------------------------------------
+\section{Joystick Input}
+\GLFW\ has support for up to sixteen joysticks, and an infinite\footnote{%
+There are of course actual limitations posed by the underlying hardware,
+drivers and operation system.} number of axes and buttons per joystick.
+Unlike keyboard and mouse input, joystick input does not need an opened
+window, and \textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} does not
+have to be called in order for joystick state to be updated.
+
+
+%-------------------------------------------------------------------------
+\subsection{Joystick capabilities}
+First, it is often necessary to determine if a joystick is connected, and
+what its capabilities are. To get this information the function
+\textbf{glfwGetJoystickParam} can be used:
+
+\begin{lstlisting}
+int glfwGetJoystickParam( int joy, int param )
+\end{lstlisting}
+
+The \textit{joy} argument specifies which joystick to retrieve the
+parameter from, and it should be GLFW\_JOYSTICK\_\textit{n}, where
+\textit{n} is in the range 1 to 16. The \textit{param} argument specifies
+which parameter to retrieve. To determine if a joystick is connected,
+\textit{param} should be GLFW\_PRESENT, which will cause the function to
+return GL\_TRUE if the joystick is connected, or GL\_FALSE if it is not.
+To determine the number of axes or buttons that are supported by the
+joystick, \textit{param} should be GLFW\_JOYSTICK\_AXES or
+GLFW\_JOYSTICK\_BUTTONS, respectively.
+
+
+%-------------------------------------------------------------------------
+\subsection{Joystick position}
+To get the current axis positions of the joystick, the
+\textbf{glfwGetJoystickPos} is used:
+
+\begin{lstlisting}
+int glfwGetJoystickPos( int joy, float *pos, int numaxes )
+\end{lstlisting}
+
+As with \textbf{glfwGetJoystickParam}, the \textit{joy} argument
+specifies which joystick to retrieve information from. The
+\textit{numaxes} argument specifies how many axes to return, and the
+\textit{pos} argument specifies an array in which all the axis positions
+are stored. The function returns the actual number of axes that were
+returned, which could be less than \textit{numaxes} if the joystick does
+not support all the requested axes, or if the joystick is not connected.
+
+For instance, to get the position of the first two axes (the X and Y axes)
+of joystick 1, the following code can be used:
+
+\begin{lstlisting}
+float   Position[ 2 ];
+
+glfwGetJoystickPos( GLFW_JOYSTICK_1, Position, 2 );
+\end{lstlisting}
+
+After this call, the first element of the \textit{Position} array will
+hold the X axis position of the joystick, and the second element will hold
+the Y axis position. In this example we do not use the information about
+how many axes were really returned.
+
+The position of an axis can be in the range -1.0 to 1.0, where positive
+values represent right, forward or up directions, while negative values
+represent left, back or down directions. If a requested axis is not
+supported by the joystick, the corresponding array element will be set
+to zero. The same goes for the situation when the joystick is not
+connected (all axes are treated as unsupported).
 
 
 %-------------------------------------------------------------------------
