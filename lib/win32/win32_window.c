@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.3 2003-07-12 21:17:49 marcus256 Exp $
+// $Id: win32_window.c,v 1.4 2003-08-30 19:46:32 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -741,7 +741,9 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
                           PFD_SUPPORT_OPENGL | // Support OpenGL
                           PFD_DOUBLEBUFFER;    // Double buffered window
     pfd.iPixelType      = PFD_TYPE_RGBA;       // Request an RGBA format
-    pfd.cColorBits      = 0;                   // Color bits ignored
+    pfd.cColorBits      = (BYTE) (redbits+
+                                  greenbits+
+                                  bluebits);   // Color bits (ex. alpha)
     pfd.cRedBits        = (BYTE) redbits;      // Red bits
     pfd.cRedShift       = 0;                   // Red shift ignored
     pfd.cGreenBits      = (BYTE) greenbits;    // Green bits
@@ -750,7 +752,10 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     pfd.cBlueShift      = 0;                   // Blue shift ignored
     pfd.cAlphaBits      = (BYTE) alphabits;    // Alpha bits
     pfd.cAlphaShift     = 0;                   // Alpha shift ignored
-    pfd.cAccumBits      = 0;                   // Accum. bits ignored
+    pfd.cAccumBits      = (BYTE) (accumredbits+
+                                  accumgreenbits+
+                                  accumbluebits+
+                                  accumalphabits); // Accum. bits
     pfd.cAccumRedBits   = (BYTE) accumredbits;   // Accum. red bits
     pfd.cAccumGreenBits = (BYTE) accumgreenbits; // Accum. green bits
     pfd.cAccumBlueBits  = (BYTE) accumbluebits;  // Accum. blue bits
@@ -776,6 +781,21 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     // Find a matching pixel format
     if( !(PixelFormat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd )) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Get actual pixel format description
+    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat,
+            sizeof(PIXELFORMATDESCRIPTOR), &pfd) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // "stereo" is a strict requirement
+    if( stereo && !(pfd.dwFlags & PFD_STEREO) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
