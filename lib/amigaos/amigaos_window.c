@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.2 2003-02-02 22:20:54 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.3 2003-05-04 21:18:05 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -599,30 +599,45 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    int r, g, b, refresh;
+    int       refresh;
+    GLint     x;
+    GLboolean b;
 
-    // This function is not proerly implemented yet. Most of this
-    // information should be gathered from the OpenGL/MESA implementation,
-    // not the ModeID (except refresh rate)
-
-    // Get ModeID information
-    _glfwGetModeIDInfo( _glfwWin.ModeID, NULL, NULL, &r, &g, &b,
-                        &refresh );
+    // This function is not proerly implemented yet. We use OpenGL for
+    // getting framebuffer format information - we should use some
+    // alternate interface (such as glX under the X Window System), but
+    // StormMesa does not seem to provide this.
 
     // Fill out information
     _glfwWin.Accelerated    = GL_TRUE;
-    _glfwWin.RedBits        = r;
-    _glfwWin.GreenBits      = g;
-    _glfwWin.BlueBits       = b;
-    _glfwWin.AlphaBits      = 0;
-    _glfwWin.DepthBits      = 16;
-    _glfwWin.StencilBits    = 0;
-    _glfwWin.AccumRedBits   = 0;
-    _glfwWin.AccumGreenBits = 0;
-    _glfwWin.AccumBlueBits  = 0;
-    _glfwWin.AccumAlphaBits = 0;
-    _glfwWin.AuxBuffers     = 0;
-    _glfwWin.Stereo         = 0;
+    glGetIntegerv( GL_RED_BITS, &x );
+    _glfwWin.RedBits        = x;
+    glGetIntegerv( GL_GREEN_BITS, &x );
+    _glfwWin.GreenBits      = x;
+    glGetIntegerv( GL_BLUE_BITS, &x );
+    _glfwWin.BlueBits       = x;
+    glGetIntegerv( GL_ALPHA_BITS, &x );
+    _glfwWin.AlphaBits      = x;
+    glGetIntegerv( GL_DEPTH_BITS, &x );
+    _glfwWin.DepthBits      = x;
+    glGetIntegerv( GL_STENCIL_BITS, &x );
+    _glfwWin.StencilBits    = x;
+    glGetIntegerv( GL_ACCUM_RED_BITS, &x );
+    _glfwWin.AccumRedBits   = x;
+    glGetIntegerv( GL_ACCUM_GREEN_BITS, &x );
+    _glfwWin.AccumGreenBits = x;
+    glGetIntegerv( GL_ACCUM_BLUE_BITS, &x );
+    _glfwWin.AccumBlueBits  = x;
+    glGetIntegerv( GL_ACCUM_ALPHA_BITS, &x );
+    _glfwWin.AccumAlphaBits = x;
+    glGetIntegerv( GL_AUX_BUFFERS, &x );
+    _glfwWin.AuxBuffers     = x;
+    glGetBooleanv( GL_AUX_BUFFERS, &b );
+    _glfwWin.Stereo         = b ? GLFW_TRUE : GLFW_FALSE;
+
+    // Get ModeID information (refresh rate)
+    _glfwGetModeIDInfo( _glfwWin.ModeID, NULL, NULL, NULL, NULL, NULL,
+                        &refresh );
     _glfwWin.RefreshRate    = refresh;
 }
 
