@@ -4,7 +4,7 @@
 # To compile GLFW using this makefile, run:
 #  pomake /F Makefile.win32.pellesc
 #-------------------------------------------------------------------------
-# $Id: Makefile.win32.pellesc,v 1.2 2004-04-07 21:00:50 marcus256 Exp $
+# $Id: Makefile.win32.pellesc,v 1.3 2004-04-12 18:54:47 marcus256 Exp $
 ##########################################################################
 
 ##########################################################################
@@ -24,11 +24,11 @@ VERMINOR = 5
 # Compiler settings
 ##########################################################################
 CC         = cc
-CFLAGS     = /c /Os /I. /I.. /I..\..\include\GL /Ze
+CFLAGS     = /c /Os /I. /I.. /Ze
 CFLAGS_DLL = $(CFLAGS) /DGLFW_BUILD_DLL
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED     = /c /Ot /I. /I.. /I..\..\include\GL /Ze
+CFLAGS_SPEED     = /c /Ot /I. /I.. /Ze
 CFLAGS_SPEED_DLL = $(CFLAGS_SPEED) /DGLFW_BUILD_DLL
 
 
