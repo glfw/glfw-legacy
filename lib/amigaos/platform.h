@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platforms:   AmigaOS, MorphOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.8 2004-04-10 12:06:11 marcus256 Exp $
+// $Id: platform.h,v 1.9 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -131,6 +131,7 @@ struct _GLFWwin_struct {
     // User callback functions
     GLFWwindowsizefun  WindowSizeCallback;
     GLFWwindowclosefun WindowCloseCallback;
+    GLFWwindowpaintfun WindowPaintCallback;
     GLFWmousebuttonfun MouseButtonCallback;
     GLFWmouseposfun    MousePosCallback;
     GLFWmousewheelfun  MouseWheelCallback;

@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.8 2004-04-10 12:07:35 marcus256 Exp $
+// $Id: win32_window.c,v 1.9 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -574,6 +574,15 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                                              HIWORD(lParam) );
             }
             return 0;
+
+        // Was the window contents damaged?
+        case WM_PAINT:
+            // Call user callback function
+            if( _glfwWin.WindowPaintCallback )
+            {
+                _glfwWin.WindowPaintCallback();
+            }
+            break;
 
         default:
             break;

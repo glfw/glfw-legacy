@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.9 2004-04-10 12:06:11 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.10 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -258,6 +258,15 @@ static int _glfwProcessEvents( void )
             }
             break;
 
+        // Was the window contents damaged?
+        case IDCMP_REFRESHWINDOW:
+            // Call user callback function
+            if( _glfwWin.WindowPaintCallback )
+            {
+                _glfwWin.WindowPaintCallback();
+            }
+            break;
+
         // Was the window closed?
         case IDCMP_CLOSEWINDOW:
             win_closed = GL_TRUE;
@@ -348,7 +357,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     tagList[ tagNR   ].ti_Tag  = WA_Top;
     tagList[ tagNR++ ].ti_Data = 0;
     tagList[ tagNR   ].ti_Tag  = WA_IDCMP;
-    tagList[ tagNR++ ].ti_Data = IDCMP_CLOSEWINDOW |
+    tagList[ tagNR++ ].ti_Data = IDCMP_REFRESHWINDOW |
+                                 IDCMP_CLOSEWINDOW |
                                  IDCMP_NEWSIZE |
                                  IDCMP_ACTIVEWINDOW |
                                  IDCMP_INACTIVEWINDOW |

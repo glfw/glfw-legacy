@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.9 2004-04-10 12:05:53 marcus256 Exp $
+// $Id: window.c,v 1.10 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -222,6 +222,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     // Unregister all callback functions
     _glfwWin.WindowSizeCallback  = NULL;
     _glfwWin.WindowCloseCallback = NULL;
+    _glfwWin.WindowPaintCallback = NULL;
     _glfwWin.KeyCallback         = NULL;
     _glfwWin.CharCallback        = NULL;
     _glfwWin.MousePosCallback    = NULL;

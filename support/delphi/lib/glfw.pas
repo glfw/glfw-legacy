@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.4 2004-04-10 12:08:54 marcus256 Exp $
+// $Id: glfw.pas,v 1.5 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -241,6 +241,7 @@ type
   // Function pointer types
   GLFWwindowsizefun  = procedure(Width, Height: Integer); stdcall;
   GLFWwindowclosefun = function: Integer; stdcall;
+  GLFWwindowpaintfun = procedure; stdcall;
   GLFWmousebuttonfun = procedure(Button, Action: Integer); stdcall;
   GLFWmouseposfun    = procedure(X, Y: Integer); stdcall;
   GLFWmousewheelfun  = procedure(Pos: Integer); stdcall;
@@ -273,6 +274,7 @@ procedure glfwSwapInterval(interval: Integer); stdcall;
 function  glfwGetWindowParam(Param: Integer): Integer; stdcall;
 procedure glfwSetWindowSizeCallback(cbfun: GLFWwindowsizefun); stdcall;
 procedure glfwSetWindowCloseCallback(cbfun: GLFWwindowclosefun); stdcall;
+procedure glfwSetWindowPaintCallback(cbfun: GLFWwindowpaintfun); stdcall;
 
 // Video mode functions
 function  gfwGetVideoModes(list: PGLFWvidmode; maxcount: Integer): Integer; stdcall;
@@ -358,6 +360,7 @@ procedure glfwSwapInterval; external DLLNAME;
 function  glfwGetWindowParam; external DLLNAME;
 procedure glfwSetWindowSizeCallback; external DLLNAME;
 procedure glfwSetWindowCloseCallback; external DLLNAME;
+procedure glfwSetWindowPaintCallback; external DLLNAME;
 
 // Video mode functions
 function  gfwGetVideoModes; external DLLNAME;

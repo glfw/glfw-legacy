@@ -31,7 +31,7 @@ Attribute VB_Name = "GLFW"
 ' Marcus Geelnard
 ' marcus.geelnard at home.se
 '------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.4 2004-04-10 12:09:47 marcus256 Exp $
+' $Id: glfw.bas,v 1.5 2004-04-11 11:40:33 marcus256 Exp $
 '========================================================================
 
 '========================================================================
@@ -253,6 +253,7 @@ Public Declare Sub glfwSwapInterval Lib "glfw.dll" (ByVal interval As Long)
 Public Declare Function glfwGetWindowParam Lib "glfw.dll" (ByVal param As Long) As Long
 Public Declare Sub glfwSetWindowSizeCallback Lib "glfw.dll" (ByVal cbfun As Long)
 Public Declare Sub glfwSetWindowCloseCallback Lib "glfw.dll" (ByVal cbfun As Long)
+Public Declare Sub glfwSetWindowPaintCallback Lib "glfw.dll" (ByVal cbfun As Long)
 
 ' Video mode functions
 Public Declare Function glfwGetVideoModes Lib "glfw.dll" (list() As GLFWvidmode, ByVal maxcount As Long) As Long

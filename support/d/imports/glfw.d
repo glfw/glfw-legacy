@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.d,v 1.3 2004-04-10 12:08:20 marcus256 Exp $
+// $Id: glfw.d,v 1.4 2004-04-11 11:40:32 marcus256 Exp $
 //========================================================================
 
 import gl, glu;
@@ -245,6 +245,7 @@ alias void* GLFWcond;
 // Function pointer types
 typedef void (* GLFWwindowsizefun)(int, int);
 typedef int  (* GLFWwindowclosefun)(void);
+typedef void (* GLFWwindowpaintfun)(void);
 typedef void (* GLFWmousebuttonfun)(int, int);
 typedef void (* GLFWmouseposfun)(int, int);
 typedef void (* GLFWmousewheelfun)(int);
@@ -277,6 +278,7 @@ void  glfwSwapInterval( int interval );
 int   glfwGetWindowParam( int param );
 void  glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun );
 void  glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun );
+void  glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun );
 
 // Video mode functions
 int   glfwGetVideoModes( GLFWvidmode *list, int maxcount );

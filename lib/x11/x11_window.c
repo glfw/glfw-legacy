@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.11 2004-04-10 12:07:59 marcus256 Exp $
+// $Id: x11_window.c,v 1.12 2004-04-11 11:40:31 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -804,6 +804,15 @@ static int _glfwGetNextEvent( void )
             if( _glfwWin.Fullscreen )
             {
                 _glfwPlatformIconifyWindow();
+            }
+            break;
+
+        // Was the window contents damaged?
+        case Expose:
+            // Call user callback function
+            if( _glfwWin.WindowPaintCallback )
+            {
+                _glfwWin.WindowPaintCallback();
             }
             break;
 

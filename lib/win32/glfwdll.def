@@ -48,6 +48,7 @@ glfwSetMouseWheel
 glfwSetMouseWheelCallback
 glfwSetTime
 glfwSetWindowCloseCallback
+glfwSetWindowPaintCallback
 glfwSetWindowPos
 glfwSetWindowSize
 glfwSetWindowSizeCallback
