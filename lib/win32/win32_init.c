@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_init.c,v 1.5 2004-02-14 20:59:29 marcus256 Exp $
+// $Id: win32_init.c,v 1.6 2004-04-05 19:41:56 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -97,10 +97,10 @@ static int _glfwInitLibraries( void )
             GetProcAddress( _glfwLibs.winmm, "joyGetPosEx" );
         _glfwLibs.timeGetTime    = (TIMEGETTIME_T)
             GetProcAddress( _glfwLibs.winmm, "timeGetTime" );
-        if( _glfwLibs.joyGetDevCaps == NULL ||
-            _glfwLibs.joyGetPos     == NULL ||
-            _glfwLibs.joyGetPosEx   == NULL ||
-            _glfwLibs.timeGetTime   == NULL )
+        if( _glfwLibs.joyGetDevCapsA == NULL ||
+            _glfwLibs.joyGetPos      == NULL ||
+            _glfwLibs.joyGetPosEx    == NULL ||
+            _glfwLibs.timeGetTime    == NULL )
         {
             FreeLibrary( _glfwLibs.winmm );
             _glfwLibs.winmm = NULL;
