@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.20 2004-01-06 08:58:55 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.21 2004-01-31 20:59:10 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -37,7 +37,7 @@
  <li><a href="#sec3">Installing GLFW</li></a>
  <li><a href="#sec4">Using GLFW</li></a>
  <li><a href="#sec5">Version history</li></a>
- <li><a href="#sec6">Files in the GLFW source code distribution</li></a>
+ <li><a href="#sec6">Directory structure of the GLFW distribution</li></a>
  <li><a href="#sec7">The author</li></a>
  <li><a href="#sec8">Acknowledgements</li></a>
 </ol>
@@ -93,6 +93,7 @@ Windows compilers, a Win32 DLL will also be compiled.
   <li>Geek Gadgets (GCC) for AmigaOS</li>
   <li>VBCC for AmigaOS</li>
   <li>Apple Developer Tools (GCC) for Mac OS X</li>
+  <li>DJGPP (GCC) for DOS</li>
 </ol>
 
 <p>If your compiler/system is not in the list, you will have to create new
@@ -198,6 +199,15 @@ subsystem and the Developer Tools, which can be found on your Mac OS X
 CD:s. When they are installed, simply open Terminal and go to the
 <b>lib/macosx</b> directory. From there, you can build the library by running
 make with the appropriate makefile, i.e. <b>make -f Makefile.macosx.gcc</b>.
+
+
+<p><br><h3>2.8 Note for DOS users</h3>
+
+<p>The current port for DOS is very preliminiary. It is based on alpha
+versions of DJGPP and Mesa 5.1, and in my experience the mouse interface
+seems error prone (random crashes). At the moment the DOS port should be
+considered experiemental at best, so use it at your own risk.
+
 
 
 <!----------------------------------------------------------------------->
@@ -470,6 +480,7 @@ version of GLFW.
 <p><h3>v2.4.2</h3>
 <ul>
  <li>Preliminary native Mac OS X support (via the Carbon interface)</li>
+ <li>Preliminary DOS support (DJGPP + Mesa)</li>
  <li>Changed license to the zlib license (almost identical to the previous
      GLFW license), so now GLFW is OSI Certified</li>
  <li>Rewrote the GLFW documentation in LaTeX, meaning several improvements
@@ -492,9 +503,6 @@ version of GLFW.
      longer degraded</li>
  <li>[X11] Bugfix: Source files EOL was PC style (CR/LF) in v2.4.1 (blame
      my WinCVS configuration)</li>
- <li>[X11] Bugfix: (De)Iconification now works for fullscreen windows</li>
- <li>[X11] Bugfix: If a fullscreen window loses focus, it is properly
-     iconified</li>
  <li>[X11] Bugfix: When a GLFW window is closed, input focus is properly
      released</li>
  <li>[x86 CPUs] Improved RDTSC timing (e.g. RDTSC support on single-CPU
@@ -745,143 +753,25 @@ version of GLFW.
 <!----------------------------------------------------------------------->
 
 <a name="sec6">
-<p><h2>6. Files in the GLFW source code distribution</h2>
+<p><h2>6. Directory structure of the GLFW distribution</h2>
 
-<p>Here is a list of the files in the GLFW source distribution:
+<p>Here is an overview of the directory structure of the GLFW distribution:
 
 <p>
 <table border=0 cellspacing=0>
-<tr valign="top"><td>Makefile</td><td>&nbsp;</td><td>Top level Makefile for all supported systems and compilers</td></tr>
-<tr valign="top"><td>compile.ami</td><td>&nbsp;</td><td>AmigaDOS shell script used by top level Makefile</td></tr>
-<tr valign="top"><td>compile.bat</td><td>&nbsp;</td><td>Windows BAT file used by top level Makefile</td></tr>
-<tr valign="top"><td>compile.sh</td><td>&nbsp;</td><td>Unix shell script used by top level Makefile</td></tr>
-<tr valign="top"><td>license.txt</td><td>&nbsp;</td><td>The GLFW license (please read it)</td></tr>
-<tr valign="top"><td>readme.html</td><td>&nbsp;</td><td>This file</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>docs/</b></td><td>&nbsp;</td><td>Directory containing GLFW manuals in PDF format</td></tr>
-<tr valign="top"><td>&nbsp;UsersGuide.pdf</td><td>&nbsp;</td><td>GLFW Users Guide</td></tr>
-<tr valign="top"><td>&nbsp;Reference.pdf</td><td>&nbsp;</td><td>GLFW Reference Manual</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>examples/</b></td><td>&nbsp;</td><td>Directory containing several example programs</td></tr>
-<tr valign="top"><td>&nbsp;Info.plist</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>
-<tr valign="top"><td>&nbsp;MakeBundle.sh</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.amigaos.gcc</td><td>&nbsp;</td><td>Makefile for GCC for AmigaOS</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.amigaos.vbcc</td><td>&nbsp;</td><td>Makefile for VBCC for AmigaOS</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.macosx.gcc</td><td>&nbsp;</td><td>Makefile for GCC for Mac OS X</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.bcc</td><td>&nbsp;</td><td>Makefile for Borland C++ 5.x for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.cygwin</td><td>&nbsp;</td><td>Makefile for Cygwin for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.lcc</td><td>&nbsp;</td><td>Makefile for LCC-Win32 for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.mgw</td><td>&nbsp;</td><td>Makefile for MinGW32 (gcc) for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.msvc</td><td>&nbsp;</td><td>Makefile for MS Visual C++ 6.x for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.win32.ow</td><td>&nbsp;</td><td>Makefile for OpenWatcom for Windows</td></tr>
-<tr valign="top"><td>&nbsp;Makefile.x11.in</td><td>&nbsp;</td><td>Makefile template, which is used by compile.sh</td></tr>
-<tr valign="top"><td>&nbsp;PkgInfo</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>
-<tr valign="top"><td>&nbsp;boing.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;gears.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;keytest.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;listmodes.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;mipmaps.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;mipmaps.tga</td><td>&nbsp;</td><td>Texture for mipmaps.c</td></tr>
-<tr valign="top"><td>&nbsp;mtbench.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;mthello.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;particles.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;pong3d.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_field.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_instr.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_menu.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_title.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_winner1.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;pong3d_winner2.tga</td><td>&nbsp;</td><td>Texture for Pong3D</td></tr>
-<tr valign="top"><td>&nbsp;splitview.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;triangle.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;wave.c</td><td>&nbsp;</td><td>An example program</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>include/</b></td><td>&nbsp;</td><td>Directory containing the GLFW include file</td></tr>
-<tr valign="top"><td><b>&nbsp;GL/</b></td><td>&nbsp;</td><td>--"--</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;glfw.h</td><td>&nbsp;</td><td>The GLFW include file</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>lib/</b></td><td>&nbsp;</td><td>Directory containing the source code for GLFW</td></tr>
-<tr valign="top"><td>&nbsp;enable.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;fullscreen.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;glext.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;image.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;init.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;input.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;internal.h</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;joystick.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;tga.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;thread.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;time.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;window.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>&nbsp;amigaos/</b></td><td>&nbsp;</td><td>Directory containing the AmigaOS implementation for GLFW</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.amigaos.gcc</td><td>&nbsp;</td><td>Makefile for GCC for AmigaOS</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.amigaos.vbcc</td><td>&nbsp;</td><td>Makefile for VBCC for AmigaOS</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_enable.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_fullscreen.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_glext.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_init.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_joystick.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_thread.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_time.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;amigaos_window.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;platform.h</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>&nbsp;macosx/</b></td><td>&nbsp;</td><td>Directory containing the Mac OS X implementation for GLFW</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.macosx.gcc</td><td>&nbsp;</td><td>Makefile for GCC for Mac OS X</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_enable.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_fullscreen.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_glext.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_init.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_joystick.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_thread.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_time.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;macosx_window.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;platform.h</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>&nbsp;win32/</b></td><td>&nbsp;</td><td>Directory containing the Win32 implementation for GLFW</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.bcc</td><td>&nbsp;</td><td>Makefile for Borland C++ 5.x for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.cygwin</td><td>&nbsp;</td><td>Makefile for Cygwin for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.lcc</td><td>&nbsp;</td><td>Makefile for LCC-Win32 for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.mgw</td><td>&nbsp;</td><td>Makefile for MinGW32 (gcc) for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.msvc</td><td>&nbsp;</td><td>Makefile for MS Visual C++ 6.x for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.ow</td><td>&nbsp;</td><td>Makefile for OpenWatcom for Windows</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;glfwdll.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MS Visual C++</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;glfwdll_mgw1.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MinGW32</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;glfwdll_mgw2.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MinGW32 and Cygwin</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;platform.h</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_dllmain.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_enable.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_fullscreen.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_glext.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_init.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_joystick.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_thread.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_time.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;win32_window.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-
-<tr valign="top"><td><b>&nbsp;x11/</b></td><td>&nbsp;</td><td>Directory containing the X11 implementation for GLFW</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;Makefile.x11.in</td><td>&nbsp;</td><td>Makefile template, which is used by compile.sh</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;platform.h</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_enable.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_fullscreen.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_glext.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_init.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_joystick.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_keysym2unicode.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_thread.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_time.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;&nbsp;x11_window.c</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
-<tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr valign="top"><td width=100><b>docs</b></td><td>&nbsp;</td><td>GLFW manuals in PDF format</td></tr>
+<tr valign="top"><td><b>examples</b></td><td>&nbsp;</td><td>Several example programs in C</td></tr>
+<tr valign="top"><td><b>images</b></td><td>&nbsp;</td><td>Images for this HTML document</td></tr>
+<tr valign="top"><td><b>include</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;GL</b></td><td>&nbsp;</td><td>Here is the GLFW C/C++ include file</td></tr>
+<tr valign="top"><td><b>lib</b></td><td>&nbsp;</td><td>The source code for GLFW</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;amigaos</b></td><td>&nbsp;</td><td>AmigaOS specific implementation</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;dos</b></td><td>&nbsp;</td><td>DOS specific implementation</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;macosx</b></td><td>&nbsp;</td><td>Mac OS X specific implementation</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;win32</b></td><td>&nbsp;</td><td>Windows specific implementation</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;x11</b></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
 </table>
+<br><br>
 
 
 <!----------------------------------------------------------------------->
