@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.21 2004-01-31 20:59:10 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.22 2004-02-14 19:36:19 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -485,6 +485,8 @@ version of GLFW.
      GLFW license), so now GLFW is OSI Certified</li>
  <li>Rewrote the GLFW documentation in LaTeX, meaning several improvements
      (both visual and practical)</li>
+ <li>Added the <b>support</b> folder to the distribution, which includes
+     support for various languages</li>
  <li>[Win32] Added OpenWatcom compiler support (thanks Sebastian
      Schuberth!)</li>
  <li>[Win32] Changed fallback timer from GetTickCount to timeGetTime,
@@ -497,7 +499,7 @@ version of GLFW.
      area, NOT the entire window, meaning that there is a 1:1 relationship
      between glfwSetWindowSize and glfwGetWindowSize</li>
  <li>[X11] Added FreeBSD and QNX support</li>
- <li>[X11] Added support for non-pthread capable systmes</li>
+ <li>[X11] Added support for non-pthread capable systems</li>
  <li>[X11] Hopefully more robust configuration script (compile.sh)</li>
  <li>[X11] Bugfix: When mouse cursor is hidden, mouse sensitivity is no
      longer degraded</li>
@@ -505,6 +507,8 @@ version of GLFW.
      my WinCVS configuration)</li>
  <li>[X11] Bugfix: When a GLFW window is closed, input focus is properly
      released</li>
+ <li>[X11] Bugfix: Iconification of fullscreen windows should now work
+     properly</li>
  <li>[x86 CPUs] Improved RDTSC timing (e.g. RDTSC support on single-CPU
      Intel Hyper-Threading enabled systmes)</li>
  <li>[AmigaOS] Added joystick support</li>
@@ -770,6 +774,11 @@ version of GLFW.
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;macosx</b></td><td>&nbsp;</td><td>Mac OS X specific implementation</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;win32</b></td><td>&nbsp;</td><td>Windows specific implementation</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;x11</b></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
+<tr valign="top"><td><b>support</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;delphi</b></td><td>&nbsp;</td><td>Delphi support</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;masm</b></td><td>&nbsp;</td><td>MASM32 support</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;win32dll</b></td><td>&nbsp;</td><td>Compiled version of the GLFW Win32 DLL</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;visualbasic</b></td><td>&nbsp;</td><td>Visual Basic support</td></tr>
 </table>
 <br><br>
 
