@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.6 2003-06-14 20:30:17 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.7 2003-10-20 22:34:35 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -117,8 +117,8 @@ GLFW with this procedure:
   <li>Start a command prompt (MS-DOS prompt)</li>
   <li>"CD" to the directory where you unzipped the GLFW source
       distribution (where this readme file is located)</li>
-  <li>Type <b>"C:\Program Files\Microsoft Developer
-      Studio\VC98\BIN\VCVARS32"</b> (with quotation marks)</li>
+  <li>Type <b>&quot;C:\Program Files\Microsoft Developer
+      Studio\VC98\BIN\VCVARS32&quot;</b> (with quotation marks)</li>
   <li>Type <b>nmake win32-msvc</b></li>
 </ol>
 
@@ -323,13 +323,20 @@ such as <b>opengl32</b> and <b>glu32</b>):
 <tr><td>LCC-Win32</td><td>glfwdll.lib</td></tr>
 <tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfwdll</td></tr>
-<tr><td>OpenWatcom</td><td>glfw.lib</td></tr>
+<tr><td>OpenWatcom</td><td>glfwdll.lib</td></tr>
 </table>
 
 
 <p><br><h4>4.2.3 Unix static library</h4>
 
-<p>When compiling and linking a program under Unix/X11 that used GLFW, you
+<p>Since there are so many flavors of Unix and Unix-like systems, it is
+impossible to give a standard rule for properly linking GLFW applications.
+In general, it is a good idea to look at the automatically generated
+<b>Makefile.x11</b> file in the examples directory, which should contain
+all the necessary compiler and linker directives. Following is a brief
+description of what should work for many (but not all) systems:
+
+<p>When compiling and linking a program under Unix/X11 that uses GLFW, you
 must also link with the following libraries: <b>GL</b>, <b>X11</b> and
 <b>pthread</b>. For XFree86 you also need to link with <b>Xxf86vm</b>.
 
@@ -345,13 +352,20 @@ files using <b>-L/usr/X11R6/lib</b>:
 
 <p>&nbsp;&nbsp;<b>gcc myprog.c -o myprog -L/usr/X11R6/lib -lglfw -lGL -lX11 -lpthread -lXxf86vm</b>
 
+<p>FreeBSD systems require that you use <b>-pthread</b> instead of
+<b>-lpthread</b>.
+
+<p>QNX systems require that you use <b>-lsocket</b> instead of
+<b>-lpthread</b>. Usually, X11 is installed in /opt instead of /usr under
+QNX, so use <b>-L/opt/X11R6/lib</b>.
+
 <p>If you use GLU functions in your program you should also add
 <b>-lGLU</b>.
 
 
 <p><br><h4>4.2.4 AmigaOS static library</h4>
 
-<p>When compiling and linking a program under AmigaOS that used GLFW, you
+<p>When compiling and linking a program under AmigaOS that uses GLFW, you
 must also link with the following libraries: <b>GL</b>, <b>amiga</b> and
 <b>m</b> (the latter can be <b>m881</b> or <b>m040</b> etc, depending on
 which compiler and CPU you use).
@@ -387,10 +401,12 @@ style comments.
  <li>Bugfix: [Win32] glfwSetWindowSize now sets the size of the client
      area, NOT the entire window, meaning that there is a 1:1 relationship
      between glfwSetWindowSize and glfwGetWindowSize</li>
+     Intel Hyper-Threading enabled systmes)</li>
  <li>[X11] Added FreeBSD support</li>
  <li>[X11] Added QNX support</li>
+ <li>[X11] Added support for non-pthread capable systmes</li>
  <li>Bugfix: [X11] When mouse cursor is hidden, mouse sensitivity is no
-     longer degraded (not 100% true - still some occasional jerks)</li>
+     longer degraded</li>
  <li>Bugfix: [X11] Source files EOL was PC style (CR/LF) in v2.4.1 (blame
      my WinCVS configuration)</li>
  <li>Bugfix: [X11] (De)Iconification now works for fullscreen windows</li>
@@ -398,6 +414,7 @@ style comments.
      iconified</li>
  <li>Bugfix: [X11] When a GLFW window is closed, input focus is properly
      released</li>
+ <li>[x86 CPUs] Improved RDTSC timing (e.g. RDTSC support on single-CPU
  <li>[AmigaOS] Added joystick support</li>
  <li>[AmigaOS] Mouse cursor positioning is now implemented</li>
  <li>Bugfix: [AmigaOS] glfwGetWindowParam now returns proper values for
@@ -808,9 +825,11 @@ useful for OpenGL development.
 
 <p>GLFW would not be what it is today without the help from:
 <ul>
-  <li>Keith Bauer, for his invaluable help with porting GLFW to Mac OS X
-  (presently X11 only, but soon native Carbon too), and for his many
-  ideas.</li><br><br>
+  <li>Keith Bauer, for his invaluable help with porting GLFW to Mac OS X,
+  and for his many ideas.</li><br><br>
+
+  <li>Camilla Drefvenborg, for her efforts with porting GLFW to Mac OS X
+  (continuing Keith Bauers work).</li><br><br>
 
   <li>Ozzy @ <a href="http://www.orkysquad.org" target="_blank">Orkysquad</a>,
   for his dedication to GLFW, for debugging my source, and for his
