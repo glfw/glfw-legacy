@@ -5,8 +5,6 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.2 2003-02-02 20:58:25 marcus256 Exp $
-//------------------------------------------------------------------------
 // Copyright (c) 2002-2003 Marcus Geelnard
 //
 // GLFW is provided "as-is", without any express or implied warranty,
@@ -29,6 +27,8 @@
 //
 // Marcus Geelnard
 // marcus.geelnard at home.se
+//------------------------------------------------------------------------
+// $Id: glfw.h,v 1.3 2003-02-02 21:00:08 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
