@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.9 2004-04-09 11:10:54 marcus256 Exp $
+// $Id: x11_window.c,v 1.10 2004-04-09 11:19:44 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1463,10 +1463,13 @@ void _glfwPlatformPollEvents( void )
 
 void _glfwPlatformWaitEvents( void )
 {
-    // Wait for new events
-    // ...
+    XEvent event;
 
-    // Poll new events
+    // Wait for new events (blocking)
+    XNextEvent( _glfwDisplay.Dpy, &event );
+    XPutBackEvent( _glfwDisplay.Dpy, &event );
+
+    // Poll events from queue
     _glfwPlatformPollEvents();
 }
 
