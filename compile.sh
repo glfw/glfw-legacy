@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-02-03 00:19:22 $
-# $Revision: 1.5 $
+# $Date: 2003-04-09 19:28:01 $
+# $Revision: 1.6 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -11,7 +11,7 @@
 # This script is not very nice at all (especially the Makefile generation
 # is very ugly and hardcoded). Hopefully it will be cleaned up in the
 # future, but for now it does a pretty good job (much better than the
-# three separate Makefiles in the earlier distributions anyway).
+# three separate Makefiles in older distributions anyway).
 ##########################################################################
 
 ##########################################################################

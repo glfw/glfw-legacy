@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2003-02-03 20:59:09 $
-# $Revision: 1.3 $
+# $Date: 2003-04-09 19:26:47 $
+# $Revision: 1.4 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -11,7 +11,7 @@
 ###########################################################################
 # If your make program does not set the $(MAKE) variable correctly,
 # uncomment the following line and make sure that the name of the make
-# tool is correct
+# tool is correct.
 ###########################################################################
 # MAKE = make
 
