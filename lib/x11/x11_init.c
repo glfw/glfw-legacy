@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        x11_init.c
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_init.c,v 1.5 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_init.c,v 1.6 2004-03-07 21:12:51 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -122,7 +122,7 @@ static char * _glfw_libGL_name[ _GLFW_NUM_LIBGL_NAMES ] =
 };
 #endif
 
-void _glfwInitLibraries( void )
+static void _glfwInitLibraries( void )
 {
 #ifdef _GLFW_DLOPEN_LIBGL
     int i;
@@ -147,6 +147,53 @@ void _glfwTerminate_atexit( void )
 }
 
 
+//========================================================================
+// _glfwInitDisplay() - Initialize X11 display
+//========================================================================
+
+static int _glfwInitDisplay( void )
+{
+#if defined( _GLFW_HAS_XF86VIDMODE )
+    int     d1, d2;
+#endif
+
+    // Open display
+    _glfwDisplay.Dpy = XOpenDisplay( 0 );
+    if( !_glfwDisplay.Dpy )
+    {
+        return GL_FALSE;
+    }
+
+    // Check screens
+    _glfwDisplay.NumScreens = ScreenCount( _glfwDisplay.Dpy );
+    _glfwDisplay.DefaultScreen = DefaultScreen( _glfwDisplay.Dpy );
+
+    // Check for XF86VidMode extension
+#ifdef _GLFW_HAS_XF86VIDMODE
+    _glfwDisplay.Has_XF86VidMode =
+        XF86VidModeQueryExtension( _glfwDisplay.Dpy, &d1, &d2 );
+#else
+    _glfwDisplay.Has_XF86VidMode = 0;
+#endif
+
+     return GL_TRUE;
+}
+
+
+//========================================================================
+// _glfwTerminateDisplay() - Terminate X11 display
+//========================================================================
+
+static void _glfwTerminateDisplay( void )
+{
+    // Open display
+    if( _glfwDisplay.Dpy )
+    {
+        XCloseDisplay( _glfwDisplay.Dpy );
+        _glfwDisplay.Dpy = NULL;
+    }
+}
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -166,6 +213,9 @@ int _glfwPlatformInit( void )
 
     // Install atexit() routine
     atexit( _glfwTerminate_atexit );
+
+    // Initialize display
+    _glfwInitDisplay();
 
     // Initialize joysticks
     _glfwInitJoysticks();
@@ -196,6 +246,9 @@ int _glfwPlatformTerminate( void )
 
     // Kill thread package
     _glfwTerminateThreads();
+
+    // Terminate display
+    _glfwTerminateDisplay();
 
     // Terminate joysticks
     _glfwTerminateJoysticks();
