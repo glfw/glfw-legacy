@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.1 2003-11-03 21:23:21 marcus256 Exp $
+% $Id: glfwug.tex,v 1.2 2003-11-14 21:27:16 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -78,7 +78,6 @@ All other trademarks mentioned in this document are the property of their respec
 %-------------------------------------------------------------------------
 \chapter{Introduction}
 \thispagestyle{fancy}
-
 \GLFW\ is a portable API (Application Program Interface) that handles
 operating system specific tasks related to \OpenGL\ programming. While
 \OpenGL\ in general is portable, easy to use and often results in tidy and
@@ -115,5 +114,190 @@ Mac OS\textsuperscript{\textregistered} X.
 \end{itemize}
 
 
+%-------------------------------------------------------------------------
+% Getting Started
+%-------------------------------------------------------------------------
+\chapter{Getting Started}
+\thispagestyle{fancy}
+In this chapter you will learn how to write a simple \OpenGL\ application
+using \GLFW . We start by initializing \GLFW , then we open a window and
+read some user keyboard input.
+
+
+\section{Initializing GLFW}
+Before using any of the \GLFW\ functions, it is necessary to call
+\textbf{glfwInit}. It initializes internal working variables that are used
+by other \GLFW\ functions. The C syntax is:
+
+\begin{lstlisting}
+int glfwInit( void )
+\end{lstlisting}
+
+\textbf{glfwInit} returns GL\_TRUE if initialization succeeded, or
+GL\_FALSE if it failed.
+
+When your application is done using \GLFW , typically at the very end of
+the program, you should call \textbf{glfwTerminate}, which makes a clean
+up and places \GLFW\ in a non-initialized state (i.e. it is necessary to
+call \textbf{glfwInit} again before using any \GLFW\ functions). The C
+syntax is:
+
+\begin{lstlisting}
+void glfwTerminate( void )
+\end{lstlisting}
+
+Among other things, \textbf{glfwTerminate} closes the \OpenGL\ window
+unless it was closed manually, and kills any running threads that were
+created using \GLFW .
+
+
+\section{Opening An OpenGL Window}
+Opening an \OpenGL\ window is done with the function
+\textbf{glfwOpenWindow}. The function takes nine arguments, which are used
+to describe the following properties of the window to open:
+
+\begin{itemize}
+\item Window dimensions (width and height) in pixels.
+\item Color and alpha buffer depth.
+\item Depth buffer (Z-buffer) depth.
+\item Stencil buffer depth.
+\item Fullscreen or windowed mode.
+\end{itemize}
+
+The C language syntax for \textbf{glfwOpenWindow} is:
+\begin{lstlisting}
+int glfwOpenWindow( int width, int height,
+    int redbits, int greenbits, int bluebits,
+    int alphabits, int depthbits, int stencilbits,
+    int mode )
+\end{lstlisting}
+
+\textbf{glfwOpenWindow} returns GL\_TRUE if the window was opened
+correctly, or GL\_FALSE if \GLFW\ failed to open the window.
+
+\GLFW\ tries to open a window that best matches the requested parameters.
+Some parameters may be omitted by setting them to zero, which will result
+in \GLFW\ either using a default value, or the related functionality to be
+disabled. For instance, if \textit{width} and \textit{height} are both
+zero, \GLFW\ will use a window resolution of 640x480. If
+\textit{depthbits} is zero, the opened window may not have a depth buffer.
+
+The \textit{mode} argument is used to specify if the window is to be a
+s.c. fullscreen window, or a regular window.
+
+If \textit{mode} is GLFW\_FULLSCREEN, the window will cover the entire
+screen and no window borders will be visible. If possible, the video mode
+will be changed to the mode that closest matches the \textit{width},
+\textit{height}, \textit{redbits}, \textit{greenbits}, \textit{bluebits}
+and \textit{alphabits} arguments. Furthermore, the mouse pointer will be
+hidden, and screensavers are prohibited. This is usually the best mode for
+games and demos.
+
+If \textit{mode} is GLFW\_WINDOW, the window will be opened as a normal
+window on the desktop. The mouse pointer will not be hidden, and
+screensavers are allowed to be activated.
+
+To close the window, you can either use \textbf{glfwTerminate}, as
+described earlier, or you can use the more explicit approach by calling
+\textbf{glfwCloseWindow}, which has the C syntax:
+
+\begin{lstlisting}
+void glfwCloseWindow( void )
+\end{lstlisting}
+
+
+\section{Using Keyboard Input}
+\GLFW\ provides several means for receiving user input, which will be
+discussed in more detail later on in this manual. One of the simplest ways
+of checking for keyboard input is to use the function \textbf{glfwGetKey}:
+
+\begin{lstlisting}
+int glfwGetKey( int key )
+\end{lstlisting}
+
+It queries the current status of individual keyboard keys. The argument
+\textit{key} specifies which key to check, and it can be either an
+uppercase printable ISO 8859-1 (Latin 1) character (e.g. `A', `3' or `.'),
+or a special key identifier (see the \textit{GLFW Reference Manual} for a
+list of special key identifiers). \textbf{glfwGetKey} returns GLFW\_PRESS
+(or 1) if the key is currently held down, or GLFW\_RELEASE (or 0) if the
+key is not being held down. For example:
+
+\begin{lstlisting}
+A_pressed = glfwGetKey( 'A' );
+esc_pressed = glfwGetKey( GLFW_KEY_ESC );
+\end{lstlisting}
+
+In order for \textbf{glfwGetKey} to have any effect, you need to poll for
+input events on a regular basis. This can be done in one of two ways:
+
+\begin{enumerate}
+\item Implicitly by calling \textbf{glfwSwapBuffers} often.
+\item Explicitly by calling \textbf{glfwPollEvents} often.
+\end{enumerate}
+
+In general you do not have to care about this, since you will normally
+call \textbf{glfwSwapBuffers} to swap front and back rendering buffers
+every animation frame anyway. If, however, this is not the case, you
+should call \textbf{glfwPollEvents} in the order of 10-100 times per
+second in order for \GLFW\ to maintain an up to date input state.
+
+
+\section{Putting It Together: A Minimal GLFW Application}
+Now that you know how to initialize \GLFW , open a window and poll for
+keyboard input, let us exemplify this with a simple \OpenGL\ program. In
+the following example some error-checking has been omitted for the sake of
+brevity:
+
+\begin{lstlisting}
+#include <GL/glfw.h>
+
+int main( void )
+{
+    int running = GL_TRUE;
+
+    // Initialize GLFW
+    glfwInit();
+
+    // Open an OpenGL window
+    if( !glfwOpenWindow( 300,300, 0,0,0,0,0,0, GLFW_WINDOW ) )
+    {
+        glfwTerminate();
+        return 0;
+    }
+
+    // Main loop
+    while( running )
+    {
+        // OpenGL rendering goes here...
+        glClear( GL_COLOR_BUFFER_BIT );
+
+        // Swap front and back rendering buffers
+        glfwSwapBuffers();
+
+        // Check if ESC key was pressed or window was closed
+        running = !glfwGetKey( GLFW_KEY_ESC ) &&
+                  glfwGetWindowParam( GLFW_OPENED );
+    }
+
+    // Close window and terminate GLFW
+    glfwTerminate();
+
+    // Exit program
+    return 0;
+}
+\end{lstlisting}
+
+The program opens a 300x300 window and runs in a loop until the escape key
+is pressed, or the window was closed. All the OpenGL ``rendering'' that is
+done in this example is to clear the window, using the \textbf{glClear}
+function.
+
+
+
+%-------------------------------------------------------------------------
+% Index
+%-------------------------------------------------------------------------
+% ...
 
 \end{document}
