@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.2 2003-02-02 21:06:21 marcus256 Exp $
+// $Id: win32_time.c,v 1.3 2003-10-18 20:26:51 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -294,7 +294,8 @@ static int _glfwHasRDTSC( void )
     unsigned int dummy;
     SYSTEM_INFO  si;
 
-    // We do not support RDTSC on SMP systems (SMT is OK though)
+    // We do not support RDTSC on SMP systems
+    // TODO: How to detect (SMT && !SMP)
     GetSystemInfo( &si );
     if( si.dwNumberOfProcessors > 1 )
     {
@@ -483,7 +484,7 @@ static int _glfwHasRDTSC( void )
 void _glfwInitTimer( void )
 {
     __int64 freq, t1_64, t2_64, c1, c2;
-    int     t0, t1, t2;
+    int     t1, t2;
     double  dt;
     DWORD   OldPri;
     HANDLE  Process;
@@ -523,36 +524,43 @@ void _glfwInitTimer( void )
         OldPri = GetPriorityClass( Process );
         SetPriorityClass( Process, REALTIME_PRIORITY_CLASS );
 
-        // Get CPU frequency
+        // Get CPU frequency ("clock" the CPU)
         if( _glfwTimer.HasPerformanceCounter )
         {
-            // User performance counter to "clock" the CPU
+            // Try to force atomic operation
+            Sleep( 10 );
+
+            // Get start time with performance counter
             QueryPerformanceCounter( (LARGE_INTEGER *) &t1_64 );
             _RDTSC( _HIGH(c1), _LOW(c1) );
-            do
-            {
-                QueryPerformanceCounter( (LARGE_INTEGER *) &t2_64 );
-                _RDTSC( _HIGH(c2), _LOW(c2) );
-                dt = (double) (t2_64-t1_64) * _glfwTimer.Resolution;
-            }
-            while( dt < 0.03 );
+
+            // Sleep for a while, to get something to measure
+            Sleep( 50 );
+
+            // Get stop time with performance counter
+            QueryPerformanceCounter( (LARGE_INTEGER *) &t2_64 );
+            _RDTSC( _HIGH(c2), _LOW(c2) );
+
+            dt = (double) (t2_64-t1_64) * _glfwTimer.Resolution;
         }
         else
         {
-            // User low performance GetTickCount to "clock" the CPU. This
-            // requires a longer clocking time to be reasonably accurate.
-            t0 = GetTickCount();
-            do
-            {
-                t1 = GetTickCount();
-            } while( t0 == t1 );
+            // Try to force atomic operation
+            Sleep( 10 );
+
+            // Get start time with GetTickCount
+            t1 = GetTickCount();
             _RDTSC( _HIGH(c1), _LOW(c1) );
-            do
-            {
-                t2 = GetTickCount();
-                _RDTSC( _HIGH(c2), _LOW(c2) );
-            }
-            while( (t2-t1) < 1000 );
+
+            // Sleep for a while, to get something to measure
+            // (GetTickCount requires a longer clocking time to be
+            // reasonably accurate)
+            Sleep( 1000 );
+
+            // Get stop time with GetTickCount
+            t2 = GetTickCount();
+            _RDTSC( _HIGH(c2), _LOW(c2) );
+
             dt = (double) (t2-t1) * 0.001;
         }
 
