@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_thread.c,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+// $Id: dos_thread.c,v 1.2 2003-11-28 22:00:08 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -48,6 +48,11 @@
 int _glfwInitThreads( void )
 {
     // TODO
+    _glfwThrd.First.Previous = NULL;
+    _glfwThrd.First.Next     = NULL;
+    _glfwThrd.First.ID       = 0;
+    _glfwThrd.NextID = 1;
+
     return 1;
 }
 
@@ -98,7 +103,7 @@ void _glfwTerminateThreads( void )
 GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
 {
     // TODO
-    return 0;
+    return -1;
 }
 
 
