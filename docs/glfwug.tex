@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.3 2003-11-14 22:09:37 marcus256 Exp $
+% $Id: glfwug.tex,v 1.4 2003-11-14 22:20:23 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -124,6 +124,7 @@ using \GLFW . We start by initializing \GLFW , then we open a window and
 read some user keyboard input.
 
 
+%-------------------------------------------------------------------------
 \section{Initializing GLFW}
 Before using any of the \GLFW\ functions, it is necessary to call
 \textbf{glfwInit}. It initializes internal working variables that are used
@@ -151,6 +152,7 @@ unless it was closed manually, and kills any running threads that were
 created using \GLFW .
 
 
+%-------------------------------------------------------------------------
 \section{Opening An OpenGL Window}
 Opening an \OpenGL\ window is done with the function
 \textbf{glfwOpenWindow}. The function takes nine arguments, which are used
@@ -206,6 +208,7 @@ void glfwCloseWindow( void )
 \end{lstlisting}
 
 
+%-------------------------------------------------------------------------
 \section{Using Keyboard Input}
 \GLFW\ provides several means for receiving user input, which will be
 discussed in more detail later on in this manual. One of the simplest ways
@@ -243,6 +246,7 @@ should call \textbf{glfwPollEvents} in the order of 10-100 times per
 second in order for \GLFW\ to maintain an up to date input state.
 
 
+%-------------------------------------------------------------------------
 \section{Putting It Together: A Minimal GLFW Application}
 Now that you know how to initialize \GLFW , open a window and poll for
 keyboard input, let us exemplify this with a simple \OpenGL\ program. In
@@ -294,7 +298,7 @@ is done in this example is to clear the window.
 
 
 %-------------------------------------------------------------------------
-% Index
+% Window Operations
 %-------------------------------------------------------------------------
 \chapter{Window Operations}
 \thispagestyle{fancy}
@@ -303,11 +307,12 @@ functionality, including: setting and getting window properties, buffer
 swap control and video mode querying.
 
 
+%-------------------------------------------------------------------------
 \section{Setting Window Properties}
 In the previous chapter the \textbf{glfwOpenWindow} function was
 described, which specifies the sizes of the color, alpha, depth and
 stencil buffers. It is also possible to request an accumulator buffer,
-auxiliary buffers, stereo rendering by using the
+auxiliary buffers and stereo rendering by using the
 \textbf{glfwOpenWindowHint} function:
 
 \begin{lstlisting}
@@ -389,6 +394,7 @@ Where \textit{x} and \textit{y} are the new desktop coordinates of the
 window. This function does not have any effect when in fullscreen mode.
 
 
+%-------------------------------------------------------------------------
 \section{Getting Window Properties}
 When opening a window, the opened window will not necessarily have the
 requested properties, so you should always check the parameters that your
@@ -483,6 +489,7 @@ The \textit{width} and \textit{height} arguments are filled out with the
 current window dimensions.
 
 
+%-------------------------------------------------------------------------
 \section{Buffer Swapping}
 \GLFW\ windows are always double buffered. That means that you have two
 rendering buffers; a front buffer and a back buffer. The front buffer is
@@ -532,6 +539,7 @@ through driver settings (e.g. the display settings under Windows, or as an
 environment variable setting under Unix).
 
 
+%-------------------------------------------------------------------------
 \section{Querying Video Modes}
 Although \GLFW\ generally does a good job at selecting a suitable video
 mode for you when you open a fullscreen window, it is sometimes useful to

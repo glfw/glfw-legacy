@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.9 2003-11-14 21:40:09 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.10 2003-11-14 22:22:08 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -798,10 +798,9 @@ typedef struct {
 \end{refdescription}
 
 \begin{refnotes}
-The returned list is sorted, first by color depth (\textit{RedBits} +
-\textit{GreenBits} + \textit{BlueBits}), and then by resolution
-(\textit{Width}*\textit{Height}), with the lowest resolution, fewest
-bits per pixel mode first.
+The returned list is sorted, first by color depth ($RedBits + GreenBits +
+BlueBits$), and then by resolution ($Width \times Height$), with the
+lowest resolution, fewest bits per pixel mode first.
 \end{refnotes}
 
 
