@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.5
-% $Id: glfwug.tex,v 1.12 2004-02-29 21:05:31 marcus256 Exp $
+% $Id: glfwug.tex,v 1.13 2004-07-09 20:16:30 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -814,8 +814,9 @@ int glfwGetMouseButton( int button )
 The argument \textit{button} can be one of the following mouse button
 identifiers: GLFW\_MOUSE\_BUTTON\_LEFT, GLFW\_MOUSE\_BUTTON\_RIGHT or
 GLFW\_MOUSE\_BUTTON\_MIDDLE. \textbf{glfwGetMouseButton} will return
-GLFW\_PRESS (or 1) if the corresponding mouse button is held down,
-otherwise it will return GLFW\_RELEASE (or 0).
+GLFW\_PRESS (which is a non-zero value) if the corresponding mouse
+button is held down, otherwise it will return GLFW\_RELEASE (which is
+equal to zero).
 
 Just as it is possible to make keys ``sticky'', it is also possible to
 make mouse buttons appear as held down until the button is checked for
