@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.6 2004-07-19 19:48:30 marcus256 Exp $
+// $Id: luaglfw.c,v 1.7 2004-07-19 20:31:39 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -245,11 +245,10 @@ void GLFWCALL luaglfw_charfun( int key, int action )
 
 static int glfw_Init( lua_State *L )
 {
-    int result;
-    result = glfwInit();
+    int res;
     lua_settop( L, 0 );
-    if( result == GL_TRUE ) lua_pushboolean( L, 1 );
-    else                    lua_pushboolean( L, 0 );
+    res = glfwInit();
+    lua_pushnumber( L, (lua_Number)res );
     return 1;
 }
 
@@ -277,50 +276,30 @@ static int glfw_GetVersion( lua_State *L )
 static int glfw_OpenWindow( lua_State *L )
 {
     lua_Number  w, h, r, g, b, a, depth, stencil, mode;
-    int         argc, result;
+    int         argc, res;
 
     // Check arguments
-    if( badArgs( L, 2, "OpenWindow" ) ) return 0;
-    argc = lua_gettop( L );
+    if( badArgs( L, 9, "OpenWindow" ) ) return 0;
 
-    // Get width and height
-    w = lua_tonumber( L, 1 );
-    h = lua_tonumber( L, 2 );
-    lua_remove( L, 1 );
-    lua_remove( L, 1 );
-    argc -= 2;
-
-    // Default arguments
-    r       = (lua_Number) 0;
-    g       = (lua_Number) 0;
-    b       = (lua_Number) 0;
-    a       = (lua_Number) 0;
-    depth   = (lua_Number) 0;
-    stencil = (lua_Number) 0;
-    mode    = (lua_Number) GLFW_WINDOW;
-
-    // Get optional arguments
-    if( (argc > 0) && (lua_istable(L, 1)) )
-    {
-        getNumber( L, 1, "red", &r );
-        getNumber( L, 1, "green", &g );
-        getNumber( L, 1, "blue", &b );
-        getNumber( L, 1, "alpha", &a );
-        getNumber( L, 1, "depth", &depth );
-        getNumber( L, 1, "stencil", &stencil );
-        getNumber( L, 1, "mode", &mode );
-    }
+    // Get all arguments to glfwOpenWindow
+    w       = lua_tonumber( L, 1 );
+    h       = lua_tonumber( L, 2 );
+    r       = lua_tonumber( L, 3 );
+    g       = lua_tonumber( L, 4 );
+    b       = lua_tonumber( L, 5 );
+    a       = lua_tonumber( L, 6 );
+    depth   = lua_tonumber( L, 7 );
+    stencil = lua_tonumber( L, 8 );
+    mode    = lua_tonumber( L, 9 );
 
     // Call glfwOpenWindow
     lua_settop( L,0 );
-    result = glfwOpenWindow( (int)w, (int)h, (int)r, (int)g, (int)b,
-                             (int)a, (int)depth, (int)stencil,
-                             (int)mode );
+    res = glfwOpenWindow( (int)w, (int)h, (int)r, (int)g, (int)b,
+                          (int)a, (int)depth, (int)stencil,
+                          (int)mode );
 
-    // Return adequate result
-    if( result == GL_TRUE ) lua_pushboolean( L, 1 );
-    else                    lua_pushboolean( L, 0 );
-
+    // Return result
+    lua_pushnumber( L, (lua_Number)res );
     return 1;
 }
 
@@ -775,15 +754,12 @@ static int glfw_GetGLVersion( lua_State *L )
 static int glfw_ExtensionSupported( lua_State *L )
 {
     const char *str;
-    int        result;
+    int        res;
     if( badArgs( L, 1, "ExtensionSupported" ) ) return 0;
-
     str = lua_tostring( L, 1 );
-    result = glfwExtensionSupported( str );
-
     lua_settop( L, 0 );
-    if( result == GL_TRUE ) lua_pushboolean( L, 1 );
-    else lua_pushboolean( L, 0 );
+    res = glfwExtensionSupported( str );
+    lua_pushnumber( L, (lua_Number)res );
     return 1;
 }
 
