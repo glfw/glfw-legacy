@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.7 2003-12-10 20:40:39 marcus256 Exp $
+// $Id: dos_mouse.c,v 1.8 2004-01-06 08:52:39 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -65,20 +65,6 @@ static struct {
     int          OldX, OldY, OldB;
     __dpmi_regs  Regs;
 } _glfwMouseDrv;
-
-
-/*
-void * pc_malloc( int size )
-{
-    void *p = malloc( size );
-    if( p )
-    {
-        LOCKBUFF( p, size );
-    }
-    return p;
-}
-*/
-
 
 
 
