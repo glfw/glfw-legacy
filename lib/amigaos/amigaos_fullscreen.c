@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_fullscreen.c,v 1.2 2003-02-02 22:20:54 marcus256 Exp $
+// $Id: amigaos_fullscreen.c,v 1.3 2003-07-12 21:13:51 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -202,10 +202,13 @@ int _glfwOpenScreen( int *width, int *height, int *r, int *g, int *b,
     // Remember Mode ID
     _glfwWin.ModeID = modeID;
 
+/*
+    // Debugging information
     printf( "Amiga Screen opened:\n" );
     printf( "  ModeID:     0x%08X\n", modeID );
     printf( "  Dimensions: %d x %d\n", *width, *height );
     printf( "  Color bits: %d : %d : %d\n", *r, *g, *b );
+*/
 
     return GL_TRUE;
 }
