@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_init.c,v 1.2 2003-02-02 22:20:54 marcus256 Exp $
+// $Id: amigaos_init.c,v 1.3 2003-05-19 19:49:45 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -53,9 +53,6 @@ static int _glfwInitLibraries( void )
     IntuitionBase = NULL;
     KeymapBase    = NULL;
     UtilityBase   = NULL;
-    TimerBase     = NULL;
-    TimerMP       = NULL;
-    TimerIO       = NULL;
 
     // graphics.library
     GfxBase = (struct GfxBase *) OpenLibrary( "graphics.library", 40 );
@@ -81,35 +78,6 @@ static int _glfwInitLibraries( void )
     // Utility.library
     UtilityBase = (struct UtilityBase *) OpenLibrary( "utility.library", 40 );
     if( !UtilityBase )
-    {
-        return 0;
-    }
-
-    // timer.device (used as a library for ReadEClock)
-    if( TimerMP = CreatePort( NULL, 0 ) )
-    {
-        // Create the I/O request
-        if( TimerIO = (struct timerequest *)
-            CreateExtIO( TimerMP, sizeof(struct timerequest) ) )
-        {
-            // Open the timer device
-            if( !( OpenDevice( "timer.device", UNIT_MICROHZ,
-                               (struct IORequest *) TimerIO, 0 ) ) )
-            {
-                // Set up pointer for timer functions
-                TimerBase = (struct Device *)TimerIO->tr_node.io_Device;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
     {
         return 0;
     }
@@ -151,34 +119,6 @@ static void _glfwTerminateLibraries( void )
         CloseLibrary( (struct Library *) UtilityBase );
         UtilityBase = NULL;
     }
-
-    // Empty the timer.device message port queue
-    if( TimerMP )
-    {
-        struct Message *msg;
-        while( NULL != (msg = GetMsg( TimerMP )) ) ReplyMsg( msg );
-    }
-
-    // Close timer.device
-    if( TimerBase )
-    {
-        CloseDevice( (struct IORequest *) TimerIO );
-        TimerBase = NULL;
-    }
-
-    // Delete timer.device I/O request
-    if( TimerIO )
-    {
-        DeleteExtIO( (struct IORequest *) TimerIO );
-        TimerIO = NULL;
-    }
-
-    // Delete timer.device message port
-    if( TimerMP )
-    {
-        DeletePort( TimerMP );
-        TimerMP = NULL;
-    }
 }
 
 
@@ -199,7 +139,7 @@ static int _glfwInitThreads( void )
     }
 
     // Initialize critical section handle
-    memset(&_glfwThrd.CriticalSection,0,sizeof(struct SignalSemaphore));
+    memset( &_glfwThrd.CriticalSection,0,sizeof(struct SignalSemaphore) );
     InitSemaphore( &_glfwThrd.CriticalSection );
 
     // The first thread (the main thread) has ID 0
@@ -299,11 +239,19 @@ int _glfwPlatformInit( void )
         return GL_FALSE;
     }
 
+    // Start the timer
+    if( !_glfwInitTimer() )
+    {
+        _glfwTerminateThreads();
+        _glfwTerminateLibraries();
+        return GL_FALSE;
+    }
+
+    // Initialize joysticks
+    _glfwInitJoysticks();
+
     // Install atexit() routine
     atexit( _glfwTerminate_atexit );
-
-    // Start the timer
-    _glfwInitTimer();
 
     return GL_TRUE;
 }
@@ -323,6 +271,12 @@ int _glfwPlatformTerminate( void )
 
     // Close OpenGL window
     glfwCloseWindow();
+
+    // Terminate joysticks
+    _glfwTerminateJoysticks();
+
+    // Kill timer
+    _glfwTerminateTimer();
 
     // Kill thread package
     _glfwTerminateThreads();
