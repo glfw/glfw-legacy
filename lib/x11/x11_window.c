@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.15 2005-01-23 12:06:54 marcus256 Exp $
+// $Id: x11_window.c,v 1.16 2005-02-15 21:10:14 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -712,99 +712,24 @@ static int _glfwGetNextEvent( void )
             }
             break;
 
-        // Was the window iconified?
-        case UnmapNotify:
-            // Show mouse pointer
-            if( _glfwWin.PointerHidden )
-            {
-                XUndefineCursor( _glfwDisplay.Dpy, _glfwWin.Win );
-                _glfwWin.PointerHidden = GL_FALSE;
-            }
-
-            // Un-grab mouse pointer
-            if( _glfwWin.PointerGrabbed )
-            {
-                XUngrabPointer( _glfwDisplay.Dpy, CurrentTime );
-                _glfwWin.PointerGrabbed = GL_FALSE;
-            }
-
-            _glfwWin.Iconified = GL_TRUE;
+        // Was the window mapped (un-iconified)?
+        case MapNotify:
+            _glfwWin.MapNotifyCount ++;
             break;
 
-        // Was the window un-iconified?
-        case MapNotify:
-            if( _glfwWin.Iconified )
-            {
-                // Restore fullscreen mode properties
-                if( _glfwWin.Fullscreen )
-                {
-                    // Change back video mode to user selected mode
-                    _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
-                                       &_glfwWin.Height );
-
-                    // Disable window manager decorations
-                    _glfwEnableDecorations();
-
-                    // Make sure window is in upper left corner
-                    XMoveWindow( _glfwDisplay.Dpy, _glfwWin.Win, 0, 0 );
-
-                    // Get input focus
-                    XSetInputFocus( _glfwDisplay.Dpy, _glfwWin.Win,
-                                    RevertToParent, CurrentTime );
-                }
-
-                // Hide cursor if necessary
-                if( _glfwWin.MouseLock && !_glfwWin.PointerHidden )
-                {
-                    if( !_glfwWin.PointerHidden )
-                    {
-                        XDefineCursor( _glfwDisplay.Dpy, _glfwWin.Win,
-                            _glfwCreateNULLCursor( _glfwDisplay.Dpy,
-                                                   _glfwWin.Win ) );
-                        _glfwWin.PointerHidden = GL_TRUE;
-                    }
-                }
-
-                // Grab cursor if necessary
-                if( (_glfwWin.MouseLock || _glfwWin.Fullscreen) &&
-                    !_glfwWin.PointerGrabbed )
-                {
-                    if( XGrabPointer( _glfwDisplay.Dpy, _glfwWin.Win, True,
-                            ButtonPressMask | ButtonReleaseMask |
-                            PointerMotionMask, GrabModeAsync,
-                            GrabModeAsync, _glfwWin.Win, None,
-                            CurrentTime ) == GrabSuccess )
-                    {
-                        _glfwWin.PointerGrabbed = GL_TRUE;
-                    }
-                }
-
-                _glfwWin.Iconified = GL_FALSE;
-            }
+        // Was the window unmapped (iconified)?
+        case UnmapNotify:
+            _glfwWin.MapNotifyCount --;
             break;
 
         // Was the window activated?
         case FocusIn:
-            // Window is now active
-            _glfwWin.Active = GL_TRUE;
-
-            // If we are in fullscreen mode, restore window
-            if( _glfwWin.Fullscreen && _glfwWin.Iconified )
-            {
-                _glfwPlatformRestoreWindow();
-            }
+            _glfwWin.FocusInCount ++;
             break;
 
         // Was the window de-activated?
         case FocusOut:
-            // Window is not active
-            _glfwWin.Active = GL_FALSE;
-
-            // If we are in fullscreen mode, iconfify window
-            if( _glfwWin.Fullscreen )
-            {
-                _glfwPlatformIconifyWindow();
-            }
+            _glfwWin.FocusInCount --;
             break;
 
         // Was the window contents damaged?
@@ -1440,6 +1365,10 @@ void _glfwPlatformPollEvents( void )
     // Flag that the cursor has not moved
     _glfwInput.MouseMoved = GL_FALSE;
 
+    // Clear MapNotify and FocusIn counts
+    _glfwWin.MapNotifyCount = 0;
+    _glfwWin.FocusInCount = 0;
+
     // Use XSync to synchronise events to the X display.
     // I don't know if this can have a serious performance impact. My
     // benchmarks with a GeForce card under Linux shows no difference with
@@ -1479,6 +1408,98 @@ void _glfwPlatformPollEvents( void )
                                             _glfwWin.Height/2 );
             XSync( _glfwDisplay.Dpy, False );
         }
+    }
+
+    // Was the window (un)iconified?
+    if( _glfwWin.MapNotifyCount < 0 && !_glfwWin.Iconified )
+    {
+        // Show mouse pointer
+        if( _glfwWin.PointerHidden )
+        {
+            XUndefineCursor( _glfwDisplay.Dpy, _glfwWin.Win );
+            _glfwWin.PointerHidden = GL_FALSE;
+        }
+
+        // Un-grab mouse pointer
+        if( _glfwWin.PointerGrabbed )
+        {
+            XUngrabPointer( _glfwDisplay.Dpy, CurrentTime );
+            _glfwWin.PointerGrabbed = GL_FALSE;
+        }
+
+        _glfwWin.Iconified = GL_TRUE;
+    }
+    else if( _glfwWin.MapNotifyCount > 0 && _glfwWin.Iconified )
+    {
+        // Restore fullscreen mode properties
+        if( _glfwWin.Fullscreen )
+        {
+            // Change back video mode to user selected mode
+            _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
+                               &_glfwWin.Height );
+
+            // Disable window manager decorations
+            _glfwEnableDecorations();
+
+            // Make sure window is in upper left corner
+            XMoveWindow( _glfwDisplay.Dpy, _glfwWin.Win, 0, 0 );
+
+            // Get input focus
+            XSetInputFocus( _glfwDisplay.Dpy, _glfwWin.Win,
+                            RevertToParent, CurrentTime );
+        }
+
+        // Hide cursor if necessary
+        if( _glfwWin.MouseLock && !_glfwWin.PointerHidden )
+        {
+            if( !_glfwWin.PointerHidden )
+            {
+                XDefineCursor( _glfwDisplay.Dpy, _glfwWin.Win,
+                    _glfwCreateNULLCursor( _glfwDisplay.Dpy,
+                                           _glfwWin.Win ) );
+                _glfwWin.PointerHidden = GL_TRUE;
+            }
+        }
+
+        // Grab cursor if necessary
+        if( (_glfwWin.MouseLock || _glfwWin.Fullscreen) &&
+            !_glfwWin.PointerGrabbed )
+        {
+            if( XGrabPointer( _glfwDisplay.Dpy, _glfwWin.Win, True,
+                    ButtonPressMask | ButtonReleaseMask |
+                    PointerMotionMask, GrabModeAsync,
+                    GrabModeAsync, _glfwWin.Win, None,
+                    CurrentTime ) == GrabSuccess )
+            {
+                _glfwWin.PointerGrabbed = GL_TRUE;
+            }
+        }
+
+        _glfwWin.Iconified = GL_FALSE;
+    }
+
+    // Did the window get/lose focus
+    if( _glfwWin.FocusInCount > 0 && !_glfwWin.Active )
+    {
+        // If we are in fullscreen mode, restore window
+        if( _glfwWin.Fullscreen && _glfwWin.Iconified )
+        {
+            _glfwPlatformRestoreWindow();
+        }
+
+        // Window is now active
+        _glfwWin.Active = GL_TRUE;
+    }
+    else if( _glfwWin.FocusInCount < 0 && _glfwWin.Active )
+    {
+        // If we are in fullscreen mode, iconfify window
+        if( _glfwWin.Fullscreen )
+        {
+            _glfwPlatformIconifyWindow();
+        }
+
+        // Window is not active
+        _glfwWin.Active = GL_FALSE;
     }
 
     // Was there a window close request?
