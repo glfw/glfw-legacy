@@ -1,7 +1,7 @@
 ##########################################################################
 # Makefile for the GLFW documentation.
 #-------------------------------------------------------------------------
-# $Id: Makefile,v 1.1 2003-11-03 21:23:21 marcus256 Exp $
+# $Id: Makefile,v 1.2 2003-11-04 23:01:32 marcus256 Exp $
 ##########################################################################
 
 PDFDOCS = glfwrm.pdf glfwug.pdf
@@ -31,13 +31,13 @@ clean-win:
 # Rules for building the GLFW Reference Manual
 ##########################################################################
 
-glfwrm.pdf: glfwrm.tex glfwrm.toc
+glfwrm.pdf: glfwrm.tex glfwrm.toc glfwdoc.sty
 	pdflatex glfwrm.tex
 
-glfwrm.dvi: glfwrm.tex glfwrm.toc
+glfwrm.dvi: glfwrm.tex glfwrm.toc glfwdoc.sty
 	latex glfwrm.tex
 
-glfwrm.toc: glfwrm.tex
+glfwrm.toc: glfwrm.tex glfwdoc.sty
 	latex glfwrm.tex
 
 
@@ -45,11 +45,11 @@ glfwrm.toc: glfwrm.tex
 # Rules for building the GLFW Users Guide
 ##########################################################################
 
-glfwug.pdf: glfwug.tex glfwug.toc
+glfwug.pdf: glfwug.tex glfwug.toc glfwdoc.sty
 	pdflatex glfwug.tex
 
-glfwug.dvi: glfwug.tex glfwug.toc
+glfwug.dvi: glfwug.tex glfwug.toc glfwdoc.sty
 	latex glfwug.tex
 
-glfwug.toc: glfwug.tex
+glfwug.toc: glfwug.tex glfwdoc.sty
 	latex glfwug.tex
