@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        dos_fullscreen.c
-// Platforms:   DOS
+// Platform:    DOS
 // API version: 2.4
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_fullscreen.c,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+// $Id: dos_fullscreen.c,v 1.2 2003-12-07 22:26:28 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -83,9 +83,9 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
     // Dummy...
     list[0].Width     = 640;
     list[0].Height    = 480;
-    list[0].RedBits   = 8;
-    list[0].GreenBits = 8;
-    list[0].BlueBits  = 8;
+    list[0].RedBits   = 5;
+    list[0].GreenBits = 6;
+    list[0].BlueBits  = 5;
 
     return 1;
 }
@@ -100,7 +100,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
     // Dummy...
     mode->Width     = 640;
     mode->Height    = 480;
-    mode->RedBits   = 8;
-    mode->GreenBits = 8;
-    mode->BlueBits  = 8;
+    mode->RedBits   = 5;
+    mode->GreenBits = 6;
+    mode->BlueBits  = 5;
 }
