@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.5 2003-11-15 12:06:28 marcus256 Exp $
+% $Id: glfwug.tex,v 1.6 2003-11-15 21:52:54 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -25,6 +25,8 @@
 %-------------------------------------------------------------------------
 
 \begin{document}
+
+\pagestyle{plain}
 
 % Title page
 \glfwmaketitle
@@ -68,9 +70,12 @@ All other trademarks mentioned in this document are the property of their respec
 \tableofcontents
 \pagebreak
 
+
 % Document chapters starts here...
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+\pagestyle{fancy}
 
 
 %-------------------------------------------------------------------------
@@ -963,6 +968,670 @@ represent left, back or down directions. If a requested axis is not
 supported by the joystick, the corresponding array element will be set
 to zero. The same goes for the situation when the joystick is not
 connected (all axes are treated as unsupported).
+
+
+%-------------------------------------------------------------------------
+\subsection{Joystick buttons}
+A function similar to the \textbf{glfwGetJoystickPos} function is
+available for querying the state of joystick buttons, namely the
+\textbf{glfwGetJoystickButtons} function:
+
+\begin{lstlisting}
+int glfwGetJoystickButtons( int joy, unsigned char *buttons,
+                            int numbuttons )
+\end{lstlisting}
+
+The function works just like the \textbf{glfwGetJoystickAxis} function,
+except that it returns the state of joystick buttons instead of axis
+positions. Each button in the array specified by the \textit{buttons}
+argument can be either GLFW\_PRESS or GLFW\_RELEASE, telling if the
+corresponding button is currently held down or not. Unsupported buttons
+will have the value GLFW\_RELEASE.
+
+
+%-------------------------------------------------------------------------
+% Timing
+%-------------------------------------------------------------------------
+\chapter{Timing}
+\thispagestyle{fancy}
+
+%-------------------------------------------------------------------------
+\section{High Resolution Timer}
+In most applications, it is useful to know exactly how much time has
+passed between point $A$ and point $B$ in a program. A typical situation
+is in a game, where you need to know how much time has passed between two
+rendered frames in order to calculate the correct movement and physics
+etc. Another example is when you want to benchmark a certain piece of
+code.
+
+\GLFW\ provides a high-resolution timer, which reports a double precision
+floating point value representing the number of seconds that have passed
+since \textbf{glfwInit} was called. The timer is accessed with the
+function \textbf{glfwGetTime}:
+
+\begin{lstlisting}
+double glfwGetTime( void )
+\end{lstlisting}
+
+The precision of the timer depends on which computer and operating
+system you are running, but it is almost guaranteed to be better than
+$10~ms$, and in most cases it is much better than $1~ms$ (on a modern PC
+you can get resolutions in the order of $1~ns$).
+
+It is possible to set the value of the high precision timer using the
+\textbf{glfwSetTime} function:
+
+\begin{lstlisting}
+void glfwSetTime( double time )
+\end{lstlisting}
+
+The argument \textit{time} is the time, in seconds, that the timer should
+be set to.
+
+
+%-------------------------------------------------------------------------
+\section{Sleep}
+Sometimes it can be useful to put a program to sleep for a short time. It
+can be used to reduce the CPU load in various situations. For this
+purpose, there is a function called \textbf{glfwSleep}, which has the
+following C syntax:
+
+\begin{lstlisting}
+void glfwSleep( double time )
+\end{lstlisting}
+
+The function will put the calling thread to sleep for the time specified
+with the argument \textit{time}, which has the unit seconds. When
+\textbf{glfwSleep} is called, the calling thread will be put in waiting
+state, and thus will not consume any CPU time.
+
+Note that there is generally a minimum sleep time that will be recognized
+by the operating system, which is usually coupled to the task-switching
+interval. This minimum time is often in the range $5~-~20 ms$, and it is
+not possible to make a thread sleep for less than that time. Specifying a
+very small sleep time may result in \textbf{glfwSleep} returning
+immediately, without putting the thread to sleep.
+
+
+%-------------------------------------------------------------------------
+% Image and Texture Import
+%-------------------------------------------------------------------------
+\chapter{Image and Texture Import}
+\thispagestyle{fancy}
+In many, if not most, \OpenGL\ applications you want to use pre-generated
+2D images for surface textures, light maps, transparency maps etc.
+Typically these images are stored with a standard image format in a file,
+which requires the program to decode and load the image(s) from file(s),
+which can require much work from the programmer.
+
+To make life easier for \OpenGL\ developers, \GLFW\ has built-in support
+for loading images from files.
+
+
+%-------------------------------------------------------------------------
+\section{Texture Loading}
+To load a texture from a file, you can use the function
+\textbf{glfwLoadTexture2D}:
+
+\begin{lstlisting}
+int glfwLoadTexture2D( const char *name, int flags )
+\end{lstlisting}
+
+This function reads a 2D image from a Truevision Targa format file (.TGA)
+with the name given by \textit{name}, and uploads it to texture memory.
+It is similar to the \OpenGL\ function \textbf{glTexImage2D}, except that
+the image data is read from a file instead of from main memory, and all
+the pixel format and data storage flags are handled automatically.
+
+The \textit{flags} argument can be used to control how the texture is
+loaded. If \textit{flags} is zero, the origin of the texture will be the
+lower left corner, and only one mipmap level is loaded. If \textit{flags}
+is GLFW\_ORIGIN\_UL\_BIT the origin of the texture will be the upper left
+corner. If \textit{flags} is GLFW\_BUILD\_MIPMAPS\_BIT, all mipmap levels
+will be generated and uploaded to texture memory. To combine
+GLFW\_ORIGIN\_UL\_BIT and GLFW\_BUILD\_MIPMAPS\_BIT, or them together
+(i.e. like this: \texttt{GLFW\_ORIGIN\_UL\_BIT | GLFW\_BUILD\_MIPMAPS\_BIT}).
+
+Here is an example of how to upload a texture from a file to \OpenGL\
+texture memroy, and configure the texture for trilinear interpolation
+(assuming an \OpenGL\ window has been opened successfully):
+
+\begin{lstlisting}
+    GLuint  texid;
+
+    // Generate texture object for one texture
+    glGenTextures( 1, &texid );
+
+    // Bind texture object
+    glBindTexture( GL_TEXTURE_2D, texid );
+
+    // Load texture from file, and build all mipmap levels
+    glfwLoadTexture2D( "mytexture.tga", GLFW_BUILD_MIPMAPS_BIT );
+
+    // Use trilinear interpolation for minification
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                     GL_LINEAR_MIPMAP_LINEAR );
+
+    // Use bilinear interpolation for magnification
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                     GL_LINEAR );
+
+    // Enable texturing
+    glEnable( GL_TEXTURE_2D );
+\end{lstlisting}
+
+As you can see, \textbf{glfwLoadTexture2D} is very easy to use. Since it
+can also automatically create mipmaps when required, it is also a very
+powerful function.
+
+
+%-------------------------------------------------------------------------
+\section{Image Loading}
+In certain cases it may be useful to be able to load an image into client
+memory (application memory), without directly uploading the image to
+\OpenGL\ texture memory. For example, one may wish to retain a copy of the
+texture in local memory for future use. Another example is when the image
+is not to be used as a texture at all, e.g. if it is to be used as a
+height map.
+
+\GLFW\ also offers the possibility to load an image to application memory,
+using the \textbf{glfwReadImage} function:
+
+\begin{lstlisting}
+int glfwReadImage( const char *name, GLFWimage *img, int flags )
+\end{lstlisting}
+
+The function reads the image given by the argument \textit{name}, and upon
+success stores the relevant image information and pixel data in the
+GLFWimage structure \textit{img}. The GLFWimage structure is defined as:
+
+\begin{lstlisting}
+typedef struct {
+    int Width, Height;    // Image dimensions
+    int Format;           // OpenGL pixel format
+    int BytesPerPixel;    // Number of bytes per pixel
+    unsigned char *Data;  // Pointer to pixel data
+} GLFWimage;
+\end{lstlisting}
+
+\textit{Data} points to the loaded pixel data. If the function loaded the
+image successfully, GL\_TRUE is returned, otherwise GL\_FALSE is returned.
+
+Possible flags for the \textit{flags} argument are GLFW\_ORIGIN\_UL\_BIT
+and GLFW\_NO\_RESCALE\_BIT. GLFW\_ORIGIN\_UL\_BIT works as described for
+the \textbf{glfwLoadTexture2D} function. If the GLFW\_NO\_RESCALE\_BIT
+flag is set, the image will not be rescaled to the closest larger
+$2^m~\times~2^n$ resolution, which is otherwise the default action for
+images with non-power-of-two dimenstions.
+
+When an image that was loaded with the \textbf{glfwReadImage} function is
+not used anymore (e.g. when it has been uploaded to texture memory), you
+should use the function \textbf{glfwFreeImage} to free the allocated
+memory:
+
+\begin{lstlisting}
+void glfwFreeImage( GLFWimage *img )
+\end{lstlisting}
+
+
+%-------------------------------------------------------------------------
+% OpenGL Extension Support
+%-------------------------------------------------------------------------
+\chapter{OpenGL Extension Support}
+\thispagestyle{fancy}
+One of the benefits of \OpenGL\ is that it is extensible. Independent
+hardware vendors (IHVs) may include functionality in their \OpenGL\
+implementations that exceed that of the \OpenGL\ standard.
+
+An extension is defined by:
+
+\begin{enumerate}
+\item An extension name (e.g. GL\_ARB\_multitexture).
+\item New OpenGL tokens (e.g. GL\_TEXTURE1\_ARB).
+\item New OpenGL functions (e.g. \textbf{glActiveTextureARB}).
+\end{enumerate}
+
+A list of official extensions, together with their definitions, can be
+found at the \textit{OpenGL Extension Registry}
+(\url{http://oss.sgi.com/projects/ogl-sample/registry/}).
+
+To use a certain extension, the following steps must be performed:
+
+\begin{enumerate}
+\item A compile time check for the support of the extension.
+\item A run time check for the support of the extension.
+\item Fetch function pointers for the extended OpenGL functions (done at
+      run time).
+\end{enumerate}
+
+How this is done using \GLFW\ is described in the following sections.
+Please note that this chapter covers some advanced topics, and is quite
+specific to the C programming language.
+
+
+%-------------------------------------------------------------------------
+\section{Compile Time Check}
+The compile time check is necessary to perform in order to know if the
+compiler include files have defined the necessary tokens. It is very easy
+to do. The include file \texttt{GL/gl.h} will define a constant with the
+same name as the extension, if all the extension tokens are defined. Here
+is an example of how to check for the extension GL\_ARB\_multitexture:
+
+\begin{lstlisting}
+#ifdef GL_ARB_multitexture
+    // Extension is supported by the include files
+#else
+    // Extension is not supported by the include files
+    // Update your <GL/gl.h> file!
+#endif
+\end{lstlisting}
+
+
+%-------------------------------------------------------------------------
+\section{Runtime Time Check}
+Even if the compiler include files have defined all the necessary tokens,
+the target system may not support the extension (perhaps it has a
+different graphic card with a different \OpenGL\ implementation, or it has
+an older driver). That is why it is necessary to do a run time check for
+the extension support as well. This is done with the \GLFW\ function
+\textbf{glfwExtensionSupported}, which has the C syntax:
+
+\begin{lstlisting}
+int glfwExtensionSupported( const char *extension )
+\end{lstlisting}
+
+The argument \textit{extension} is a null terminated ISO~8859-1 string
+with the extension name. \textbf{glfwExtensionSupported} returns GL\_TRUE
+if the extension is supported, otherwise it returns GL\_FALSE.
+
+Let us extend the previous example of checking for support of the
+extension GL\_ARB\_multitexture. This time we add a run time check, and a
+variable which we set to GL\_TRUE if the extension is supported, or
+GL\_FALSE if it is not supported.
+
+\begin{lstlisting}
+int multitexture_supported;
+
+#ifdef GL_ARB_multitexture
+    // Check if extension is supported at run time
+    multitexture_supported =
+        glfwExtensionSupported( "GL_ARB_multitexture" );
+#else
+    // Extension is not supported by the include files
+    // Update your <GL/gl.h> file!
+    multitexture_supported = GL_FALSE;
+#endif
+\end{lstlisting}
+
+Now it is easy to check for the extension within the program, simply do:
+
+\begin{lstlisting}
+    if( multitexture_supported )
+    {
+        // Use multi texturing
+    }
+    else
+    {
+        // Use some other solution (or fail)
+    }
+\end{lstlisting}
+
+
+%-------------------------------------------------------------------------
+\section{Fetching Function Pointers}
+Some extensions (not all) require the use of new \OpenGL\ functions, which
+are not necessarily defined by your link libraries. Thus it is necessary
+to get the function pointers dynamically at run time. This is done with
+the \GLFW\ function \textbf{glfwGetProcAddress}:
+
+\begin{lstlisting}
+void * glfwGetProcAddress( const char *procname )
+\end{lstlisting}
+
+The argument \textit{procname} is a null terminated ISO~8859-1 string
+holding the name of the \OpenGL\ function. \textbf{glfwGetProcAddress}
+returns the address to the function if the function is available,
+otherwise NULL is returned.
+
+Obviously, fetching the function pointer is trivial. For instance, if we
+want to obtain the pointer to \textbf{glActiveTextureARB}, we simply call:
+
+\begin{lstlisting}
+glActiveTextureARB = glfwGetProcAddress( "glActiveTextureARB" );
+\end{lstlisting}
+
+However, there are many possible naming and type definition conflicts
+involved with such an operation, which may result in compiler warnings or
+errors. My proposed solution is the following:
+
+\begin{itemize}
+\item Do not use the function name for the variable name. Use something
+      similar (perhaps with a prefix or suffix), and then use
+      \texttt{\#define} to map the function name to your variable.
+\item The standard type definition naming convention for function pointers
+      is \texttt{PFN\textit{xxxx}PROC}, where \texttt{\textit{xxxx}} is
+      the uppercase version of the function name (e.g.
+      \texttt{PFNGLACTIVETEXTUREARBPROC}). Either make sure that a
+      compatible \texttt{gl.h} and/or \texttt{glext.h} file is used by
+      your compiler and rely on it to do the type definitions for you, or
+      use a custom type definition naming convention (e.g.
+      \texttt{\textit{xxxx}\_T} or something) and do the type definitions
+      yourself.
+\end{itemize}
+
+Here is an example of how to do it (here we use our own function pointer
+type defintion):
+
+\begin{lstlisting}
+// Type definition of the function pointer
+typedef void (APIENTRY * GLACTIVETEXTUREARB_T) (GLenum texture);
+
+// Function pointer
+GLACTIVETEXTUREARB_T _ActiveTextureARB;
+#define glActiveTextureARB _ActiveTextureARB
+
+// Extension availability flag
+int multitexture_supported;
+
+#ifdef GL_ARB_multitexture
+    // Check if extension is supported at run time
+    if( glfwExtensionSupported( "GL_ARB_multitexture" ) )
+    {
+        // Get the function pointer
+        glActiveTextureARB = (GLACTIVETEXTUREARB_T)
+            glfwGetProcAddress( "glActiveTextureARB" );
+
+        multitexture_supported = GL_TRUE;
+    }
+    else
+    {
+        multitexture_supported = GL_FALSE;
+    }
+#else
+    // Extension is not supported by the include files
+    multitexture_supported = GL_FALSE;
+#endif
+\end{lstlisting}
+
+Please note that the code example is not 100\% complete. First of all,
+the GL\_ARB\_multitexture extension defines many more functions than the
+single function that the code example defines. Secondly, checking if an
+extension is supported using \textbf{glfwExtensionSupported} is not enough
+to ensure that the corresponding functions will be valid. You also need to
+check if the function pointers returned by \textbf{glfwGetProcAddress} are
+non-NULL values.
+
+
+%-------------------------------------------------------------------------
+\subsection{Function pointer type definitions}
+To make a function pointer type definition, you need to know the function
+prototype. This can often be found in the extension definitions (e.g. at
+the \textit{OpenGL Extension Registry}). All the functions that are
+defined for an extension are listed with their C prototype definitions
+under the section \textit{New Procedures and Functions} in the extension
+definition.
+
+For instance, if we look at the definition of the
+GL\_ARB\_texture\_compression extension, we find a list of new functions.
+One of the functions looks like this:
+
+\begin{lstlisting}
+void GetCompressedTexImageARB(enum target, int lod, void *img);
+\end{lstlisting}
+
+Like in most official \OpenGL\ documentation, all the \texttt{GL} and
+\texttt{gl} prefixes have been left out. In other words, the real function
+prototype would look like this:
+
+\begin{lstlisting}
+void glGetCompressedTexImageARB(GLenum target, GLint lod, void *img);
+\end{lstlisting}
+
+All we have to do to turn this prototype definition into a function
+pointer type definition, is to replace the function name with
+\texttt{(APIENTRY * \textit{xxxx}\_T)}, where \textit{xxxx} is the
+uppercase version of the name (according to the proposed naming
+convention). The keyword \texttt{APIENTRY} is needed to be compatible
+between different platforms. The \GLFW\ include file \texttt{GL/glfw.h}
+always makes sure that \texttt{APIENTRY} is properly defined, regardless
+of which platform the program is compiled on.
+
+In other words, for the function \textbf{glGetCompressedTexImageARB} we
+get:
+
+\begin{lstlisting}
+typedef void (APIENTRY * GLGETCOMPRESSEDTEXIMAGEARB_T)
+             (GLenum target, GLint level, void *img);
+\end{lstlisting}
+
+
+
+%-------------------------------------------------------------------------
+% Multi Threading
+%-------------------------------------------------------------------------
+\chapter{Multi Threading}
+\thispagestyle{fancy}
+Multi threading may not seem to be related to \OpenGL , and thus it may
+seem to be out of the scope of \GLFW\ to provide multi threading support.
+The initial intent of \GLFW\ was to provide the very basic functionality
+needed to create an \OpenGL\ application, but as \GLFW\ grew to be a
+platform for portable \OpenGL\ applications, it felt natural to include an
+operating system independent multi threading layer in \GLFW . Hopefully
+this will make \GLFW\ more attractive for advanced \OpenGL\ developers, as
+well as inspire more programmers to use multi threading.
+
+In this chapter you will learn about multi threading and how you can use
+\GLFW\ to create multi threaded applications.
+
+
+%-------------------------------------------------------------------------
+\section{Why Use Multi Threading?}
+Multi threading is not a new technology, neither is it an advanced
+technology. In fact, multi threading could be found as early as 1985 in
+consumer computers, namely the Amiga, whose operating system implemented
+preemptive multi threading. During the early and mid 90's, consumer level
+operating systems emerged for Intel based PCs that supported multi
+threading. Still, over a decade later, many programmers, especially game
+programmers, feel reluctant to using threading in their applications.
+Why?
+
+There are probably many reasons that one can think of to avoid multi
+threading, but many of them are based on ignorance and myths. The foremost
+reason for not using multi threading is probably that it requires a new
+way of thinking, but once accepted, threaded programming can take your
+program to new performance levels and solve many problematic timing and
+synchronization issues.
+
+In the following sections a few key reasons for using multi threaded
+programming will be presented.
+
+
+%-------------------------------------------------------------------------
+\subsection{Take advantage of multi processor systems}
+If an application is divided into several threads that can execute
+concurrently, these threads will automatically execute on separate
+processors in parallel on an SMP (symmetric multi-processing) system.
+Multi processor platforms are becoming increasingly common, and the price
+to pay is generally not much higher than for a single processor system.
+
+A multi processor system is especially appealing if you consider that in
+general, for the price of the fastest processor available you can get two
+processors of a model which perform only slightly worse.
+
+The problem with SMP systems is of course that if an application is not
+multi threaded, only one of the available processors will actually be
+used to execute the application. This is probably the most important
+aspect of multi threading. For SMP systems to be really useful, programs
+must be multi threaded.
+
+Another emerging technology known as SMT (symmetric multi threading) is
+also becoming more and more popular. In short, it takes a single physical
+processor, and divides it into several logical processors that can execute
+separate threads. The idea behind this is to better utilize all available
+CPU resources by running independent pieces of code on the same physical
+CPU.
+
+
+%-------------------------------------------------------------------------
+\subsection{Avoid unnecessary waiting}
+In many situations, an application is placed in a wait state, waiting for
+a task to complete. Examples of such situations are: waiting for a file to
+load from disk, waiting for a vertical retrace (when using a double
+buffered display, such as a \GLFW\ \OpenGL\ window), waiting for a display
+to be cleared or data to be sent to the graphic card.
+
+Some or all of these operations can be done asynchronously, if the
+conditions are right and the operating system supports it, but a simple
+and efficient way of avoiding unnecessary waits is to use multi threading.
+If there are several active threads in an application, a thread that was
+waiting for CPU time can start running as soon as another thread enters a
+wait state. This will speed up an application on both single and multi
+processor systems.
+
+
+%-------------------------------------------------------------------------
+\subsection{Improve real time performance}
+It is a known fact that an application becomes more responsive and
+exhibits less timing problems if different jobs are assigned to separate
+threads.
+
+A typical example is streaming audio: when an audio buffer is empty, it
+has to be filled with new sound again within a limited amount of time, or
+strange sound loops or clicks may be the result. If a program is
+displaying graphics, loading files and playing audio at the same time (a
+typical game), it is very difficult to guarantee that the program will
+update the audio buffers in time if everything is performed in a single
+thread. On the other hand, if the audio buffer is updated from a separate
+thread, it becomes a very simple task.
+
+
+%-------------------------------------------------------------------------
+\section{How To Use Multi Threading}
+In general, every program runs as a process, which has its own memory
+space and its own set of resources, such as opened files etc. As a
+consequence, each process is coupled with a fairly large set of state.
+When the processor changes the execution from one process to another
+process, all this state has to be changed too (this is often referred to
+as a context switch), which can be quite costly.
+
+Threads are sometimes referred to as ``lightweight processes'', which
+gives you a clue of what they are. In contrast to a process, a thread is a
+separate execution path within a process, which shares the same memory
+area and resources. This means that very little state has to be changed
+when switching execution between different threads (basically only the
+stack pointer and the processor registers). It also means that data
+exchange between threads is very simple, and there is little or no
+overhead in exchanging data, since program variables and data areas can be
+shared between threads.
+
+Writing threaded applications may be very awkward before you get used to
+it, but there are a few key rules that are fairly simple to follow:
+
+\begin{enumerate}
+\item ALWAYS assure exclusive access to data that is shared between threads!
+\item Make sure that threads are synchronized properly!
+\item NEVER busy wait!
+\end{enumerate}
+
+In the following sections you will learn how to use the functionality of
+\GLFW\ to create threads and meet these rules, and hopefully you will find
+that it is not very difficult to write a multi threaded application.
+
+
+%-------------------------------------------------------------------------
+\section{Creating Threads}
+Creating a thread in \GLFW\ is very simple. You just call the function
+\textbf{glfwCreateThread}:
+
+\begin{lstlisting}
+GLFWthread glfwCreateThread( GLFWthreadfun fun, void *arg )
+\end{lstlisting}
+
+The argument \textit{fun} is a pointer to a function which will be
+executed by the new thread, and \textit{arg} is an argument that is passed
+to the thread. \textbf{glfwCreateThread} returns a positive thread ID
+number if the thread was created successfully, or a negative number if the
+thread could not be created.
+
+When the thread function returns, the thread will die. In most cases, you
+want to know when the thread has finished. A thread can wait for another
+thread to die with the command \textbf{glfwWaitThread}:
+
+\begin{lstlisting}
+int glfwWaitThread( GLFWthread ID, int waitmode )
+\end{lstlisting}
+
+The argument \textit{ID} is the thread handle that was obtained when
+creating the thread. If \textit{waitmode} is GLFW\_NOWAIT,
+\textbf{glfwWaitThread} will return immediately with the value GL\_TRUE if
+the thread died, or GL\_FALSE if it is still alive. This can be useful if
+you only want to check if the thread is alive. If \textit{waitmode} is
+GLFW\_WAIT, \textbf{glfwWaitThread} will wait until the specified thread
+has died. Regardless of what \textit{waitmode} is, \textbf{glfwWaitThread}
+will return immediately if the thread does not exist (e.g. if the thread
+has already died or if ID is an invalid thread handle).
+
+In some situations, you may want to brutally kill a thread without waiting
+for it to finish. This can be done with \textbf{glfwDestroyThread}:
+
+\begin{lstlisting}
+void glfwDestroyThread( GLFWthread ID )
+\end{lstlisting}
+
+It should be noted that \textbf{glfwDestroyThread} is a very dangerous
+operation, which may interrupt a thread in the middle of an important
+operation, which can result in lost data or deadlocks (when a thread is
+waiting for a condition to be raised, which can never be raised). In other
+words, do not use this function unless you really have to do it, and if
+you really know what you are doing (and what the thread that you are
+killing is doing)!
+
+To sum up what we have learned so far, here is an example program which
+will print ``Hello world!'' (error checking has been left out for
+brevity):
+
+\begin{lstlisting}
+#include <stdio.h>
+#include <GL/glfw.h>
+
+void GLFWCALL HelloFun( void *arg )
+{
+    printf( "Hello " );
+}
+
+int main( void )
+{
+    GLFWthread thread;
+
+    glfwInit();
+    thread = glfwCreateThread( HelloFun, NULL );
+    glfwWaitThread( thread, GLFW_WAIT );
+    printf( "world!\n" );
+    glfwTerminate();
+
+    return 0;
+}
+\end{lstlisting}
+
+The program starts by initializing \GLFW , as always, and then it goes on
+by creating a thread that will execute the function \texttt{HelloFun}. The
+main thread then waits for the created thread to do its work and finish.
+Finally the main thread prints ``world!'', terminates \GLFW\ and exits.
+The result is that ``Hello world!'' will be printed in the console window.
+
+That was easy! Multi threading is easy!
+
+You may have noticed that we have already used a simple form of thread
+synchronization, by waiting for the child thread to die before we print
+``world!''. If we would have placed the wait command after the print
+command, there would be no way of knowing which word would be printed
+first (``Hello'' or ``world!''). Our program would then suffer from a race
+condition, which is a term used to describe a situation where two (or
+more) threads are competing to complete a task first.
+
+Later on you will learn how to do advanced thread synchronization using
+condition variables, which let threads wait for certain conditions before
+continuing execution.
 
 
 %-------------------------------------------------------------------------
