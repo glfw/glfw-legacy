@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.6 2003-11-15 21:52:54 marcus256 Exp $
+% $Id: glfwug.tex,v 1.7 2003-11-22 21:15:18 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -584,7 +584,7 @@ nummodes = glfwGetVideoModes( list, 200 );
 \end{lstlisting}
 
 The returned list is sorted, first by color depth ($RedBits + GreenBits +
-BlueBits$), and then by resolution ($Width \times Height$), with the
+BlueBits$), and then by resolution ($Width\times Height$), with the
 lowest resolution, fewest bits per pixel mode first.
 
 To get the desktop video mode, use the function
@@ -819,9 +819,7 @@ otherwise it will return GLFW\_RELEASE (or 0).
 Just as it is possible to make keys ``sticky'', it is also possible to
 make mouse buttons appear as held down until the button is checked for
 with \textbf{glfwGetMouseButton}. To enable sticky mouse buttons, call
-\textbf{glfwEnable} with the argument GLFW\_STICKY\_MOUSE\_BUTTONS. To
-disable sticky mouse buttons, call \textbf{glfwDisable} with the same
-argument.
+\textbf{glfwEnable} with the argument GLFW\_STICKY\_MOUSE\_BUTTONS.
 
 When sticky mouse buttons are enabled, a mouse button will not be released
 until it is checked with \textbf{glfwGetMouseButton}. To disable sticky
@@ -1161,7 +1159,7 @@ Possible flags for the \textit{flags} argument are GLFW\_ORIGIN\_UL\_BIT
 and GLFW\_NO\_RESCALE\_BIT. GLFW\_ORIGIN\_UL\_BIT works as described for
 the \textbf{glfwLoadTexture2D} function. If the GLFW\_NO\_RESCALE\_BIT
 flag is set, the image will not be rescaled to the closest larger
-$2^m~\times~2^n$ resolution, which is otherwise the default action for
+$2^m\times 2^n$ resolution, which is otherwise the default action for
 images with non-power-of-two dimenstions.
 
 When an image that was loaded with the \textbf{glfwReadImage} function is
@@ -1200,7 +1198,7 @@ To use a certain extension, the following steps must be performed:
 \begin{enumerate}
 \item A compile time check for the support of the extension.
 \item A run time check for the support of the extension.
-\item Fetch function pointers for the extended OpenGL functions (done at
+\item Fetch function pointers for the extended \OpenGL\ functions (done at
       run time).
 \end{enumerate}
 
@@ -1456,7 +1454,7 @@ to pay is generally not much higher than for a single processor system.
 
 A multi processor system is especially appealing if you consider that in
 general, for the price of the fastest processor available you can get two
-processors of a model which perform only slightly worse.
+processors of a model that performs only slightly worse.
 
 The problem with SMP systems is of course that if an application is not
 multi threaded, only one of the available processors will actually be
@@ -1547,7 +1545,7 @@ Creating a thread in \GLFW\ is very simple. You just call the function
 GLFWthread glfwCreateThread( GLFWthreadfun fun, void *arg )
 \end{lstlisting}
 
-The argument \textit{fun} is a pointer to a function which will be
+The argument \textit{fun} is a pointer to a function that will be
 executed by the new thread, and \textit{arg} is an argument that is passed
 to the thread. \textbf{glfwCreateThread} returns a positive thread ID
 number if the thread was created successfully, or a negative number if the
@@ -1619,8 +1617,6 @@ main thread then waits for the created thread to do its work and finish.
 Finally the main thread prints ``world!'', terminates \GLFW\ and exits.
 The result is that ``Hello world!'' will be printed in the console window.
 
-That was easy! Multi threading is easy!
-
 You may have noticed that we have already used a simple form of thread
 synchronization, by waiting for the child thread to die before we print
 ``world!''. If we would have placed the wait command after the print
@@ -1632,6 +1628,373 @@ more) threads are competing to complete a task first.
 Later on you will learn how to do advanced thread synchronization using
 condition variables, which let threads wait for certain conditions before
 continuing execution.
+
+
+%-------------------------------------------------------------------------
+\section{Data Sharing Using Mutex Objects}
+In many situations you need to protect a certain data area while reading
+or modifying it, so that other threads do not start changing or reading
+the data while you are only half way through.
+
+For instance, consider that you have a vector \textit{vec}, and a variable
+\textit{N} telling how many elements there are in the vector. What happens
+if thread $A$ adds an element to the vector at the same time as thread $B$
+is removing an element from the vector? Figure \ref{fig:nomutex} shows a
+possible scenario.
+
+\begin{figure}[hbp]
+\begin{center}
+\begin{tabular}{cc}
+\textbf{Thread A} & \textbf{Thread B}\\
+\begin{minipage}{7cm}
+\lstset{backgroundcolor=\color{codeA}}
+\vspace{0.5\baselineskip}
+\begin{lstlisting}
+N ++;
+\end{lstlisting}
+\end{minipage}
+&
+\textit{waiting to exectue}
+\\
+
+\textit{waiting to exectue}
+&
+\begin{minipage}{7cm}
+\vspace{0.5\baselineskip}
+\lstset{backgroundcolor=\color{codeB}}
+\begin{lstlisting}
+x = vec[ N-1 ];
+N --;
+\end{lstlisting}
+\end{minipage}
+\\
+
+\begin{minipage}{7cm}
+\vspace{0.5\baselineskip}
+\lstset{backgroundcolor=\color{codeA}}
+\begin{lstlisting}
+vec[ N-1 ] = y;
+\end{lstlisting}
+\end{minipage}
+&
+\textit{waiting to exectue}
+\end{tabular}
+\end{center}
+\caption{Data sharing without mutex protection}
+\label{fig:nomutex}
+\end{figure}
+
+We have created a possible race condition. The result in this case is that
+thread $B$ reads an invalid element from the vector, and thread $A$
+overwrites an already existing element, which is not what we wanted.
+
+The solution is to only let one thread have access to the vector at a
+time. This is done with mutex objects (mutex stands for \textit{mutual
+exclusion}). The proper use of mutexes eliminates race conditions. To
+create a mutex object in \GLFW , you use the function
+\textbf{glfwCreateMutex}:
+
+\begin{lstlisting}
+GLFWmutex glfwCreateMutex( void )
+\end{lstlisting}
+
+\textbf{glfwCreateMutex} returns NULL if a mutex object could not be
+created, otherwise a mutex handle is returned. To destroy a mutex object
+that is no longer in use, call \textbf{glfwDestroyMutex}:
+
+\begin{lstlisting}
+void glfwDestroyMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+Mutex objects by themselves do not contain any useful data. They act as a
+lock to any arbitrary data. Any thread can lock access to the data using
+the function \textbf{glfwLockMutex}:
+
+\begin{lstlisting}
+void glfwLockMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+The argument \textit{mutex} is the mutex handle that was obtained when
+creating the mutex. \textbf{glfwLockMutex} will block the calling thread
+until the specified mutex is available (which will be immediately, if no
+other thread has locked it).
+
+Once a mutex has been locked, no other thread is allowed to lock the
+mutex. Only one thread at a time can get access to the mutex, and only the
+thread that has locked the mutex may use or manipulate the data which the
+mutex protects. To unlock a mutex, the thread calls
+\textbf{glfwUnlockMutex}:
+
+\begin{lstlisting}
+void glfwUnlockMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+As soon as \textbf{glfwUnlockMutex} has been called, other threads may
+lock it again.
+
+Figure \ref{fig:withmutex} shows the the scenario with the two threads
+trying to access the same vector, but this time they use a mutex object
+(\textit{vecmutex}).
+
+\begin{figure}[hbp]
+\begin{center}
+\begin{tabular}{cc}
+\textbf{Thread A} & \textbf{Thread B}\\
+\begin{minipage}{7cm}
+\lstset{backgroundcolor=\color{codeA}}
+\vspace{0.5\baselineskip}
+\begin{lstlisting}
+glfwLockMutex( vecmutex );
+N ++;
+\end{lstlisting}
+\end{minipage}
+&
+\textit{waiting to exectue}
+\\
+
+\textit{waiting to exectue}
+&
+\begin{minipage}{7cm}
+\vspace{0.5\baselineskip}
+\lstset{backgroundcolor=\color{codeB}}
+\begin{lstlisting}
+glfwLockMutex( vecmutex );
+\end{lstlisting}
+\end{minipage}
+\\
+
+\begin{minipage}{7cm}
+\vspace{0.5\baselineskip}
+\lstset{backgroundcolor=\color{codeA}}
+\begin{lstlisting}
+vec[ N-1 ] = y;
+glfwUnlockMutex( vecmutex );
+\end{lstlisting}
+\end{minipage}
+&
+\textit{waiting to exectue}
+\\
+
+\textit{waiting to exectue}
+&
+\begin{minipage}{7cm}
+\vspace{0.5\baselineskip}
+\lstset{backgroundcolor=\color{codeB}}
+\begin{lstlisting}
+x = vec[ N-1 ];
+N --;
+glfwUnlockMutex( vecmutex );
+\end{lstlisting}
+\end{minipage}
+\end{tabular}
+\end{center}
+\caption{Data sharing with mutex protection}
+\label{fig:withmutex}
+\end{figure}
+
+In this example, thread $A$ successfully obtains a lock on the mutex and
+directly starts modifying the vector data. Next, thread $B$ \textit{tries}
+to get a lock on the mutex, but is placed on hold since thread $A$ has
+already locked the mutex. Thread $A$ is free to continue its work, and
+when it is done it unlocks the mutex. \textit{Now} thread $B$ locks the
+mutex and gains exclusive access to the vector data, performs its work,
+and finally unlocks the mutex.
+
+The race condition has been avoided, and the code performs as expected.
+
+
+%-------------------------------------------------------------------------
+\section{Thread Synchronization Using Condition Variables}
+Now you know how to create threads and how to safely exchange data between
+threads, but there is one important thing left to solve for multi threaded
+programs: conditional waits. Very often it is necessary for one thread to
+wait for a condition that will be satisfied by another thread.
+
+For instance, a thread~$A$ may need to wait for both thread~$B$ and
+thread~$C$ to finish a certain task before it can continue. For starters,
+we can create a mutex protecting a variable holding the number of
+completed threads:
+
+\begin{lstlisting}
+GLFWmutex mutex;
+int threadsdone;
+\end{lstlisting}
+
+Now, thread~$B$ and $C$ will lock the mutex and increase the
+\textit{threadsdone} variable by one when they are done, and then unlock
+the mutex again. Thread~$A$ can lock the mutex and check if threadsdone
+is equal to 2.
+
+If we assume that \textit{mutex} has been created successfully, the code
+for the three threads ($A$, $B$ and $C$) could be the following:
+
+Thread~$A$: Wait for both thread~$B$ and $C$ to finish.
+\lstset{backgroundcolor=\color{codeA}}
+\begin{lstlisting}
+do
+{
+    glfwLockMutex( mutex );
+    done = (threadsdone == 2);
+    glfwUnlockMutex( mutex );
+}
+while( !done );
+\end{lstlisting}
+
+Thread~$B$ and $C$: Tell thread~$A$ that I am done.
+\lstset{backgroundcolor=\color{codeB}}
+\begin{lstlisting}
+glfwLockMutex( mutex );
+threadsdone ++;
+glfwUnlockMutex( mutex );
+\end{lstlisting}
+\lstset{backgroundcolor=\color{code}}
+
+The problem is that when thread~$A$ discovers that thread~$B$ and $C$ are
+not done, it needs to check \textit{threadsdone} over and over again until
+\textit{threadsdone} is 2. We have created a busy waiting loop!
+
+The method will work without a doubt, but thread~$A$ will consume a lot of
+CPU power doing nothing. What we need is a way for thread~$A$ to halt
+until thread~$B$ or $C$ tells it to re-evaluate the conditions again. This
+is exactly what condition variables do.
+
+\GLFW\ supports three condition variable operations: wait, signal and
+broadcast. One or more threads may wait to be woken up on a condition, and
+one ore more threads may signal or broadcast a condition. The difference
+between signal and broadcast is that broadcasting a condition wakes up all
+waiting threads (in an unspecified order, which is decided by task
+scheduling rules), while signaling a condition only wakes up one waiting
+thread (again, which one is unspecified).
+
+An important property of condition variables, which separates them from
+other signaling objects such as events, is that only \textit{currently
+waiting} threads are affected by a condition. A condition is ``forgotten''
+as soon as it has been signaled or broadcasted. That is why a condition
+variable is always associated with a mutex, which protects additional
+condition information, such as the ``done'' variable construct described
+above.
+
+This may all be confusing at first, but you will see that condition
+variables are both simple and powerful. They can be used to construct more
+abstract objects such as semaphores, events or gates (which is why \GLFW\
+does not support semaphores natively, for instance).
+
+Before we go on by solving the busy waiting scenario, let us go through
+the \GLFW\ condition variable functions. Just like for mutexes, you can
+create and destroy condition variable objects. The functions for doing
+this are \textbf{glfwCreateCond} and \textbf{glfwDestroyCond}:
+
+\begin{lstlisting}
+GLFWcond glfwCreateCond( void )
+\end{lstlisting}
+
+\begin{lstlisting}
+void glfwDestroyCond( GLFWcond cond )
+\end{lstlisting}
+
+\textbf{glfwCreateCond} returns NULL if a condition variable object could
+not be created, otherwise a condition variable handle is returned. To
+destroy a condition variable that is no longer in use, call
+\textbf{glfwDestroyCond}.
+
+To wait for a condition variable, you use \textbf{glfwWaitCond}, which has
+the C syntax:
+
+\begin{lstlisting}
+void glfwWaitCond( GLFWcond cond, GLFWmutex mutex, double timeout )
+\end{lstlisting}
+
+When \textbf{glfwWaitCond} is called, the locked mutex specified by
+\textit{mutex} will be unlocked, and the thread will be placed in a wait
+state until it receives the condition \textit{cond}. As soon as the
+waiting thread is woken up, the mutex \textit{mutex} will be locked again.
+If \textit{timeout} is GLFW\_INFINITY, \textbf{glfwWaitCond} will wait
+until the condition \textit{cond} is received. If \textit{timemout} is a
+positive time (in seconds), \textbf{glfwWaitCond} will wait until the
+condition cond is received or the specified time has passed.
+
+To signal or broadcast a condition variable, you use the functions
+\textbf{glfwSignalCond} and \textbf{glfwBroadcastCond}, respectively:
+
+\begin{lstlisting}
+void glfwSignalCond( GLFWcond cond )
+\end{lstlisting}
+
+\begin{lstlisting}
+void glfwBroadcastCond( GLFWcond cond )
+\end{lstlisting}
+
+\textbf{glfwSignalCond} will wake up one threads that is waiting for the
+condition \textit{cond}. \textbf{glfwBroadcastCond} will wake up all
+threads that are waiting for the condition cond.
+
+Now that we have the tools, let us see what we can do to solve the busy
+waiting situation. First, we add a condition variable to our data set:
+
+\begin{lstlisting}
+GLFWcond  cond;
+GLFWmutex mutex;
+int threadsdone;
+\end{lstlisting}
+
+If we assume that \textit{mutex} and \textit{cond} have been created
+successfully, the code for the three threads ($A$, $B$ and $C$) could be
+the following:
+
+Thread~$A$: Wait for both thread~$B$ and $C$ to finish.
+\lstset{backgroundcolor=\color{codeA}}
+\begin{lstlisting}
+glfwLockMutex( mutex );
+do
+{
+    done = (threadsdone == 2);
+    if( !done )
+    {
+        glfwWaitCond( cond, mutex, GLFW_INFINITY );
+    }
+}
+while( !done );
+glfwUnlockMutex( mutex );
+\end{lstlisting}
+
+Thread~$B$ and $C$: Tell thread~$A$ that I am done.
+\lstset{backgroundcolor=\color{codeB}}
+\begin{lstlisting}
+glfwLockMutex( mutex );
+threadsdone ++;
+glfwUnlockMutex( mutex );
+glfwSignalCond( cond );
+\end{lstlisting}
+\lstset{backgroundcolor=\color{code}}
+
+With the addition of a condition variable, the busy waiting loop turned
+into a nice condition waiting loop, and thread~$A$ no longer wastes any
+CPU time. Also note that the mutex locking and unlocking is moved outside
+of the waiting loop. This is because \textbf{glfwWaitCond} effectively
+performs the necessary mutex locking and unlocking for us.
+
+
+%-------------------------------------------------------------------------
+\section{Calling GLFW Functions From Multiple Threads}
+The current release of \GLFW\ is not 100\% thread safe. In other words,
+most \GLFW\ functions may cause conflicts and undefined behaviour if they
+are called from different threads.
+
+To avoid conflicts, only the following \GLFW\ API functions should be
+regarded as thread safe (i.e. they can be called from any thread at any
+time):
+
+\begin{enumerate}
+\item All functions that deal with threads, mutexes and condition
+      variables (e.g. \textbf{glfwCreateThread}, \textbf{glfwLockMutex}
+      etc).
+\item The timing function \textbf{glfwSleep}.
+\end{enumerate}
+
+All other \GLFW\ API function calls should be done from a single thread.
+This also makes for better future compatibility, since future versions of
+\GLFW\ may implement per thread window contexts (much in the same way as
+\OpenGL\ has per thread rendering contexts), for instance.
 
 
 %-------------------------------------------------------------------------
