@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.2 2003-11-28 21:58:48 marcus256 Exp $
+// $Id: platform.h,v 1.3 2003-12-01 21:39:48 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -42,7 +42,7 @@
 
 
 // Include files
-
+#include <time.h>
 
 // GLFW+GL+GLU defines
 #include "../../include/GL/glfw.h"
@@ -158,8 +158,9 @@ GLFWGLOBAL struct {
 // Timer status
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    double             Period;
-    unsigned long long t0;
+    double    Period;
+    long long t0;
+    int       HasRDTSC;
 } _glfwTimer;
 
 
