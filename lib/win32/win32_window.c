@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.18 2005-01-21 18:47:28 marcus256 Exp $
+// $Id: win32_window.c,v 1.19 2005-01-22 13:00:04 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -657,6 +657,43 @@ static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
 }
 
 
+//========================================================================
+// _glfwInitWGLExtensions() - Initialize WGL-specific extensions
+//========================================================================
+
+static void _glfwInitWGLExtensions( void )
+{
+    GLubyte *extensions;
+    int     has_swap_control;
+
+    // Initialize OpenGL extension: WGL_EXT_swap_control
+    has_swap_control = GL_FALSE;
+    extensions = (GLubyte *) glGetString( GL_EXTENSIONS );
+    if( extensions != NULL )
+    {
+        has_swap_control = _glfwStringInExtensionString(
+                               "WGL_EXT_swap_control",
+                               extensions
+                           );
+    }
+    if( !has_swap_control )
+    {
+        has_swap_control = _glfwPlatformExtensionSupported(
+                               "WGL_EXT_swap_control"
+                           );
+    }
+    if( has_swap_control )
+    {
+        _glfwWin.SwapInterval = (WGLSWAPINTERVALEXT_T)
+            wglGetProcAddress("wglSwapIntervalEXT");
+    }
+    else
+    {
+        _glfwWin.SwapInterval = NULL;
+    }
+}
+
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -888,9 +925,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     glClear( GL_COLOR_BUFFER_BIT );
     _glfw_SwapBuffers( _glfwWin.DC );
 
-    // Initialize OpenGL extension: WGL_EXT_swap_control
-    _glfwWin.SwapInterval = (WGLSWAPINTERVALEXT_T)
-                            wglGetProcAddress("wglSwapIntervalEXT");
+    // Initialize WGL-specific OpenGL extensions
+    _glfwInitWGLExtensions();
 
     return GL_TRUE;
 }
