@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_time.c,v 1.3 2003-11-28 22:01:30 marcus256 Exp $
+// $Id: dos_time.c,v 1.4 2003-12-01 21:40:43 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -39,14 +39,14 @@
 // We use the __i386 define later in the code. Check if there are any
 // other defines that hint that we are compiling for 32-bit x86.
 #ifndef __i386
-#if defined(__i386__) || defined(i386) || defined(X86) || defined(_M_IX86)
-#define __i386
-#endif
+ #if defined(__i386__) || defined(i386) || defined(X86) || defined(_M_IX86)
+  #define __i386
+ #endif
 #endif // __i386
 
 // Should we use inline x86 assembler?
 #if defined(__i386) && defined(__GNUC__)
-#define _USE_X86_ASM
+ #define _USE_X86_ASM
 #endif
 
 
@@ -113,19 +113,11 @@ static int _glfwCPUID( unsigned int ID, unsigned int *a, unsigned int *b,
 #endif
 
     // Common code for all compilers
-#ifdef _USE_X86_ASM
-
     *a = local_a;
     *b = local_b;
     *c = local_c;
     *d = local_d;
     return GL_TRUE;
-
-#else
-
-    return GL_FALSE;
-
-#endif // _USE_X86_ASM
 }
 
 #endif // _USE_X86_ASM
@@ -161,11 +153,12 @@ static int _glfwHasRDTSC( void )
     _glfwCPUID( 1, &cpu_signature, &cpu_brandID, &dummy, &feature_flags );
 
     // Is RDTSC supported?
-    if( feature_flags & 0x00000010 )
+    if( !(feature_flags & 0x00000010) )
     {
-        return GL_TRUE;
+        return GL_FALSE;
     }
-    return GL_FALSE;
+
+    return GL_TRUE;
 
 #else
 
@@ -208,9 +201,32 @@ static int _glfwHasRDTSC( void )
 
 int _glfwInitTimer( void )
 {
-    // TODO
-    _glfwTimer.Period = 1.0/1193181.0;
-    _glfwTimer.t0 = 0;
+    clock_t   t, t1, t2;
+    long long c1, c2;
+
+    // Do we have RDTSC?
+    _glfwTimer.HasRDTSC = _glfwHasRDTSC();
+    if( _glfwTimer.HasRDTSC )
+    {
+        // Measure the CPU clock with the raw DOS clock (18.2 Hz)
+        t = clock();
+        while( (t1=clock()) == t );
+        _RDTSC( _HIGH(c1), _LOW(c1) );
+        t = t1+CLOCKS_PER_SEC/3;
+        while( (t2=clock()) < t );
+        _RDTSC( _HIGH(c2), _LOW(c2) );
+
+        // Calculate CPU clock period
+        _glfwTimer.Period = (double)(t2-t1) /
+                            (CLOCKS_PER_SEC * (double)(c2-c1));
+        _RDTSC( _HIGH(_glfwTimer.t0), _LOW(_glfwTimer.t0) );
+    }
+    else
+    {
+        // Use the raw DOS clock (18.2 Hz)
+        _glfwTimer.Period = 1.0 / CLOCKS_PER_SEC;
+        _glfwTimer.t0 = clock();
+    }
 
     return 1;
 }
@@ -222,7 +238,7 @@ int _glfwInitTimer( void )
 
 void _glfwTerminateTimer( void )
 {
-    // TODO
+    // Nothing to do here
 }
 
 
@@ -236,10 +252,20 @@ void _glfwTerminateTimer( void )
 
 double _glfwPlatformGetTime( void )
 {
-    // TODO
-    static long long t = 0;
-    t += 20000;
-    return (t-_glfwTimer.t0)*_glfwTimer.Period;
+    long long t_now;
+
+    // Get current clock count
+    if( _glfwTimer.HasRDTSC )
+    {
+        _RDTSC( _HIGH(t_now), _LOW(t_now) );
+    }
+    else
+    {
+        t_now = (long long) clock();
+    }
+
+    // Convert to seconds
+    return (t_now-_glfwTimer.t0) * _glfwTimer.Period;
 }
 
 
@@ -249,7 +275,20 @@ double _glfwPlatformGetTime( void )
 
 void _glfwPlatformSetTime( double t )
 {
-    // TODO
+    long long t_now;
+
+    // Get current clock count
+    if( _glfwTimer.HasRDTSC )
+    {
+        _RDTSC( _HIGH(t_now), _LOW(t_now) );
+    }
+    else
+    {
+        t_now = (long long) clock();
+    }
+
+    // Set timer
+    _glfwTimer.t0 = t_now - (long long)(t/_glfwTimer.Period);
 }
 
 
