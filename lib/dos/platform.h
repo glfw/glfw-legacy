@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+// $Id: platform.h,v 1.2 2003-11-28 21:58:48 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -47,9 +47,14 @@
 // GLFW+GL+GLU defines
 #include "../../include/GL/glfw.h"
 
+// DOS Mesa (include this AFTER gl.h!)
+#include <GL/dmesa.h>
+
 
 // Stack size for each thread (in bytes)
 #define _GLFW_TASK_STACK_SIZE 50000
+
+
 
 
 //========================================================================
@@ -107,6 +112,9 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
+    DMesaVisual  Visual;
+    DMesaContext Context;
+    DMesaBuffer  Buffer;
 
     // Platform specific extensions
 

@@ -30,15 +30,105 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.2 2003-11-26 20:50:42 marcus256 Exp $
+// $Id: dos_window.c,v 1.3 2003-11-28 21:59:06 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
 
 
+
+//************************************************************************
+//****                           PC_HW                                ****
+//************************************************************************
+
+#include <dpmi.h>
+#include <fcntl.h>
+#include <sys/stat.h> /* for mode definitions */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
+/*
+ * standard redirection
+ */
+static char *outname = "c:\\stdout00.txt";
+static int h_out, h_outbak;
+static char *errname = "c:\\stderr00.txt";
+static int h_err, h_errbak;
+
+int pc_open_stdout (void)
+{
+// tmpnam(outname);
+
+ if ((h_out=open(outname, O_WRONLY | O_CREAT | O_TEXT | O_TRUNC, S_IREAD | S_IWRITE)) > 0) {
+    h_outbak = dup(STDOUT_FILENO);
+    fflush(stdout);
+    dup2(h_out, STDOUT_FILENO);
+ }
+
+ return h_out;
+}
+
+void pc_close_stdout (void)
+{
+ FILE *f;
+ char *line = alloca(512);
+
+ if (h_out > 0) {
+    dup2(h_outbak, STDOUT_FILENO);
+    close(h_out);
+    close(h_outbak);
+
+    f = fopen(outname, "rt");
+    while (fgets(line, 512, f)) {
+          fputs(line, stdout);
+    }
+    fclose(f);
+
+    remove(outname);
+ }
+}
+
+int pc_open_stderr (void)
+{
+// tmpnam(errname);
+
+ if ((h_err=open(errname, O_WRONLY | O_CREAT | O_TEXT | O_TRUNC, S_IREAD | S_IWRITE)) > 0) {
+    h_errbak = dup(STDERR_FILENO);
+    fflush(stderr);
+    dup2(h_err, STDERR_FILENO);
+ }
+
+ return h_err;
+}
+
+void pc_close_stderr (void)
+{
+ FILE *f;
+ char *line = alloca(512);
+
+ if (h_err > 0) {
+    dup2(h_errbak, STDERR_FILENO);
+    close(h_err);
+    close(h_errbak);
+
+    f = fopen(errname, "rt");
+    while (fgets(line, 512, f)) {
+          fputs(line, stderr);
+    }
+    fclose(f);
+
+    remove(errname);
+ }
+}
+
+
+
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
 
 //========================================================================
 // _glfwTranslateChar() - Translates a DOS key code to Unicode
@@ -78,8 +168,106 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     int accumbluebits, int accumalphabits, int auxbuffers, int stereo,
     int refreshrate )
 {
-    // TODO
-    return GL_FALSE;
+    GLint params[2];
+
+    // Clear window resources
+    _glfwWin.Visual  = NULL;
+    _glfwWin.Context = NULL;
+    _glfwWin.Buffer  = NULL;
+
+    // For now, we only support 640x480, 800x600 and 1024x768
+    if( (width*height) < (700*500) )
+    {
+        width  = 640;
+        height = 480;
+    }
+    else if( (width*height) < (900*700) )
+    {
+        width  = 800;
+        height = 600;
+    }
+    else
+    {
+        width  = 1024;
+        height = 768;
+    }
+
+    // For now, we only support 5,6,5 and 8,8,8 color formats
+    if( (redbits+greenbits+bluebits) < 20 )
+    {
+        redbits   = 5;
+        greenbits = 6;
+        bluebits  = 5;
+    }
+    else
+    {
+        redbits   = 8;
+        greenbits = 8;
+        bluebits  = 8;
+    }
+
+    // For now, we always set refresh rate = 0 (default)
+    refreshrate = 0;
+
+    // Create visual
+    _glfwWin.Visual = DMesaCreateVisual(
+                        width, height,
+                        redbits+greenbits+bluebits,
+                        refreshrate,
+                        GL_TRUE,                    // Double buffer
+                        GL_TRUE,                    // RGB mode
+                        alphabits?GL_TRUE:GL_FALSE, // Alpha buffer?
+                        depthbits,
+                        stencilbits,
+                        (accumredbits+accumgreenbits+
+                         accumbluebits+accumalphabits)>>2
+                      );
+    if( _glfwWin.Visual == NULL )
+    {
+        printf("Unable to create visual\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Get (and remember) actual screen size
+    DMesaGetIntegerv( DMESA_GET_SCREEN_SIZE, params );
+    width  = params[0];
+    height = params[1];
+    _glfwWin.Width  = width;
+    _glfwWin.Height = height;
+
+    // Create context
+    _glfwWin.Context = DMesaCreateContext( _glfwWin.Visual, NULL );
+    if( _glfwWin.Context == NULL )
+    {
+        printf("Unable to create context\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // stdout/srderr redirection
+    pc_open_stdout();
+    pc_open_stderr();
+
+    // Create buffer
+    _glfwWin.Buffer = DMesaCreateBuffer( _glfwWin.Visual, 0, 0,
+                                         width, height );
+    if( _glfwWin.Buffer == NULL )
+    {
+        printf("Unable to create buffer\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Make current context
+    if( !DMesaMakeCurrent( _glfwWin.Context, _glfwWin.Buffer ) )
+    {
+        printf("Unable to make current context\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
 }
 
 
@@ -89,7 +277,30 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
 void _glfwPlatformCloseWindow( void )
 {
-    // TODO
+    // Destroy buffer
+    if( _glfwWin.Buffer != NULL )
+    {
+        DMesaDestroyBuffer( _glfwWin.Buffer );
+        _glfwWin.Buffer = NULL;
+
+        // stdout/srderr redirection
+        pc_close_stdout();
+        pc_close_stderr();
+    }
+
+    // Destroy context
+    if( _glfwWin.Context != NULL )
+    {
+        DMesaDestroyContext( _glfwWin.Context );
+        _glfwWin.Context = NULL;
+    }
+
+    // Destroy visual
+    if( _glfwWin.Visual != NULL )
+    {
+        DMesaDestroyVisual( _glfwWin.Visual );
+        _glfwWin.Visual = NULL;
+    }
 }
 
 
@@ -150,7 +361,7 @@ void _glfwPlatformRestoreWindow( void )
 
 void _glfwPlatformSwapBuffers( void )
 {
-    // TODO
+    DMesaSwapBuffers( _glfwWin.Buffer );
 }
 
 
@@ -172,8 +383,6 @@ void _glfwPlatformRefreshWindowParams( void )
 {
     GLint     x;
     GLboolean b;
-
-    // TODO
 
     // Fill out information
     _glfwWin.Accelerated    = GL_TRUE;
