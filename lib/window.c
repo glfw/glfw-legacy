@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.12 2004-08-31 19:20:37 marcus256 Exp $
+// $Id: window.c,v 1.13 2005-01-10 22:06:11 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -279,6 +279,9 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
+    // Flag that window is now opened
+    _glfwWin.Opened = GL_TRUE;
+
     // Get window parameters (such as color buffer bits etc)
     _glfwPlatformRefreshWindowParams();
 
@@ -289,9 +292,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwWin.Has_GL_SGIS_generate_mipmap =
         (_glfwWin.GLVerMajor >= 2) || (_glfwWin.GLVerMinor >= 4) ||
         glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
-
-    // Flag that window is now opened
-    _glfwWin.Opened = GL_TRUE;
 
     // If full-screen mode was requested, disable mouse cursor
     if( mode == GLFW_FULLSCREEN )
