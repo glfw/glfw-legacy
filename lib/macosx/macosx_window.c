@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.5 2003-11-06 00:07:25 elmindreda Exp $
+// $Id: macosx_window.c,v 1.6 2003-11-06 14:44:04 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -306,8 +306,11 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                         NULL,
                                         &mouseLocation ) == noErr )
                 {
-                    _glfwInput.MousePosX = mouseLocation.x;
-                    _glfwInput.MousePosY = mouseLocation.y;
+                    Rect structure, content;
+                    GetWindowBounds(_glfwWin.MacWindow, kWindowStructureRgn, &structure);
+                    GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
+                    _glfwInput.MousePosX = mouseLocation.x - content.left + structure.left;
+                    _glfwInput.MousePosY = mouseLocation.y - content.top + structure.top;
                     return noErr;
                 }
             }
