@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_fullscreen.c,v 1.3 2003-08-30 19:58:47 marcus256 Exp $
+// $Id: x11_fullscreen.c,v 1.4 2003-09-04 19:55:15 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -222,7 +222,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #endif
 
     // Get display and screen
-    if( _glfwInitialized && _glfwWin.Opened )
+    if( _glfwWin.Opened )
     {
         dpy = _glfwWin.Dpy;
         closedpy = 0;
@@ -363,7 +363,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 #endif
 
     // Get display and screen
-    if( _glfwInitialized && _glfwWin.Opened )
+    if( _glfwWin.Opened )
     {
         dpy = _glfwWin.Dpy;
         closedpy = 0;
