@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.7 2003-11-08 13:21:29 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.8 2003-11-12 22:29:04 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -2343,17 +2343,24 @@ in software.
 
 
 %-------------------------------------------------------------------------
-\subsection{glfwX}
+\pagebreak
+\section{Miscellaneous}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwEnable/glfwDisable}
 
 \textbf{C language syntax}
 \begin{lstlisting}
-void glfwX( void )
+void glfwEnable( int token )
+void glfwDisable( int token )
 \end{lstlisting}
 
 \begin{refparameters}
 \begin{description}
-\item [\textit{x}]\ \\
-  x
+\item [\textit{token}]\ \\
+  A value specifying a feature to enable or disable. Valid tokens are
+  listed in table \ref{tab:enable}.
 \end{description}
 \end{refparameters}
 
@@ -2362,20 +2369,155 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-x
+\textbf{glfwEnable} is used to enable a certain feature, while
+\textbf{glfwDisable} is used to disable it. Below follows a description of
+each feature.
+\end{refdescription}
+
+
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{5.0cm}|p{3.0cm}|} \hline \raggedright
+\textbf{Name} & \textbf{Controls} & \textbf{Default}\\ \hline
+\hyperlink{lnk:autopollevents}{GLFW\_AUTO\_POLL\_EVENTS}         & Automatic event polling when \textbf{glfwSwapBuffers} is called & Enabled\\ \hline
+\hyperlink{lnk:keyrepeat}{GLFW\_KEY\_REPEAT}                     & Keyboard key repeat                                    & Disabled\\ \hline
+\hyperlink{lnk:mousecursor}{GLFW\_MOUSE\_CURSOR}                 & Mouse cursor visibility                                & Enabled in windowed mode. Disabled in fullscreen mode.\\ \hline
+\hyperlink{lnk:stickykeys}{GLFW\_STICKY\_KEYS}                   & Keyboard key ``stickiness''                            & Disabled\\ \hline
+\hyperlink{lnk:stickymousebuttons}{GLFW\_STICKY\_MOUSE\_BUTTONS} & Mouse button ``stickiness''                            & Disabled\\ \hline
+\hyperlink{lnk:systemkeys}{GLFW\_SYSTEM\_KEYS}                   & Special system key actions                             & Enabled\\ \hline
+\end{tabular}
+\end{center}
+\caption{Tokens for \textbf{glfwEnable}/\textbf{glfwDisable}}
+\label{tab:enable}
+\end{table}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:autopollevents}{}
+\textbf{GLFW\_AUTO\_POLL\_EVENTS}\\
+When GLFW\_AUTO\_POLL\_EVENTS is enabled, \textbf{glfwPollEvents} is
+automatically called each time that \textbf{glfwSwapBuffers} is called.
+
+When GLFW\_AUTO\_POLL\_EVENTS is disabled, calling
+\textbf{glfwSwapBuffers} will not result in a call to
+\textbf{glfwPollEvents}. This can be useful if \textbf{glfwSwapBuffers}
+needs to be called from within a callback function, since calling
+\textbf{glfwPollEvents} from a callback function is not allowed.
+\end{mysamepage}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:keyrepeat}{}
+\textbf{GLFW\_KEY\_REPEAT}\\
+When GLFW\_KEY\_REPEAT is enabled, the key and character callback
+functions are called repeatedly when a key is held down long enough
+(according to the system key repeat configuration).
+
+When GLFW\_KEY\_REPEAT is disabled, the key and character callback
+functions are only called once when a key is pressed (and once when it is
+released).
+\end{mysamepage}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:mousecursor}{}
+\textbf{GLFW\_MOUSE\_CURSOR}\\
+When GLFW\_MOUSE\_CURSOR is enabled, the mouse cursor is visible, and
+mouse coordinates are relative to the upper left corner of the client area
+of the \GLFW\ window. The coordinates are limited to the client area of
+the window.
+
+When GLFW\_MOUSE\_CURSOR is disabled, the mouse cursor is invisible, and
+mouse coordinates are not limited to the drawing area of the window. It is
+as if the mouse coordinates are recieved directly from the mouse, without
+being restricted or manipulated by the windowing system.
+\end{mysamepage}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:stickykeys}{}
+\textbf{GLFW\_STICKY\_KEYS}\\
+When GLFW\_STICKY\_KEYS is enabled, keys which are pressed will not be
+released until they are physically released and checked with
+\textbf{glfwGetKey}. This behavior makes it possible to catch keys that
+were pressed and then released again between two calls to
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers}, which would otherwise
+have been reported as released. Care should be taken when using this mode,
+since keys that are not checked with \textbf{glfwGetKey} will never be
+released. Note also that enabling GLFW\_STICKY\_KEYS does not affect the
+behavior of the keyboard callback functionality.
+
+When GLFW\_STICKY\_KEYS is disabled, the status of a key that is reported
+by \textbf{glfwGetKey} is always the physical state of the key. Disabling
+GLFW\_STICKY\_KEYS also clears the sticky information for all keys.
+\end{mysamepage}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:stickymousebuttons}{}
+\textbf{GLFW\_STICKY\_MOUSE\_BUTTONS}\\
+When GLFW\_STICKY\_MOUSE\_BUTTONS is enabled, mouse buttons that are
+pressed will not be released until they are physically released and
+checked with \textbf{glfwGetMouseButton}. This behavior makes it
+possible to catch mouse buttons which were pressed and then released again
+between two calls to \textbf{glfwPollEvents} or \textbf{glfwSwapBuffers},
+which would otherwise have been reported as released. Care should be taken
+when using this mode, since mouse buttons that are not checked with
+\textbf{glfwGetMouseButton} will never be released. Note also that
+enabling GLFW\_STICKY\_MOUSE\_BUTTONS does not affect the behavior of the
+mouse button callback functionality.
+
+When GLFW\_STICKY\_MOUSE\_BUTTONS is disabled, the status of a mouse
+button that is reported by \textbf{glfwGetMouseButton} is always the
+physical state of the mouse button. Disabling GLFW\_STICKY\_MOUSE\_BUTTONS
+also clears the sticky information for all mouse buttons.
+\end{mysamepage}
+
+
+\bigskip\begin{mysamepage}\hypertarget{lnk:systemkeys}{}
+\textbf{GLFW\_SYSTEM\_KEYS}\\
+When GLFW\_SYSTEM\_KEYS is enabled, pressing standard system key
+combinations, such as \texttt{ALT+TAB} under Windows, will give the normal
+behavior. Note that when \texttt{ALT+TAB} is issued under Windows in this
+mode so that the \GLFW\ application is deselected when \GLFW\ is operating
+in fullscreen mode, the \GLFW\ application window will be minimized and
+the video mode will be set to the original desktop mode. When the \GLFW\
+application is re-selected, the video mode will be set to the \GLFW\ video
+mode again.
+
+When GLFW\_SYSTEM\_KEYS is disabled, pressing standard system key
+combinations will have no effect, since those key combinations are blocked
+by \GLFW . This mode can be useful in situations when the \GLFW\ program
+must not be interrupted (normally for games in fullscreen mode).
+\end{mysamepage}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetNumberOfProcessors}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetNumberOfProcessors( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the number of active processors in the system.
+\end{refreturn}
+
+\begin{refdescription}
+The function determines the number of active processors in the system.
 \end{refdescription}
 
 \begin{refnotes}
-none
+Systems with several logical processors per physical processor, also
+known as SMT (Symmetric Multi Threading) processors, will report the
+number of logical processors.
 \end{refnotes}
-
 
 
 %-------------------------------------------------------------------------
 % List of tables
 %-------------------------------------------------------------------------
 \listoftables
-\thispagestyle{fancy}
 
 
 \end{document}
