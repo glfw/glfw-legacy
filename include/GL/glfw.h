@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.13 2004-04-11 11:40:32 marcus256 Exp $
+// $Id: glfw.h,v 1.14 2004-07-09 20:08:54 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -257,29 +257,40 @@ extern "C" {
 #define GLFW_KEY_LAST         GLFW_KEY_KP_ENTER
 
 // Mouse button definitions
-#define GLFW_MOUSE_BUTTON_LEFT    0
-#define GLFW_MOUSE_BUTTON_RIGHT   1
-#define GLFW_MOUSE_BUTTON_MIDDLE  2
-#define GLFW_MOUSE_BUTTON_LAST    GLFW_MOUSE_BUTTON_MIDDLE
+#define GLFW_MOUSE_BUTTON_1      0
+#define GLFW_MOUSE_BUTTON_2      1
+#define GLFW_MOUSE_BUTTON_3      2
+#define GLFW_MOUSE_BUTTON_4      3
+#define GLFW_MOUSE_BUTTON_5      4
+#define GLFW_MOUSE_BUTTON_6      5
+#define GLFW_MOUSE_BUTTON_7      6
+#define GLFW_MOUSE_BUTTON_8      7
+#define GLFW_MOUSE_BUTTON_LAST   GLFW_MOUSE_BUTTON_8
+
+// Mouse button aliases
+#define GLFW_MOUSE_BUTTON_LEFT   GLFW_MOUSE_BUTTON_1
+#define GLFW_MOUSE_BUTTON_RIGHT  GLFW_MOUSE_BUTTON_2
+#define GLFW_MOUSE_BUTTON_MIDDLE GLFW_MOUSE_BUTTON_3
+
 
 // Joystick identifiers
-#define GLFW_JOYSTICK_1           0
-#define GLFW_JOYSTICK_2           1
-#define GLFW_JOYSTICK_3           2
-#define GLFW_JOYSTICK_4           3
-#define GLFW_JOYSTICK_5           4
-#define GLFW_JOYSTICK_6           5
-#define GLFW_JOYSTICK_7           6
-#define GLFW_JOYSTICK_8           7
-#define GLFW_JOYSTICK_9           8
-#define GLFW_JOYSTICK_10          9
-#define GLFW_JOYSTICK_11          10
-#define GLFW_JOYSTICK_12          11
-#define GLFW_JOYSTICK_13          12
-#define GLFW_JOYSTICK_14          13
-#define GLFW_JOYSTICK_15          14
-#define GLFW_JOYSTICK_16          15
-#define GLFW_JOYSTICK_LAST        GLFW_JOYSTICK_16
+#define GLFW_JOYSTICK_1          0
+#define GLFW_JOYSTICK_2          1
+#define GLFW_JOYSTICK_3          2
+#define GLFW_JOYSTICK_4          3
+#define GLFW_JOYSTICK_5          4
+#define GLFW_JOYSTICK_6          5
+#define GLFW_JOYSTICK_7          6
+#define GLFW_JOYSTICK_8          7
+#define GLFW_JOYSTICK_9          8
+#define GLFW_JOYSTICK_10         9
+#define GLFW_JOYSTICK_11         10
+#define GLFW_JOYSTICK_12         11
+#define GLFW_JOYSTICK_13         12
+#define GLFW_JOYSTICK_14         13
+#define GLFW_JOYSTICK_15         14
+#define GLFW_JOYSTICK_16         15
+#define GLFW_JOYSTICK_LAST       GLFW_JOYSTICK_16
 
 
 //========================================================================
