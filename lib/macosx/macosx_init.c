@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.3 2003-10-30 20:49:51 marcus256 Exp $
+// $Id: macosx_init.c,v 1.4 2003-11-06 00:07:25 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -113,9 +113,10 @@ int _glfwPlatformInit( void )
 
     _glfwWin.MacWindow = NULL;
     _glfwWin.AGLContext = NULL;
+    _glfwWin.WindowFunctions = NULL;
 
     _glfwInput.Modifiers = 0;
-
+    
     return GL_TRUE;
 }
 

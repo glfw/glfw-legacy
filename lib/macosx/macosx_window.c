@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.4 2003-10-30 20:49:51 marcus256 Exp $
+// $Id: macosx_window.c,v 1.5 2003-11-06 00:07:25 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -370,7 +370,7 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
     {
         if ( command.commandID == kHICommandQuit )
         {
-            exit(EXIT_SUCCESS);
+            glfwCloseWindow();
         }
     }
 
@@ -454,7 +454,7 @@ int  _glfwPlatformOpenWindow( int width,
 
     // TO DO: Refactor this function!
 
-    _glfwWin.WindowFunctions = (mode == GLFW_FULLSCREEN ? _glfwMacFSWindowFunctions : _glfwMacDWWindowFunctions);
+    _glfwWin.WindowFunctions = (mode == GLFW_FULLSCREEN ? &_glfwMacFSWindowFunctions : &_glfwMacDWWindowFunctions);
 
     // create pixel format attribute list
 
@@ -606,35 +606,35 @@ int  _glfwPlatformOpenWindow( int width,
 
 void _glfwPlatformCloseWindow( void )
 {
-    if ( !_glfwWin.WindowFunctions )
+    if ( _glfwWin.WindowFunctions == NULL )
         return;
 
-    _glfwWin.WindowFunctions.CloseWindow();
+    _glfwWin.WindowFunctions->CloseWindow();
 }
 
 void _glfwPlatformSetWindowTitle( const char *title )
 {
-    _glfwWin.WindowFunctions.SetWindowTitle( title );
+    _glfwWin.WindowFunctions->SetWindowTitle( title );
 }
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    _glfwWin.WindowFunctions.SetWindowSize( width, height );
+    _glfwWin.WindowFunctions->SetWindowSize( width, height );
 }
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    _glfwWin.WindowFunctions.SetWindowPos( x, y );
+    _glfwWin.WindowFunctions->SetWindowPos( x, y );
 }
 
 void _glfwPlatformIconifyWindow( void )
 {
-    _glfwWin.WindowFunctions.IconifyWindow();
+    _glfwWin.WindowFunctions->IconifyWindow();
 }
 
 void _glfwPlatformRestoreWindow( void )
 {
-    _glfwWin.WindowFunctions.RestoreWindow();
+    _glfwWin.WindowFunctions->RestoreWindow();
 }
 
 void _glfwPlatformSwapBuffers( void )
@@ -653,7 +653,7 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    _glfwWin.WindowFunctions.RefreshWindowParams();
+    _glfwWin.WindowFunctions->RefreshWindowParams();
 }
 
 int  _glfwPlatformGetWindowParam( int param )
@@ -684,7 +684,7 @@ void _glfwPlatformPollEvents( void )
     EventTargetRef eventDispatcher = GetEventDispatcherTarget();
 
     while ( ReceiveNextEvent( 0, NULL, 0.0, TRUE, &event ) == noErr )
-    {
+    {            
         SendEventToEventTarget( event, eventDispatcher );
         ReleaseEvent( event );
     }
@@ -704,7 +704,7 @@ void _glfwPlatformShowMouseCursor( void )
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    _glfwWin.WindowFunctions.SetMouseCursorPos( x, y );
+    _glfwWin.WindowFunctions->SetMouseCursorPos( x, y );
 }
 
 
@@ -722,6 +722,7 @@ void _glfwMacFSCloseWindow( void )
     _glfwWin.AGLContext = NULL;
     ReleaseWindow( _glfwWin.MacWindow );
     _glfwWin.MacWindow = NULL;
+    _glfwWin.WindowFunctions = NULL;
 }
 
 void _glfwMacFSSetWindowTitle( const char *title )
@@ -780,6 +781,7 @@ void _glfwMacDWCloseWindow( void )
     _glfwWin.AGLContext = NULL;
     ReleaseWindow( _glfwWin.MacWindow );
     _glfwWin.MacWindow = NULL;
+    _glfwWin.WindowFunctions = NULL;
 }
 
 void _glfwMacDWSetWindowTitle( const char *title )

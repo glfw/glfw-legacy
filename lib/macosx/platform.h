@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.4 2003-10-30 20:49:51 marcus256 Exp $
+// $Id: platform.h,v 1.5 2003-11-06 00:07:25 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -185,7 +185,7 @@ struct _GLFWwin_struct {
     WindowRef               MacWindow;
     AGLContext              AGLContext;
 
-    _GLFWmacwindowfunctions WindowFunctions;
+    _GLFWmacwindowfunctions* WindowFunctions;
 
     // for easy access by _glfwPlatformGetWindowParam
     int Accelerated;
