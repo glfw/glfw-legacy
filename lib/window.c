@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.6 2004-02-14 20:50:10 marcus256 Exp $
+// $Id: window.c,v 1.7 2004-02-25 22:24:30 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -198,7 +198,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     int depthbits, int stencilbits, int mode )
 {
     int AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits;
-    int AuxBuffers, Stereo, RefreshRate;
+    int AuxBuffers, Stereo, RefreshRate, x;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || _glfwWin.Opened )
@@ -280,9 +280,13 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     // Get window parameters (such as color buffer bits etc)
     _glfwPlatformRefreshWindowParams();
 
-    // Clear OpenGL extension: GL_SGIS_generate_mipmap (will be
-    // initialized in glfwLoadTexture2D)
-    _glfwWin.Has_GL_SGIS_generate_mipmap = -1;
+    // Get OpenGL version
+    glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMajor, &x );
+
+    // Do we have automatic mipmap generation?
+    _glfwWin.Has_GL_SGIS_generate_mipmap =
+        (_glfwWin.GLVerMajor >= 2) || (_glfwWin.GLVerMinor >= 4) ||
+        glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
 
     // Flag that window is now opened
     _glfwWin.Opened = GL_TRUE;
