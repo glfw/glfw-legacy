@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        fullscreen.c
 // Platform:    Any
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: fullscreen.c,v 1.4 2004-02-14 20:50:10 marcus256 Exp $
+// $Id: fullscreen.c,v 1.5 2004-03-07 21:15:01 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -47,12 +47,40 @@
 GLFWAPI int GLFWAPIENTRY glfwGetVideoModes( GLFWvidmode *list,
     int maxcount )
 {
+    int         count, i, swap, res1, res2, depth1, depth2;
+    GLFWvidmode vm;
+
     if( !_glfwInitialized || maxcount <= 0 || list == (GLFWvidmode*) 0 )
     {
         return 0;
     }
 
-    return _glfwPlatformGetVideoModes( list, maxcount );
+    // Get list of video modes
+    count = _glfwPlatformGetVideoModes( list, maxcount );
+
+    // Sort list (bubble sort)
+    do
+    {
+        swap = 0;
+        for( i = 0; i < count-1; ++ i )
+        {
+            res1   = list[i].Width*list[i].Height;
+            depth1 = list[i].RedBits+list[i].GreenBits+list[i].BlueBits;
+            res2   = list[i+1].Width*list[i+1].Height;
+            depth2 = list[i+1].RedBits+list[i+1].GreenBits+
+                     list[i+1].BlueBits;
+            if( (depth2<depth1) || ((depth2==depth1) && (res2<res1)) )
+            {
+                vm = list[i];
+                list[i] = list[i+1];
+                list[i+1] = vm;
+                swap = 1;
+            }
+        }
+    }
+    while( swap );
+
+    return count;
 }
 
 
