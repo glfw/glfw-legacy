@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.11 2004-08-31 19:20:36 marcus256 Exp $
+// $Id: platform.h,v 1.12 2005-02-15 21:04:09 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -213,6 +213,8 @@ struct _GLFWwin_struct {
     int         KeyboardGrabbed; // True if keyboard is currently grabbed
     int         PointerGrabbed;  // True if pointer is currently grabbed
     int         PointerHidden;   // True if pointer is currently hidden
+    int         MapNotifyCount;  // Used for during processing
+    int         FocusInCount;    // Used for during processing
 
 };
 
