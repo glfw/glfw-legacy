@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.1 2004-07-13 19:41:02 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.2 2004-07-19 20:58:44 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file for Lua</title>
@@ -84,7 +84,23 @@ programs in the <b>examples</b> directory.
 <a name="sec3">
 <p><h2>3. Using GLFW from Lua</h2>
 
-<p>TODO
+<p>The luaglfw library has been designed to work as similar to the
+original GLFW library as possible. There are a few differences though:
+
+<ul>
+  <li>All function names begin with <b>glfw.</b> rather than <b>glfw</b>
+      (for instance glfwInit is called glfw.Init)</li>
+  <li>All constant names begin with <b>glfw.</b> rather than <b>GLFW_</b>
+      (for instance GLFW_KEY_ESC is called glfw.KEY_ESC)</li>
+  <li>Functions that return multiple results do so the Lua way rather
+      than the C way (for instance glfwGetMousePos returns two numbers
+      instead of taking two variable arguments)</li>
+  <li>Functions that deal with boolean values do <i>not</i> use Lua
+      booleans, but rather glfw.TURE/glfw.FALSE</li>
+  <li>Some functions are unsupported under Lua: glfwReadImage,
+      glfwFreeImage and all threading functions</li>
+</ul>
+
 
 
 <!----------------------------------------------------------------------->
