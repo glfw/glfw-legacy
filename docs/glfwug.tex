@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.2 2003-11-14 21:27:16 marcus256 Exp $
+% $Id: glfwug.tex,v 1.3 2003-11-14 22:09:37 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -289,10 +289,299 @@ int main( void )
 \end{lstlisting}
 
 The program opens a 300x300 window and runs in a loop until the escape key
-is pressed, or the window was closed. All the OpenGL ``rendering'' that is
-done in this example is to clear the window, using the \textbf{glClear}
+is pressed, or the window was closed. All the \OpenGL\ ``rendering'' that
+is done in this example is to clear the window.
+
+
+%-------------------------------------------------------------------------
+% Index
+%-------------------------------------------------------------------------
+\chapter{Window Operations}
+\thispagestyle{fancy}
+In this chapter, you will learn more about window related \GLFW\
+functionality, including: setting and getting window properties, buffer
+swap control and video mode querying.
+
+
+\section{Setting Window Properties}
+In the previous chapter the \textbf{glfwOpenWindow} function was
+described, which specifies the sizes of the color, alpha, depth and
+stencil buffers. It is also possible to request an accumulator buffer,
+auxiliary buffers, stereo rendering by using the
+\textbf{glfwOpenWindowHint} function:
+
+\begin{lstlisting}
+void glfwOpenWindowHint( int target, int hint )
+\end{lstlisting}
+
+The \textit{target} argument can be one of the constants listed in table~
+\ref{tab:winhints}, and \textit{hint} is the value to assign to the
+specified target.
+
+%-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
+\textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
+GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows). Zero means system default.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
+GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
+\end{tabular}
+\end{center}
+\caption{Targets for \textbf{glfwOpenWindowHint}}
+\label{tab:winhints}
+\end{table}
+%-------------------------------------------------------------------------
+
+For a hint to have any effect, the \textbf{glfwOpenWindowHint} function
+must be called before opening the window with the \textbf{glfwOpenWindow}
 function.
 
+To request an accumulator buffer, set the GLFW\_ACCUM\_x\_BITS targets to
+values greater than zero (usually eight or sixteen bits per component).
+To request auxiliary buffers, set the GLFW\_AUX\_BUFFERS target to a value
+greater than zero. To request a stereo rendering capable window, set the
+GLFW\_STEREO target to GL\_TRUE.
+
+The GLFW\_REFRESH\_RATE target should be used with caution, since it may
+result in suboptimal operation, or even a blank or damaged screen.
+
+Besides the parameters that are given with the \textbf{glfwOpenWindow} and
+\textbf{glfwOpenWindowHint} functions, a few more properties of a window
+can be changed after the window has been opened, namely the window title,
+window size, and window position.
+
+To change the window title of an open window, use the
+\textbf{glfwSetWindowTitle} function:
+
+\begin{lstlisting}
+void glfwSetWindowTitle( const char *title )
+\end{lstlisting}
+
+\textit{title} is a null terminated ISO~8859-1 (8-bit Latin~1) string that
+will be used as the window title. It will also be used as the application
+name (for instance in the application list when using \texttt{ALT+TAB}
+under Windows, or as the icon name when the window is iconified under
+the X Window System). The default window name is ``GLFW Window'', which
+will be used unless \textbf{glfwSetWindowTitle} is called after the window
+has been opened.
+
+To change the size of a window, call \textbf{glfwSetWindowSize}:
+
+\begin{lstlisting}
+void glfwSetWindowSize( int width, int height )
+\end{lstlisting}
+
+Where \textit{width} and \textit{height} are the new dimensions of the
+window.
+
+To change the position of a window, call \textbf{glfwSetWindowPos}:
+
+\begin{lstlisting}
+void glfwSetWindowPos( int x, int y )
+\end{lstlisting}
+
+Where \textit{x} and \textit{y} are the new desktop coordinates of the
+window. This function does not have any effect when in fullscreen mode.
+
+
+\section{Getting Window Properties}
+When opening a window, the opened window will not necessarily have the
+requested properties, so you should always check the parameters that your
+application relies on (e.g. number of stencil bits) using
+\textbf{glfwGetWindowParam}, which has the C syntax:
+
+\begin{lstlisting}
+int glfwGetWindowParam( int param )
+\end{lstlisting}
+
+The argument \textit{param} can be one of the tokens listed in table
+\ref{tab:winparams}, and the return value is an integer holding the
+requested value.
+
+%-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
+\textbf{Name}            & \textbf{Description} \\ \hline
+GLFW\_OPENED             & GL\_TRUE if window is opened, else GL\_FALSE.\\ \hline
+GLFW\_ACTIVE             & GL\_TRUE if window has focus, else GL\_FALSE.\\ \hline
+GLFW\_ICONIFIED          & GL\_TRUE if window is iconified, else GL\_FALSE.\\ \hline
+GLFW\_ACCELERATED        & GL\_TRUE if window is hardware accelerated, else GL\_FALSE.\\ \hline
+GLFW\_RED\_BITS          & Number of bits for the red color component.\\ \hline
+GLFW\_GREEN\_BITS        & Number of bits for the green color component.\\ \hline
+GLFW\_BLUE\_BITS         & Number of bits for the blue color component.\\ \hline
+GLFW\_ALPHA\_BITS        & Number of bits for the alpha buffer.\\ \hline
+GLFW\_DEPTH\_BITS        & Number of bits for the depth buffer.\\ \hline
+GLFW\_STENCIL\_BITS      & Number of bits for the stencil buffer.\\ \hline
+GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz. Zero indicates an unknown or a default refresh rate.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
+GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
+\end{tabular}
+\end{center}
+\caption{Window parameters for \textbf{glfwGetWindowParam}}
+\label{tab:winparams}
+\end{table}
+%-------------------------------------------------------------------------
+
+Another useful function is \textbf{glfwSetWindowSizeCallback}, which
+specifies a user function that will be called every time the window size
+has changed. The C syntax is:
+
+\begin{lstlisting}
+void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
+\end{lstlisting}
+
+The user function \textit{fun} should be of the type:
+
+\begin{lstlisting}
+void GLFWCALL fun( int width, int height )
+\end{lstlisting}
+
+The first argument passed to the user function is the width of the window,
+and the second argument is the height of the window. Here is an example
+of how to use a window size callback function:
+
+\begin{lstlisting}
+int WinWidth, WinHeight;
+
+void GLFWCALL WindowResize( int width, int height )
+{
+    WinWidth  = width;
+    WinHeight = height;
+}
+
+int main( void )
+{
+    ...
+    glfwSetWindowSizeCallback( WindowResize );
+    ...
+}
+\end{lstlisting}
+
+Using a callback function for getting the window size is mostly useful for
+windowed applications, since the window size may be changed at any time by
+the user. It can also be used to determine the actual fullscreen
+resolution.
+
+An alternative to using a callback function for getting the window size,
+is to use the function \textbf{glfwGetWindowSize}:
+
+\begin{lstlisting}
+void glfwGetWindowSize( int *width, int *height )
+\end{lstlisting}
+
+The \textit{width} and \textit{height} arguments are filled out with the
+current window dimensions.
+
+
+\section{Buffer Swapping}
+\GLFW\ windows are always double buffered. That means that you have two
+rendering buffers; a front buffer and a back buffer. The front buffer is
+the buffer that is being displayed, and the back buffer is not displayed.
+\OpenGL\ lets you select which of these two buffers you want to render to
+(with the \textbf{glDrawBuffer} command), but the default (and preferred)
+rendering buffer is the back buffer. This way you will avoid flickering
+and artifacts caused by graphics being only partly drawn at the same time
+as the video raster beam is displaying the graphics on the monitor.
+
+When an entire frame has been rendered to the back buffer, it is time to
+swap the back and the front buffers in order to display the rendered
+frame, and begin rendering a new frame. This is done with the command
+\textbf{glfwSwapBuffers}. The C syntax is:
+
+\begin{lstlisting}
+void glfwSwapBuffers( void )
+\end{lstlisting}
+
+Besides swapping the front and back rendering buffers,
+\textbf{glfwSwapBuffers} also calls \textbf{glfwPollEvents}\footnote{This
+behavior can be disabled by calling \textbf{glfwDisable} with the argument
+GLFW\_AUTO\_POLL\_EVENTS.}. This is to ensure frequent polling of events,
+such as keyboard and mouse input, and window reshaping events.
+
+Sometimes it can be useful to select when the buffer swap will occur. With
+the function \textbf{glfwSwapInterval} it is possible to select the
+minimum number of vertical retraces the video raster line should do before
+swapping the buffers:
+
+\begin{lstlisting}
+void glfwSwapInterval( int interval )
+\end{lstlisting}
+
+If \textit{interval} is zero, the swap will take place immediately when
+\textbf{glfwSwapBuffers} is called, without waiting for a vertical retrace
+(also known as ``vsync off''). Otherwise at least interval retraces will
+pass between each buffer swap (also known as ``vsync on''). Using a swap
+interval of zero can be useful for benchmarking purposes, when it is not
+desirable to measure the time it takes to wait for the vertical retrace.
+However, a swap interval of 1 generally gives better visual quality.
+
+It should be noted that not all \OpenGL\ implementations and hardware
+support this function, in which case \textbf{glfwSwapInterval} will have
+no effect. Sometimes it is only possible to affect the swap interval
+through driver settings (e.g. the display settings under Windows, or as an
+environment variable setting under Unix).
+
+
+\section{Querying Video Modes}
+Although \GLFW\ generally does a good job at selecting a suitable video
+mode for you when you open a fullscreen window, it is sometimes useful to
+know exactly which modes are available on a certain system. For example,
+you may want to present the user with a list of video modes to select
+from. To get a list of available video modes, you can use the function
+\textbf{glfwGetVideoModes}:
+
+\begin{lstlisting}
+int glfwGetVideoModes( GLFWvidmode *list, int maxcount )
+\end{lstlisting}
+
+The argument \textit{list} is a vector of GLFWvidmode structures, and
+\textit{maxcount} is the maximum number of video modes that your vector
+can hold. \textbf{glfwGetVideoModes} will return the actual number of
+video modes detected on the system.
+
+The GLFWvidmode structure looks like this:
+
+\begin{lstlisting}
+typedef struct {
+   int Width, Height;   // Video resolution
+   int RedBits;         // Red bits per pixel
+   int GreenBits;       // Green bits per pixel
+   int BlueBits;        // Blue bits per pixel
+} GLFWvidmode;
+\end{lstlisting}
+
+Here is an example of retrieving all available video modes:
+
+\begin{lstlisting}
+int nummodes;
+GLFWvidmode list[ 200 ];
+nummodes = glfwGetVideoModes( list, 200 );
+\end{lstlisting}
+
+The returned list is sorted, first by color depth ($RedBits + GreenBits +
+BlueBits$), and then by resolution ($Width \times Height$), with the
+lowest resolution, fewest bits per pixel mode first.
+
+To get the desktop video mode, use the function
+\textbf{glfwGetDesktopMode}:
+
+\begin{lstlisting}
+void glfwGetDesktopMode( GLFWvidmode *mode )
+\end{lstlisting}
+
+The function returns the resolution and color depth of the user desktop in
+the mode structure. Note that the user desktop mode is independent of the
+current video mode if a \GLFW\ fullscreen window has been opened.
 
 
 %-------------------------------------------------------------------------
