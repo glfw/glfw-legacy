@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.4 2003-05-19 21:49:07 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.5 2003-05-23 22:05:02 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -76,6 +76,7 @@ Windows compilers, a Win32 DLL will also be compiled.
   <li>LCC-Win32 for Windows</li>
   <li>Microsoft Visual C++ 6.x for Windows</li>
   <li>MinGW32 (GCC) for Windows</li>
+  <li>OpenWatcom for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
   <li>VBCC for AmigaOS</li>
@@ -170,10 +171,10 @@ should have appeared in the <b>lib\win32</b> directory. They are:
 <b>libglfw.a</b> (the static link version of GLFW), <b>glfw.dll</b> (the
 DLL version of GLFW) and <b>libglfwdll.a</b> (the DLL import library).
 
-<p>If you used Borland C++ Builder, LCC-Win32 or Microsoft Visual C++ the
-files are named <b>glfw.lib</b> (the static link version of GLFW),
-<b>glfw.dll</b> (the DLL version of GLFW) and <b>glfwdll.lib</b> (the DLL
-import library).
+<p>If you used Borland C++ Builder, LCC-Win32, Microsoft Visual C++ or
+OpenWatcom, the files are named <b>glfw.lib</b> (the static link version
+of GLFW), <b>glfw.dll</b> (the DLL version of GLFW) and <b>glfwdll.lib</b>
+(the DLL import library).
 
 <p>The static link library and the DLL import library should be copied to
 your compiler's <b>LIB</b> directory (where all other link libraries are
@@ -293,6 +294,7 @@ want to add other libraries as well, such as <b>glu32</b>):
 <tr><td>LCC-Win32</td><td>glfw.lib opengl32.lib</td></tr>
 <tr><td>Microsoft Visual C++</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfw -lopengl32</td></tr>
+<tr><td>OpenWatcom</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
 </table>
 
 
@@ -321,6 +323,7 @@ such as <b>opengl32</b> and <b>glu32</b>):
 <tr><td>LCC-Win32</td><td>glfwdll.lib</td></tr>
 <tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfwdll</td></tr>
+<tr><td>OpenWatcom</td><td>glfw.lib</td></tr>
 </table>
 
 
@@ -379,6 +382,8 @@ style comments.
 
 <p><h3>v2.4.2</h3>
 <ul>
+ <li>[Win32] Added OpenWatcom compiler support (thanks Sebastian
+     Schuberth!)</li>
  <li>Bugfix: [Win32] glfwSetWindowSize now sets the size of the client
      area, NOT the entire window, meaning that there is a 1:1 relationship
      between glfwSetWindowSize and glfwGetWindowSize</li>
@@ -666,6 +671,7 @@ style comments.
 <tr valign="top"><td>&nbsp;Makefile.win32.lcc</td><td>&nbsp;</td><td>Makefile for LCC-Win32 for Windows</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.win32.mgw</td><td>&nbsp;</td><td>Makefile for MinGW32 (gcc) for Windows</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.win32.msvc</td><td>&nbsp;</td><td>Makefile for MS Visual C++ 6.x for Windows</td></tr>
+<tr valign="top"><td>&nbsp;Makefile.win32.ow</td><td>&nbsp;</td><td>Makefile for OpenWatcom for Windows</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.x11.in</td><td>&nbsp;</td><td>Makefile template, which is used by compile.sh</td></tr>
 <!--<tr valign="top"><td>&nbsp;PkgInfo</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>-->
 <tr valign="top"><td>&nbsp;boing.c</td><td>&nbsp;</td><td>An example program</td></tr>
@@ -743,6 +749,7 @@ style comments.
 <tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.lcc</td><td>&nbsp;</td><td>Makefile for LCC-Win32 for Windows</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.mgw</td><td>&nbsp;</td><td>Makefile for MinGW32 (gcc) for Windows</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.msvc</td><td>&nbsp;</td><td>Makefile for MS Visual C++ 6.x for Windows</td></tr>
+<tr valign="top"><td>&nbsp;&nbsp;Makefile.win32.ow</td><td>&nbsp;</td><td>Makefile for OpenWatcom for Windows</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;glfwdll.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MS Visual C++</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;glfwdll_mgw1.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MinGW32</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;glfwdll_mgw2.def</td><td>&nbsp;</td><td>GLFW DLL export definition for MinGW32 and Cygwin</td></tr>
@@ -836,6 +843,8 @@ useful for OpenGL development.
   <li>Toni Jovanoski, for helping me with the MASM32 port of GLFW, and
   supplying the example program and fixed OpenGL & GLU bindings for
   MASM32.</li><br><br>
+
+  <li>Sebastian Schuberth, for the OpenWatcom makefiles.</li><br><br>
 
   <li>Dmitri Shuralyov, Samuli Tuomola, Santi Zupancic, Sylvain
   Hellegouarch, and many others for support, bug reports and
