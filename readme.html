@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.28 2004-04-09 11:05:23 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.29 2004-04-10 12:03:51 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -488,8 +488,10 @@ version of GLFW.
 
 <p><h3>v2.5</h3>
 <ul>
- <li>Added support for loading alpha textures (GLFW_ALPHA_MAP_BIT)</li>
  <li>Added the function glfwWaitEvents</li>
+ <li>Added window close callback, which enables a program to prevent a user
+     from closing a window with the window manager</li>
+ <li>Added support for loading alpha textures (GLFW_ALPHA_MAP_BIT)</li>
  <li>Added support for the D programming language</li>
  <li>Added support for the Pelles C compiler for Windows</li>
  <li>[Win32] Bugfix: The DLL now exports glfwSetTime</li>
