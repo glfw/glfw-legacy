@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.14 2005-01-23 12:04:34 marcus256 Exp $
+// $Id: x11_window.c,v 1.15 2005-01-23 12:06:54 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -866,7 +866,6 @@ static void _glfwInitGLXExtensions( void )
     int     has_swap_control;
 
     // Initialize OpenGL extension: GLX_SGI_swap_control
-    has_swap_control = GL_FALSE;
     has_swap_control = _glfwPlatformExtensionSupported(
                            "GLX_SGI_swap_control"
                        );
