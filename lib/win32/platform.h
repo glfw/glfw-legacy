@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.3 2003-07-12 21:18:56 marcus256 Exp $
+// $Id: platform.h,v 1.4 2003-10-29 21:50:07 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -319,6 +319,7 @@ typedef BOOL (WINAPI * SWAPBUFFERS_T) (HDC);
 typedef MMRESULT (WINAPI * JOYGETDEVCAPSA_T) (UINT,LPJOYCAPSA,UINT);
 typedef MMRESULT (WINAPI * JOYGETPOS_T) (UINT,LPJOYINFO);
 typedef MMRESULT (WINAPI * JOYGETPOSEX_T) (UINT,LPJOYINFOEX);
+typedef DWORD (WINAPI * TIMEGETTIME_T) (void);
 #endif // _GLFW_NO_DLOAD_WINMM
 
 // Library handles and function pointers
@@ -339,6 +340,7 @@ GLFWGLOBAL struct {
     JOYGETDEVCAPSA_T      joyGetDevCapsA;
     JOYGETPOS_T           joyGetPos;
     JOYGETPOSEX_T         joyGetPosEx;
+    TIMEGETTIME_T         timeGetTime;
 #endif // _GLFW_NO_DLOAD_WINMM
 } _glfwLibs;
 
@@ -362,10 +364,12 @@ GLFWGLOBAL struct {
 #define _glfw_joyGetDevCaps _glfwLibs.joyGetDevCapsA
 #define _glfw_joyGetPos     _glfwLibs.joyGetPos
 #define _glfw_joyGetPosEx   _glfwLibs.joyGetPosEx
+#define _glfw_timeGetTime   _glfwLibs.timeGetTime
 #else
 #define _glfw_joyGetDevCaps joyGetDevCapsA
 #define _glfw_joyGetPos     joyGetPos
 #define _glfw_joyGetPosEx   joyGetPosEx
+#define _glfw_timeGetTime   timeGetTime
 #endif // _GLFW_NO_DLOAD_WINMM
 
 

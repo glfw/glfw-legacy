@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_init.c,v 1.2 2003-02-02 21:06:22 marcus256 Exp $
+// $Id: win32_init.c,v 1.3 2003-10-29 21:50:07 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -83,7 +83,7 @@ static int _glfwInitLibraries( void )
     }
 #endif // _GLFW_NO_DLOAD_GDI32
 
-    // winmm.dll (for joystick support)
+    // winmm.dll (for joystick and timer support)
 #ifndef _GLFW_NO_DLOAD_WINMM
     _glfwLibs.winmm = LoadLibrary( "winmm.dll" );
     if( _glfwLibs.winmm != NULL )
@@ -94,9 +94,12 @@ static int _glfwInitLibraries( void )
             GetProcAddress( _glfwLibs.winmm, "joyGetPos" );
         _glfwLibs.joyGetPosEx    = (JOYGETPOSEX_T)
             GetProcAddress( _glfwLibs.winmm, "joyGetPosEx" );
+        _glfwLibs.timeGetTime    = (TIMEGETTIME_T)
+            GetProcAddress( _glfwLibs.winmm, "timeGetTime" );
         if( _glfwLibs.joyGetDevCaps == NULL ||
             _glfwLibs.joyGetPos     == NULL ||
-            _glfwLibs.joyGetPosEx   == NULL )
+            _glfwLibs.joyGetPosEx   == NULL ||
+            _glfwLibs.timeGetTime   == NULL )
         {
             FreeLibrary( _glfwLibs.winmm );
             _glfwLibs.winmm = NULL;

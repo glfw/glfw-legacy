@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.5 2003-10-20 21:42:42 marcus256 Exp $
+// $Id: win32_time.c,v 1.6 2003-10-29 21:50:06 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -522,7 +522,7 @@ void _glfwInitTimer( void )
         _glfwTimer.Resolution = 0.001;
 
         // Set start time for timer
-        _glfwTimer.t0_32 = GetTickCount();
+        _glfwTimer.t0_32 = _glfw_timeGetTime();
     }
 
     // Check if we have x86 RDTSC (CPU clock cycle counter)
@@ -560,17 +560,17 @@ void _glfwInitTimer( void )
             // Try to force atomic operation
             Sleep( 10 );
 
-            // Get start time with GetTickCount
-            t1 = GetTickCount();
+            // Get start time with timeGetTime
+            t1 = _glfw_timeGetTime();
             _RDTSC( _HIGH(c1), _LOW(c1) );
 
             // Sleep for a while, to get something to measure
-            // (GetTickCount requires a longer clocking time to be
+            // (timeGetTime requires a longer clocking time to be
             // reasonably accurate)
             Sleep( 1000 );
 
-            // Get stop time with GetTickCount
-            t2 = GetTickCount();
+            // Get stop time with timeGetTime
+            t2 = _glfw_timeGetTime();
             _RDTSC( _HIGH(c2), _LOW(c2) );
 
             dt = (double) (t2-t1) * 0.001;
@@ -606,7 +606,7 @@ double _glfwPlatformGetTime( void )
     double  t;
     __int64 t_64;
 
-    // Are we using RDTSC, the performance counter or GetTickCount?
+    // Are we using RDTSC, the performance counter or timeGetTime?
     if( _glfwTimer.HasRDTSC )
     {
         _RDTSC( _HIGH(t_64), _LOW(t_64) );
@@ -619,7 +619,7 @@ double _glfwPlatformGetTime( void )
     }
     else
     {
-        t = (double)(GetTickCount() - _glfwTimer.t0_32);
+        t = (double)(_glfw_timeGetTime() - _glfwTimer.t0_32);
     }
 
     // Calculate the current time in seconds
@@ -635,7 +635,7 @@ void _glfwPlatformSetTime( double t )
 {
     __int64 t_64;
 
-    // Are we using RDTSC, the performance counter or GetTickCount?
+    // Are we using RDTSC, the performance counter or timeGetTime?
     if( _glfwTimer.HasRDTSC )
     {
         _RDTSC( _HIGH(t_64), _LOW(t_64) );
@@ -648,7 +648,7 @@ void _glfwPlatformSetTime( double t )
     }
     else
     {
-        _glfwTimer.t0_32 = GetTickCount() - (int)(t*1000.0);
+        _glfwTimer.t0_32 = _glfw_timeGetTime() - (int)(t*1000.0);
     }
 }
 
