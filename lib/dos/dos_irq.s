@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_irq.s,v 1.2 2003-12-07 22:42:38 marcus256 Exp $
+// $Id: dos_irq.s,v 1.3 2003-12-10 20:37:50 marcus256 Exp $
 //========================================================================
 
                 .file   "dos_irq.S"
@@ -104,7 +104,7 @@ __glfwInstallDOSIrq:
                 testl   %eax, %eax
                 jnz     fail
 
-/* OLD
+/* OLD >>
                 pushl   $IRQ_STACK_SIZE
                 call    _pc_malloc
                 popl    %edx
@@ -112,7 +112,7 @@ __glfwInstallDOSIrq:
                 jz      fail
                 addl    %edx, %eax
                 movl    %eax, IRQ_STACK(%edi)
-*/
+<< OLD */
 
 /* MG: NEW >> */
                 pushl   $IRQ_STACK_SIZE
