@@ -6,6 +6,7 @@
 // Date:     2002.12.31
 // Author:   Marcus Geelnard (marcus.geelnard@home.se)
 //           Keith Bauer (onesadcookie@hotmail.com)
+//           Camilla Drefvenborg (elmindreda@home.se)
 // WWW:      http://hem.passagen.se/opengl/glfw/
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
@@ -603,6 +604,9 @@ int  _glfwPlatformOpenWindow( int width,
 
 void _glfwPlatformCloseWindow( void )
 {
+    if ( !_glfwWin.WindowFunctions )
+        return;
+
     _glfwWin.WindowFunctions.CloseWindow();
 }
 
