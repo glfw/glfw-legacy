@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2003-04-09 19:26:47 $
-# $Revision: 1.4 $
+# $Date: 2003-05-23 22:00:15 $
+# $Revision: 1.5 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -28,6 +28,7 @@ default:
 	@echo "  $(MAKE) win32-lcc       for LCC-Win32 for Windows"
 	@echo "  $(MAKE) win32-bcc       for Borland C++ Builder 5.x for Windows"
 	@echo "  $(MAKE) win32-msvc      for MS Visual C++ 6.x for Windows"
+	@echo "  $(MAKE) win32-ow        for OpenWatcom for Windows"
 	@echo "  $(MAKE) win32-clean     to remove any compiled files for Windows"
 	@echo "  $(MAKE) cygwin-clean    to remove any compiled files for Cygwin/Windows"
 	@echo "-----------------------------------------------------------------------------"
@@ -105,6 +106,11 @@ win32-bcc:
 # Windows, Microsoft Visual C++
 win32-msvc:
 	@.\\compile.bat $(MAKE) msvc
+
+
+# Windows, OpenWatcom
+win32-ow:
+	@.\\compile.bat $(MAKE) ow
 
 
 
