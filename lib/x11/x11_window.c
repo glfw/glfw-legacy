@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.8 2004-03-09 19:27:51 marcus256 Exp $
+// $Id: x11_window.c,v 1.9 2004-04-09 11:10:54 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1454,6 +1454,20 @@ void _glfwPlatformPollEvents( void )
     {
         glfwCloseWindow();
     }
+}
+
+
+//========================================================================
+// _glfwPlatformWaitEvents() - Wait for new window and input events
+//========================================================================
+
+void _glfwPlatformWaitEvents( void )
+{
+    // Wait for new events
+    // ...
+
+    // Poll new events
+    _glfwPlatformPollEvents();
 }
 
 

@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        macosx_window.c
 // Platform:    Mac OS X
-// API Version: 2.4
+// API Version: 2.5
 // Authors:     Keith Bauer (onesadcookie at hotmail.com)
 //              Camilla Drefvenborg (elmindreda at home.se)
 //              Marcus Geelnard (marcus.geelnard at home.se)
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.9 2004-02-14 20:55:00 marcus256 Exp $
+// $Id: macosx_window.c,v 1.10 2004-04-09 11:08:52 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -797,6 +797,15 @@ void _glfwPlatformPollEvents( void )
         SendEventToEventTarget( event, eventDispatcher );
         ReleaseEvent( event );
     }
+}
+
+void _glfwPlatformWaitEvents( void )
+{
+    // Wait for new events
+    // ...
+
+    // Poll new events
+    _glfwPlatformPollEvents();
 }
 
 void _glfwPlatformHideMouseCursor( void )
