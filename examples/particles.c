@@ -17,22 +17,27 @@
 // Even more so, this program uses multi threading. The program is
 // essentialy divided into a main rendering thread and a particle physics
 // calculation thread. My benchmarks under Windows 2000 on a single
-// processor system show a 4-5% speed ingrease when running this program
-// as two threads instead of a single thread. On dual processor systems
-// I have had reports of 5-25% of speed increase when running this program
+// processor system show that running this program as two threads instead
+// of a single thread means no difference (there may be a very marginal
+// advantage for the multi threaded case). On dual processor systems I
+// have had reports of 5-25% of speed increase when running this program
 // as two threads instead of one thread.
 //
 // The default behaviour of this program is to use two threads. To force
 // a single thread to be used, use the command line switch -s.
 //
 // To run a fixed length benchmark (60 s), use the command line switch -b.
-// On a GeForce 256 / Athlon 710 MHz I get about 240 fps @ 640x480x16.
+//
+// Benchmark results (640x480x16, best of three tests):
+//
+//  CPU               GFX                   1 thread      2 threads
+//  Athlon XP 2700+   GeForce Ti4200 (oc)    757 FPS        759 FPS
 //
 // One more thing: Press 'w' during the demo to toggle wireframe mode.
 //========================================================================
 
 /************************************************************************
- * $Id: particles.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ * $Id: particles.c,v 1.3 2003-06-30 20:12:52 marcus256 Exp $
  ************************************************************************/
 
 #include <stdlib.h>
@@ -65,7 +70,10 @@
 typedef struct { float x,y,z; } VEC;
 
 // This structure is used for interleaved vertex arrays (see the
-// DrawParticles function)
+// DrawParticles function) - Note: This structure SHOULD be packed on most
+// systems. It uses 32-bit fields on 32-bit boundaries, and is a multiple
+// of 64 bits in total (6x32=3x64). If it does not work, try using pragmas
+// or whatever to force the structure to be packed.
 typedef struct {
     GLfloat s, t;         // Texture coordinates
     GLuint  rgba;         // Color (four ubytes packed into an uint)
@@ -198,10 +206,7 @@ typedef struct {
 
 // Global vectors holding all particles. We use two vectors for double
 // buffering.
-static PARTICLE particles1[ MAX_PARTICLES ], particles2[ MAX_PARTICLES ];
-
-// Particle vector pointers (new is for write, old is for reading)
-static PARTICLE *particles_new, *particles_old;
+static PARTICLE particles[ MAX_PARTICLES ];
 
 // Global variable holding the age of the youngest particle
 static float min_age;
@@ -211,6 +216,7 @@ static float glow_color[4];
 
 // Position of latest born particle (used for fountain lighting)
 static float glow_pos[4];
+
 
 //========================================================================
 // Object material and fog configuration constants
@@ -280,73 +286,51 @@ void InitParticle( PARTICLE *p, double t )
 #define FOUNTAIN_R2 (FOUNTAIN_RADIUS+PARTICLE_SIZE/2)*\
                     (FOUNTAIN_RADIUS+PARTICLE_SIZE/2)
 
-void UpdateParticle( PARTICLE *p_new, PARTICLE *p_old, float dt )
+void UpdateParticle( PARTICLE *p, float dt )
 {
-    // Copy data from old to new particle
-    if( p_new != p_old )
-    {
-        // Active flag
-        p_new->active = p_old->active;
-
-        // If the particle is not active, we need not do anything
-        if( !p_new->active )
-        {
-            return;
-        }
-
-        // Velocity (z velocity updated later)
-        p_new->vx = p_old->vx;
-        p_new->vy = p_old->vy;
-
-        // Color
-        p_new->r = p_old->r;
-        p_new->g = p_old->g;
-        p_new->b = p_old->b;
-    }
-
     // If the particle is not active, we need not do anything
-    else if( !p_new->active )
+    if( !p->active )
     {
         return;
     }
 
     // The particle is getting older...
-    p_new->life = p_old->life - dt * (1.0f / LIFE_SPAN);
+    p->life = p->life - dt * (1.0f / LIFE_SPAN);
 
     // Did the particle die?
-    if( p_new->life <= 0.0f )
+    if( p->life <= 0.0f )
     {
-        p_new->active = 0;
+        p->active = 0;
         return;
     }
 
     // Update particle velocity (apply gravity)
-    p_new->vz = p_old->vz - GRAVITY * dt;
+    p->vz = p->vz - GRAVITY * dt;
 
     // Update particle position
-    p_new->x = p_old->x + p_new->vx * dt;
-    p_new->y = p_old->y + p_new->vy * dt;
-    p_new->z = p_old->z + p_new->vz * dt;
+    p->x = p->x + p->vx * dt;
+    p->y = p->y + p->vy * dt;
+    p->z = p->z + p->vz * dt;
 
     // Simple collision detection + response
-    if( p_new->vz < 0.0f )
+    if( p->vz < 0.0f )
     {
         // Particles should bounce on the fountain (with friction)
-        if( (p_new->x*p_new->x + p_new->y*p_new->y) < FOUNTAIN_R2 &&
-            p_new->z < (FOUNTAIN_HEIGHT + PARTICLE_SIZE/2) )
+        if( (p->x*p->x + p->y*p->y) < FOUNTAIN_R2 &&
+            p->z < (FOUNTAIN_HEIGHT + PARTICLE_SIZE/2) )
         {
-            p_new->vz = -FRICTION * p_new->vz;
-            p_new->z  = FOUNTAIN_HEIGHT + PARTICLE_SIZE/2 +
+            p->vz = -FRICTION * p->vz;
+            p->z  = FOUNTAIN_HEIGHT + PARTICLE_SIZE/2 +
                         FRICTION * (FOUNTAIN_HEIGHT +
-                        PARTICLE_SIZE/2 - p_new->z);
+                        PARTICLE_SIZE/2 - p->z);
         }
 
         // Particles should bounce on the floor (with friction)
-        else if( p_new->z < PARTICLE_SIZE/2 )
+        else if( p->z < PARTICLE_SIZE/2 )
         {
-            p_new->vz = -FRICTION * p_new->vz;
-            p_new->z  = PARTICLE_SIZE/2 +
-                        FRICTION * (PARTICLE_SIZE/2 - p_new->z);
+            p->vz = -FRICTION * p->vz;
+            p->z  = PARTICLE_SIZE/2 +
+                        FRICTION * (PARTICLE_SIZE/2 - p->z);
         }
 
     }
@@ -362,11 +346,6 @@ void ParticleEngine( double t, float dt )
 {
     int      i;
     float    dt2;
-    PARTICLE *p_new, *p_old;
-
-    // New and old perticle vectors
-    p_new = particles_new;
-    p_old = particles_old;
 
     // Update particles (iterated several times per frame if dt is too
     // large)
@@ -378,7 +357,7 @@ void ParticleEngine( double t, float dt )
         // Update particles
         for( i = 0; i < MAX_PARTICLES; i ++ )
         {
-            UpdateParticle( &p_new[ i ], &p_old[ i ], dt2 );
+            UpdateParticle( &particles[ i ], dt2 );
         }
 
         // Increase minimum age
@@ -392,17 +371,14 @@ void ParticleEngine( double t, float dt )
             // Find a dead particle to replace with a new one
             for( i = 0; i < MAX_PARTICLES; i ++ )
             {
-                if( !p_new[ i ].active )
+                if( !particles[ i ].active )
                 {
-                    InitParticle( &p_new[ i ], t + min_age );
-                    UpdateParticle( &p_new[ i ], &p_new[ i ], min_age );
+                    InitParticle( &particles[ i ], t + min_age );
+                    UpdateParticle( &particles[ i ], min_age );
                     break;
                 }
             }
         }
-
-        // After first iteration, only work with new particles
-        p_old = p_new;
 
         // Decrease frame delta time
         dt -= dt2;
@@ -491,23 +467,12 @@ void DrawParticles( double t, float dt )
                           0.1 );
         }
 
-        // We now have exclusive access to the particle data and
-        // thread_sync area. Start by swapping "new" and "old" particle
-        // buffers
-        pptr = particles_new;
-        particles_new = particles_old;
-        particles_old = pptr;
-
         // Store the frame time and delta time for the physics thread
         thread_sync.t  = t;
         thread_sync.dt = dt;
 
         // Update frame counter
         thread_sync.d_frame ++;
-
-        // Unlock mutex and signal physics thread
-        glfwUnlockMutex( thread_sync.particles_lock );
-        glfwSignalCond( thread_sync.d_done );
     }
     else
     {
@@ -518,7 +483,7 @@ void DrawParticles( double t, float dt )
     // Loop through all particles and build vertex arrays.
     particle_count = 0;
     vptr = vertex_array;
-    pptr = particles_old;
+    pptr = particles;
     for( i = 0; i < MAX_PARTICLES; i ++ )
     {
         if( pptr->active )
@@ -596,6 +561,14 @@ void DrawParticles( double t, float dt )
 
         // Next particle
         pptr ++;
+    }
+
+    // We are done with the particle data: Unlock mutex and signal physics
+    // thread
+    if( multithreading )
+    {
+        glfwUnlockMutex( thread_sync.particles_lock );
+        glfwSignalCond( thread_sync.d_done );
     }
 
     // Draw final batch of particles (if any)
@@ -1111,17 +1084,7 @@ int main( int argc, char **argv )
     // Clear particle system
     for( i = 0; i < MAX_PARTICLES; i ++ )
     {
-        particles1[ i ].active = 0;
-        particles2[ i ].active = 0;
-    }
-    particles_new = particles1;
-    if( multithreading )
-    {
-        particles_old = particles2;
-    }
-    else
-    {
-        particles_old = particles_new;
+        particles[ i ].active = 0;
     }
     min_age = 0.0f;
 
