@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.3 2003-12-08 23:18:29 marcus256 Exp $
+// $Id: dos_mouse.c,v 1.4 2003-12-08 23:26:54 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -51,10 +51,6 @@
 #define MIN(x,y)     (((x) < (y)) ? (x) : (y))
 #define MAX(x,y)     (((x) > (y)) ? (x) : (y))
 #define MID(x,y,z)   MAX((x), MIN((y), (z)))
-
-typedef void (*MFUNC) (int x, int y, int z, int b);
-
-#define PC_CUTE_WHEEL 1 /* CuteMouse WheelAPI */
 
 #define MOUSE_STACK_SIZE 16384
 
@@ -77,14 +73,12 @@ extern int  *mouse_wrap_end;
 static struct {
     volatile int x, y, z, b;
     volatile int old_x, old_y, old_z, old_b;
-    MFUNC        mouse_func;
     long         mouse_callback;
-    __dpmi_regs  mouse_regs;
+    __dpmi_regs  Regs;
 
     int minx, maxx, miny, maxy, minz, maxz;
-    int sx, sy;
-    int emulat3;
     int ox, oy;
+    int emulat3;
 
 } _glfwMouseDrv;
 
@@ -97,204 +91,11 @@ static int _glfwMouseInstalled = 0;
 //************************************************************************
 
 //========================================================================
-// mouse() - Mouse interrupt handler
+// _glfwMouseFunc() - Mouse interrupt callback function
 //========================================================================
 
-static void mouse( __dpmi_regs *r )
-{
-    int newx, newy, dx, dy, dz;
-
-    // Calculate mouse deltas
-    newx = (signed short)r->x.si / _glfwMouseDrv.sx;
-    newy = (signed short)r->x.di / _glfwMouseDrv.sy;
-    dx = newx - _glfwMouseDrv.ox;
-    dy = newy - _glfwMouseDrv.oy;
-    dz = (signed char)r->h.bh;
-
-    // Remember old mouse position
-    _glfwMouseDrv.ox = newx;
-    _glfwMouseDrv.oy = newy;
-
-    // Store x,y,z & button state
-    _glfwMouseDrv.x = MID( _glfwMouseDrv.minx, _glfwMouseDrv.x + dx,
-                           _glfwMouseDrv.maxx);
-    _glfwMouseDrv.y = MID( _glfwMouseDrv.miny, _glfwMouseDrv.y + dy,
-                           _glfwMouseDrv.maxy);
-    _glfwMouseDrv.z = MID( _glfwMouseDrv.minz, _glfwMouseDrv.z + dz,
-                           _glfwMouseDrv.maxz);
-    _glfwMouseDrv.b = r->h.bl;
-
-    // Emulate 3rd mouse button?
-    if( _glfwMouseDrv.emulat3 )
-    {
-        if( (_glfwMouseDrv.b & 3) == 3 )
-        {
-            _glfwMouseDrv.b = 4;
-        }
-    }
-
-    // Create new mouse events
-    if( _glfwMouseDrv.mouse_func )
-    {
-        _glfwMouseDrv.mouse_func( _glfwMouseDrv.x, _glfwMouseDrv.y,
-                                  _glfwMouseDrv.z, _glfwMouseDrv.b);
-    }
-} ENDOFUNC(mouse)
-
-
-//========================================================================
-// pc_install_mouse() - Install mouse driver
-//========================================================================
-
-int pc_install_mouse( void )
-{
-    int buttons;
-
-    /* fail if already call-backed */
-    if( _glfwMouseDrv.mouse_callback )
-    {
-        return 0;
-    }
-
-    /* reset mouse and get status */
-    __asm("\n\
-                xorl    %%eax, %%eax    \n\
-                int     $0x33           \n\
-                andl    %%ebx, %%eax    \n\
-                movl    %%eax, %0       \n\
-    ":"=g" (buttons)::"%eax", "%ebx");
-    if( !buttons )
-    {
-        return 0;
-    }
-
-    /* lock wrapper */
-    LOCKFUNC(mouse);
-    LOCKFUNC(mouse_wrap);
-
-    mouse_wrap_end[1] = __djgpp_ds_alias;
-
-    /* grab a locked stack */
-    mouse_wrap_end[0] = (int)malloc( MOUSE_STACK_SIZE );
-    if( mouse_wrap_end[0] == NULL )
-    {
-        return 0;
-    }
-    LOCKBUFF( mouse_wrap_end[0], MOUSE_STACK_SIZE );
-
-    /* try to hook a call-back */
-    __asm("\n\
-                pushl   %%ds            \n\
-                pushl   %%es            \n\
-                movw    $0x0303, %%ax   \n\
-                pushl   %%ds            \n\
-                pushl   %%cs            \n\
-                popl    %%ds            \n\
-                popl    %%es            \n\
-                int     $0x31           \n\
-                popl    %%es            \n\
-                popl    %%ds            \n\
-                jc      0f              \n\
-                shll    $16, %%ecx      \n\
-                movw    %%dx, %%cx      \n\
-                movl    %%ecx, %0       \n\
-        0:                              \n\
-    ":"=g"(_glfwMouseDrv.mouse_callback)
-    :"S" (mouse_wrap), "D"(&_glfwMouseDrv.mouse_regs)
-    :"%eax", "%ecx", "%edx");
-    if( !_glfwMouseDrv.mouse_callback )
-    {
-        free( (void *)mouse_wrap_end[0] );
-        return 0;
-    }
-
-    /* adjust stack */
-    mouse_wrap_end[0] += MOUSE_STACK_SIZE;
-
-    /* install the handler */
-    _glfwMouseDrv.mouse_regs.x.ax = 0x000c;
-    _glfwMouseDrv.mouse_regs.x.cx = 0x7f | 0x80;
-    _glfwMouseDrv.mouse_regs.x.dx = _glfwMouseDrv.mouse_callback & 0xffff;
-    _glfwMouseDrv.mouse_regs.x.es = _glfwMouseDrv.mouse_callback >> 16;
-    __dpmi_int(0x33, &_glfwMouseDrv.mouse_regs);
-
-    CLEAR_MICKEYS();
-
-    _glfwMouseDrv.emulat3 = buttons<3;
-
-    return buttons;
-}
-
-
-//========================================================================
-// pc_remove_mouse() - Uninstall mouse driver
-//========================================================================
-
-void pc_remove_mouse( void )
-{
-    if( _glfwMouseDrv.mouse_callback )
-    {
-        __asm("\n\
-                movl    %%edx, %%ecx    \n\
-                shrl    $16, %%ecx      \n\
-                movw    $0x0304, %%ax   \n\
-                int     $0x31           \n\
-                movw    $0x000c, %%ax   \n\
-                xorl    %%ecx, %%ecx    \n\
-                int     $0x33           \n\
-        "::"d"(_glfwMouseDrv.mouse_callback):"%eax", "%ecx");
-
-        _glfwMouseDrv.mouse_callback = 0;
-
-        free( (void *)(mouse_wrap_end[0] - MOUSE_STACK_SIZE) );
-    }
-}
-
-
-//========================================================================
-// mouse_wrap()
-//========================================================================
-
-/* Hack alert:
- * `mouse_wrap_end' actually holds the
- * address of stack in a safe data selector.
- */
-__asm("\n\
-                .text                           \n\
-                .p2align 5,,31                  \n\
-                .global _mouse_wrap             \n\
-_mouse_wrap:                                    \n\
-                cld                             \n\
-                lodsl                           \n\
-                movl    %eax, %es:42(%edi)      \n\
-                addw    $4, %es:46(%edi)        \n\
-                pushl   %es                     \n\
-                movl    %ss, %ebx               \n\
-                movl    %esp, %esi              \n\
-                lss     %cs:_mouse_wrap_end, %esp\n\
-                pushl   %ss                     \n\
-                pushl   %ss                     \n\
-                popl    %es                     \n\
-                popl    %ds                     \n\
-                movl    ___djgpp_dos_sel, %fs   \n\
-                pushl   %fs                     \n\
-                popl    %gs                     \n\
-                pushl   %edi                    \n\
-                call    _mouse                  \n\
-                popl    %edi                    \n\
-                movl    %ebx, %ss               \n\
-                movl    %esi, %esp              \n\
-                popl    %es                     \n\
-                iret                            \n\
-                .global _mouse_wrap_end         \n\
-_mouse_wrap_end:.long   0, 0");
-
-
-//========================================================================
-// _glfwMouseInt() - Mouse interrupt callback function
-//========================================================================
-
-void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
+static void _glfwMouseFunc( int mouse_x, int mouse_y, int mouse_z,
+    int mouse_b )
 {
     _GLFWdosevent event;
     struct mousemove_event   *mousemove   = &event.MouseMove;
@@ -373,7 +174,198 @@ void _glfwMouseInt( int mouse_x, int mouse_y, int mouse_z, int mouse_b )
 
         _glfwMouseDrv.old_b = mouse_b;
     }
-} ENDOFUNC(_glfwMouseInt)
+} ENDOFUNC(_glfwMouseFunc)
+
+
+//========================================================================
+// mouse() - Mouse interrupt handler
+//========================================================================
+
+static void mouse( __dpmi_regs *r )
+{
+    int newx, newy, dx, dy, dz;
+
+    // Calculate mouse deltas
+    newx = (signed short)r->x.si;
+    newy = (signed short)r->x.di;
+    dx = newx - _glfwMouseDrv.ox;
+    dy = newy - _glfwMouseDrv.oy;
+    dz = (signed char)r->h.bh;
+
+    // Remember old mouse position
+    _glfwMouseDrv.ox = newx;
+    _glfwMouseDrv.oy = newy;
+
+    // Store x,y,z & button state
+    _glfwMouseDrv.x = MID( _glfwMouseDrv.minx, _glfwMouseDrv.x + dx,
+                           _glfwMouseDrv.maxx);
+    _glfwMouseDrv.y = MID( _glfwMouseDrv.miny, _glfwMouseDrv.y + dy,
+                           _glfwMouseDrv.maxy);
+    _glfwMouseDrv.z = MID( _glfwMouseDrv.minz, _glfwMouseDrv.z + dz,
+                           _glfwMouseDrv.maxz);
+    _glfwMouseDrv.b = r->h.bl;
+
+    // Emulate 3rd mouse button?
+    if( _glfwMouseDrv.emulat3 )
+    {
+        if( (_glfwMouseDrv.b & 3) == 3 )
+        {
+            _glfwMouseDrv.b = 4;
+        }
+    }
+
+    // Create new mouse events
+    _glfwMouseFunc( _glfwMouseDrv.x, _glfwMouseDrv.y, _glfwMouseDrv.z,
+                    _glfwMouseDrv.b );
+} ENDOFUNC(mouse)
+
+
+//========================================================================
+// _glfwInstallMouse() - Install mouse driver
+//========================================================================
+
+static int _glfwInstallMouse( void )
+{
+    int buttons;
+
+    /* fail if already call-backed */
+    if( _glfwMouseDrv.mouse_callback )
+    {
+        return 0;
+    }
+
+    /* reset mouse and get status */
+    __asm("\n\
+                xorl    %%eax, %%eax    \n\
+                int     $0x33           \n\
+                andl    %%ebx, %%eax    \n\
+                movl    %%eax, %0       \n\
+    ":"=g" (buttons)::"%eax", "%ebx");
+    if( !buttons )
+    {
+        return 0;
+    }
+
+    /* lock wrapper */
+    LOCKFUNC(mouse);
+    LOCKFUNC(mouse_wrap);
+
+    mouse_wrap_end[1] = __djgpp_ds_alias;
+
+    /* grab a locked stack */
+    mouse_wrap_end[0] = (int)malloc( MOUSE_STACK_SIZE );
+    if( mouse_wrap_end[0] == NULL )
+    {
+        return 0;
+    }
+    LOCKBUFF( mouse_wrap_end[0], MOUSE_STACK_SIZE );
+
+    /* try to hook a call-back */
+    __asm("\n\
+                pushl   %%ds            \n\
+                pushl   %%es            \n\
+                movw    $0x0303, %%ax   \n\
+                pushl   %%ds            \n\
+                pushl   %%cs            \n\
+                popl    %%ds            \n\
+                popl    %%es            \n\
+                int     $0x31           \n\
+                popl    %%es            \n\
+                popl    %%ds            \n\
+                jc      0f              \n\
+                shll    $16, %%ecx      \n\
+                movw    %%dx, %%cx      \n\
+                movl    %%ecx, %0       \n\
+        0:                              \n\
+    ":"=g"(_glfwMouseDrv.mouse_callback)
+    :"S" (mouse_wrap), "D"(&_glfwMouseDrv.Regs)
+    :"%eax", "%ecx", "%edx");
+    if( !_glfwMouseDrv.mouse_callback )
+    {
+        free( (void *)mouse_wrap_end[0] );
+        return 0;
+    }
+
+    /* adjust stack */
+    mouse_wrap_end[0] += MOUSE_STACK_SIZE;
+
+    /* install the handler */
+    _glfwMouseDrv.Regs.x.ax = 0x000c;
+    _glfwMouseDrv.Regs.x.cx = 0x7f | 0x80;
+    _glfwMouseDrv.Regs.x.dx = _glfwMouseDrv.mouse_callback & 0xffff;
+    _glfwMouseDrv.Regs.x.es = _glfwMouseDrv.mouse_callback >> 16;
+    __dpmi_int(0x33, &_glfwMouseDrv.Regs);
+
+    CLEAR_MICKEYS();
+
+    _glfwMouseDrv.emulat3 = buttons<3;
+
+    return buttons;
+}
+
+
+//========================================================================
+// _glfwRemoveMouse() - Uninstall mouse driver
+//========================================================================
+
+static void _glfwRemoveMouse( void )
+{
+    if( _glfwMouseDrv.mouse_callback )
+    {
+        __asm("\n\
+                movl    %%edx, %%ecx    \n\
+                shrl    $16, %%ecx      \n\
+                movw    $0x0304, %%ax   \n\
+                int     $0x31           \n\
+                movw    $0x000c, %%ax   \n\
+                xorl    %%ecx, %%ecx    \n\
+                int     $0x33           \n\
+        "::"d"(_glfwMouseDrv.mouse_callback):"%eax", "%ecx");
+
+        _glfwMouseDrv.mouse_callback = 0;
+
+        free( (void *)(mouse_wrap_end[0] - MOUSE_STACK_SIZE) );
+    }
+}
+
+
+//========================================================================
+// mouse_wrap()
+//========================================================================
+
+/* Hack alert:
+ * `mouse_wrap_end' actually holds the
+ * address of stack in a safe data selector.
+ */
+__asm("\n\
+                .text                           \n\
+                .p2align 5,,31                  \n\
+                .global _mouse_wrap             \n\
+_mouse_wrap:                                    \n\
+                cld                             \n\
+                lodsl                           \n\
+                movl    %eax, %es:42(%edi)      \n\
+                addw    $4, %es:46(%edi)        \n\
+                pushl   %es                     \n\
+                movl    %ss, %ebx               \n\
+                movl    %esp, %esi              \n\
+                lss     %cs:_mouse_wrap_end, %esp\n\
+                pushl   %ss                     \n\
+                pushl   %ss                     \n\
+                popl    %es                     \n\
+                popl    %ds                     \n\
+                movl    ___djgpp_dos_sel, %fs   \n\
+                pushl   %fs                     \n\
+                popl    %gs                     \n\
+                pushl   %edi                    \n\
+                call    _mouse                  \n\
+                popl    %edi                    \n\
+                movl    %ebx, %ss               \n\
+                movl    %esi, %esp              \n\
+                popl    %es                     \n\
+                iret                            \n\
+                .global _mouse_wrap_end         \n\
+_mouse_wrap_end:.long   0, 0");
 
 
 
@@ -394,7 +386,7 @@ int _glfwInitMouse( void )
 
     // Lock data and functions
     LOCKDATA( _glfwMouseDrv );
-    LOCKFUNC( _glfwMouseInt );
+    LOCKFUNC( _glfwMouseFunc );
 
     // Setup initial mouse driver settings
     _glfwMouseDrv.minx       = 0;
@@ -403,13 +395,10 @@ int _glfwInitMouse( void )
     _glfwMouseDrv.maxy       = _glfwWin.Height-1;
     _glfwMouseDrv.minz       = 0;
     _glfwMouseDrv.maxz       = 255;
-    _glfwMouseDrv.sx         = 2;
-    _glfwMouseDrv.sy         = 2;
     _glfwMouseDrv.emulat3    = 0;
-    _glfwMouseDrv.mouse_func = _glfwMouseInt;
 
     // Install mouse driver
-    _glfwMouseInstalled = pc_install_mouse();
+    _glfwMouseInstalled = _glfwInstallMouse();
     if( !_glfwMouseInstalled )
     {
         return 0;
@@ -427,7 +416,7 @@ void _glfwTerminateMouse( void )
 {
     if( _glfwMouseInstalled )
     {
-        pc_remove_mouse();
+        _glfwRemoveMouse();
         _glfwMouseInstalled = 0;
     }
 }
