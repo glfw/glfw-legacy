@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.14 2004-12-31 20:24:32 marcus256 Exp $
+// $Id: win32_window.c,v 1.15 2005-01-10 21:39:23 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -53,14 +53,15 @@ static int _glfwMinMaxAnimations( int enable )
 
     // Get old animation setting
     AI.cbSize = sizeof( ANIMATIONINFO );
-    SystemParametersInfo( SPI_GETANIMATION, 0, &AI, 0 );
+    SystemParametersInfo( SPI_GETANIMATION, AI.cbSize, &AI, 0 );
     old_enable = AI.iMinAnimate;
 
     // If requested, change setting
     if( old_enable != enable )
     {
         AI.iMinAnimate = enable;
-        SystemParametersInfo( SPI_SETANIMATION, 0, &AI, SPIF_SENDCHANGE );
+        SystemParametersInfo( SPI_SETANIMATION, AI.cbSize, &AI,
+                              SPIF_SENDCHANGE );
     }
 
     return old_enable;
