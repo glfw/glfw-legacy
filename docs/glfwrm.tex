@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.3 2003-11-04 23:16:06 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.4 2003-11-07 08:47:57 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -66,6 +66,7 @@ All other trademarks mentioned in this document are the property of their respec
 %-------------------------------------------------------------------------
 \tableofcontents
 \pagebreak
+
 
 % Document chapters starts here...
 \pagenumbering{arabic}
@@ -294,6 +295,24 @@ In order to determine the actual properties of an opened window, use
 
 
 %-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
+\textbf{Name}            & \textbf{Description} \\ \hline
+GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz (only used for fullscreen windows).\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
+GLFW\_STEREO             & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
+\end{tabular}
+\end{center}
+\caption{Targets for \textbf{glfwOpenWindowHint}}
+\label{tab:winhints}
+\end{table}
+
+%-------------------------------------------------------------------------
 \subsection{glfwOpenWindowHint}
 
 \textbf{C language syntax}
@@ -304,21 +323,10 @@ void glfwOpenWindowHint( int target, int hint )
 \begin{refparameters}
 \begin{description}
 \item [\textit{target}]\ \\
-  Can be any of the constants in the table below:
-
-\begin{tabular}{|l|p{8cm}|} \hline \raggedright
-\textbf{Name}            & \textbf{Description} \\ \hline
-GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz (only used for fullscreen windows).\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
-GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
-GLFW\_STEREO             & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
-\end{tabular}
-
+  Can be any of the constants in the table \ref{tab:winhints}.
 \item [\textit{hint}]\ \\
-  An integer giving the value of the corresponding target (see table above).
+  An integer giving the value of the corresponding target (see table
+  \ref{tab:winhints}).
 \end{description}
 \end{refparameters}
 
@@ -351,7 +359,6 @@ for the specific system. Specifying the refresh rate can override these
 settings, which can result in suboptimal operation. The monitor may be
 unable to display the resulting video signal, or in the worst case it may
 even be damaged!
-
 \end{refnotes}
 
 
@@ -558,30 +565,13 @@ callback function.
 
 
 %-------------------------------------------------------------------------
-\subsection{glfwGetWindowParam}
-
-\textbf{C language syntax}
-\begin{lstlisting}
-int glfwGetWindowParam( int param )
-\end{lstlisting}
-
-\begin{refparameters}
-\begin{description}
-\item [\textit{param}]\ \\
-  A token selecting which parameter the function should return (see below).
-\end{description}
-\end{refparameters}
-
-\begin{refreturn}
-The function returns different parameters depending on the value of
-\textit{param}. Below is a table of valid \textit{param} values, and
-their corresponding return values:
-
-\begin{tabular}{|l|p{9cm}|} \hline \raggedright
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Description} \\ \hline
 GLFW\_OPENED             & GL\_TRUE if window is opened, else GL\_FALSE.\\ \hline
 GLFW\_ACTIVE             & GL\_TRUE if window has focus, else GL\_FALSE.\\ \hline
-GLFW\_ICONIFIED          & GL\_TRUE if window is iconified/minimized, else GL\_FALSE.\\ \hline
+GLFW\_ICONIFIED          & GL\_TRUE if window is iconified, else GL\_FALSE.\\ \hline
 GLFW\_ACCELERATED        & GL\_TRUE if window is hardware accelerated.\\ \hline
 GLFW\_RED\_BITS          & Number of bits for the red color component.\\ \hline
 GLFW\_GREEN\_BITS        & Number of bits for the green color component.\\ \hline
@@ -597,6 +587,32 @@ GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulat
 GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
 \end{tabular}
+\end{center}
+\caption{Window parameters for \textbf{glfwGetWindowParam}}
+\label{tab:winparams}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetWindowParam}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetWindowParam( int param )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{param}]\ \\
+  A token selecting which parameter the function should return (see
+  table \ref{tab:winparams}).
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns different parameters depending on the value of
+\textit{param}. Table \ref{tab:winparams} lists valid \textit{param}
+values, and their corresponding return values.
 \end{refreturn}
 
 \begin{refdescription}
@@ -823,25 +839,13 @@ there is no need to call \textbf{glfwPollEvents}.
 
 
 %-------------------------------------------------------------------------
-\subsection{glfwGetKey}
-
-\textbf{C language syntax}
-\begin{lstlisting}
-int glfwGetKey( int key )
-\end{lstlisting}
-
-\begin{refparameters}
-\begin{description}
-\item [\textit{key}]\ \\
-  A keyboard key identifier, which can be either an uppercase printable
-  ISO~8859-1 (Latin~1) character (e.g. 'A', '3' or '.'), or a special key
-  identifier. The following tokens are valid special key identifiers:
-
-\begin{tabular}{|l|p{8.5cm}|} \hline \raggedright
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|l|} \hline \raggedright
 \textbf{Name}           & \textbf{Description} \\ \hline
 GLFW\_KEY\_SPACE        & Space\\ \hline
 GLFW\_KEY\_ESC          & Escape\\ \hline
-GLFW\_KEY\_Fn           & Function key n (n can be in the range 1..25).\\ \hline
+GLFW\_KEY\_F\textit{n}  & Function key n (n can be in the range 1..25).\\ \hline
 GLFW\_KEY\_UP           & Cursor up\\ \hline
 GLFW\_KEY\_DOWN         & Cursor down\\ \hline
 GLFW\_KEY\_LEFT         & Cursor left\\ \hline
@@ -870,6 +874,26 @@ GLFW\_KEY\_KP\_DECIMAL  & Keypad decimal (. or , for some languages)\\ \hline
 GLFW\_KEY\_KP\_EQUAL    & Keypad equal (=)\\ \hline
 GLFW\_KEY\_KP\_ENTER    & Keypad enter\\ \hline
 \end{tabular}
+\end{center}
+\caption{Special key identifiers}
+\label{tab:keys}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetKey}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetKey( int key )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{key}]\ \\
+  A keyboard key identifier, which can be either an uppercase printable
+  ISO~8859-1 (Latin~1) character (e.g. 'A', '3' or '.'), or a special key
+  identifier. Table \ref{tab:keys} lists valid special key identifiers.
 \end{description}
 \end{refparameters}
 
@@ -1047,7 +1071,7 @@ void glfwSetMousePos( int pos )
 
 \begin{refparameters}
 \begin{description}
-\item [\textit{pps}]\ \\
+\item [\textit{pos}]\ \\
   Position of the mouse wheel.
 \end{description}
 \end{refparameters}
@@ -1081,9 +1105,9 @@ void glfwSetKeyCallback( GLFWkeyfun cbfun )
 
   Where \textit{functionname} is the name of the callback function,
   \textit{key} is a key identifier, which is an uppercase printable
-  ISO~8859-1 character or a special key identifier (see
-  \textbf{glfwGetKey} for more information), and \textit{action} is either
-  GLFW\_PRESS or GLFW\_RELEASE.
+  ISO~8859-1 character or a special key identifier (see  table
+  \ref{tab:keys}), and \textit{action} is either GLFW\_PRESS or
+  GLFW\_RELEASE.
 
   If \textit{cbfun} is NULL, any previously selected callback function
   will be deselected.
@@ -1162,6 +1186,423 @@ ISO~8859-1 (Latin~1).
 
 
 %-------------------------------------------------------------------------
+\subsection{glfwSetMouseButtonCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function that will be called every time a mouse
+  button is pressed or released. The function should have the following C
+  language prototype:
+
+  \texttt{void GLFWCALL functionname( int button, int action );}
+
+  Where \textit{functionname} is the name of the callback function,
+  \textit{button} is a mouse button identifier (GLFW\_MOUSE\_BUTTON\_LEFT,
+  GLFW\_MOUSE\_BUTTON\_RIGHT, or GLFW\_MOUSE\_BUTTON\_MIDDLE), and
+  \textit{action} is either GLFW\_PRESS or GLFW\_RELEASE.
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a mouse button
+event.
+\end{refdescription}
+
+\begin{refnotes}
+Mouse button events are recorded continuously, but only reported when
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetMousePosCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function that will be called every time the mouse
+  is moved. The function should have the following C language prototype:
+
+  \texttt{void GLFWCALL functionname( int x, int y );}
+
+  Where \textit{functionname} is the name of the callback function, and
+  \textit{x} and \textit{y} are the mouse coordinates (see
+  \textbf{glfwGetMousePos} for more information on mouse coordinates).
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a mouse motion event.
+\end{refdescription}
+
+\begin{refnotes}
+Mouse motion events are recorded continuously, but only reported when
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetMouseWheelCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function that will be called every time the mouse
+  wheel is moved. The function should have the following C language
+  prototype:
+
+  \texttt{void GLFWCALL functionname( int pos );}
+
+  Where \textit{functionname} is the name of the callback function, and
+  \textit{pos} is the mouse wheel position.
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a mouse wheel event.
+\end{refdescription}
+
+\begin{refnotes}
+Mouse wheel events are recorded continuously, but only reported when
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\begin{table}[bhtp]
+\begin{center}
+\begin{tabular}{|l|l|}\hline \raggedright
+\textbf{Name} & \textbf{Return value}\\ \hline
+GLFW\_PRESENT & GL\_TRUE if the joystick is connected, else GL\_FALSE.\\ \hline
+GLFW\_AXES    & Number of axes supported by the joystick.\\ \hline
+GLFW\_BUTTONS & Number of buttons supported by the joystick.\\ \hline
+\end{tabular}
+\end{center}
+\caption{Joystick parameters for \textbf{glfwGetJoystickParam}}
+\label{tab:joyparams}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetJoystickParam}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetJoystickParam( int joy, int param )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{joy}]\ \\
+  A joystick identifier, which should be GLFW\_JOYSTICK\_\textit{n}, where
+  \textit{n} is in the range 1 to 16.
+\item [\textit{param}]\ \\
+  A token selecting which parameter the function should return (see table
+  \ref{tab:joyparams}).
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns different parameters depending on the value of
+\textit{param}. Table \ref{tab:joyparams} lists valid \textit{param}
+values, and their corresponding return values.
+\end{refreturn}
+
+\begin{refdescription}
+The function is used for acquiring various properties of a joystick.
+\end{refdescription}
+
+\begin{refnotes}
+The joystick information is updated every time the function is called.
+
+No window has to be opened for joystick information to be valid.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetJoystickPos}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetJoystickPos( int joy, float *pos, int numaxes )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{joy}]\ \\
+  A joystick identifier, which should be GLFW\_JOYSTICK\_\textit{n}, where
+  \textit{n} is in the range 1 to 16.
+\item [\textit{pos}]\ \\
+  An array that will hold the positional values for all requested axes.
+\item [\textit{numaxes}]\ \\
+  Specifies how many axes should be returned.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the number of actually returned axes. This is the
+minimum of \textit{numaxes} and the number of axes supported by the
+joystick. If the joystick is not supported or connected, the function will
+return 0 (zero).
+\end{refreturn}
+
+\begin{refdescription}
+The function queries the current position of one or more axes of a
+joystick. The positional values are returned in an array, where the first
+element represents the first axis of the joystick (normally the X axis).
+Each position is in the range -1.0 to 1.0. Where applicable, the positive
+direction of an axis is right, forward or up, and the negative direction
+is left, back or down.
+
+If \textit{numaxes} exceeds the number of axes supported by the joystick,
+or if the joystick is not available, the unused elements in the
+\textit{pos} array will be set to 0.0 (zero).
+\end{refdescription}
+
+\begin{refnotes}
+The joystick state is updated every time the function is called, so there
+is no need to call \textbf{glfwPollEvents} for joystick state to be
+updated.
+
+Use \textbf{glfwGetJoystickParam} to retrieve joystick capabilities, such
+as joystick availability and number of supported axes.
+
+No window has to be opened for joystick input to be valid.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetJoystickButtons}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetJoystickButtons( int joy, unsigned char *buttons,
+                            int numbuttons )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{joy}]\ \\
+  A joystick identifier, which should be GLFW\_JOYSTICK\_\textit{n}, where
+  \textit{n} is in the range 1 to 16.
+\item [\textit{buttons}]\ \\
+  An array that will hold the button states for all requested buttons.
+\item [\textit{numbuttons}]\ \\
+  Specifies how many buttons should be returned.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the number of actually returned buttons. This is the
+minimum of \textit{numbuttons} and the number of buttons supported by the
+joystick. If the joystick is not supported or connected, the function will
+return 0 (zero).
+\end{refreturn}
+
+\begin{refdescription}
+The function queries the current state of one or more buttons of a
+joystick. The button states are returned in an array, where the first
+element represents the first button of the joystick. Each state can be
+either GLFW\_PRESS or GLFW\_RELEASE.
+
+If \textit{numbuttons} exceeds the number of buttons supported by the
+joystick, or if the joystick is not available, the unused elements in the
+\textit{buttons} array will be set to GLFW\_RELEASE.
+\end{refdescription}
+
+\begin{refnotes}
+The joystick state is updated every time the function is called, so there
+is no need to call \textbf{glfwPollEvents} for joystick state to be
+updated.
+
+Use \textbf{glfwGetJoystickParam} to retrieve joystick capabilities, such
+as joystick availability and number of supported buttons.
+
+No window has to be opened for joystick input to be valid.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\pagebreak
+\section{Timing}
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetTime}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+double glfwGetTime( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the value of the high precision timer. The time is
+measured in seconds, and is returned as a double precision floating point
+value.
+\end{refreturn}
+
+\begin{refdescription}
+The function returns the state of a high precision timer. Unless the timer
+has been set by the \textbf{glfwSetTime} function, the time is measured as
+the number of seconds that have passed since \textbf{glfwInit} was called.
+\end{refdescription}
+
+\begin{refnotes}
+The resolution of the timer depends on which system the program is running
+on. The worst case resolution is somewhere in the order of $10~ms$, while
+for most systems the resolution should be better than $1~\mu s$.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetTime}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetTime( double time )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{time}]\ \\
+  Time (in seconds) that the timer should be set to.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function sets the current time of the high precision timer to the
+specified time. Subsequent calls to \textbf{glfwGetTime} will be relative
+to this time. The time is given in seconds.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSleep}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSleep( double time )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{time}]\ \\
+  Time, in seconds, to sleep.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function puts the calling thread to sleep for the requested period of
+time. Only the calling thread is put to sleep. Other threads within the
+same process can still execute.
+\end{refdescription}
+
+\begin{refnotes}
+There is usually a system dependent minimum time for which it is possible
+to sleep. This time is generally in the range 1~$ms$ to 20~$ms$, depending
+on thread sheduling time slot intervals etc. Using a shorter time as a
+parameter to \textbf{glfwSleep} can give one of two results: either the
+thread will sleep for the minimum possible sleep time, or the thread will
+not sleep at all (\textbf{glfwSleep} returns immediately). The latter
+should only happen when very short sleep times are specified, if at all.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\pagebreak
+\section{OpenGL Extension Support}
+One of the great features of \OpenGL\ is its support for extensions, which
+allow independent vendors to supply non-standard functionality in their
+\OpenGL\ implementations. Using extensions is different under different
+systems, which is why \GLFW\ has provided an operating system independent
+interface to querying and using \OpenGL\ extensions.
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwExtensionSupported}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwExtensionSupported( const char *extension )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{extension}]\ \\
+  A null terminated ISO~8859-1 string containing the name of an \OpenGL\
+  extension.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GL\_TRUE if the extension is supported. Otherwise it
+returns GL\_FALSE.
+\end{refreturn}
+
+\begin{refdescription}
+The function does a string search in the list of supported \OpenGL\
+extensions to find if the specified extension is listed.
+\end{refdescription}
+
+\begin{refnotes}
+An \OpenGL\ context must be created before this function can be called
+(i.e. an \OpenGL\ window must have been opened with
+\textbf{glfwOpenWindow}).
+
+Under Windows, WGL extensions are also tested, in addition to standard
+GL extensions.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
 \subsection{glfwX}
 
 \textbf{C language syntax}
@@ -1187,6 +1628,14 @@ x
 \begin{refnotes}
 none
 \end{refnotes}
+
+
+
+%-------------------------------------------------------------------------
+% List of tables
+%-------------------------------------------------------------------------
+\listoftables
+\thispagestyle{fancy}
 
 
 \end{document}
