@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-09-04 23:33:01 $
-# $Revision: 1.11 $
+# $Date: 2004-07-24 20:36:46 $
+# $Revision: 1.12 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -113,6 +113,11 @@ elif [ -r "/opt/X11R6/lib" ]; then
  LFLAGS="$LFLAGS -L/opt/X11R6/lib"
  INCS="-I/opt/X11R6/include"
  echo " X11 libraries location: /opt/X11R6/lib" 1>&6
+# X11R6 in /usr/X/lib ?
+elif [ -r "/usr/X/lib" ]; then
+ LFLAGS="$LFLAGS -L/usr/X/lib"
+ INCS="-I/usr/X/include"
+ echo " X11 libraries location: /usr/X/lib" 1>&6
 else
  echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
 fi
