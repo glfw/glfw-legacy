@@ -4,7 +4,7 @@
 // Platform:    Mac OS X
 // API Version: 2.4
 // Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Drefvenborg (elmindreda at home.se)
+//              Camilla Berglund (elmindreda at users.sourceforge.net)
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_joystick.c,v 1.4 2004-02-14 20:55:00 marcus256 Exp $
+// $Id: macosx_joystick.c,v 1.5 2005-02-27 19:18:35 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

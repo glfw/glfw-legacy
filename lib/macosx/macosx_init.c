@@ -4,7 +4,7 @@
 // Platform:    Mac OS X
 // API Version: 2.4
 // Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Drefvenborg (elmindreda at home.se)
+//              Camilla Berglund (elmindreda at users.sourceforge.net)
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.7 2004-08-01 15:59:01 elmindreda Exp $
+// $Id: macosx_init.c,v 1.8 2005-02-27 19:18:35 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
