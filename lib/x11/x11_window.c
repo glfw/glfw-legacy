@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.13 2004-08-31 19:20:36 marcus256 Exp $
+// $Id: x11_window.c,v 1.14 2005-01-23 12:04:34 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -857,6 +857,31 @@ Cursor _glfwCreateNULLCursor( Display *display, Window root )
 }
 
 
+//========================================================================
+// _glfwInitGLXExtensions() - Initialize GLX-specific extensions
+//========================================================================
+
+static void _glfwInitGLXExtensions( void )
+{
+    int     has_swap_control;
+
+    // Initialize OpenGL extension: GLX_SGI_swap_control
+    has_swap_control = GL_FALSE;
+    has_swap_control = _glfwPlatformExtensionSupported(
+                           "GLX_SGI_swap_control"
+                       );
+    if( has_swap_control )
+    {
+        _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
+            _glfw_glXGetProcAddress( "glXSwapIntervalSGI" );
+    }
+    else
+    {
+        _glfwWin.SwapInterval = NULL;
+    }
+}
+
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -1044,9 +1069,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     glClear( GL_COLOR_BUFFER_BIT );
     glXSwapBuffers( _glfwDisplay.Dpy, _glfwWin.Win );
 
-    // Initialize OpenGL extension: GLX_SGI_swap_control
-    _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
-        _glfw_glXGetProcAddress( (const GLubyte *) "glXSwapIntervalSGI" );
+    // Initialize GLX-specific OpenGL extensions
+    _glfwInitGLXExtensions();
 
     return GL_TRUE;
 }
