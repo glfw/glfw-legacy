@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_time.c,v 1.7 2004-12-31 21:58:14 marcus256 Exp $
+// $Id: x11_time.c,v 1.8 2005-01-01 18:49:55 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -129,12 +129,6 @@ static const _GLFWcpuid _glfw_mobile_cpus[ _NUM_KNOWN_MOBILE_CPUS ] = {
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
-
-// Functions for accessing upper and lower parts of 64-bit integers
-// (Note: These are endian dependent, but ONLY used on x86 platforms!)
-#define _HIGH(x) ((unsigned int*)&x)[1]
-#define _LOW(x)  *((unsigned int*)&x)
-
 
 //========================================================================
 // _glfwCPUID() - Execute x86 CPUID instruction
@@ -371,19 +365,20 @@ static int _glfwHasRDTSC( void )
 #if defined(__i386) && defined(__GNUC__)
 
 // Read 64-bit processor Time Stamp Counter
-#define _RDTSC( hi, lo ) \
+#define _RDTSC( t ) \
     asm( \
         "rdtsc\n\t" \
-        "movl %%edx,%0\n\t" \
-        "movl %%eax,%1" \
-        : "=m" (hi), "=m" (lo) \
+        "leal %0,%%ecx\n\t" \
+        "movl %%edx,4(%%ecx)\n\t" \
+        "movl %%eax,(%%ecx)" \
+        : "=m" (t) \
         :  \
-        : "%edx", "%eax" \
+        : "%edx", "%eax", "%ecx" \
     );
 
 #else
 
-#define _RDTSC( hi, lo ) {hi=lo=0;}
+#define _RDTSC( t ) {t=0;}
 
 #endif
 
@@ -464,7 +459,7 @@ void _glfwInitTimer( void )
 
         // "Start clock" - get current time, and current CPU cycle count
         gettimeofday( &tv, NULL );
-        _RDTSC( _HIGH(c1), _LOW(c1) );
+        _RDTSC( c1 );
         t1 = (long long) tv.tv_sec * (long long) 1000000 +
              (long long) tv.tv_usec;
 
@@ -474,7 +469,7 @@ void _glfwInitTimer( void )
 
         // "Stop clock" - get current time, and current CPU cycle count
         gettimeofday( &tv, NULL );
-        _RDTSC( _HIGH(c2), _LOW(c2) );
+        _RDTSC( c2 );
         t2 = (long long) tv.tv_sec * (long long) 1000000 +
              (long long) tv.tv_usec;
 
@@ -482,7 +477,7 @@ void _glfwInitTimer( void )
         _glfwTimer.Resolution = 1e-6 * (double)(t2-t1) / (double)(c2-c1);
 
         // Set start-time for timer
-        _RDTSC( _HIGH(_glfwTimer.t0), _LOW(_glfwTimer.t0) );
+        _glfwTimer.t0 = c2;
     }
     else
     {
@@ -551,7 +546,7 @@ double _glfwPlatformGetTime( void )
     // Are we using RDTSC or gettimeofday?
     if( _glfwTimer.HasRDTSC )
     {
-        _RDTSC( _HIGH(t), _LOW(t) );
+        _RDTSC( t );
     }
     else
     {
@@ -601,7 +596,7 @@ void _glfwPlatformSetTime( double t )
     // Are we using RDTSC or gettimeofday?
     if( _glfwTimer.HasRDTSC )
     {
-        _RDTSC( _HIGH(t0), _LOW(t0) );
+        _RDTSC( t0 );
     }
     else
     {
