@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.14 2004-07-09 20:08:54 marcus256 Exp $
+// $Id: glfw.h,v 1.15 2004-08-31 19:22:03 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -380,7 +380,7 @@ typedef void * GLFWcond;
 // Function pointer types
 typedef void (GLFWCALL * GLFWwindowsizefun)(int,int);
 typedef int  (GLFWCALL * GLFWwindowclosefun)(void);
-typedef void (GLFWCALL * GLFWwindowpaintfun)(void);
+typedef void (GLFWCALL * GLFWwindowrefreshfun)(void);
 typedef void (GLFWCALL * GLFWmousebuttonfun)(int,int);
 typedef void (GLFWCALL * GLFWmouseposfun)(int,int);
 typedef void (GLFWCALL * GLFWmousewheelfun)(int);
@@ -413,7 +413,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval );
 GLFWAPI int  GLFWAPIENTRY glfwGetWindowParam( int param );
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun );
 GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun );
+GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun );
 
 // Video mode functions
 GLFWAPI int  GLFWAPIENTRY glfwGetVideoModes( GLFWvidmode *list, int maxcount );

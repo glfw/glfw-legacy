@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.6 2004-07-09 20:29:23 marcus256 Exp $
+// $Id: glfw.pas,v 1.7 2004-08-31 19:22:03 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -249,15 +249,15 @@ type
   GLFWcond = Pointer;
 
   // Function pointer types
-  GLFWwindowsizefun  = procedure(Width, Height: Integer); stdcall;
-  GLFWwindowclosefun = function: Integer; stdcall;
-  GLFWwindowpaintfun = procedure; stdcall;
-  GLFWmousebuttonfun = procedure(Button, Action: Integer); stdcall;
-  GLFWmouseposfun    = procedure(X, Y: Integer); stdcall;
-  GLFWmousewheelfun  = procedure(Pos: Integer); stdcall;
-  GLFWkeyfun         = procedure(Key, Action: Integer); stdcall;
-  GLFWcharfun        = procedure(Character, Action: Integer); stdcall;
-  GLFWthreadfun      = procedure(Arg: Pointer); stdcall;
+  GLFWwindowsizefun    = procedure(Width, Height: Integer); stdcall;
+  GLFWwindowclosefun   = function: Integer; stdcall;
+  GLFWwindowrefreshfun = procedure; stdcall;
+  GLFWmousebuttonfun   = procedure(Button, Action: Integer); stdcall;
+  GLFWmouseposfun      = procedure(X, Y: Integer); stdcall;
+  GLFWmousewheelfun    = procedure(Pos: Integer); stdcall;
+  GLFWkeyfun           = procedure(Key, Action: Integer); stdcall;
+  GLFWcharfun          = procedure(Character, Action: Integer); stdcall;
+  GLFWthreadfun        = procedure(Arg: Pointer); stdcall;
 
 
 //========================================================================
@@ -284,7 +284,7 @@ procedure glfwSwapInterval(interval: Integer); stdcall;
 function  glfwGetWindowParam(Param: Integer): Integer; stdcall;
 procedure glfwSetWindowSizeCallback(cbfun: GLFWwindowsizefun); stdcall;
 procedure glfwSetWindowCloseCallback(cbfun: GLFWwindowclosefun); stdcall;
-procedure glfwSetWindowPaintCallback(cbfun: GLFWwindowpaintfun); stdcall;
+procedure glfwSetWindowRefreshCallback(cbfun: GLFWwindowrefreshfun); stdcall;
 
 // Video mode functions
 function  gfwGetVideoModes(list: PGLFWvidmode; maxcount: Integer): Integer; stdcall;
@@ -370,7 +370,7 @@ procedure glfwSwapInterval; external DLLNAME;
 function  glfwGetWindowParam; external DLLNAME;
 procedure glfwSetWindowSizeCallback; external DLLNAME;
 procedure glfwSetWindowCloseCallback; external DLLNAME;
-procedure glfwSetWindowPaintCallback; external DLLNAME;
+procedure glfwSetWindowRefreshCallback; external DLLNAME;
 
 // Video mode functions
 function  gfwGetVideoModes; external DLLNAME;

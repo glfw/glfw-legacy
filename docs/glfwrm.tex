@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.21 2004-07-22 20:42:40 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.22 2004-08-31 19:21:28 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -906,11 +906,11 @@ support user selection of the swap interval.
 
 
 %-------------------------------------------------------------------------
-\subsection{glfwSetWindowPaintCallback}
+\subsection{glfwSetWindowRefreshCallback}
 
 \textbf{C language syntax}
 \begin{lstlisting}
-void glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun )
+void glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 \end{lstlisting}
 
 \begin{refparameters}
@@ -934,7 +934,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a window paint
+The function selects which function to be called upon a window refresh
 event, which occurs when any part of the window client area has been
 damaged, and needs to be repainted (for instance, if a part of the window
 that was previously occluded by another window has become visible).
@@ -943,7 +943,7 @@ A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
-Window paint events are recorded continuously, but only reported when
+Window refresh events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
 \textbf{glfwSwapBuffers} is called.
 \end{refnotes}

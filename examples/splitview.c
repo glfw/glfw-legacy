@@ -10,7 +10,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.c,v 1.4 2004-04-11 11:50:28 marcus256 Exp $
+ * $Id: splitview.c,v 1.5 2004-08-31 19:20:38 marcus256 Exp $
  ************************************************************************/
 
 #include <GL/glfw.h>
@@ -367,10 +367,10 @@ void GLFWCALL WindowSizeFun( int w, int h )
 
 
 //========================================================================
-// WindowPaintFun() - Window paint callback function
+// WindowRefreshFun() - Window refresh callback function
 //========================================================================
 
-void GLFWCALL WindowPaintFun( void )
+void GLFWCALL WindowRefreshFun( void )
 {
     do_redraw = 1;
 }
@@ -475,7 +475,7 @@ int main( void )
 
     // Set callback functions
     glfwSetWindowSizeCallback( WindowSizeFun );
-    glfwSetWindowPaintCallback( WindowPaintFun );
+    glfwSetWindowRefreshCallback( WindowRefreshFun );
     glfwSetMousePosCallback( MousePosFun );
     glfwSetMouseButtonCallback( MouseButtonFun );
 

@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.11 2004-04-12 11:58:18 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.12 2004-08-31 19:22:04 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -265,9 +265,9 @@ static int _glfwProcessEvents( void )
             EndRefresh( _glfwWin.Window, TRUE );
 
             // Call user callback function
-            if( _glfwWin.WindowPaintCallback )
+            if( _glfwWin.WindowRefreshCallback )
             {
-                _glfwWin.WindowPaintCallback();
+                _glfwWin.WindowRefreshCallback();
             }
             break;
 

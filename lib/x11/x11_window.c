@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.12 2004-04-11 11:40:31 marcus256 Exp $
+// $Id: x11_window.c,v 1.13 2004-08-31 19:20:36 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -810,9 +810,9 @@ static int _glfwGetNextEvent( void )
         // Was the window contents damaged?
         case Expose:
             // Call user callback function
-            if( _glfwWin.WindowPaintCallback )
+            if( _glfwWin.WindowRefreshCallback )
             {
-                _glfwWin.WindowPaintCallback();
+                _glfwWin.WindowRefreshCallback();
             }
             break;
 

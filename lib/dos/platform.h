@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.11 2004-04-11 11:40:32 marcus256 Exp $
+// $Id: platform.h,v 1.12 2004-08-31 19:20:39 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -83,14 +83,14 @@ struct _GLFWwin_struct {
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // User callback functions
-    GLFWwindowsizefun  WindowSizeCallback;
-    GLFWwindowclosefun WindowCloseCallback;
-    GLFWwindowpaintfun WindowPaintCallback;
-    GLFWmousebuttonfun MouseButtonCallback;
-    GLFWmouseposfun    MousePosCallback;
-    GLFWmousewheelfun  MouseWheelCallback;
-    GLFWkeyfun         KeyCallback;
-    GLFWcharfun        CharCallback;
+    GLFWwindowsizefun    WindowSizeCallback;
+    GLFWwindowclosefun   WindowCloseCallback;
+    GLFWwindowrefreshfun WindowRefreshCallback;
+    GLFWmousebuttonfun   MouseButtonCallback;
+    GLFWmouseposfun      MousePosCallback;
+    GLFWmousewheelfun    MouseWheelCallback;
+    GLFWkeyfun           KeyCallback;
+    GLFWcharfun          CharCallback;
 
     // User selected window settings
     int       Fullscreen;      // Fullscreen flag

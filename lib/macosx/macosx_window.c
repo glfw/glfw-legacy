@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.13 2004-08-01 15:59:01 elmindreda Exp $
+// $Id: macosx_window.c,v 1.14 2004-08-31 19:21:28 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -154,7 +154,7 @@ EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
 OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                EventRef event,
                                void *userData )
-{	
+{
     switch ( GetEventKind( event ) )
     {
         case kEventRawKeyDown:
@@ -500,9 +500,9 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
                                                 _glfwWin.Height );
         		}
         		// Emulate (force) content invalidation
-        		if( _glfwWin.WindowPaintCallback )
+        		if( _glfwWin.WindowRefreshCallback )
         		{
-                    _glfwWin.WindowPaintCallback();
+                    _glfwWin.WindowRefreshCallback();
         		}
       		}
       		break;
@@ -528,9 +528,9 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
     	case kEventWindowDrawContent:
     	{
 			// Call user callback function
-            if( _glfwWin.WindowPaintCallback )
+            if( _glfwWin.WindowRefreshCallback )
 	        {
-				_glfwWin.WindowPaintCallback();
+				_glfwWin.WindowRefreshCallback();
 			}
 			break;
       }
@@ -542,7 +542,7 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 int  _glfwInstallEventHandlers( void )
 {
     OSStatus error;
-    
+
     _glfwWin.MouseUPP = NewEventHandlerUPP( _glfwMouseEventHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
@@ -555,7 +555,7 @@ int  _glfwInstallEventHandlers( void )
     {
         return GL_FALSE;
     }
-    
+
     _glfwWin.CommandUPP = NewEventHandlerUPP( _glfwCommandHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
@@ -568,9 +568,9 @@ int  _glfwInstallEventHandlers( void )
     {
       return GL_FALSE;
     }
-    
+
     _glfwWin.KeyboardUPP = NewEventHandlerUPP( _glfwKeyEventHandler );
-    
+
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  _glfwWin.KeyboardUPP,
                                  GetEventTypeCount( GLFW_KEY_EVENT_TYPES ),
@@ -685,7 +685,7 @@ int  _glfwPlatformOpenWindow( int width,
     // create AGL context
 
     _glfwWin.AGLContext = aglCreateContext( pixelFormat, NULL );
-    
+
     aglDestroyPixelFormat( pixelFormat );
 
     if ( _glfwWin.AGLContext == NULL )
@@ -715,7 +715,7 @@ int  _glfwPlatformOpenWindow( int width,
     if ( !_glfwWin.Fullscreen )
     {
       _glfwWin.WindowUPP = NewEventHandlerUPP( _glfwWindowEventHandler );
-        
+
       error = InstallWindowEventHandler( _glfwWin.MacWindow,
                                          _glfwWin.WindowUPP,
                                          GetEventTypeCount( GLFW_WINDOW_EVENT_TYPES ),
@@ -796,9 +796,9 @@ void _glfwPlatformCloseWindow( void )
 	        DisposeEventHandlerUPP( _glfwWin.WindowUPP );
 	        _glfwWin.WindowUPP = NULL;
 	    }
-	
+
 	    _glfwWin.WindowFunctions->CloseWindow();
-	    
+
 	    if( _glfwWin.AGLContext != NULL )
 	    {
 		    aglSetCurrentContext( NULL );
@@ -898,7 +898,7 @@ void _glfwPlatformPollEvents( void )
 void _glfwPlatformWaitEvents( void )
 {
     EventRef event;
-    
+
     // Wait for new events
     ReceiveNextEvent( 0, NULL, kEventDurationForever, FALSE, &event );
 

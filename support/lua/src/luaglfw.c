@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.7 2004-07-19 20:31:39 marcus256 Exp $
+// $Id: luaglfw.c,v 1.8 2004-08-31 19:21:28 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -113,7 +113,7 @@ static lua_State * callback_lua_state = (lua_State *) 0;
 
 static const char * windowsize_name;
 static const char * windowclose_name;
-static const char * windowpaint_name;
+static const char * windowrefresh_name;
 static const char * mousebutton_name;
 static const char * mousepos_name;
 static const char * mousewheel_name;
@@ -151,12 +151,12 @@ int GLFWCALL luaglfw_windowclosefun( void )
     return do_close;
 }
 
-void GLFWCALL luaglfw_windowpaintfun( void )
+void GLFWCALL luaglfw_windowrefreshfun( void )
 {
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_getglobal( L, windowpaint_name );
+    lua_getglobal( L, windowrefresh_name );
     if( lua_isfunction( L, -1 ) )
     {
         lua_pcall( L, 0, 0, 0 );
@@ -848,15 +848,15 @@ static int glfw_SetWindowCloseCallback( lua_State *L )
     return 0;
 }
 
-static int glfw_SetWindowPaintCallback( lua_State *L )
+static int glfw_SetWindowRefreshCallback( lua_State *L )
 {
-    GLFWwindowpaintfun fun = NULL;
+    GLFWwindowrefreshfun fun = NULL;
     if( lua_isstring( L, 1 ) )
     {
-        windowpaint_name = lua_tostring( L, 1 );
-        fun = luaglfw_windowpaintfun;
+        windowrefresh_name = lua_tostring( L, 1 );
+        fun = luaglfw_windowrefreshfun;
     }
-    glfwSetWindowPaintCallback( fun );
+    glfwSetWindowRefreshCallback( fun );
     return 0;
 }
 
@@ -1155,7 +1155,7 @@ static const luaL_reg glfwlib[] = {
     { "LoadTexture2D", glfw_LoadTexture2D },
     { "SetWindowSizeCallback", glfw_SetWindowSizeCallback },
     { "SetWindowCloseCallback", glfw_SetWindowCloseCallback },
-    { "SetWindowPaintCallback", glfw_SetWindowPaintCallback },
+    { "SetWindowRefreshCallback", glfw_SetWindowRefreshCallback },
     { "SetMouseButtonCallback", glfw_SetMouseButtonCallback },
     { "SetMousePosCallback", glfw_SetMousePosCallback },
     { "SetMouseWheelCallback", glfw_SetMouseWheelCallback },

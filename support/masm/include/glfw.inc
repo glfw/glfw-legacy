@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.7 2004-07-09 20:29:24 marcus256 Exp $
+; $Id: glfw.inc,v 1.8 2004-08-31 19:22:03 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
@@ -250,82 +250,82 @@ GLFWCond TYPEDEF DWORD
 ;#########################################################################
 
 ; GLFW initialization, termination and version querying
-glfwInit                    PROTO   STDCALL
-glfwTerminate               PROTO   STDCALL
-glfwGetVersion              PROTO   STDCALL :DWORD, :DWORD, :DWORD
+glfwInit                     PROTO   STDCALL
+glfwTerminate                PROTO   STDCALL
+glfwGetVersion               PROTO   STDCALL :DWORD, :DWORD, :DWORD
 
 ; Window handling
-glfwOpenWindow              PROTO   STDCALL :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
-glfwOpenWindowHint          PROTO   STDCALL :DWORD, :DWORD
-glfwCloseWindow             PROTO   STDCALL
-glfwSetWindowTitle          PROTO   STDCALL :DWORD
-glfwGetWindowSize           PROTO   STDCALL :DWORD, :DWORD
-glfwSetWindowSize           PROTO   STDCALL :DWORD, :DWORD
-glfwSetWindowPos            PROTO   STDCALL :DWORD, :DWORD
-glfwIconifyWindow           PROTO   STDCALL
-glfwRestoreWindow           PROTO   STDCALL
-glfwSwapBuffers             PROTO   STDCALL
-glfwSwapInterval            PROTO   STDCALL :DWORD
-glfwGetWindowParam          PROTO   STDCALL :DWORD
-glfwSetWindowSizeCallback   PROTO   STDCALL :DWORD
-glfwSetWindowCloseCallback  PROTO   STDCALL :DWORD
-glfwSetWindowPaintCallback  PROTO   STDCALL :DWORD
+glfwOpenWindow               PROTO   STDCALL :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD, :DWORD
+glfwOpenWindowHint           PROTO   STDCALL :DWORD, :DWORD
+glfwCloseWindow              PROTO   STDCALL
+glfwSetWindowTitle           PROTO   STDCALL :DWORD
+glfwGetWindowSize            PROTO   STDCALL :DWORD, :DWORD
+glfwSetWindowSize            PROTO   STDCALL :DWORD, :DWORD
+glfwSetWindowPos             PROTO   STDCALL :DWORD, :DWORD
+glfwIconifyWindow            PROTO   STDCALL
+glfwRestoreWindow            PROTO   STDCALL
+glfwSwapBuffers              PROTO   STDCALL
+glfwSwapInterval             PROTO   STDCALL :DWORD
+glfwGetWindowParam           PROTO   STDCALL :DWORD
+glfwSetWindowSizeCallback    PROTO   STDCALL :DWORD
+glfwSetWindowCloseCallback   PROTO   STDCALL :DWORD
+glfwSetWindowRefreshCallback PROTO   STDCALL :DWORD
 
 ; Video mode functions
-glfwGetVideoModes           PROTO   STDCALL :DWORD, :DWORD
-glfwGetDesktopMode          PROTO   STDCALL :DWORD
+glfwGetVideoModes            PROTO   STDCALL :DWORD, :DWORD
+glfwGetDesktopMode           PROTO   STDCALL :DWORD
 
 ; Input handling
-glfwPollEvents              PROTO   STDCALL
-glfwWaitEvents              PROTO   STDCALL
-glfwGetKey                  PROTO   STDCALL :DWORD
-glfwGetMouseButton          PROTO   STDCALL :DWORD
-glfwGetMousePos             PROTO   STDCALL :DWORD, :DWORD
-glfwSetMousePos             PROTO   STDCALL :DWORD, :DWORD
-glfwGetMouseWheel           PROTO   STDCALL
-glfwSetMouseWheel           PROTO   STDCALL :DWORD
-glfwSetKeyCallback          PROTO   STDCALL :DWORD
-glfwSetCharCallback         PROTO   STDCALL :DWORD
-glfwSetMouseButtonCallback  PROTO   STDCALL :DWORD
-glfwSetMousePosCallback     PROTO   STDCALL :DWORD
-glfwSetMouseWheelCallback   PROTO   STDCALL :DWORD
+glfwPollEvents               PROTO   STDCALL
+glfwWaitEvents               PROTO   STDCALL
+glfwGetKey                   PROTO   STDCALL :DWORD
+glfwGetMouseButton           PROTO   STDCALL :DWORD
+glfwGetMousePos              PROTO   STDCALL :DWORD, :DWORD
+glfwSetMousePos              PROTO   STDCALL :DWORD, :DWORD
+glfwGetMouseWheel            PROTO   STDCALL
+glfwSetMouseWheel            PROTO   STDCALL :DWORD
+glfwSetKeyCallback           PROTO   STDCALL :DWORD
+glfwSetCharCallback          PROTO   STDCALL :DWORD
+glfwSetMouseButtonCallback   PROTO   STDCALL :DWORD
+glfwSetMousePosCallback      PROTO   STDCALL :DWORD
+glfwSetMouseWheelCallback    PROTO   STDCALL :DWORD
 
 ; Joystick input
-glfwGetJoystickParam        PROTO   STDCALL :DWORD, :DWORD
-glfwGetJoystickPos          PROTO   STDCALL :DWORD, :DWORD, :DWORD
-glfwGetJoystickButtons      PROTO   STDCALL :DWORD, :DWORD, :DWORD
+glfwGetJoystickParam         PROTO  STDCALL :DWORD, :DWORD
+glfwGetJoystickPos           PROTO  STDCALL :DWORD, :DWORD, :DWORD
+glfwGetJoystickButtons       PROTO  STDCALL :DWORD, :DWORD, :DWORD
 
 ; Time
-glfwGetTime                 PROTO   STDCALL
-glfwSetTime                 PROTO   STDCALL :QWORD
-glfwSleep                   PROTO   STDCALL :QWORD
+glfwGetTime                  PROTO  STDCALL
+glfwSetTime                  PROTO  STDCALL :QWORD
+glfwSleep                    PROTO  STDCALL :QWORD
 
 ; Extension support
-glfwExtensionSupported      PROTO   STDCALL :DWORD
-glfwGetProcAddress          PROTO   STDCALL :DWORD
-glfwGetGLVersion            PROTO   STDCALL :DWORD, :DWORD, :DWORD
+glfwExtensionSupported       PROTO  STDCALL :DWORD
+glfwGetProcAddress           PROTO  STDCALL :DWORD
+glfwGetGLVersion             PROTO  STDCALL :DWORD, :DWORD, :DWORD
 
 ; Threading support
-glfwCreateThread            PROTO   STDCALL :DWORD, :DWORD
-glfwDestroyThread           PROTO   STDCALL :DWORD
-glfwWaitThread              PROTO   STDCALL :DWORD, :DWORD
-glfwGetThreadID             PROTO   STDCALL
-glfwCreateMutex             PROTO   STDCALL
-glfwDestroyMutex            PROTO   STDCALL :DWORD
-glfwLockMutex               PROTO   STDCALL :DWORD
-glfwUnlockMutex             PROTO   STDCALL :DWORD
-glfwCreateCond              PROTO   STDCALL
-glfwDestroyCond             PROTO   STDCALL :DWORD
-glfwWaitCond                PROTO   STDCALL :DWORD, :DWORD, :QWORD
-glfwSignalCond              PROTO   STDCALL :DWORD
-glfwBroadcastCond           PROTO   STDCALL :DWORD
-glfwGetNumberOfProcessors   PROTO   STDCALL
+glfwCreateThread             PROTO  STDCALL :DWORD, :DWORD
+glfwDestroyThread            PROTO  STDCALL :DWORD
+glfwWaitThread               PROTO  STDCALL :DWORD, :DWORD
+glfwGetThreadID              PROTO  STDCALL
+glfwCreateMutex              PROTO  STDCALL
+glfwDestroyMutex             PROTO  STDCALL :DWORD
+glfwLockMutex                PROTO  STDCALL :DWORD
+glfwUnlockMutex              PROTO  STDCALL :DWORD
+glfwCreateCond               PROTO  STDCALL
+glfwDestroyCond              PROTO  STDCALL :DWORD
+glfwWaitCond                 PROTO  STDCALL :DWORD, :DWORD, :QWORD
+glfwSignalCond               PROTO  STDCALL :DWORD
+glfwBroadcastCond            PROTO  STDCALL :DWORD
+glfwGetNumberOfProcessors    PROTO  STDCALL
 
 ; Enable/disable functions
-glfwEnable                  PROTO   STDCALL :DWORD
-glfwDisable                 PROTO   STDCALL :DWORD
+glfwEnable                   PROTO  STDCALL :DWORD
+glfwDisable                  PROTO  STDCALL :DWORD
 
 ; Image/texture I/O support
-glfwReadImage               PROTO   STDCALL :DWORD, :DWORD, :DWORD
-glfwFreeImage               PROTO   STDCALL :DWORD
-glfwLoadTexture2D           PROTO   STDCALL :DWORD, :DWORD
+glfwReadImage                PROTO  STDCALL :DWORD, :DWORD, :DWORD
+glfwFreeImage                PROTO  STDCALL :DWORD
+glfwLoadTexture2D            PROTO  STDCALL :DWORD, :DWORD

@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.11 2004-04-11 11:49:33 marcus256 Exp $
+// $Id: window.c,v 1.12 2004-08-31 19:20:37 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -220,14 +220,14 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwClearInput();
 
     // Unregister all callback functions
-    _glfwWin.WindowSizeCallback  = NULL;
-    _glfwWin.WindowCloseCallback = NULL;
-    _glfwWin.WindowPaintCallback = NULL;
-    _glfwWin.KeyCallback         = NULL;
-    _glfwWin.CharCallback        = NULL;
-    _glfwWin.MousePosCallback    = NULL;
-    _glfwWin.MouseButtonCallback = NULL;
-    _glfwWin.MouseWheelCallback  = NULL;
+    _glfwWin.WindowSizeCallback    = NULL;
+    _glfwWin.WindowCloseCallback   = NULL;
+    _glfwWin.WindowRefreshCallback = NULL;
+    _glfwWin.KeyCallback           = NULL;
+    _glfwWin.CharCallback          = NULL;
+    _glfwWin.MousePosCallback      = NULL;
+    _glfwWin.MouseButtonCallback   = NULL;
+    _glfwWin.MouseWheelCallback    = NULL;
 
     // Get window hints
     AccumRedBits   = _glfwWinHints.AccumRedBits;
@@ -635,11 +635,11 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 
 
 //========================================================================
-// glfwSetWindowPaintCallback() - Set callback function for window paint
-// events
+// glfwSetWindowRefreshCallback() - Set callback function for window
+// refresh events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun )
+GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -648,7 +648,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.WindowPaintCallback = cbfun;
+    _glfwWin.WindowRefreshCallback = cbfun;
 }
 
 

@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.12 2004-08-01 16:01:02 elmindreda Exp $
+// $Id: platform.h,v 1.13 2004-08-31 19:20:39 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -160,14 +160,14 @@ struct _GLFWwin_struct {
     int       Iconified;       // Window iconified flag
 
     // User callback functions
-    GLFWwindowsizefun  WindowSizeCallback;
-    GLFWwindowclosefun WindowCloseCallback;
-    GLFWwindowpaintfun WindowPaintCallback;
-    GLFWmousebuttonfun MouseButtonCallback;
-    GLFWmouseposfun    MousePosCallback;
-    GLFWmousewheelfun  MouseWheelCallback;
-    GLFWkeyfun         KeyCallback;
-    GLFWcharfun        CharCallback;
+    GLFWwindowsizefun    WindowSizeCallback;
+    GLFWwindowclosefun   WindowCloseCallback;
+    GLFWwindowrefreshfun WindowRefreshCallback;
+    GLFWmousebuttonfun   MouseButtonCallback;
+    GLFWmouseposfun      MousePosCallback;
+    GLFWmousewheelfun    MouseWheelCallback;
+    GLFWkeyfun           KeyCallback;
+    GLFWcharfun          CharCallback;
 
     // User selected window settings
     int       Fullscreen;      // Fullscreen flag

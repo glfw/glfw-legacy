@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.35 2004-08-01 16:01:35 elmindreda Exp $ -->
+<!-- $Id: readme.html,v 1.36 2004-08-31 19:22:28 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -507,8 +507,8 @@ version of GLFW.
  <li>Added the function glfwWaitEvents</li>
  <li>Added window close callback, which enables a program to prevent a user
      from closing a window with the window manager</li>
- <li>Added window paint callback, which is called when the window needs
-     to be repainted</li>
+ <li>Added window refresh callback, which is called when the window needs
+     to be refreshed</li>
  <li>Added support for loading alpha textures (GLFW_ALPHA_MAP_BIT)</li>
  <li>Added support for the Lua programming language</li>
  <li>Added support for the D programming language</li>
@@ -526,7 +526,7 @@ version of GLFW.
  <li>[MacOSX] Added support for the input char callback.</li>
  <li>[MacOSX] Added video mode validation and duplicate elimination.</li>
  <li>[MacOSX] Switched to a new MakeBundle.sh script.</li>
- <li>[MacOSX] Added emulation of the window paint callback.</li>
+ <li>[MacOSX] Added emulation of the window refresh callback.</li>
  <li>[MacOSX] Bugfix: The window and its associated resources are now
      properly released.</li>
  <li>[MacOSX] Bugfix: Removed support for more than eight mouse buttons.</li>
