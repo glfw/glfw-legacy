@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.7 2004-08-31 19:22:03 marcus256 Exp $
+// $Id: glfw.pas,v 1.8 2004-12-30 18:21:28 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -287,7 +287,7 @@ procedure glfwSetWindowCloseCallback(cbfun: GLFWwindowclosefun); stdcall;
 procedure glfwSetWindowRefreshCallback(cbfun: GLFWwindowrefreshfun); stdcall;
 
 // Video mode functions
-function  gfwGetVideoModes(list: PGLFWvidmode; maxcount: Integer): Integer; stdcall;
+function  glfwGetVideoModes(list: PGLFWvidmode; maxcount: Integer): Integer; stdcall;
 procedure glfwGetDesktopMode(mode: PGLFWvidmode); stdcall;
 
 // Input handling
@@ -373,7 +373,7 @@ procedure glfwSetWindowCloseCallback; external DLLNAME;
 procedure glfwSetWindowRefreshCallback; external DLLNAME;
 
 // Video mode functions
-function  gfwGetVideoModes; external DLLNAME;
+function  glfwGetVideoModes; external DLLNAME;
 procedure glfwGetDesktopMode; external DLLNAME;
 
 // Input handling
