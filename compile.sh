@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-05-04 21:15:03 $
-# $Revision: 1.7 $
+# $Date: 2003-06-13 22:18:34 $
+# $Revision: 1.8 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -97,12 +97,14 @@ echo "Checking for X11 libraries location... " 1>&6
 if [ -r "/usr/X11R6/lib/libX11.so" ]; then
 
  LFLAGS="$LFLAGS -L/usr/X11R6/lib"
+ CFLAGS="$CFLAGS -I/usr/X11R6/include"
  echo " X11 libraries location: /usr/X11R6/lib" 1>&6
 
 # X11R5 in /usr/X11R5/lib ?
 elif [ -r "/usr/X11R5/lib/libX11.so" ]; then
 
  LFLAGS="$LFLAGS -L/usr/X11R5/lib"
+ CFLAGS="$CFLAGS -I/usr/X11R5/include"
  echo " X11 libraries location: /usr/X11R5/lib" 1>&6
 
 # Mac OS X: X11R6 in /usr/X11R6/lib, uses .dylib instead of .so
@@ -392,6 +394,9 @@ fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
 if [ "x"`uname -s` = xQNX ]; then
   LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lsocket -lm"
+elif [ "x"`uname -s` = xFreeBSD ]; then
+  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -pthread -lm"
+  CFLAGS_LINK="$CFLAGS_LINK -I/usr/X11R6/include"
 else
   LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lpthread -lm"
 fi
