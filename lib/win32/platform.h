@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.11 2004-04-12 18:54:47 marcus256 Exp $
+// $Id: platform.h,v 1.12 2004-07-09 20:10:11 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -119,6 +119,19 @@ typedef struct tagKBDLLHOOKSTRUCT {
 #endif
 #ifndef WHEEL_DELTA
 #define WHEEL_DELTA 120
+#endif
+
+#ifndef WM_XBUTTONDOWN
+#define WM_XBUTTONDOWN 0x020B
+#endif
+#ifndef WM_XBUTTONUP
+#define WM_XBUTTONUP 0x020C
+#endif
+#ifndef XBUTTON1
+#define XBUTTON1 1
+#endif
+#ifndef XBUTTON2
+#define XBUTTON2 2
 #endif
 
 // wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
