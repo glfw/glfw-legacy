@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.5 2003-10-30 20:46:01 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.6 2004-01-06 08:47:35 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -165,7 +165,7 @@ static int _glfwProcessEvents( void )
 
     // Examine pending messages
     msg_port = _glfwWin.Window->UserPort;
-    while( tmp_message = (struct IntuiMessage *) GetMsg( msg_port ) )
+    while( (tmp_message = (struct IntuiMessage *) GetMsg( msg_port )) )
     {
         // Copy contents of message structure
         message = *tmp_message;
