@@ -6,7 +6,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: pong3d.c,v 1.3 2003-12-09 21:37:03 marcus256 Exp $
+ * $Id: pong3d.c,v 1.4 2004-04-05 20:22:11 marcus256 Exp $
  ************************************************************************/
 
 #include <GL/glfw.h>
@@ -600,19 +600,19 @@ void UpdateDisplay( void )
     // Draw Player 1
     glMaterialfv( GL_FRONT, GL_DIFFUSE, player1_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, player1_ambient );
-    DrawBox( -1.0f,              (GLfloat)player1.ypos-PLAYER_YSIZE, 0.0f,
-             -1.0f+PLAYER_XSIZE, (GLfloat)player1.ypos+PLAYER_YSIZE, 0.1f );
+    DrawBox( -1.0,              (GLfloat)player1.ypos-PLAYER_YSIZE, 0.0,
+             -1.0+PLAYER_XSIZE, (GLfloat)player1.ypos+PLAYER_YSIZE, 0.1 );
 
     // Draw Player 2
     glMaterialfv( GL_FRONT, GL_DIFFUSE, player2_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, player2_ambient );
-    DrawBox( 1.0f-PLAYER_XSIZE, (GLfloat)player2.ypos-PLAYER_YSIZE, 0.0f,
-             1.0f,              (GLfloat)player2.ypos+PLAYER_YSIZE, 0.1f );
+    DrawBox( 1.0-PLAYER_XSIZE, (GLfloat)player2.ypos-PLAYER_YSIZE, 0.0,
+             1.0,              (GLfloat)player2.ypos+PLAYER_YSIZE, 0.1 );
 
     // Draw Ball
     glMaterialfv( GL_FRONT, GL_DIFFUSE, ball_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, ball_ambient );
-    DrawBox( (GLfloat)ball.xpos-BALL_SIZE, (GLfloat)ball.ypos-BALL_SIZE, 0.0f,
+    DrawBox( (GLfloat)ball.xpos-BALL_SIZE, (GLfloat)ball.ypos-BALL_SIZE, 0.0,
              (GLfloat)ball.xpos+BALL_SIZE, (GLfloat)ball.ypos+BALL_SIZE, BALL_SIZE*2 );
 
     // Top game field border
