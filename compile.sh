@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-04-09 19:28:01 $
-# $Revision: 1.6 $
+# $Date: 2003-05-04 21:15:03 $
+# $Revision: 1.7 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -111,6 +111,19 @@ elif [ -r "/usr/X11R6/lib/libX11.dylib" ]; then
  LFLAGS="$LFLAGS -L/usr/X11R6/lib"
  CFLAGS="$CFLAGS -I/usr/X11R6/include"
  echo " X11 libraries location: /usr/X11R6/lib" 1>&6
+
+# QNX: X11R6 in /opt/X11R6/lib ?
+elif [ -r "/opt/X11R6/lib/libX11.so" ]; then
+
+ LFLAGS="$LFLAGS -L/opt/X11R6/lib"
+ CFLAGS="$CFLAGS -I/opt/X11R6/include"
+ echo " X11 libraries location: /opt/X11R6/lib" 1>&6
+
+elif [ -r "/opt/X11R6/lib/libX11.so.6" ]; then
+
+ LFLAGS="$LFLAGS -L/opt/X11R6/lib"
+ CFLAGS="$CFLAGS -I/opt/X11R6/include"
+ echo " X11 libraries location: /opt/X11R6/lib" 1>&6
 
 else
 
@@ -377,8 +390,11 @@ else
   CFLAGS_LINK="-O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
-LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lpthread -lm"
-
+if [ "x"`uname -s` = xQNX ]; then
+  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lsocket -lm"
+else
+  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lpthread -lm"
+fi
 
 ##########################################################################
 # Create Makefiles
