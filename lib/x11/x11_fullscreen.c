@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_fullscreen.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: x11_fullscreen.c,v 1.3 2003-08-30 19:58:47 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -213,7 +213,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
     int     count, i, j, k, r, g, b, rgba, gl;
     int     width, height, depth, bpp, m1, m2;
     Display *dpy;
-    int     scrnid;
+    int     scrnid, closedpy;
     XVisualInfo *vislist, dummy;
     int     viscount;
 #if defined( _GLFW_HAS_XF86VIDMODE )
@@ -222,10 +222,19 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #endif
 
     // Get display and screen
-    dpy = XOpenDisplay( 0 );
-    if( !dpy )
+    if( _glfwInitialized && _glfwWin.Opened )
     {
-        return 0;
+        dpy = _glfwWin.Dpy;
+        closedpy = 0;
+    }
+    else
+    {
+        dpy = XOpenDisplay( 0 );
+        if( !dpy )
+        {
+            return 0;
+        }
+        closedpy = 1;
     }
     scrnid = DefaultScreen( dpy );
 
@@ -241,7 +250,10 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #if defined( _GLFW_HAS_XF86VIDMODE )
         XFree( modelist );
 #endif
-        XCloseDisplay( dpy );
+        if( closedpy )
+        {
+            XCloseDisplay( dpy );
+        }
         return 0;
     }
 
@@ -328,7 +340,10 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #endif
 
     // Close display connection
-    XCloseDisplay( dpy );
+    if( closedpy )
+    {
+        XCloseDisplay( dpy );
+    }
 
     return count;
 }
@@ -341,19 +356,28 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
     Display *dpy;
-    int     scrnid, bpp;
+    int     scrnid, bpp, closedpy;
 #if defined( _GLFW_HAS_XF86VIDMODE )
     XF86VidModeModeInfo **modelist;
     int     modecount;
 #endif
 
     // Get display and screen
-    dpy = XOpenDisplay( 0 );
-    if( !dpy )
+    if( _glfwInitialized && _glfwWin.Opened )
     {
-        mode->Width = mode->Height = mode->RedBits = mode->GreenBits =
-        mode->BlueBits = 0;
-        return;
+        dpy = _glfwWin.Dpy;
+        closedpy = 0;
+    }
+    else
+    {
+        dpy = XOpenDisplay( 0 );
+        if( !dpy )
+        {
+            mode->Width = mode->Height = mode->RedBits = mode->GreenBits =
+            mode->BlueBits = 0;
+            return;
+        }
+        closedpy = 1;
     }
     scrnid = DefaultScreen( dpy );
 
@@ -390,5 +414,8 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
                   &mode->BlueBits );
 
     // Close display connection
-    XCloseDisplay( dpy );
+    if( closedpy )
+    {
+        XCloseDisplay( dpy );
+    }
 }
