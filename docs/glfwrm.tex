@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.16 2004-05-05 19:48:54 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.17 2004-07-09 20:18:22 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -996,7 +996,7 @@ about when or why \textbf{glfwWaitEvents} will return.
 \textbf{Name}             & \textbf{Description} \\ \hline
 GLFW\_KEY\_SPACE          & Space\\ \hline
 GLFW\_KEY\_ESC            & Escape\\ \hline
-GLFW\_KEY\_F\textit{n}    & Function key \textit{n} (\textit{n} can be in the range 1..25).\\ \hline
+GLFW\_KEY\_F\textit{n}    & Function key \textit{n} (\textit{n} can be in the range 1..25)\\ \hline
 GLFW\_KEY\_UP             & Cursor up\\ \hline
 GLFW\_KEY\_DOWN           & Cursor down\\ \hline
 GLFW\_KEY\_LEFT           & Cursor left\\ \hline
@@ -1016,7 +1016,7 @@ GLFW\_KEY\_PAGEUP         & Page up\\ \hline
 GLFW\_KEY\_PAGEDOWN       & Page down\\ \hline
 GLFW\_KEY\_HOME           & Home\\ \hline
 GLFW\_KEY\_END            & End\\ \hline
-GLFW\_KEY\_KP\_\textit{n} & Keypad numeric key \textit{n} (\textit{n} can be in the range 0..9).\\ \hline
+GLFW\_KEY\_KP\_\textit{n} & Keypad numeric key \textit{n} (\textit{n} can be in the range 0..9)\\ \hline
 GLFW\_KEY\_KP\_DIVIDE     & Keypad divide ($\div$)\\ \hline
 GLFW\_KEY\_KP\_MULTIPLY   & Keypad multiply ($\times$)\\ \hline
 GLFW\_KEY\_KP\_SUBTRACT   & Keypad subtract ($-$)\\ \hline
@@ -1028,6 +1028,22 @@ GLFW\_KEY\_KP\_ENTER      & Keypad enter\\ \hline
 \end{center}
 \caption{Special key identifiers}
 \label{tab:keys}
+\end{table}
+
+
+%-------------------------------------------------------------------------
+\begin{table}[p]
+\begin{center}
+\begin{tabular}{|l|l|} \hline \raggedright
+\textbf{Name}               & \textbf{Description} \\ \hline
+GLFW\_MOUSE\_BUTTON\_LEFT   & Left mouse button (button 1) \\ \hline
+GLFW\_MOUSE\_BUTTON\_RIGHT  & Right mouse button (button 2) \\ \hline
+GLFW\_MOUSE\_BUTTON\_MIDDLE & Middle mouse button (button 3) \\ \hline
+GLFW\_MOUSE\_BUTTON\_\textit{n} & Mouse button \textit{n} (\textit{n} can be in the range 1..8)\\ \hline
+\end{tabular}
+\end{center}
+\caption{Valid mouse button identifiers}
+\label{tab:mousebuttons}
 \end{table}
 
 
@@ -1089,8 +1105,8 @@ int glfwGetMouseButton( int button )
 \begin{refparameters}
 \begin{description}
 \item [\textit{button}]\ \\
-  A mouse button identifier, which can be one of GLFW\_MOUSE\_BUTTON\_LEFT,
-  GLFW\_MOUSE\_BUTTON\_RIGHT or  GLFW\_MOUSE\_BUTTON\_MIDDLE.
+  A mouse button identifier, which can be one of the mouse button
+  identifiers listed in table \ref{tab:mousebuttons}.
 \end{description}
 \end{refparameters}
 
@@ -1108,6 +1124,10 @@ A window must be opened for the function to have any effect, and
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
 \textbf{glfwSwapBuffers} must be called before any mouse button events
 are recorded and reported by \textbf{glfwGetMouseButton}.
+
+GLFW\_MOUSE\_BUTTON\_LEFT is equal to GLFW\_MOUSE\_BUTTON\_1.
+GLFW\_MOUSE\_BUTTON\_RIGHT is equal to GLFW\_MOUSE\_BUTTON\_2.
+GLFW\_MOUSE\_BUTTON\_MIDDLE is equal to GLFW\_MOUSE\_BUTTON\_3.
 \end{refnotes}
 
 
@@ -1360,8 +1380,8 @@ void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
   \texttt{void GLFWCALL functionname( int button, int action );}
 
   Where \textit{functionname} is the name of the callback function,
-  \textit{button} is a mouse button identifier (GLFW\_MOUSE\_BUTTON\_LEFT,
-  GLFW\_MOUSE\_BUTTON\_RIGHT, or GLFW\_MOUSE\_BUTTON\_MIDDLE), and
+  \textit{button} is a mouse button identifier (see table
+  \ref{tab:mousebuttons} on page \pageref{tab:mousebuttons}), and
   \textit{action} is either GLFW\_PRESS or GLFW\_RELEASE.
 
   If \textit{cbfun} is NULL, any previously selected callback function
@@ -1384,6 +1404,10 @@ A window has to be opened for this function to have any effect.
 Mouse button events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
 \textbf{glfwSwapBuffers} is called.
+
+GLFW\_MOUSE\_BUTTON\_LEFT is equal to GLFW\_MOUSE\_BUTTON\_1.
+GLFW\_MOUSE\_BUTTON\_RIGHT is equal to GLFW\_MOUSE\_BUTTON\_2.
+GLFW\_MOUSE\_BUTTON\_MIDDLE is equal to GLFW\_MOUSE\_BUTTON\_3.
 \end{refnotes}
 
 
