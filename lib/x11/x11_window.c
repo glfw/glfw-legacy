@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: x11_window.c,v 1.3 2003-05-04 21:21:41 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -610,12 +610,26 @@ static int _glfwGetNextEvent( void )
 
         // Was the window activated?
         case FocusIn:
+            // Window is now active
             _glfwWin.Active = GL_TRUE;
+
+            // If we are in fullscreen mode, restore window
+            if( _glfwWin.Fullscreen && _glfwWin.Iconified )
+            {
+                _glfwPlatformRestoreWindow();
+            }
             break;
 
         // Was the window de-activated?
         case FocusOut:
+            // Window is not active
             _glfwWin.Active = GL_FALSE;
+
+            // If we are in fullscreen mode, iconfify window
+            if( _glfwWin.Fullscreen )
+            {
+                _glfwPlatformIconifyWindow();
+            }
             break;
 
         // Was the window destroyed?
@@ -797,7 +811,9 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     // Make sure that our window ends up on top of things
     XRaiseWindow( _glfwWin.Dpy, _glfwWin.Win );
-    XSetInputFocus( _glfwWin.Dpy, _glfwWin.Win, RevertToNone,
+
+    // Get input focus
+    XSetInputFocus( _glfwWin.Dpy, _glfwWin.Win, RevertToParent,
                     CurrentTime );
 
     // Fullscreen mode "post processing"
