@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.30 2004-04-13 20:02:00 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.31 2004-04-13 20:12:15 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -137,11 +137,16 @@ GLFW with this procedure:
 </ol>
 
 
-<p><br><h3>2.2 Note for MinGW users</h3>
+<p><br><h3>2.2 Note for MinGW/DevC++ users</h3>
 
 <p>Do not use the MSYS shell for compiling GLFW, because the supplied
 batch file "compile.bat" will only work under a Windows command prompt (or
 MS-DOS prompt).
+
+<p>Under Windows 98, the MinGW make program may set the $(MAKE) variable
+incorrectly. To remedy this, uncomment the line at the beginning of the
+top level Makefile that says MAKE = make (possibly replacing make with
+some other name, e.g. mingw32-make).
 
 
 <p><br><h3>2.3 Note for Cygwin users</h3>
@@ -169,6 +174,8 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 
 <p>To build GLFW with Pelles C, you need at lest version 2.80.3 of Pelles C
 (POCC and POLINK).
+
+<p>Type 'pomake win32-pellesc' to build GLFW.
 
 
 <p><br><h3>2.6 Note for Unix/X11 users</h3>
@@ -500,6 +507,8 @@ version of GLFW.
  <li>Added the function glfwWaitEvents</li>
  <li>Added window close callback, which enables a program to prevent a user
      from closing a window with the window manager</li>
+ <li>Added window paint callback, which is called when the window needs
+     to be repainted</li>
  <li>Added support for loading alpha textures (GLFW_ALPHA_MAP_BIT)</li>
  <li>Added support for the D programming language</li>
  <li>Added support for the Pelles C compiler for Windows</li>
