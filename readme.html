@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.17 2003-11-24 19:52:06 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.18 2003-11-25 22:11:47 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -143,7 +143,20 @@ work from a Cygwin shell, which is why there is a special cygwin-clean
 option.
 
 
-<p><br><h3>2.3 Note for Unix/X11 users</h3>
+<p><br><h3>2.3 Note for OpenWatcom users</h3>
+
+<p>In order to compile GLFW successfully with OpenWatcom (for Windows),
+execute "nmake MAKE=nmake win32-ow" in the GLFW root directory. Also make
+sure that you have all your environment variables set up correctly. It is
+the default option when installing OpenWatcom to permanently set up all
+the required environment variables. If nmake does not work, you probably
+have to run "WATCOM\setvars.bat" from the command prompt before executing
+nmake, where WATCOM is the directory in which you installed OpenWatcom
+(e.g. C:\Watcom).
+
+
+
+<p><br><h3>2.4 Note for Unix/X11 users</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has been tested under Linux Mandrake 9.1,
@@ -153,7 +166,7 @@ generate functional Makefiles. You do not have to run the script manually,
 since it is called from the top level Makefile.
 
 
-<p><br><h3>2.4 Note for AmigaOS users</h3>
+<p><br><h3>2.5 Note for AmigaOS users</h3>
 
 <p>To compile GLFW and the example programs for AmigaOS (68k), you need a
 make program that understands AmigaDOS paths. I use the SAS/C compiled
@@ -168,7 +181,7 @@ been implemented, but there are still some things missing (e.g. hiding the
 mouse cursor in windowed mode, iconification handling etc).
 
 
-<p><br><h3>2.5 Note for Mac OS X users</h3>
+<p><br><h3>2.6 Note for Mac OS X users</h3>
 
 <p>To compile GLFW for Mac OS X, you will need to have installed the BSD
 subsystem and the Developer Tools, which can be found on your Mac OS X
