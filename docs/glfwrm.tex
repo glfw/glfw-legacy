@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.1 2003-11-03 21:23:21 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.2 2003-11-04 22:14:46 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -17,7 +17,7 @@
 % PDF specific document settings
 \hypersetup{pdftitle={GLFW Reference Manual}}
 \hypersetup{pdfauthor={Marcus Geelnard}}
-\hypersetup{pdfkeywords={GLFW,OpenGL,reference}}
+\hypersetup{pdfkeywords={GLFW,OpenGL,reference,manual}}
 
 
 %-------------------------------------------------------------------------
@@ -136,8 +136,9 @@ be terminated in order to free up resources etc.
 int glfwInit( void )
 \end{lstlisting}
 
-\textbf{Parameters}
-\\none
+\begin{refparameters}
+none
+\end{refparameters}
 
 \begin{refreturn}
 If the function succeeds, GL\_TRUE is returned.\\
@@ -163,8 +164,9 @@ on other systems it may take only a fraction of a second to complete.
 void glfwTerminate( void )
 \end{lstlisting}
 
-\textbf{Parameters}
-\\none
+\begin{refparameters}
+none
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -185,7 +187,7 @@ called before a program exits.
 void glfwGetVersion( int *major, int *minor, int *rev )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{major}]\ \\
   Pointer to an integer that will hold the major version number.
@@ -194,6 +196,7 @@ void glfwGetVersion( int *major, int *minor, int *rev )
 \item [\textit{rev}]\ \\
   Pointer to an integer that will hold the revision.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 The function returns the major and minor version numbers and the revision
@@ -223,7 +226,7 @@ int glfwOpenWindow( int width, int height, int redbits,
     int stencilbits, int mode )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{width}]\ \\
   The width of the window. If \textit{width} is zero, it will be calculated
@@ -250,6 +253,7 @@ int glfwOpenWindow( int width, int height, int redbits,
   GLFW\_FULLSCREEN is selected, the video mode will be changed to the resolution
   that closest matches the \textit{width} and \textit{height} parameters.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 If the function succeeds, GL\_TRUE is returned.\\
@@ -287,7 +291,7 @@ In order to determine the actual properties of an opened window, use
 void glfwOpenWindowHint( int target, int hint )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{target}]\ \\
   Can be any of the constants in the table below:
@@ -306,6 +310,7 @@ GLFW\_STEREO             & Specify if stereo rendering should be supported (can 
 \item [\textit{hint}]\ \\
   An integer giving the value of the corresponding target (see table above).
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -348,8 +353,9 @@ even be damaged!
 void glfwCloseWindow( void )
 \end{lstlisting}
 
-\textbf{Parameters}
-\\none
+\begin{refparameters}
+none
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -369,12 +375,13 @@ context.
 void glfwSetWindowTitle( const char *title )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{title}]\ \\
-  Pointer to a  null terminated ISO 8859-1 (8-bit Latin 1) string that
+  Pointer to a  null terminated ISO~8859-1 (8-bit Latin~1) string that
   holds the title of the window.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -399,13 +406,14 @@ iconified state.
 void glfwSetWindowSize( int width, int height )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{width}]\ \\
   Width of the window.
 \item [\textit{height}]\ \\
   Height of the window.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -436,7 +444,7 @@ since that would destroy the associated \OpenGL\ context.
 void glfwSetWindowPos( int x, int y )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{x}]\ \\
   Horizontal position of the window, relative to the upper left corner
@@ -445,6 +453,7 @@ void glfwSetWindowPos( int x, int y )
   Vertical position of the window, relative to the upper left corner of
   the desktop.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -464,13 +473,14 @@ any effect on a fullscreen window.
 void glfwGetWindowSize( int *width, int *height )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{width}]\ \\
   Pointer to an integer that will hold the width of the window.
 \item [\textit{height}]\ \\
   Pointer to an integer that will hold the height of the window.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 The current width and height of the opened window is returned in the
@@ -500,14 +510,14 @@ been opened.
 void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{cbfun}]\ \\
   Pointer to a callback function that will be called every time the
   window size changes. The function should have the following C language
   prototype:
 
-  \textbf{void GLFWCALL functionname( int width, int height );}
+  \texttt{void GLFWCALL functionname( int width, int height );}
 
   Where \textit{functionname} is the name of the callback function, and
   \textit{width} and \textit{height} are the window dimension passed to
@@ -516,6 +526,7 @@ void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
   If \textit{cbfun} is NULL, any previously selected callback function
   will be deselected.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -529,6 +540,10 @@ change event.
 \begin{refnotes}
 Window size changes are recorded continuously, but only reported when
 \textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+
+Calling \textbf{glfwSetWindowSize} generates a window size callback event,
+so be careful with calling \textbf{glfwSetWindowSize} from within the
+callback function.
 \end{refnotes}
 
 
@@ -540,11 +555,12 @@ Window size changes are recorded continuously, but only reported when
 int glfwGetWindowParam( int param )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{param}]\ \\
   A token selecting which parameter the function should return (see below).
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 The function returns different parameters depending on the value of
@@ -598,8 +614,9 @@ Other systems will always return zero (0). With some Windows drivers, zero
 void glfwSwapBuffers( void )
 \end{lstlisting}
 
-\textbf{Parameters}
-\\ none
+\begin{refparameters}
+none
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -621,7 +638,7 @@ buffers.
 void glfwSwapInterval( int interval )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{interval}]\ \\
   Minimum number of monitor vertical retraces between each buffer swap
@@ -629,6 +646,7 @@ void glfwSwapInterval( int interval )
   buffer swaps will not be synchronized to the vertical refresh of the
   monitor (also known as 'VSync off').
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -665,7 +683,7 @@ supported on a system.
 int glfwGetVideoModes( GLFWvidmode *list, int maxcount )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{list}]\ \\
   A vector of \textit{GLFWvidmode} structures, which will be filled out
@@ -673,6 +691,7 @@ int glfwGetVideoModes( GLFWvidmode *list, int maxcount )
 \item [\textit{maxcount}]\ \\
   Maximum number of video modes that \textit{list} vector can hold.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 The function returns the number of detected video modes (this number
@@ -711,12 +730,13 @@ bits per pixel mode first.
 void glfwGetDesktopMode( GLFWvidmode *mode )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{mode}]\ \\
   Pointer to a \textit{GLFWvidmode} structure, which will be filled out
   by the function.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 The \textit{GLFWvidmode} structure pointed to by \textit{mode} is filled
@@ -768,8 +788,9 @@ have to be opened for joystick input to be used.
 void glfwPollEvents( void )
 \end{lstlisting}
 
-\textbf{Parameters}
-\\ none
+\begin{refparameters}
+none
+\end{refparameters}
 
 \begin{refreturn}
 none
@@ -792,6 +813,344 @@ there is no need to call \textbf{glfwPollEvents}.
 
 
 %-------------------------------------------------------------------------
+\subsection{glfwGetKey}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetKey( int key )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{key}]\ \\
+  A keyboard key identifier, which can be either an uppercase printable
+  ISO~8859-1 (Latin~1) character (e.g. 'A', '3' or '.'), or a special key
+  identifier. The following tokens are valid special key identifiers:
+
+\begin{tabular}{|l|p{8.5cm}|} \hline \raggedright
+\textbf{Name}           & \textbf{Description} \\ \hline
+GLFW\_KEY\_SPACE        & Space\\ \hline
+GLFW\_KEY\_ESC          & Escape\\ \hline
+GLFW\_KEY\_Fn           & Function key n (n can be in the range 1..25).\\ \hline
+GLFW\_KEY\_UP           & Cursor up\\ \hline
+GLFW\_KEY\_DOWN         & Cursor down\\ \hline
+GLFW\_KEY\_LEFT         & Cursor left\\ \hline
+GLFW\_KEY\_RIGHT        & Cursor right\\ \hline
+GLFW\_KEY\_LSHIFT       & Left shift key\\ \hline
+GLFW\_KEY\_RSHIFT       & Right shift key\\ \hline
+GLFW\_KEY\_LCTRL        & Left control key\\ \hline
+GLFW\_KEY\_RCTRL        & Right control key\\ \hline
+GLFW\_KEY\_LALT         & Left alternate function key\\ \hline
+GLFW\_KEY\_RALT         & Right alternate function key\\ \hline
+GLFW\_KEY\_TAB          & Tabulator\\ \hline
+GLFW\_KEY\_ENTER        & Enter\\ \hline
+GLFW\_KEY\_BACKSPACE    & Backspace\\ \hline
+GLFW\_KEY\_INSERT       & Insert\\ \hline
+GLFW\_KEY\_DEL          & Delete\\ \hline
+GLFW\_KEY\_PAGEUP       & Page up\\ \hline
+GLFW\_KEY\_PAGEDOWN     & Page down\\ \hline
+GLFW\_KEY\_HOME         & Home\\ \hline
+GLFW\_KEY\_END          & End\\ \hline
+GLFW\_KEY\_KP\_n        & Keypad numeric key n (n can be in the range 0..9).\\ \hline
+GLFW\_KEY\_KP\_DIVIDE   & Keypad divide (/)\\ \hline
+GLFW\_KEY\_KP\_MULTIPLY & Keypad multiply (*)\\ \hline
+GLFW\_KEY\_KP\_SUBTRACT & Keypad subtract (-)\\ \hline
+GLFW\_KEY\_KP\_ADD      & Keypad add (+)\\ \hline
+GLFW\_KEY\_KP\_DECIMAL  & Keypad decimal (. or , for some languages)\\ \hline
+GLFW\_KEY\_KP\_EQUAL    & Keypad equal (=)\\ \hline
+GLFW\_KEY\_KP\_ENTER    & Keypad enter\\ \hline
+\end{tabular}
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GLFW\_PRESS if the key is held down, or GLFW\_RELEASE
+if the key is not held down.
+\end{refreturn}
+
+\begin{refdescription}
+The function queries the current state of a specific keyboard key. The
+physical location of each key depends on the system keyboard layout
+setting.
+\end{refdescription}
+
+\begin{refnotes}
+The constant GLFW\_KEY\_SPACE is equal to 32, which is the ISO~8859-1 code
+for space.
+
+Not all key codes are supported on all systems. Also, while some keys are
+available on some keyboard layouts, they may not be available on other
+keyboard layouts.
+
+For systems that do not distinguish between left and right versions of
+modifier keys (shift, alt and control), the left version is used (e.g.
+GLFW\_KEY\_LSHIFT).
+
+A window must be opened for the function to have any effect, and
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} must be called before
+any keyboard events are recorded and reported by \textbf{glfwGetKey}.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetMouseButton}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetMouseButton( int button )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{button}]\ \\
+  A mouse button identifier, which can be one of GLFW\_MOUSE\_BUTTON\_LEFT,
+  GLFW\_MOUSE\_BUTTON\_RIGHT or  GLFW\_MOUSE\_BUTTON\_MIDDLE.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GLFW\_PRESS if the mouse button is held down, or
+GLFW\_RELEASE if the mouse button is not held down.
+\end{refreturn}
+
+\begin{refdescription}
+The function queries the current state of a specific mouse button.
+\end{refdescription}
+
+\begin{refnotes}
+A window must be opened for the function to have any effect, and
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} must be called before
+any mouse button events are recorded and reported by
+\textbf{glfwGetMouseButton}.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetMousePos}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwGetMousePos( int *xpos, int *ypos )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{xpos}]\ \\
+  Pointer to an integer that will be filled out with the horizontal
+  position of the mouse.
+\item [\textit{ypos}]\ \\
+  Pointer to an integer that will be filled out with the vertical
+  position of the mouse.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the current mouse position in \textit{xpos} and
+\textit{ypos}.
+\end{refreturn}
+
+\begin{refdescription}
+The function returns the current mouse position. If the cursor is not
+hidden, the mouse position is the cursor position, relative to the upper
+left corner of the window and limited to the client area of the window.
+If the cursor is hidden, the mouse position is a virtual absolute
+position, not limited to any boundaries except to those implied by the
+maximum number that can be represented by a signed integer (normally
+-2147483648 to +2147483647).
+\end{refdescription}
+
+\begin{refnotes}
+A window must be opened for the function to have any effect, and
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} must be called before
+any mouse movements are recorded and reported by \textbf{glfwGetMousePos}.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetMousePos}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetMousePos( int xpos, int ypos )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{xpos}]\ \\
+  Horizontal position of the mouse.
+\item [\textit{ypos}]\ \\
+  Vertical position of the mouse.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function changes the position of the mouse, and calls the mouse
+position callback function (if one is registered). If the cursor is
+visible (not disabled), the cursor will be moved to the specified
+position, relative to the upper left corner of the window client area.
+If the cursor is hidden (disabled), only the mouse position that is
+reported by \GLFW\ is changed.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetMouseWheel}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwGetMouseWheel( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the current mouse wheel position.
+\end{refreturn}
+
+\begin{refdescription}
+The function returns the current mouse wheel position. The mouse wheel can
+be thought of as a third mouse axis, which is available as a separate
+wheel or up/down stick on some mice.
+\end{refdescription}
+
+\begin{refnotes}
+A window must be opened for the function to have any effect, and
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} must be called before
+any mouse wheel movements are recorded and reported by
+\textbf{glfwGetMouseWheel}.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetMouseWheel}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetMousePos( int pos )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{pps}]\ \\
+  Position of the mouse wheel.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function changes the position of the mouse wheel, and calls the mouse
+wheel callback function (if one is registered).
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetKeyCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetKeyCallback( GLFWkeyfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function which will be called every time a key is
+  pressed or released. The function should have the following C language
+  prototype:
+
+  \texttt{void GLFWCALL functionname( int key, int action );}
+
+  Where \textit{functionname} is the name of the callback function,
+  \textit{key} is a key identifier, which is an uppercase printable
+  ISO~8859-1 character or a special key identifier (see \textbf{glfwGetKey}
+  for more information), and action is either GLFW\_PRESS or GLFW\_RELEASE.
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a keyboard key
+event. The callback function is called every time the state of a single
+key is changed (from released to pressed or vice versa). The reported keys
+are unaffected by any modifiers (such as shift or alt).
+\end{refdescription}
+
+\begin{refnotes}
+Keyboard events are recorded continuously, but only reported when
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetCharCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetCharCallback( GLFWcharfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function which will be called every time a
+  printable character is generated by the keyboard. The function should
+  have the following C language prototype:
+
+  \texttt{void GLFWCALL functionname( int character, int action );}
+
+  Where \textit{functionname} is the name of the callback function,
+  \textit{character} is a Unicode (ISO~10646) character, and action is
+  either GLFW\_PRESS or GLFW\_RELEASE.
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a keyboard character
+event. The callback function is called every time a key that results in a
+printable Unicode character is pressed or released. Characters are
+affected by modifiers (such as shift or alt).
+\end{refdescription}
+
+\begin{refnotes}
+Character events are recorded continuously, but only reported when
+\textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
+
+Control characters, such as tab and carriage return, are not reported to
+the character callback function, since they are not part of the Unicode
+character set. Use the key callback function for such events (see
+\textbf{glfwSetKeyCallback}).
+
+The Unicode character set supports character codes above 255, so never
+cast a Unicode character to an eight bit data type (e.g. the C language
+'char' type) without first checking that the character code is less than
+256. Also note that Unicode character codes 0 to 255 are equal to
+ISO~8859-1 (Latin~1).
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
 \subsection{glfwX}
 
 \textbf{C language syntax}
@@ -799,11 +1158,12 @@ there is no need to call \textbf{glfwPollEvents}.
 void glfwX( void )
 \end{lstlisting}
 
-\textbf{Parameters}
+\begin{refparameters}
 \begin{description}
 \item [\textit{par1}]\ \\
   Text1.
 \end{description}
+\end{refparameters}
 
 \begin{refreturn}
 none
