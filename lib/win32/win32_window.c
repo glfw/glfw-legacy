@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.16 2005-01-18 18:38:17 marcus256 Exp $
+// $Id: win32_window.c,v 1.17 2005-01-20 22:30:39 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -722,31 +722,20 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
                            refreshrate );
     }
 
+    // Set common window styles
+    dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
+    dwExStyle = WS_EX_APPWINDOW;
+
     // Set window style, depending on fullscreen mode
     if( _glfwWin.Fullscreen )
     {
-        // Here's a trick for helping us getting window focus
-        // (SetForegroundWindow doesn't work properly under
-        // Win98/ME/2K/XP/.NET/+)
-        if( _glfwSys.WinVer == _GLFW_WIN_95 ||
-            _glfwSys.WinVer == _GLFW_WIN_NT4 )
-        {
-            dwStyle = WS_POPUP | WS_VISIBLE;
-        }
-        else
-        {
-            dwStyle = WS_POPUP;
-        }
-        dwExStyle = WS_EX_APPWINDOW;
+        dwStyle   |= WS_POPUP;
     }
     else
     {
-        dwStyle   = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_VISIBLE;
-        dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+        dwStyle   |= WS_OVERLAPPEDWINDOW;
+        dwExStyle |= WS_EX_WINDOWEDGE;
     }
-
-    // Add required window styles
-    dwStyle = dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
     // Remember window styles (used by _glfwGetFullWindowSize)
     _glfwWin.dwStyle   = dwStyle;
@@ -876,29 +865,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         return GL_FALSE;
     }
 
-    // Make sure that our window ends up on top of things (we call
-    // ShowWindow twice here, since the first call may be ignored)
-    if( dwStyle & WS_MINIMIZE )
-    {
-        // Turn off minimize/restore animations
-        int old_animate = _glfwMinMaxAnimations( 0 );
-
-        // The window was opened in minimized state, so now maximize it
-        // (this is a trick to help us getting input focus)
-        ShowWindow( _glfwWin.Wnd, SW_HIDE );
-        ShowWindow( _glfwWin.Wnd, SW_HIDE );
-        ShowWindow( _glfwWin.Wnd, SW_SHOWMINIMIZED );
-        ShowWindow( _glfwWin.Wnd, SW_SHOWNORMAL );
-
-        // Restore the system minimize/restore animation setting
-        (void) _glfwMinMaxAnimations( old_animate );
-    }
-    else
-    {
-        // The window was opened in normal (visible) state
-        ShowWindow( _glfwWin.Wnd, SW_SHOW );
-        ShowWindow( _glfwWin.Wnd, SW_SHOW );
-    }
+    // Make sure that our window ends up on top of things
     if( _glfwWin.Fullscreen )
     {
         // Place the window above all topmost windows
