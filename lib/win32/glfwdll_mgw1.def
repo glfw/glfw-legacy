@@ -58,4 +58,5 @@ glfwSwapInterval = glfwSwapInterval@4
 glfwTerminate = glfwTerminate@0
 glfwUnlockMutex = glfwUnlockMutex@4
 glfwWaitCond = glfwWaitCond@16
+glfwWaitEvents = glfwWaitEvents@0
 glfwWaitThread = glfwWaitThread@8

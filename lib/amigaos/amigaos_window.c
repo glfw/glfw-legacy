@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        amigaos_window.c
 // Platforms:   AmigaOS, MorphOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.7 2004-02-14 20:51:27 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.8 2004-04-09 11:06:17 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -709,20 +709,18 @@ void _glfwPlatformPollEvents( void )
 }
 
 
-/*
 //========================================================================
 // _glfwPlatformWaitEvents() - Wait for new window and input events
 //========================================================================
 
 void _glfwPlatformWaitEvents( void )
 {
-    // Wait for new window events
+    // Wait for new events
     Wait( 1L << _glfwWin.Window->UserPort->mp_SigBit );
 
-    // Process events
+    // Poll new events
     _glfwPlatformPollEvents();
 }
-*/
 
 
 //========================================================================

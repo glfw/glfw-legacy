@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.10 2004-04-05 19:45:21 marcus256 Exp $
+// $Id: glfw.h,v 1.11 2004-04-09 11:05:58 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -406,6 +406,7 @@ GLFWAPI void GLFWAPIENTRY glfwGetDesktopMode( GLFWvidmode *mode );
 
 // Input handling
 GLFWAPI void GLFWAPIENTRY glfwPollEvents( void );
+GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void );
 GLFWAPI int  GLFWAPIENTRY glfwGetKey( int key );
 GLFWAPI int  GLFWAPIENTRY glfwGetMouseButton( int button );
 GLFWAPI void GLFWAPIENTRY glfwGetMousePos( int *xpos, int *ypos );

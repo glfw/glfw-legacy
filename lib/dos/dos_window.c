@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        dos_window.c
 // Platform:    DOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.7 2004-02-14 20:53:15 marcus256 Exp $
+// $Id: dos_window.c,v 1.8 2004-04-09 11:06:36 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -524,20 +524,18 @@ void _glfwPlatformPollEvents( void )
 }
 
 
-/*
 //========================================================================
 // _glfwPlatformWaitEvents() - Wait for new window and input events
 //========================================================================
 
 void _glfwPlatformWaitEvents( void )
 {
-    // Wait for new window events
-    // TODO
+    // Wait for new events
+    _glfwWaitNextEvent;
 
-    // Process events
+    // Poll new events
     _glfwPlatformPollEvents();
 }
-*/
 
 
 //========================================================================
