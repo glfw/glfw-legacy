@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_init.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: x11_init.c,v 1.3 2003-09-04 20:19:05 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -47,7 +47,9 @@
 static void _glfwInitThreads( void )
 {
     // Initialize critical section handle
+#ifdef _GLFW_HAS_PTHREAD
     (void) pthread_mutex_init( &_glfwThrd.CriticalSection, NULL );
+#endif
 
     // The first thread (the main thread) has ID 0
     _glfwThrd.NextID = 0;
@@ -55,9 +57,11 @@ static void _glfwInitThreads( void )
     // Fill out information about the main thread (this thread)
     _glfwThrd.First.ID       = _glfwThrd.NextID ++;
     _glfwThrd.First.Function = NULL;
-    _glfwThrd.First.PosixID  = pthread_self();
     _glfwThrd.First.Previous = NULL;
     _glfwThrd.First.Next     = NULL;
+#ifdef _GLFW_HAS_PTHREAD
+    _glfwThrd.First.PosixID  = pthread_self();
+#endif
 }
 
 
@@ -67,6 +71,8 @@ static void _glfwInitThreads( void )
 
 static void _glfwTerminateThreads( void )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     _GLFWthread *t, *t_next;
 
     // Enter critical section
@@ -95,6 +101,8 @@ static void _glfwTerminateThreads( void )
 
     // Delete critical section handle
     pthread_mutex_destroy( &_glfwThrd.CriticalSection );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -174,11 +182,13 @@ int _glfwPlatformInit( void )
 
 int _glfwPlatformTerminate( void )
 {
+#ifdef _GLFW_HAS_PTHREAD
     // Only the main thread is allowed to do this...
     if( pthread_self() != _glfwThrd.First.PosixID )
     {
         return GL_FALSE;
     }
+#endif // _GLFW_HAS_PTHREAD
 
     // Close OpenGL window
     glfwCloseWindow();

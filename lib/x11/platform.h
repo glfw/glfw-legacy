@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: platform.h,v 1.3 2003-09-04 20:19:22 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -42,13 +42,17 @@
 
 // Include files
 #include <sys/time.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <signal.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "../../include/GL/glfw.h"
+
+// Do we have pthread support?
+#ifdef _GLFW_HAS_PTHREAD
+ #include <pthread.h>
+#endif
 
 // With XFree86, we can use the XF86VidMode extension
 #if defined( _GLFW_HAS_XF86VIDMODE )
@@ -234,7 +238,7 @@ GLFWGLOBAL struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific internal variables
-    int  MouseMoved, OldMouseX, OldMouseY;
+    int  MouseMoved, CursorPosX, CursorPosY;
 
 } _glfwInput;
 
@@ -297,7 +301,9 @@ struct _GLFWthread_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // System side thread information
+#ifdef _GLFW_HAS_PTHREAD
     pthread_t     PosixID;
+#endif
 
 };
 
@@ -318,7 +324,9 @@ GLFWGLOBAL struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Critical section lock
+#ifdef _GLFW_HAS_PTHREAD
     pthread_mutex_t  CriticalSection;
+#endif
 
 } _glfwThrd;
 
@@ -352,10 +360,15 @@ GLFWGLOBAL struct {
 //========================================================================
 
 // Thread list management
-#define ENTER_THREAD_CRITICAL_SECTION \
-        pthread_mutex_lock( &_glfwThrd.CriticalSection );
-#define LEAVE_THREAD_CRITICAL_SECTION \
-        pthread_mutex_unlock( &_glfwThrd.CriticalSection );
+#ifdef _GLFW_HAS_PTHREAD
+ #define ENTER_THREAD_CRITICAL_SECTION \
+         pthread_mutex_lock( &_glfwThrd.CriticalSection );
+ #define LEAVE_THREAD_CRITICAL_SECTION \
+         pthread_mutex_unlock( &_glfwThrd.CriticalSection );
+#else
+ #define ENTER_THREAD_CRITICAL_SECTION
+ #define LEAVE_THREAD_CRITICAL_SECTION
+#endif
 
 
 //========================================================================
