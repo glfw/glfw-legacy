@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.7 2003-11-22 21:15:18 marcus256 Exp $
+% $Id: glfwug.tex,v 1.8 2003-11-22 21:29:27 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -950,12 +950,12 @@ For instance, to get the position of the first two axes (the X and Y axes)
 of joystick 1, the following code can be used:
 
 \begin{lstlisting}
-float   Position[ 2 ];
+float position[ 2 ];
 
-glfwGetJoystickPos( GLFW_JOYSTICK_1, Position, 2 );
+glfwGetJoystickPos( GLFW_JOYSTICK_1, position, 2 );
 \end{lstlisting}
 
-After this call, the first element of the \textit{Position} array will
+After this call, the first element of the \textit{position} array will
 hold the X axis position of the joystick, and the second element will hold
 the Y axis position. In this example we do not use the information about
 how many axes were really returned.
@@ -1625,9 +1625,9 @@ first (``Hello'' or ``world!''). Our program would then suffer from a race
 condition, which is a term used to describe a situation where two (or
 more) threads are competing to complete a task first.
 
-Later on you will learn how to do advanced thread synchronization using
-condition variables, which let threads wait for certain conditions before
-continuing execution.
+In section \ref{par:condvar} you will learn how to do advanced thread
+synchronization using condition variables, which let threads wait for
+certain conditions before continuing execution.
 
 
 %-------------------------------------------------------------------------
@@ -1805,6 +1805,7 @@ The race condition has been avoided, and the code performs as expected.
 
 %-------------------------------------------------------------------------
 \section{Thread Synchronization Using Condition Variables}
+\label{par:condvar}
 Now you know how to create threads and how to safely exchange data between
 threads, but there is one important thing left to solve for multi threaded
 programs: conditional waits. Very often it is necessary for one thread to
