@@ -2,11 +2,11 @@
 // GLFW - An OpenGL framework
 // File:        thread.c
 // Platform:    Any
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: thread.c,v 1.4 2004-02-14 20:50:10 marcus256 Exp $
+// $Id: thread.c,v 1.5 2005-03-14 20:34:35 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
