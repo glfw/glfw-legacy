@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-06-13 22:18:34 $
-# $Revision: 1.8 $
+# $Date: 2003-09-04 19:56:16 $
+# $Revision: 1.9 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -89,7 +89,7 @@ link='$CC -o conftest $CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
-# Check for X11 libs directory
+# Check for X11 libs/include directory
 ##########################################################################
 echo "Checking for X11 libraries location... " 1>&6
 
@@ -157,6 +157,67 @@ rm -f conftest*
 echo " Using GNU C: ""$use_gcc" 1>&6
 if [ "x$use_gcc" = xyes ]; then
   CC=gcc
+fi
+echo " " 1>&6
+
+
+##########################################################################
+# Check for pthread support
+##########################################################################
+echo "Checking for pthread support... " 1>&6
+echo "$config_script: Checking for pthread support" >&5
+has_pthread=no
+
+cat > conftest.c <<EOF
+#include <pthread.h>
+int main() {pthread_t posixID; posixID=pthread_self(); return 0;}
+EOF
+
+# Try -lpthread (most systems)
+LIBS_OLD="$LIBS"
+LIBS="$LIBS -lpthread"
+if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  rm -rf conftest*
+  has_pthread=yes
+else
+  echo "$config_script: failed program was:" >&5
+  cat conftest.c >&5
+fi
+if [ "x$has_pthread" = xno ]; then
+  LIBS="$LIBS_OLD"
+fi
+
+# Try -pthread (e.g. FreeBSD)
+LIBS_OLD="$LIBS"
+LIBS="$LIBS -pthread"
+if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  rm -rf conftest*
+  has_pthread=yes
+else
+  echo "$config_script: failed program was:" >&5
+  cat conftest.c >&5
+fi
+if [ "x$has_pthread" = xno ]; then
+  LIBS="$LIBS_OLD"
+fi
+
+# Try -lsocket (e.g. QNX)
+LIBS_OLD="$LIBS"
+LIBS="$LIBS -lsocket"
+if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  rm -rf conftest*
+  has_pthread=yes
+else
+  echo "$config_script: failed program was:" >&5
+  cat conftest.c >&5
+fi
+if [ "x$has_pthread" = xno ]; then
+  LIBS="$LIBS_OLD"
+fi
+
+echo " pthread support: ""$has_pthread" 1>&6
+if [ "x$has_pthread" = xyes ]; then
+   CFLAGS="$CFLAGS -D_GLFW_HAS_PTHREAD"
 fi
 echo " " 1>&6
 
@@ -392,14 +453,8 @@ else
   CFLAGS_LINK="-O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
-if [ "x"`uname -s` = xQNX ]; then
-  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lsocket -lm"
-elif [ "x"`uname -s` = xFreeBSD ]; then
-  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -pthread -lm"
-  CFLAGS_LINK="$CFLAGS_LINK -I/usr/X11R6/include"
-else
-  LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lpthread -lm"
-fi
+LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lm"
+
 
 ##########################################################################
 # Create Makefiles
