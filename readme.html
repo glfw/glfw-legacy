@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.14 2003-11-12 17:57:08 elmindreda Exp $ -->
+<!-- $Id: readme.html,v 1.15 2003-11-12 18:05:45 elmindreda Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -415,16 +415,17 @@ style comments.
 
 <p><br><h4>4.2.5 Mac OS X static library</h4>
 
-<p>When compiling and linking a program under AmigaOS that uses GLFW, you
+<p>When compiling and linking a program under Mac OS X that uses GLFW, you
 must also link with the following frameworks: <b>Carbon.framework</b>,
 <b>AGL.framework</b> and <b>OpenGL.framework</b>.
 
 <p>If you are using an IDE, such as Project Builder or Xcode, you simply add
-these frameworks to your project. If, however, you are building your program
-from the command line, you will need to add the frameworks to your command
-line using the Apple gcc <b>-framework</b> switch, i.e.:
+the GLFW library <b>libglfw.a</b> and these frameworks to your project. If,
+however, you are building your program from the command line, you will need
+to add them to your command line using the <b>-l</b> and <b>-framework</b>
+switches, i.e.:
 
-<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -framework Carbon -framework AGL -framework OpenGL</b>
+<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -lglfw -framework Carbon -framework AGL -framework OpenGL</b>
 
 <p>Note that you do not add the extension to a framework when adding it from
 the command line.
@@ -432,7 +433,8 @@ the command line.
 <p>These frameworks contain all GL and GLU functions, so there is no need to
 add additional libraries or frameworks when using GLU functionality. Also note
 that even though your machine may have Unix-style GL libraries, they are for
-use with the X server, and will <i>not</i> work with the Carbon version of GLFW.
+use with the X server, and will <i>not</i> work with the Mac OS X native
+version of GLFW.
 
 
 <!----------------------------------------------------------------------->
