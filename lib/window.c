@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.8 2004-04-09 11:25:09 marcus256 Exp $
+// $Id: window.c,v 1.9 2004-04-10 12:05:53 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -221,6 +221,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 
     // Unregister all callback functions
     _glfwWin.WindowSizeCallback  = NULL;
+    _glfwWin.WindowCloseCallback = NULL;
     _glfwWin.KeyCallback         = NULL;
     _glfwWin.CharCallback        = NULL;
     _glfwWin.MousePosCallback    = NULL;
@@ -612,6 +613,23 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
     {
         cbfun( _glfwWin.Width, _glfwWin.Height );
     }
+}
+
+//========================================================================
+// glfwSetWindowCloseCallback() - Set callback function for window close
+// events
+//========================================================================
+
+GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
+{
+    // Is GLFW initialized?
+    if( !_glfwInitialized || !_glfwWin.Opened )
+    {
+        return;
+    }
+
+    // Set callback function
+    _glfwWin.WindowCloseCallback = cbfun;
 }
 
 

@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.10 2004-04-09 11:08:52 marcus256 Exp $
+// $Id: macosx_window.c,v 1.11 2004-04-10 12:06:52 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -415,7 +415,18 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
             case kHICommandClose:
             case kHICommandQuit:
             {
-                glfwCloseWindow();
+                // Check if the program wants us to close the window
+                if( _glfwWin.WindowCloseCallback )
+                {
+                    if( _glfwWin.WindowCloseCallback() )
+                    {
+                        _glfwPlatformCloseWindow();
+                    }
+                }
+                else
+                {
+                    _glfwPlatformCloseWindow();
+                }
                 break;
             }
         }
@@ -463,7 +474,18 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 
     case kEventWindowClose:
     {
-      glfwCloseWindow();
+      // Check if the program wants us to close the window
+      if( _glfwWin.WindowCloseCallback )
+      {
+          if( _glfwWin.WindowCloseCallback() )
+          {
+              _glfwPlatformCloseWindow();
+          }
+      }
+      else
+      {
+          _glfwPlatformCloseWindow();
+      }
       return noErr;
     }
   }

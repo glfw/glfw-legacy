@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.10 2004-04-09 11:19:44 marcus256 Exp $
+// $Id: x11_window.c,v 1.11 2004-04-10 12:07:59 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1450,6 +1450,11 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Was there a window close request?
+    if( winclosed && _glfwWin.WindowCloseCallback )
+    {
+        // Check if the program wants us to close the window
+        winclosed = _glfwWin.WindowCloseCallback();
+    }
     if( winclosed )
     {
         glfwCloseWindow();

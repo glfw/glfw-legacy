@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.4 2004-04-09 11:21:43 marcus256 Exp $
+; $Id: glfw.inc,v 1.5 2004-04-10 12:09:47 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
@@ -258,6 +258,7 @@ glfwSwapBuffers             PROTO   STDCALL
 glfwSwapInterval            PROTO   STDCALL :DWORD
 glfwGetWindowParam          PROTO   STDCALL :DWORD
 glfwSetWindowSizeCallback   PROTO   STDCALL :DWORD
+glfwSetWindowCloseCallback  PROTO   STDCALL :DWORD
 
 ; Video mode functions
 glfwGetVideoModes           PROTO   STDCALL :DWORD, :DWORD

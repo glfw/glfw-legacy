@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.9 2004-04-09 11:08:12 marcus256 Exp $
+// $Id: platform.h,v 1.10 2004-04-10 12:06:30 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -84,6 +84,7 @@ struct _GLFWwin_struct {
 
     // User callback functions
     GLFWwindowsizefun  WindowSizeCallback;
+    GLFWwindowclosefun WindowCloseCallback;
     GLFWmousebuttonfun MouseButtonCallback;
     GLFWmouseposfun    MousePosCallback;
     GLFWmousewheelfun  MouseWheelCallback;

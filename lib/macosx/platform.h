@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    Mac OS X
-// API Version: 2.4
+// API Version: 2.5
 // Authors:     Keith Bauer (onesadcookie at hotmail.com)
 //              Camilla Drefvenborg (elmindreda at home.se)
 //              Marcus Geelnard (marcus.geelnard at home.se)
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.8 2004-02-25 22:26:12 marcus256 Exp $
+// $Id: platform.h,v 1.9 2004-04-10 12:06:52 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -161,6 +161,7 @@ struct _GLFWwin_struct {
 
     // User callback functions
     GLFWwindowsizefun  WindowSizeCallback;
+    GLFWwindowclosefun WindowCloseCallback;
     GLFWmousebuttonfun MouseButtonCallback;
     GLFWmouseposfun    MousePosCallback;
     GLFWmousewheelfun  MouseWheelCallback;

@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.8 2004-04-09 11:06:17 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.9 2004-04-10 12:06:11 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -702,6 +702,11 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Was there a window close request?
+    if( winclosed && _glfwWin.WindowCloseCallback )
+    {
+        // Check if the program wants us to close the window
+        winclosed = _glfwWin.WindowCloseCallback();
+    }
     if( winclosed )
     {
         glfwCloseWindow();
