@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_time.c,v 1.3 2003-10-20 21:41:04 marcus256 Exp $
+// $Id: x11_time.c,v 1.4 2003-10-20 21:53:35 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -618,6 +618,8 @@ void _glfwPlatformSetTime( double t )
 
 void _glfwPlatformSleep( double time )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     struct timeval  currenttime;
     struct timespec wait;
     pthread_mutex_t mutex;
@@ -654,4 +656,14 @@ void _glfwPlatformSleep( double time )
     // Destroy condition and mutex objects
     pthread_mutex_destroy( &mutex );
     pthread_cond_destroy( &cond );
+
+#else
+
+    // For systems without PTHREAD, use unistd usleep
+    if( time > 0 )
+    {
+        usleep( (unsigned int) (time*1000000) );
+    }
+
+#endif // _GLFW_HAS_PTHREAD
 }
