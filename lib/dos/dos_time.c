@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_time.c,v 1.5 2003-12-07 22:45:06 marcus256 Exp $
+// $Id: dos_time.c,v 1.6 2003-12-10 20:48:35 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -299,5 +299,16 @@ void _glfwPlatformSetTime( double t )
 
 void _glfwPlatformSleep( double time )
 {
-    // TODO
+    // TODO: Proper threaded version
+    if( time > 0 )
+    {
+        if( time < 0.001 )
+        {
+            delay( 1 );
+        }
+        else
+        {
+            delay( (unsigned int)(time*1000.0+0.5) );
+        }
+    }
 }
