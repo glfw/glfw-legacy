@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.6 2003-12-09 22:16:18 marcus256 Exp $
+// $Id: dos_mouse.c,v 1.7 2003-12-10 20:40:39 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -47,23 +47,38 @@
 
 #define _GLFW_MOUSE_STACK_SIZE 16384
 
+
 // Assembler function prototypes
 extern void _glfwMouseWrap( void );
-extern int  *_glfwMouseWrap_end;
+extern int  _glfwMouseWrap_end[];
 
 
 //========================================================================
 // Global variables
 //========================================================================
 
+static int _glfwMouseInstalled = 0;
+
 static struct {
     long         Callback;
-    __dpmi_regs  Regs;
     int          Emulate3;
     int          OldX, OldY, OldB;
+    __dpmi_regs  Regs;
 } _glfwMouseDrv;
 
-static int _glfwMouseInstalled = 0;
+
+/*
+void * pc_malloc( int size )
+{
+    void *p = malloc( size );
+    if( p )
+    {
+        LOCKBUFF( p, size );
+    }
+    return p;
+}
+*/
+
 
 
 
@@ -175,44 +190,6 @@ static void _glfwMouseInt( __dpmi_regs *r )
 } ENDOFUNC(_glfwMouseInt)
 
 
-//========================================================================
-// _glfwMouseWrap()
-//========================================================================
-
-// Hack alert: `_glfwMouseWrap_end' actually holds the address of stack in
-// a safe data selector.
-
-__asm("\n\
-                .text                           \n\
-                .p2align 5,,31                  \n\
-                .global __glfwMouseWrap         \n\
-__glfwMouseWrap:                                \n\
-                cld                             \n\
-                lodsl                           \n\
-                movl    %eax, %es:42(%edi)      \n\
-                addw    $4, %es:46(%edi)        \n\
-                pushl   %es                     \n\
-                movl    %ss, %ebx               \n\
-                movl    %esp, %esi              \n\
-                lss     %cs:__glfwMouseWrap_end, %esp\n\
-                pushl   %ss                     \n\
-                pushl   %ss                     \n\
-                popl    %es                     \n\
-                popl    %ds                     \n\
-                movl    ___djgpp_dos_sel, %fs   \n\
-                pushl   %fs                     \n\
-                popl    %gs                     \n\
-                pushl   %edi                    \n\
-                call    __glfwMouseInt          \n\
-                popl    %edi                    \n\
-                movl    %ebx, %ss               \n\
-                movl    %esi, %esp              \n\
-                popl    %es                     \n\
-                iret                            \n\
-                .global __glfwMouseWrap_end         \n\
-__glfwMouseWrap_end:.long   0, 0");
-
-
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
@@ -232,11 +209,6 @@ int _glfwInitMouse( void )
         return 0;
     }
 
-    // Lock data and functions
-    LOCKDATA( _glfwMouseDrv );
-    LOCKFUNC( _glfwMouseInt );
-    LOCKFUNC( _glfwMouseWrap );
-
     // Reset mouse and get status
     __asm("\n\
                 xorl    %%eax, %%eax    \n\
@@ -249,8 +221,11 @@ int _glfwInitMouse( void )
         return 0;
     }
 
-    // Emulate third mouse button?
-    _glfwMouseDrv.Emulate3 = buttons < 3;
+    // Lock data and functions
+    LOCKDATA( _glfwMouseDrv );
+    LOCKBUFF( _glfwMouseWrap_end, 8 );
+    LOCKFUNC( _glfwMouseInt );
+    LOCKFUNC( _glfwMouseWrap );
 
     _glfwMouseWrap_end[1] = __djgpp_ds_alias;
 
@@ -298,7 +273,7 @@ int _glfwInitMouse( void )
     _glfwMouseDrv.Regs.x.es = _glfwMouseDrv.Callback >> 16;
     __dpmi_int( 0x33, &_glfwMouseDrv.Regs );
 
-    // Clear mickies
+    // Clear mickeys
     __asm __volatile ("\n\
         movw $0xb, %%ax;    \n\
         int $0x33           \n\
@@ -307,6 +282,9 @@ int _glfwInitMouse( void )
     _glfwMouseDrv.OldX = 0;
     _glfwMouseDrv.OldY = 0;
     _glfwMouseDrv.OldB = 0;
+
+    // Emulate third mouse button?
+    _glfwMouseDrv.Emulate3 = buttons < 3;
 
     return 1;
 }
@@ -338,3 +316,42 @@ void _glfwTerminateMouse( void )
 
     _glfwMouseInstalled = 0;
 }
+
+
+
+//========================================================================
+// _glfwMouseWrap()
+//========================================================================
+
+// Hack alert: `_glfwMouseWrap_end' actually holds the address of stack in
+// a safe data selector.
+
+__asm("\n\
+                .text                           \n\
+                .p2align 5,,31                  \n\
+                .global __glfwMouseWrap         \n\
+__glfwMouseWrap:                                \n\
+                cld                             \n\
+                lodsl                           \n\
+                movl    %eax, %es:42(%edi)      \n\
+                addw    $4, %es:46(%edi)        \n\
+                pushl   %es                     \n\
+                movl    %ss, %ebx               \n\
+                movl    %esp, %esi              \n\
+                lss     %cs:__glfwMouseWrap_end, %esp\n\
+                pushl   %ss                     \n\
+                pushl   %ss                     \n\
+                popl    %es                     \n\
+                popl    %ds                     \n\
+                movl    ___djgpp_dos_sel, %fs   \n\
+                pushl   %fs                     \n\
+                popl    %gs                     \n\
+                pushl   %edi                    \n\
+                call    __glfwMouseInt          \n\
+                popl    %edi                    \n\
+                movl    %ebx, %ss               \n\
+                movl    %esi, %esp              \n\
+                popl    %es                     \n\
+                iret                            \n\
+                .global __glfwMouseWrap_end     \n\
+__glfwMouseWrap_end:.long   0, 0");
