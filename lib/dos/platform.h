@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.5 2003-12-07 22:45:06 marcus256 Exp $
+// $Id: platform.h,v 1.6 2003-12-10 21:46:35 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <dos.h>
 #include <dpmi.h>
 #include <fcntl.h>
 #include <pc.h>
