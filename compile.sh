@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-02-02 22:52:16 $
-# $Revision: 1.4 $
+# $Date: 2003-02-03 00:19:22 $
+# $Revision: 1.5 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -156,6 +156,11 @@ has_xf86vm=no
 cat > conftest.c <<EOF
 #include <X11/Xlib.h>
 #include <X11/extensions/xf86vmode.h>
+
+#if defined(__APPLE_CC__)
+#error Not supported under Mac OS X
+#endif
+
 int main() {; return 0;}
 EOF
 
@@ -307,7 +312,7 @@ cat > conftest.c <<EOF
 #include <unistd.h>
 #ifndef _SC_NPROCESSORS_ONLN
 #ifndef _SC_NPROC_ONLN
- ! @ $ % ^ & * error
+#error Neither _SC_NPROCESSORS_ONLN nor _SC_NPROC_ONLN available
 #endif
 #endif
 int main() {long x=sysconf(_SC_ARG_MAX); return 0; }
