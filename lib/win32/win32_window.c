@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.2 2003-02-02 21:06:21 marcus256 Exp $
+// $Id: win32_window.c,v 1.3 2003-07-12 21:17:49 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -496,20 +496,6 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             }
             return 0;
 
-/*
-        // Did we get a (Unicode/ASCII) character message?
-        case WM_CHAR:
-        case WM_SYSCHAR:
-            _glfwInputChar( (int) wParam, GLFW_PRESS );
-            return 0;
-
-        // Did we get a release (Unicode/ASCII) character message?
-        case WM_DEADCHAR:
-        case WM_SYSDEADCHAR:
-            _glfwInputChar( (int) wParam, GLFW_RELEASE );
-            return 0;
-*/
-
         // Were any of the mouse-buttons pressed?
         case WM_LBUTTONDOWN:
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
@@ -597,6 +583,31 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 }
 
 
+//========================================================================
+// _glfwGetFullWindowSize() - Translate client window size to full window
+// size (including window borders)
+//========================================================================
+
+static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
+{
+    RECT rect;
+
+    // Create a window rectangle
+    rect.left   = (long)0;
+    rect.right  = (long)w-1;
+    rect.top    = (long)0;
+    rect.bottom = (long)h-1;
+
+    // Adjust according to window styles
+    AdjustWindowRectEx( &rect, _glfwWin.dwStyle, FALSE,
+                        _glfwWin.dwExStyle );
+
+    // Calculate width and height of full window
+    *w2 = rect.right-rect.left+1;
+    *h2 = rect.bottom-rect.top+1;
+}
+
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -615,8 +626,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 {
     GLuint      PixelFormat;
     WNDCLASS    wc;
-    DWORD       dwExStyle, dwStyle;
-    RECT        WindowRect;
+    DWORD       dwStyle, dwExStyle;
+    int         full_width, full_height;
     PIXELFORMATDESCRIPTOR pfd;
 
     // Clear platform specific GLFW window state
@@ -688,26 +699,27 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Add required window styles
     dwStyle = dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
+    // Remember window styles (used by _glfwGetFullWindowSize)
+    _glfwWin.dwStyle   = dwStyle;
+    _glfwWin.dwExStyle = dwExStyle;
+
     // Set window size to true requested size (adjust for window borders)
-    WindowRect.left   = (long)0;
-    WindowRect.right  = (long)_glfwWin.Width;
-    WindowRect.top    = (long)0;
-    WindowRect.bottom = (long)_glfwWin.Height;
-    AdjustWindowRectEx( &WindowRect, dwStyle, FALSE, dwExStyle );
+    _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
+                            &full_height );
 
     // Create window
     _glfwWin.Wnd = CreateWindowEx(
-               dwExStyle,                        // Extended style
-               "GLFW",                           // Class name
-               "GLFW Window",                    // Window title
-               dwStyle,                          // Defined window style
-               0, 0,                             // Window position
-               WindowRect.right-WindowRect.left, // Calculate window width
-               WindowRect.bottom-WindowRect.top, // Calculate window height
-               NULL,                             // No parent window
-               NULL,                             // No menu
-               _glfwWin.Instance,                // Instance
-               NULL );                           // Nothing to WM_CREATE
+               dwExStyle,                 // Extended style
+               "GLFW",                    // Class name
+               "GLFW Window",             // Window title
+               dwStyle,                   // Defined window style
+               0, 0,                      // Window position
+               full_width,                // Decorated window width
+               full_height,               // Decorated window height
+               NULL,                      // No parent window
+               NULL,                      // No menu
+               _glfwWin.Instance,         // Instance
+               NULL );                    // Nothing to WM_CREATE
     if( !_glfwWin.Wnd )
     {
         _glfwPlatformCloseWindow();
@@ -939,6 +951,12 @@ void _glfwPlatformSetWindowSize( int width, int height )
             mode = _glfwWin.ModeID;
         }
     }
+    else
+    {
+        // If we are in windowed mode, adjust the window size to
+        // compensate for window decorations
+        _glfwGetFullWindowSize( width, height, &width, &height );
+    }
 
     // Change window size before changing fullscreen mode?
     if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
@@ -1162,7 +1180,6 @@ void _glfwPlatformPollEvents( void )
             // Ok, send it to the window message handler
             default:
                 DispatchMessage( &msg );
-//                TranslateMessage( &msg );
                 break;
         }
     }
