@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
-% API Version: 2.4
-% $Id: glfwug.tex,v 1.10 2004-01-31 20:20:13 marcus256 Exp $
+% API Version: 2.5
+% $Id: glfwug.tex,v 1.11 2004-02-29 20:52:14 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -9,7 +9,7 @@
 
 % Document title and API version
 \newcommand{\glfwdoctype}[1][0]{Users Guide}
-\newcommand{\glfwapiver}[1][0]{2.4}
+\newcommand{\glfwapiver}[1][0]{2.5}
 
 % Common document settings and macros
 \input{glfwdoc.sty}
@@ -1086,9 +1086,12 @@ loaded. If \textit{flags} is zero, the origin of the texture will be the
 lower left corner, and only one mipmap level is loaded. If \textit{flags}
 is GLFW\_ORIGIN\_UL\_BIT the origin of the texture will be the upper left
 corner. If \textit{flags} is GLFW\_BUILD\_MIPMAPS\_BIT, all mipmap levels
-will be generated and uploaded to texture memory. To combine
-GLFW\_ORIGIN\_UL\_BIT and GLFW\_BUILD\_MIPMAPS\_BIT, or them together
-(i.e. like this: \texttt{GLFW\_ORIGIN\_UL\_BIT | GLFW\_BUILD\_MIPMAPS\_BIT}).
+will be generated and uploaded to texture memory. If \textit{flags} is
+GLFW\_ALPHA\_MAP\_BIT, then any gray scale images will be loaded as alpha
+maps rather than luminance maps.
+
+To make combinations of the flags, or them together (e.g. like this:
+\texttt{GLFW\_ORIGIN\_UL\_BIT | GLFW\_BUILD\_MIPMAPS\_BIT}).
 
 Here is an example of how to upload a texture from a file to \OpenGL\
 texture memroy, and configure the texture for trilinear interpolation
@@ -1155,12 +1158,12 @@ typedef struct {
 \textit{Data} points to the loaded pixel data. If the function loaded the
 image successfully, GL\_TRUE is returned, otherwise GL\_FALSE is returned.
 
-Possible flags for the \textit{flags} argument are GLFW\_ORIGIN\_UL\_BIT
-and GLFW\_NO\_RESCALE\_BIT. GLFW\_ORIGIN\_UL\_BIT works as described for
-the \textbf{glfwLoadTexture2D} function. If the GLFW\_NO\_RESCALE\_BIT
-flag is set, the image will not be rescaled to the closest larger
-$2^m\times 2^n$ resolution, which is otherwise the default action for
-images with non-power-of-two dimenstions.
+Possible flags for the \textit{flags} argument are GLFW\_ORIGIN\_UL\_BIT,
+GLFW\_NO\_RESCALE\_BIT and GLFW\_ALPHA\_MAP\_BIT. GLFW\_ORIGIN\_UL\_BIT
+and GLFW\_ALPHA\_MAP\_BIT work as described for the \textbf{glfwLoadTexture2D}
+function. If the GLFW\_NO\_RESCALE\_BIT flag is set, the image will not be
+rescaled to the closest larger $2^m\times 2^n$ resolution, which is
+otherwise the default action for images with non-power-of-two dimenstions.
 
 When an image that was loaded with the \textbf{glfwReadImage} function is
 not used anymore (e.g. when it has been uploaded to texture memory), you
