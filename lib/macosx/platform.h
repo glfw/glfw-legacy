@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.5 2003-11-06 00:07:25 elmindreda Exp $
+// $Id: platform.h,v 1.6 2004-01-13 21:49:39 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -55,7 +55,8 @@
 // Defines
 //========================================================================
 
-#define GLFW_WINDOW_ATTRIBUTES ( kWindowFullZoomAttribute        \
+#define GLFW_WINDOW_ATTRIBUTES ( kWindowCloseBoxAttribute        \
+                               | kWindowFullZoomAttribute        \
                                | kWindowCollapseBoxAttribute     \
                                | kWindowResizableAttribute       \
                                | kWindowStandardHandlerAttribute \
