@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_init.c,v 1.6 2004-03-07 21:12:51 marcus256 Exp $
+// $Id: x11_init.c,v 1.7 2004-04-13 19:50:54 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -205,6 +205,12 @@ static void _glfwTerminateDisplay( void )
 
 int _glfwPlatformInit( void )
 {
+    // Initialize display
+    if( !_glfwInitDisplay() )
+    {
+        return GL_FALSE;
+    }
+
     // Initialize thread package
     _glfwInitThreads();
 
@@ -213,9 +219,6 @@ int _glfwPlatformInit( void )
 
     // Install atexit() routine
     atexit( _glfwTerminate_atexit );
-
-    // Initialize display
-    _glfwInitDisplay();
 
     // Initialize joysticks
     _glfwInitJoysticks();
