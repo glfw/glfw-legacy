@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.7 2004-02-25 22:26:28 marcus256 Exp $
+// $Id: platform.h,v 1.8 2004-04-07 21:01:48 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -44,7 +44,13 @@
 // Include files
 #include <windows.h>
 #include <mmsystem.h>
-#include "../../include/GL/glfw.h"
+
+#ifdef __POCC__
+ // Temporary work around for Pelles C bug (Pelle is working on a fix)
+ #include "glfw.h"
+#else
+ #include "../../include/GL/glfw.h"
+#endif
 
 
 //========================================================================
