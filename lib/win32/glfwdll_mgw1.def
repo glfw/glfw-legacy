@@ -46,6 +46,7 @@ glfwSetMousePos = glfwSetMousePos@8
 glfwSetMousePosCallback = glfwSetMousePosCallback@4
 glfwSetMouseWheel = glfwSetMouseWheel@4
 glfwSetMouseWheelCallback = glfwSetMouseWheelCallback@4
+glfwSetTime = glfwSetTime@8
 glfwSetWindowPos = glfwSetWindowPos@8
 glfwSetWindowSize = glfwSetWindowSize@8
 glfwSetWindowSizeCallback = glfwSetWindowSizeCallback@4
