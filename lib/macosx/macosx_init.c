@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.5 2004-02-14 20:55:00 marcus256 Exp $
+// $Id: macosx_init.c,v 1.6 2004-06-07 22:20:03 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -84,6 +84,16 @@ int  _glfwChangeToResourcesDirectory( void )
 
 int _glfwPlatformInit( void )
 {
+    _glfwWin.MacWindow = NULL;
+    _glfwWin.AGLContext = NULL;
+    _glfwWin.WindowFunctions = NULL;
+    _glfwWin.MouseUPP = NULL;
+    _glfwWin.CommandUPP = NULL;
+    _glfwWin.KeyboardUPP = NULL;
+    _glfwWin.WindowUPP = NULL;
+    
+    _glfwInput.Modifiers = 0;
+    
     _glfwLibs.OpenGLFramework
         = CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
     if ( _glfwLibs.OpenGLFramework == NULL )
@@ -111,16 +121,26 @@ int _glfwPlatformInit( void )
 
     _glfwTimer.t0 = GetCurrentEventTime();
 
-    _glfwWin.MacWindow = NULL;
-    _glfwWin.AGLContext = NULL;
-    _glfwWin.WindowFunctions = NULL;
-
-    _glfwInput.Modifiers = 0;
-
     return GL_TRUE;
 }
 
 int _glfwPlatformTerminate( void )
 {
+    if ( _glfwWin.MouseUPP != NULL )
+    {
+        DisposeEventHandlerUPP( _glfwWin.MouseUPP );
+        _glfwWin.MouseUPP = NULL;
+    }
+    if ( _glfwWin.CommandUPP != NULL )
+    {
+        DisposeEventHandlerUPP( _glfwWin.CommandUPP );
+        _glfwWin.CommandUPP = NULL;
+    }
+    if ( _glfwWin.KeyboardUPP != NULL )
+    {
+        DisposeEventHandlerUPP( _glfwWin.KeyboardUPP );
+        _glfwWin.KeyboardUPP = NULL;
+    }
+    
     return GL_TRUE;
 }

@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.11 2004-04-10 12:06:52 marcus256 Exp $
+// $Id: macosx_window.c,v 1.12 2004-06-07 22:20:23 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -420,14 +420,14 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
                 {
                     if( _glfwWin.WindowCloseCallback() )
                     {
-                        _glfwPlatformCloseWindow();
+                        glfwCloseWindow();
                     }
                 }
                 else
                 {
-                    _glfwPlatformCloseWindow();
+                    glfwCloseWindow();
                 }
-                break;
+                return noErr;
             }
         }
     }
@@ -479,12 +479,12 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
       {
           if( _glfwWin.WindowCloseCallback() )
           {
-              _glfwPlatformCloseWindow();
+              glfwCloseWindow();
           }
       }
       else
       {
-          _glfwPlatformCloseWindow();
+          glfwCloseWindow();
       }
       return noErr;
     }
@@ -492,12 +492,15 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 
   return eventNotHandledErr;
 }
+
 int  _glfwInstallEventHandlers( void )
 {
     OSStatus error;
+    
+    _glfwWin.MouseUPP = NewEventHandlerUPP( _glfwMouseEventHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
-                                 NewEventHandlerUPP( _glfwMouseEventHandler ),
+                                 _glfwWin.MouseUPP,
                                  GetEventTypeCount( GLFW_MOUSE_EVENT_TYPES ),
                                  GLFW_MOUSE_EVENT_TYPES,
                                  NULL,
@@ -507,9 +510,11 @@ int  _glfwInstallEventHandlers( void )
         // TO DO: fix leak of UPP
         return GL_FALSE;
     }
+    
+    _glfwWin.CommandUPP = NewEventHandlerUPP( _glfwCommandHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
-                                 NewEventHandlerUPP( _glfwCommandHandler ),
+                                 _glfwWin.CommandUPP,
                                  GetEventTypeCount( GLFW_COMMAND_EVENT_TYPES ),
                                  GLFW_COMMAND_EVENT_TYPES,
                                  NULL,
@@ -519,9 +524,11 @@ int  _glfwInstallEventHandlers( void )
       // TO DO: fix leak of UPPs
       return GL_FALSE;
     }
-
+    
+    _glfwWin.KeyboardUPP = NewEventHandlerUPP( _glfwKeyEventHandler );
+    
     error = InstallEventHandler( GetApplicationEventTarget(),
-                                 NewEventHandlerUPP( _glfwKeyEventHandler ),
+                                 _glfwWin.KeyboardUPP,
                                  GetEventTypeCount( GLFW_KEY_EVENT_TYPES ),
                                  GLFW_KEY_EVENT_TYPES,
                                  NULL,
@@ -663,8 +670,10 @@ int  _glfwPlatformOpenWindow( int width,
 
     if ( !_glfwWin.Fullscreen )
     {
+      _glfwWin.WindowUPP = NewEventHandlerUPP( _glfwWindowEventHandler );
+        
       error = InstallWindowEventHandler( _glfwWin.MacWindow,
-                                         NewEventHandlerUPP( _glfwWindowEventHandler ),
+                                         _glfwWin.WindowUPP,
                                          GetEventTypeCount( GLFW_WINDOW_EVENT_TYPES ),
                                          GLFW_WINDOW_EVENT_TYPES,
                                          NULL,
@@ -741,6 +750,12 @@ void _glfwPlatformCloseWindow( void )
         return;
 
     _glfwWin.WindowFunctions->CloseWindow();
+    
+    if ( _glfwWin.WindowUPP != NULL )
+    {
+        DisposeEventHandlerUPP( _glfwWin.WindowUPP );
+        _glfwWin.WindowUPP = NULL;
+    }
 }
 
 void _glfwPlatformSetWindowTitle( const char *title )
@@ -823,8 +838,10 @@ void _glfwPlatformPollEvents( void )
 
 void _glfwPlatformWaitEvents( void )
 {
+    EventRef event;
+    
     // Wait for new events
-    // ...
+    ReceiveNextEvent( 0, NULL, kEventDurationForever, FALSE, &event );
 
     // Poll new events
     _glfwPlatformPollEvents();
