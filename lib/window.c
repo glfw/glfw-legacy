@@ -1,11 +1,10 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     window.c
-// Platform: Any
-// Version:  2.4
-// Date:     2003.01.08
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        window.c
+// Platform:    Any
+// API version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2003 Marcus Geelnard
 //
@@ -28,7 +27,9 @@
 //    distribution of GLFW.
 //
 // Marcus Geelnard
-// marcus.geelnard@home.se
+// marcus.geelnard at home.se
+//------------------------------------------------------------------------
+// $Id: window.c,v 1.2 2003-02-02 22:39:18 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
