@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.9 2004-02-29 20:37:46 marcus256 Exp $
+// $Id: glfw.h,v 1.10 2004-04-05 19:45:21 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -88,8 +88,8 @@ extern "C" {
 
 // Under Windows, we need WINGDIAPI defined
 #if !defined(WINGDIAPI) && defined(_WIN32)
- #if defined(_MSC_VER) || defined(__BORLANDC__)
-  // Microsoft Visual C++ & Borland C++ Builder
+ #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__POCC__)
+  // Microsoft Visual C++, Borland C++ Builder and Pelles C
   #define WINGDIAPI __declspec(dllimport)
  #elif defined(__LCC__)
   // LCC-Win32
@@ -117,8 +117,8 @@ extern "C" {
  #define GLU_CALLBACK_DEFINED
 #endif // CALLBACK
 
-// Microsoft Visual C++ & Borland C++ <GL/glu.h> needs wchar_t
-#if defined(_WIN32) && (defined(_MSC_VER) || defined(__BORLANDC__)) && !defined(_WCHAR_T_DEFINED)
+// Microsoft Visual C++, Borland C++ and Pelles C <GL/glu.h> needs wchar_t
+#if defined(_WIN32) && (defined(_MSC_VER) || defined(__BORLANDC__) || defined(__POCC__)) && !defined(_WCHAR_T_DEFINED)
  typedef unsigned short wchar_t;
  #define _WCHAR_T_DEFINED
 #endif // _WCHAR_T_DEFINED
