@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_time.c,v 1.5 2004-02-14 20:51:27 marcus256 Exp $
+// $Id: amigaos_time.c,v 1.6 2004-04-12 19:50:37 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -56,11 +56,11 @@ int _glfwInitTimer( void )
     _glfwTimer.TimerIO = NULL;
 
     // Open timer.device (used as a library for ReadEClock)
-    if( _glfwTimer.TimerMP = CreatePort( NULL, 0 ) )
+    if( (_glfwTimer.TimerMP = CreatePort( NULL, 0 )) )
     {
         // Create the I/O request
-        if( _glfwTimer.TimerIO = (struct timerequest *)
-            CreateExtIO(_glfwTimer.TimerMP, sizeof(struct timerequest)) )
+        if( (_glfwTimer.TimerIO = (struct timerequest *)
+             CreateExtIO(_glfwTimer.TimerMP, sizeof(struct timerequest))) )
         {
             // Open the timer device
             if( !( OpenDevice( "timer.device", UNIT_MICROHZ,

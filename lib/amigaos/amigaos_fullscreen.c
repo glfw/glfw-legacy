@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_fullscreen.c,v 1.5 2004-02-14 20:51:27 marcus256 Exp $
+// $Id: amigaos_fullscreen.c,v 1.6 2004-04-12 19:50:37 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -47,7 +47,6 @@
 static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
 {
     int delta;
-    int bpp2;
 
     // Special case: bpp = 32
     if( bpp == 32 ) bpp = 24;

@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_thread.c,v 1.4 2004-02-14 20:51:27 marcus256 Exp $
+// $Id: amigaos_thread.c,v 1.5 2004-04-12 19:50:37 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -302,7 +302,6 @@ int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
 GLFWthread _glfwPlatformGetThreadID( void )
 {
     _GLFWthread *t;
-    GLFWthread  ID = -1;
     struct Task *amiTask;
 
     // Get current task
@@ -409,7 +408,6 @@ void _glfwPlatformWaitCond( GLFWcond cond, GLFWmutex mutex,
 {
     struct Task *amiTask;
     _GLFWthread *t_this;
-    int         waitSig;
 
     // Do we need a limited timeout?
     if( timeout < GLFW_INFINITY )
