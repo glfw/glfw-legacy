@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.19 2003-12-01 22:45:55 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.20 2004-01-06 08:58:55 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -90,6 +90,7 @@ Windows compilers, a Win32 DLL will also be compiled.
   <li>OpenWatcom for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
+  <li>Geek Gadgets (GCC) for AmigaOS</li>
   <li>VBCC for AmigaOS</li>
   <li>Apple Developer Tools (GCC) for Mac OS X</li>
 </ol>
@@ -175,12 +176,14 @@ since it is called from the top level Makefile.
 
 <p><br><h3>2.6 Note for AmigaOS users</h3>
 
-<p>To compile GLFW and the example programs for AmigaOS (68k), you need a
-make program that understands AmigaDOS paths. I use the SAS/C compiled
-version of GNU make 3.75, which can be found on Aminet. You also need
-VBCC (an excellent free C compiler), the StormMesa developer package, and
-of course the AmigaOS include files (not included with VBCC due to
+<p>The current AmigaOS implementation of GLFW requires VBCC (an excellent
+free C compiler) or Geek Gadgets GCC, the StormMesa developer package, and
+of course the AmigaOS include files (not included with VBCC or GCC due to
 copyright reasons).
+
+<p>To compile GLFW and the example programs for AmigaOS (68k) with VBCC,
+you need a make program that understands AmigaDOS paths. I use the SAS/C
+compiled version of GNU make 3.75, which can be found on Aminet.
 
 <p>It should also be noted that the current version of GLFW for AmigaOS is
 only a subset of the full GLFW API. Most of the core functionality has
@@ -498,6 +501,7 @@ version of GLFW.
      Intel Hyper-Threading enabled systmes)</li>
  <li>[AmigaOS] Added joystick support</li>
  <li>[AmigaOS] Mouse cursor positioning is now implemented</li>
+ <li>[AmigaOS] Added support for Geek Gadgets GCC</li>
  <li>[AmigaOS] Bugfix: glfwGetWindowParam now returns proper values for
      all parameters (except for GLFW_ACCELERATED)</li>
 </ul>
@@ -763,6 +767,7 @@ version of GLFW.
 <tr valign="top"><td><b>examples/</b></td><td>&nbsp;</td><td>Directory containing several example programs</td></tr>
 <tr valign="top"><td>&nbsp;Info.plist</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>
 <tr valign="top"><td>&nbsp;MakeBundle.sh</td><td>&nbsp;</td><td>Used for creating Mac OS X bundles</td></tr>
+<tr valign="top"><td>&nbsp;Makefile.amigaos.gcc</td><td>&nbsp;</td><td>Makefile for GCC for AmigaOS</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.amigaos.vbcc</td><td>&nbsp;</td><td>Makefile for VBCC for AmigaOS</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.macosx.gcc</td><td>&nbsp;</td><td>Makefile for GCC for Mac OS X</td></tr>
 <tr valign="top"><td>&nbsp;Makefile.win32.bcc</td><td>&nbsp;</td><td>Makefile for Borland C++ 5.x for Windows</td></tr>
@@ -815,6 +820,7 @@ version of GLFW.
 <tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 
 <tr valign="top"><td><b>&nbsp;amigaos/</b></td><td>&nbsp;</td><td>Directory containing the AmigaOS implementation for GLFW</td></tr>
+<tr valign="top"><td>&nbsp;&nbsp;Makefile.amigaos.gcc</td><td>&nbsp;</td><td>Makefile for GCC for AmigaOS</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;Makefile.amigaos.vbcc</td><td>&nbsp;</td><td>Makefile for VBCC for AmigaOS</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;amigaos_enable.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
 <tr valign="top"><td>&nbsp;&nbsp;amigaos_fullscreen.m</td><td>&nbsp;</td><td>Part of the GLFW source</td></tr>
