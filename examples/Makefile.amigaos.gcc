@@ -4,7 +4,7 @@
 # To compile the test files using this makefile, run:
 #  make -f Makefile.amigaos.gcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.amigaos.gcc,v 1.1 2004-01-06 08:50:06 marcus256 Exp $
+# $Id: Makefile.amigaos.gcc,v 1.2 2004-04-12 19:53:21 marcus256 Exp $
 ##########################################################################
 
 # Default: Build all tests
@@ -15,10 +15,10 @@ default: triangle listmodes mthello pong3d mtbench \
 
 # Compiler settings
 CC     = gcc
-CFLAGS = -I../include -Wall -O3 -ffast-math -m68020 -m68881
+CFLAGS = -noixemul -I../include -Wall -O3 -ffast-math -m68020 -m68881
 
 # Linker settings
-LFLAGS = -L../lib/amigaos -lglfw -lgl -lamiga -lm -s
+LFLAGS = -L../lib/amigaos -lm -lglfw -lgl -lamiga  -s
 
 
 
