@@ -15,6 +15,10 @@
  *   - Slightly modified camera that should work better for stereo viewing
  */
 
+/************************************************************************
+ * $Id: gears.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ ************************************************************************/
+
 
 #include <math.h>
 #include <stdlib.h>
