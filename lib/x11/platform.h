@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.4 2003-10-30 20:52:19 marcus256 Exp $
+// $Id: platform.h,v 1.5 2004-02-14 19:37:18 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -47,6 +47,7 @@
 #include <signal.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <X11/Xatom.h>
 #include <GL/glx.h>
 #include "../../include/GL/glfw.h"
 
@@ -205,6 +206,7 @@ struct _GLFWwin_struct {
     GLXSWAPINTERVALSGI_T SwapInterval;
 
     // Various platform specific internal variables
+    int         OverrideRedirect; // True if window is OverrideRedirect
     int         KeyboardGrabbed; // True if keyboard is currently grabbed
     int         PointerGrabbed;  // True if pointer is currently grabbed
     int         PointerHidden;   // True if pointer is currently hidden
