@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.18 2003-11-25 22:11:47 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.19 2003-12-01 22:45:55 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -134,7 +134,14 @@ GLFW with this procedure:
 </ol>
 
 
-<p><br><h3>2.2 Note for Cygwin users</h3>
+<p><br><h3>2.2 Note for MinGW users</h3>
+
+<p>Do not use the MSYS shell for compiling GLFW, because the supplied
+batch file "compile.bat" will only work under a Windows command prompt (or
+MS-DOS prompt).
+
+
+<p><br><h3>2.3 Note for Cygwin users</h3>
 
 <p>The top level makefile was designed to run from a Cygwin bash shell.
 You can <i>not</i> use an MS-DOS prompt (or NT cmd prompt) to compile GLFW
@@ -143,7 +150,7 @@ work from a Cygwin shell, which is why there is a special cygwin-clean
 option.
 
 
-<p><br><h3>2.3 Note for OpenWatcom users</h3>
+<p><br><h3>2.4 Note for OpenWatcom users</h3>
 
 <p>In order to compile GLFW successfully with OpenWatcom (for Windows),
 execute "nmake MAKE=nmake win32-ow" in the GLFW root directory. Also make
@@ -156,7 +163,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 
 
 
-<p><br><h3>2.4 Note for Unix/X11 users</h3>
+<p><br><h3>2.5 Note for Unix/X11 users</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has been tested under Linux Mandrake 9.1,
@@ -166,7 +173,7 @@ generate functional Makefiles. You do not have to run the script manually,
 since it is called from the top level Makefile.
 
 
-<p><br><h3>2.5 Note for AmigaOS users</h3>
+<p><br><h3>2.6 Note for AmigaOS users</h3>
 
 <p>To compile GLFW and the example programs for AmigaOS (68k), you need a
 make program that understands AmigaDOS paths. I use the SAS/C compiled
@@ -181,7 +188,7 @@ been implemented, but there are still some things missing (e.g. hiding the
 mouse cursor in windowed mode, iconification handling etc).
 
 
-<p><br><h3>2.6 Note for Mac OS X users</h3>
+<p><br><h3>2.7 Note for Mac OS X users</h3>
 
 <p>To compile GLFW for Mac OS X, you will need to have installed the BSD
 subsystem and the Developer Tools, which can be found on your Mac OS X
@@ -950,7 +957,7 @@ useful for OpenGL development.
   target="_blank">MSDN Online Linrary</a>, which was used extensively for
   Windows development.</li><br><br>
 
-  <li>All the feedback from GLFW users - thank you!.</li><br><br>
+  <li>All the feedback from GLFW users - thank you!</li><br><br>
 </ul>
 
 <!----------------------------------------------------------------------->
