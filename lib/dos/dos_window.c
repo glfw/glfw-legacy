@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.3 2003-11-28 21:59:06 marcus256 Exp $
+// $Id: dos_window.c,v 1.4 2003-12-01 21:41:09 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -229,12 +229,9 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         return GL_FALSE;
     }
 
-    // Get (and remember) actual screen size
-    DMesaGetIntegerv( DMESA_GET_SCREEN_SIZE, params );
-    width  = params[0];
-    height = params[1];
-    _glfwWin.Width  = width;
-    _glfwWin.Height = height;
+    // stdout/stderr redirection
+    pc_open_stdout();
+    pc_open_stderr();
 
     // Create context
     _glfwWin.Context = DMesaCreateContext( _glfwWin.Visual, NULL );
@@ -244,10 +241,6 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
-
-    // stdout/srderr redirection
-    pc_open_stdout();
-    pc_open_stderr();
 
     // Create buffer
     _glfwWin.Buffer = DMesaCreateBuffer( _glfwWin.Visual, 0, 0,
@@ -267,6 +260,10 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         return GL_FALSE;
     }
 
+    // Remember actual screen/window size
+    _glfwWin.Width  = width;
+    _glfwWin.Height = height;
+
     return GL_TRUE;
 }
 
@@ -282,10 +279,6 @@ void _glfwPlatformCloseWindow( void )
     {
         DMesaDestroyBuffer( _glfwWin.Buffer );
         _glfwWin.Buffer = NULL;
-
-        // stdout/srderr redirection
-        pc_close_stdout();
-        pc_close_stderr();
     }
 
     // Destroy context
@@ -300,6 +293,10 @@ void _glfwPlatformCloseWindow( void )
     {
         DMesaDestroyVisual( _glfwWin.Visual );
         _glfwWin.Visual = NULL;
+
+        // stdout/stderr redirection
+        pc_close_stdout();
+        pc_close_stderr();
     }
 }
 
