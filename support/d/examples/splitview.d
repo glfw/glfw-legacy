@@ -10,10 +10,11 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.d,v 1.1 2004-03-04 21:33:20 marcus256 Exp $
+ * $Id: splitview.d,v 1.2 2004-03-26 16:06:23 glennmlewis Exp $
  ************************************************************************/
 
 import std.math;
+import std.string;
 import glfw;
 
 
@@ -436,6 +437,8 @@ extern (Windows)
 int main()
 {
     int     running;
+    double    t, t0, fps;
+    char[]    titlestr;
 
     // Initialise GLFW
     glfwInit();
@@ -462,8 +465,24 @@ int main()
     glfwSetMouseButtonCallback( &MouseButtonFun );
 
     // Main loop
+    int frames = 0;
+    t0 = glfwGetTime();
     do
     {
+        // Get time
+        t = glfwGetTime();
+
+        // Calculate and display FPS (frames per second)
+        if( (t-t0) > 1.0 || frames == 0 )
+        {
+            fps = (double)frames / (t-t0);
+            titlestr = "Split View (" ~ toString(fps) ~ " FPS)\0";
+            glfwSetWindowTitle( titlestr );
+            t0 = t;
+            frames = 0;
+        }
+        frames ++;
+
         // Draw all views
         DrawAllViews();
 
