@@ -10,7 +10,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.c,v 1.3 2004-04-09 11:32:37 marcus256 Exp $
+ * $Id: splitview.c,v 1.4 2004-04-11 11:50:28 marcus256 Exp $
  ************************************************************************/
 
 #include <GL/glfw.h>
@@ -37,6 +37,9 @@ int active_view = 0;
 
 // Rotation around each axis
 int rot_x = 0, rot_y = 0, rot_z = 0;
+
+// Do redraw?
+int do_redraw = 1;
 
 
 //========================================================================
@@ -359,6 +362,17 @@ void GLFWCALL WindowSizeFun( int w, int h )
 {
     width  = w;
     height = h > 0 ? h : 1;
+    do_redraw = 1;
+}
+
+
+//========================================================================
+// WindowPaintFun() - Window paint callback function
+//========================================================================
+
+void GLFWCALL WindowPaintFun( void )
+{
+    do_redraw = 1;
 }
 
 
@@ -374,14 +388,17 @@ void GLFWCALL MousePosFun( int x, int y )
         case 1:
             rot_x += y - ypos;
             rot_z += x - xpos;
+            do_redraw = 1;
             break;
         case 3:
             rot_x += y - ypos;
             rot_y += x - xpos;
+            do_redraw = 1;
             break;
         case 4:
             rot_y += x - xpos;
             rot_z += y - ypos;
+            do_redraw = 1;
             break;
         default:
             // Do nothing for perspective view, or if no view is selected
@@ -421,6 +438,8 @@ void GLFWCALL MouseButtonFun( int button, int action )
         // Deselect any previously selected view
         active_view = 0;
     }
+
+    do_redraw = 1;
 }
 
 
@@ -456,17 +475,24 @@ int main( void )
 
     // Set callback functions
     glfwSetWindowSizeCallback( WindowSizeFun );
+    glfwSetWindowPaintCallback( WindowPaintFun );
     glfwSetMousePosCallback( MousePosFun );
     glfwSetMouseButtonCallback( MouseButtonFun );
 
     // Main loop
     do
     {
-        // Draw all views
-        DrawAllViews();
+        // Only redraw if we need to
+        if( do_redraw )
+        {
+            // Draw all views
+            DrawAllViews();
 
-        // Swap buffers
-        glfwSwapBuffers();
+            // Swap buffers
+            glfwSwapBuffers();
+
+            do_redraw = 0;
+        }
 
         // Wait for new events
         glfwWaitEvents();
