@@ -2,12 +2,12 @@
 // GLFW - An OpenGL framework
 // File:        dos_keyboard.c
 // Platform:    DOS
-// API version: 2.4
+// API version: 2.5
 // Authors:     Daniel Borca (dborca at yahoo.com)
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_keyboard.c,v 1.2 2004-02-14 20:53:15 marcus256 Exp $
+// $Id: dos_keyboard.c,v 1.3 2005-03-14 20:22:30 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"

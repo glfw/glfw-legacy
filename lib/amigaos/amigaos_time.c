@@ -2,11 +2,11 @@
 // GLFW - An OpenGL framework
 // File:        amigaos_time.c
 // Platforms:   AmigaOS, MorphOS
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_time.c,v 1.6 2004-04-12 19:50:37 marcus256 Exp $
+// $Id: amigaos_time.c,v 1.7 2005-03-14 20:17:59 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
