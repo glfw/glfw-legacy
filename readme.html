@@ -1,6 +1,6 @@
 <html>
 
-<!-- $Id: readme.html,v 1.29 2004-04-10 12:03:51 marcus256 Exp $ -->
+<!-- $Id: readme.html,v 1.30 2004-04-13 20:02:00 marcus256 Exp $ -->
 
 <head>
   <title>GLFW Readme file</title>
@@ -167,7 +167,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 
 <p><br><h3>2.5 Note for Pelles C users</h3>
 
-<p>To build GLFW with Pelles C, you need at lest version 2.80 of Pelles C
+<p>To build GLFW with Pelles C, you need at lest version 2.80.3 of Pelles C
 (POCC and POLINK).
 
 
@@ -370,6 +370,7 @@ want to add other libraries as well, such as <b>glu32</b>):
 <tr><td>Microsoft Visual C++</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfw -lopengl32</td></tr>
 <tr><td>OpenWatcom</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
+<tr><td>Pelles C</td><td>glfw.lib opengl32.lib user32.lib kernel32.lib</td></tr>
 </table>
 
 
@@ -399,6 +400,7 @@ such as <b>opengl32</b> and <b>glu32</b>):
 <tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfwdll</td></tr>
 <tr><td>OpenWatcom</td><td>glfwdll.lib</td></tr>
+<tr><td>Pelles C</td><td>glfwdll.lib</td></tr>
 </table>
 
 
@@ -434,8 +436,15 @@ files using <b>-L/usr/X11R6/lib</b>:
 <b>-lpthread</b>. Usually, X11 is installed in /opt instead of /usr under
 QNX, so use <b>-L/opt/X11R6/lib</b>.
 
+<p>To use GLFW from KDevelop under Linux, you usually add the following to
+<b>Project->Project&nbsp;Options->Configure&nbsp;Options->Linker&nbsp;Flags</b>:
+
+<p>&nbsp;&nbsp;<b>-L/usr/X11R6/lib -lglfw -lGL -lXxf86vm -lpthread</b>
+
 <p>If you use GLU functions in your program you should also add
 <b>-lGLU</b>.
+
+
 
 
 <p><br><h4>4.2.4 AmigaOS static library</h4>
@@ -495,8 +504,10 @@ version of GLFW.
  <li>Added support for the D programming language</li>
  <li>Added support for the Pelles C compiler for Windows</li>
  <li>[Win32] Bugfix: The DLL now exports glfwSetTime</li>
+ <li>[Win32] Fix: The GLFW window is now placed in the upper left corner
+     of the desktop working area</li>
  <li>[X11] Bugfix: Runtime check of XF86VidMode support for the active
-     display.</li>
+     display</li>
  <li>[X11] Bugfix: Some mouse button events were reported incorrectly</li>
 </ul>
 
