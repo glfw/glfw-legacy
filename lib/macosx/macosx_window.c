@@ -1,13 +1,12 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     platform.h
-// Platform: Mac OS X
-// Version:  2.4
-// Date:     2002.12.31
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-//           Keith Bauer (onesadcookie@hotmail.com)
-//           Camilla Drefvenborg (elmindreda@home.se)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        macosx_window.c
+// Platform:    Mac OS X
+// API Version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard@home.se)
+//              Keith Bauer (onesadcookie@hotmail.com)
+//              Camilla Drefvenborg (elmindreda@home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
 //
@@ -31,6 +30,8 @@
 //
 // Marcus Geelnard
 // marcus.geelnard@home.se
+//------------------------------------------------------------------------
+// $Id: macosx_window.c,v 1.3 2003-10-20 23:02:13 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -356,7 +357,7 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
         // TO DO: give adequate UI feedback that this is the case
         return eventNotHandledErr;
     }
-    
+
     HICommand command;
     if ( GetEventParameter( event,
                             kEventParamDirectObject,
@@ -453,9 +454,9 @@ int  _glfwPlatformOpenWindow( int width,
     // TO DO: Refactor this function!
 
     _glfwWin.WindowFunctions = (mode == GLFW_FULLSCREEN ? _glfwMacFSWindowFunctions : _glfwMacDWWindowFunctions);
-    
+
     // create pixel format attribute list
-    
+
     GLint pixelFormatAttributes[256];
     int numAttrs = 0;
 
@@ -466,14 +467,14 @@ int  _glfwPlatformOpenWindow( int width,
     {
         pixelFormatAttributes[numAttrs++] = AGL_FULLSCREEN;
     }
-    
+
     if ( stereo )
     {
         pixelFormatAttributes[numAttrs++] = AGL_STEREO;
     }
 
     _setAGLAttribute( AGL_AUX_BUFFERS,      auxbuffers);
-    
+
     _setAGLAttribute( AGL_RED_SIZE,         redbits );
     _setAGLAttribute( AGL_GREEN_SIZE,       greenbits );
     _setAGLAttribute( AGL_BLUE_SIZE,        bluebits );
@@ -533,7 +534,7 @@ int  _glfwPlatformOpenWindow( int width,
     windowContentBounds.top = 0;
     windowContentBounds.right = width;
     windowContentBounds.bottom = height;
-    
+
     error = CreateNewWindow( kDocumentWindowClass,
                              GLFW_WINDOW_ATTRIBUTES,
                              &windowContentBounds,
@@ -543,7 +544,7 @@ int  _glfwPlatformOpenWindow( int width,
         aglDestroyContext( _glfwWin.AGLContext );
         return GL_FALSE;
     }
-    
+
     // Don't care if we fail here
     (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, CFSTR( "GLFW Window" ) );
     (void)RepositionWindow( _glfwWin.MacWindow,
@@ -552,7 +553,7 @@ int  _glfwPlatformOpenWindow( int width,
 
     // TO DO: put this somewhere else; this is a bit too soon
     ShowWindow( _glfwWin.MacWindow );
-    
+
     // show window, attach OpenGL context, &c
 
     if ( mode == GLFW_FULLSCREEN )
@@ -777,7 +778,7 @@ void _glfwMacDWCloseWindow( void )
     aglDestroyContext( _glfwWin.AGLContext );
     _glfwWin.AGLContext = NULL;
     ReleaseWindow( _glfwWin.MacWindow );
-    _glfwWin.MacWindow = NULL;    
+    _glfwWin.MacWindow = NULL;
 }
 
 void _glfwMacDWSetWindowTitle( const char *title )
@@ -789,7 +790,7 @@ void _glfwMacDWSetWindowTitle( const char *title )
     // Don't care if we fail
     (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, windowTitle );
 
-    CFRelease( windowTitle );    
+    CFRelease( windowTitle );
 }
 
 void _glfwMacDWSetWindowSize( int width, int height )
@@ -797,7 +798,7 @@ void _glfwMacDWSetWindowSize( int width, int height )
     SizeWindow( _glfwWin.MacWindow,
                 width,
                 height,
-                TRUE );    
+                TRUE );
 }
 
 void _glfwMacDWSetWindowPos( int x, int y )
@@ -806,7 +807,7 @@ void _glfwMacDWSetWindowPos( int x, int y )
     MoveWindow( _glfwWin.MacWindow,
                 x,
                 y,
-                FALSE );    
+                FALSE );
 }
 
 void _glfwMacDWIconifyWindow( void )

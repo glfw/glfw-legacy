@@ -1,12 +1,12 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     platform.h
-// Platform: Mac OS X
-// Version:  2.4
-// Date:     2002.12.31
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-//           Keith Bauer (onesadcookie@hotmail.com)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        macosx_init.c
+// Platform:    Mac OS X
+// API Version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard@home.se)
+//              Keith Bauer (onesadcookie@hotmail.com)
+//              Camilla Drefvenborg (elmindreda@home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
 //
@@ -30,6 +30,8 @@
 //
 // Marcus Geelnard
 // marcus.geelnard@home.se
+//------------------------------------------------------------------------
+// $Id: macosx_init.c,v 1.2 2003-10-20 23:02:13 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -59,7 +61,7 @@ int  _glfwChangeToResourcesDirectory( void )
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
     char resourcesPath[GLFW_MAX_PATH_LENGTH];
-    
+
     if ( !CFURLGetFileSystemRepresentation( resourcesURL,
                                             TRUE,
                                             (UInt8*)resourcesPath,
@@ -68,9 +70,9 @@ int  _glfwChangeToResourcesDirectory( void )
         CFRelease( resourcesURL );
         return GL_FALSE;
     }
-    
+
     CFRelease( resourcesURL );
-    
+
     if ( chdir( resourcesPath ) != 0 )
     {
         return GL_FALSE;
@@ -112,7 +114,7 @@ int _glfwPlatformInit( void )
     _glfwWin.AGLContext = NULL;
 
     _glfwInput.Modifiers = 0;
-    
+
     return GL_TRUE;
 }
 

@@ -1,12 +1,12 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     platform.h
-// Platform: Mac OS X
-// Version:  2.4
-// Date:     2002.12.31
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-//           Keith Bauer (onesadcookie@hotmail.com)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        platform.h
+// Platform:    Mac OS X
+// API Version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard@home.se)
+//              Keith Bauer (onesadcookie@hotmail.com)
+//              Camilla Drefvenborg (elmindreda@home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
 //
@@ -30,6 +30,8 @@
 //
 // Marcus Geelnard
 // marcus.geelnard@home.se
+//------------------------------------------------------------------------
+// $Id: platform.h,v 1.3 2003-10-20 23:01:06 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -222,7 +224,7 @@ GLFWGLOBAL struct {
     // ========= PLATFORM SPECIFIC PART ======================================
 
     UInt32 Modifiers;
-    
+
 } _glfwInput;
 
 

@@ -1,12 +1,12 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     platform.h
-// Platform: Mac OS X
-// Version:  2.4
-// Date:     2002.12.31
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-//           Keith Bauer (onesadcookie@hotmail.com)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        macosx_fullscreen.c
+// Platform:    Mac OS X
+// API Version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard@home.se)
+//              Keith Bauer (onesadcookie@hotmail.com)
+//              Camilla Drefvenborg (elmindreda@home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002 Marcus Geelnard
 //
@@ -30,6 +30,8 @@
 //
 // Marcus Geelnard
 // marcus.geelnard@home.se
+//------------------------------------------------------------------------
+// $Id: macosx_fullscreen.c,v 1.2 2003-10-20 23:02:13 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -48,7 +50,7 @@ void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
     CFNumberGetValue(CFDictionaryGetValue(cgMode, kCGDisplayBitsPerSample),
                      kCFNumberIntType,
                      &bitsPerSample);
-    
+
     glfwMode->RedBits = bitsPerSample;
     glfwMode->GreenBits = bitsPerSample;
     glfwMode->BlueBits = bitsPerSample;
