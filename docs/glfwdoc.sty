@@ -1,6 +1,6 @@
 %-------------------------------------------------------------------------
 % Common document formatting and macros for GLFW manuals
-% $Id: glfwdoc.sty,v 1.6 2003-11-12 22:30:45 marcus256 Exp $
+% $Id: glfwdoc.sty,v 1.7 2003-11-14 21:26:45 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Misc. document info
@@ -59,8 +59,10 @@
 \definecolor{link}{rgb}{0.6,0.0,0.0}
 
 % Code listings
-\lstset{frame=single,backgroundcolor=\color{code},language=C,%
+\lstset{frame=single,frameround=tttt,backgroundcolor=\color{code},%
+        language=C,basicstyle={\ttfamily},%
         breaklines,breakindent=0pt,postbreak=\space\space\space\space}
+
 
 % A simple hack for keeping lines together
 \newenvironment{mysamepage}[1][2]{\begin{samepage}\needspace{#1\baselineskip}}{\end{samepage}}
