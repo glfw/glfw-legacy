@@ -38,7 +38,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: particles.c,v 1.5 2004-01-06 08:49:30 marcus256 Exp $
+ * $Id: particles.c,v 1.6 2004-04-12 19:52:10 marcus256 Exp $
  ************************************************************************/
 
 #include <stdlib.h>
@@ -284,8 +284,7 @@ void InitParticle( PARTICLE *p, double t )
 // UpdateParticle() - Update a particle
 //========================================================================
 
-#define FOUNTAIN_R2 (FOUNTAIN_RADIUS+PARTICLE_SIZE/2)* \
-                    (FOUNTAIN_RADIUS+PARTICLE_SIZE/2)
+#define FOUNTAIN_R2 (FOUNTAIN_RADIUS+PARTICLE_SIZE/2)*(FOUNTAIN_RADIUS+PARTICLE_SIZE/2)
 
 void UpdateParticle( PARTICLE *p, float dt )
 {
