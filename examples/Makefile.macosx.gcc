@@ -1,0 +1,81 @@
+##########################################################################
+# Makefile for GLFW test programs on Windows using Apple GCC.
+#-------------------------------------------------------------------------
+# To compile the test files using this makefile, run:
+#  make -f Makefile.macosx
+##########################################################################
+
+# Compiler settings
+CC     = gcc
+CFLAGS = -I../include
+
+# Linker settings
+LFLAGS = -L../lib/macosx/ -lglfw -framework OpenGL -framework Cocoa
+
+# Default: Build all tests
+all: triangle listmodes mthello pong3d mtbench \
+     particles splitview mipmaps keytest gears \
+     boing wave
+
+
+# Rule for triangle
+triangle: triangle.c
+	./MakeBundle.sh Triangle
+	$(CC) $(CFLAGS) triangle.c $(LFLAGS) -o Triangle.app/Contents/MacOS/GLFWApplication
+
+# Rule for listmodes
+listmodes: listmodes.c
+	./MakeBundle.sh ListModes
+	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o ListModes.app/Contents/MacOS/GLFWApplication
+
+# Rule for mthello
+mthello: mthello.c
+	./MakeBundle.sh MTHello
+	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o MTHello.app/Contents/MacOS/GLFWApplication
+
+# Rule for pong3d
+pong3d: pong3d.c
+	./MakeBundle.sh Pong3D
+	cp pong3d_*.tga Pong3D.app/Contents/Resources/
+	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o Pong3D.app/Contents/MacOS/GLFWApplication
+
+# Rule for mtbench
+mtbench: mtbench.c
+	./MakeBundle.sh MTBench
+	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o MTBench.app/Contents/MacOS/GLFWApplication
+
+# Rule for particles
+particles: particles.c
+	./MakeBundle.sh Particles
+	$(CC) $(CFLAGS) particles.c $(LFLAGS) -o Particles.app/Contents/MacOS/GLFWApplication
+
+# Rule for splitview
+splitview: splitview.c
+	./MakeBundle.sh SplitView
+	$(CC) $(CFLAGS) splitview.c $(LFLAGS) -o SplitView.app/Contents/MacOS/GLFWApplication
+
+# Rule for mipmaps
+mipmaps: mipmaps.c
+	./MakeBundle.sh Mipmaps
+	cp mipmaps.tga Mipmaps.app/Contents/Resources/
+	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o Mipmaps.app/Contents/MacOS/GLFWApplication
+
+# Rule for keytest
+keytest: keytest.c
+	./MakeBundle.sh KeyTest
+	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o KeyTest.app/Contents/MacOS/GLFWApplication
+
+# Rule for gears
+gears: gears.c
+	./MakeBundle.sh Gears
+	$(CC) $(CFLAGS) gears.c $(LFLAGS) -o Gears.app/Contents/MacOS/GLFWApplication
+
+# Rule for boing
+boing: boing.c
+	./MakeBundle.sh Boing
+	$(CC) $(CFLAGS) boing.c $(LFLAGS) -o Boing.app/Contents/MacOS/GLFWApplication
+
+# Rule for wave
+wave: wave.c
+	./MakeBundle.sh Wave
+	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o Wave.app/Contents/MacOS/GLFWApplication
