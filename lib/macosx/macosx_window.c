@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.12 2004-06-07 22:20:23 elmindreda Exp $
+// $Id: macosx_window.c,v 1.13 2004-08-01 15:59:01 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -154,13 +154,14 @@ EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
 OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                EventRef event,
                                void *userData )
-{
+{	
     switch ( GetEventKind( event ) )
     {
         case kEventRawKeyDown:
             {
                 UInt32 keyCode;
-                if ( GetEventParameter( event,
+                short int keyChar;
+               if ( GetEventParameter( event,
                                         kEventParamKeyCode,
                                         typeUInt32,
                                         NULL,
@@ -169,13 +170,24 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                         &keyCode ) == noErr )
                 {
                     _glfwHandleMacKeyChange( keyCode, GLFW_PRESS );
-                    return noErr;
                 }
+                if( GetEventParameter( event,
+                                       kEventParamKeyUnicodes,
+                                       typeUnicodeText,
+                                       NULL,
+                                       sizeof(keyChar),
+                                       NULL,
+                                       &keyChar) == noErr )
+                {
+                	_glfwInputChar( keyChar, GLFW_PRESS );
+                }
+                return noErr;
             }
             break;
         case kEventRawKeyUp:
             {
                 UInt32 keyCode;
+                short int keyChar;
                 if ( GetEventParameter( event,
                                         kEventParamKeyCode,
                                         typeUInt32,
@@ -185,8 +197,18 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                         &keyCode ) == noErr )
                 {
                     _glfwHandleMacKeyChange( keyCode, GLFW_RELEASE );
-                    return noErr;
                 }
+                if( GetEventParameter( event,
+                                       kEventParamKeyUnicodes,
+                                       typeUnicodeText,
+                                       NULL,
+                                       sizeof(keyChar),
+                                       NULL,
+                                       &keyChar) == noErr )
+                {
+                	_glfwInputChar( keyChar, GLFW_RELEASE );
+                }
+                return noErr;
             }
             break;
         case kEventRawKeyModifiersChanged:
@@ -261,9 +283,13 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                             NULL,
                                             &button ) == noErr )
                     {
-                        _glfwInputMouseClick( button
-                                              - kEventMouseButtonPrimary
-                                              + GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
+                        button -= kEventMouseButtonPrimary;
+                        if ( button <= GLFW_MOUSE_BUTTON_LAST )
+                        {
+                            _glfwInputMouseClick( button
+                                                  + GLFW_MOUSE_BUTTON_LEFT,
+                                                  GLFW_PRESS );
+                        }
                         return noErr;
                     }
                 }
@@ -294,10 +320,14 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                         NULL,
                                         &button ) == noErr )
                 {
+                  button -= kEventMouseButtonPrimary;
+                  if ( button <= GLFW_MOUSE_BUTTON_LAST )
+                  {
                     _glfwInputMouseClick( button
-                                          - kEventMouseButtonPrimary
-                                          + GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE );
-                    return noErr;
+                                          + GLFW_MOUSE_BUTTON_LEFT,
+                                          GLFW_RELEASE );
+                  }
+                  return noErr;
                 }
             }
             break;
@@ -438,59 +468,75 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
 EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
 {
   { kEventClassWindow, kEventWindowBoundsChanged },
-  { kEventClassWindow, kEventWindowClose }
+  { kEventClassWindow, kEventWindowClose },
+  { kEventClassWindow, kEventWindowDrawContent },
 };
 
 OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
                               EventRef event,
                               void *userData )
 {
-  switch (GetEventKind(event))
-  {
-    case kEventWindowBoundsChanged:
-    {
-      WindowRef window;
-      GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
-                        sizeof(WindowRef), NULL, &window);
+	switch (GetEventKind(event))
+ 	{
+    	case kEventWindowBoundsChanged:
+    	{
+      		WindowRef window;
+      		GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
+			                  sizeof(WindowRef), NULL, &window);
 
-      Rect rect;
-      GetWindowPortBounds(window, &rect);
+      		Rect rect;
+      		GetWindowPortBounds(window, &rect);
 
-      if ( _glfwWin.Width != rect.right ||
-           _glfwWin.Height != rect.bottom)
-      {
-        aglUpdateContext(_glfwWin.AGLContext);
+      		if ( _glfwWin.Width != rect.right ||
+           	    _glfwWin.Height != rect.bottom)
+      		{
+        		aglUpdateContext(_glfwWin.AGLContext);
 
-        _glfwWin.Width  = rect.right;
-        _glfwWin.Height = rect.bottom;
-        if( _glfwWin.WindowSizeCallback )
-        {
-          _glfwWin.WindowSizeCallback( _glfwWin.Width,
-                                       _glfwWin.Height );
-        }
+        		_glfwWin.Width  = rect.right;
+        		_glfwWin.Height = rect.bottom;
+        		if( _glfwWin.WindowSizeCallback )
+        		{
+          			_glfwWin.WindowSizeCallback( _glfwWin.Width,
+                                                _glfwWin.Height );
+        		}
+        		// Emulate (force) content invalidation
+        		if( _glfwWin.WindowPaintCallback )
+        		{
+                    _glfwWin.WindowPaintCallback();
+        		}
+      		}
+      		break;
+    	}
+
+    	case kEventWindowClose:
+    	{
+      		// Check if the program wants us to close the window
+      		if( _glfwWin.WindowCloseCallback )
+      		{
+          		if( _glfwWin.WindowCloseCallback() )
+          		{
+              		glfwCloseWindow();
+          		}
+     	 	}
+      		else
+      		{
+          		glfwCloseWindow();
+      		}
+      		return noErr;
+    	}
+
+    	case kEventWindowDrawContent:
+    	{
+			// Call user callback function
+            if( _glfwWin.WindowPaintCallback )
+	        {
+				_glfwWin.WindowPaintCallback();
+			}
+			break;
       }
-      break;
-    }
+  	}
 
-    case kEventWindowClose:
-    {
-      // Check if the program wants us to close the window
-      if( _glfwWin.WindowCloseCallback )
-      {
-          if( _glfwWin.WindowCloseCallback() )
-          {
-              glfwCloseWindow();
-          }
-      }
-      else
-      {
-          glfwCloseWindow();
-      }
-      return noErr;
-    }
-  }
-
-  return eventNotHandledErr;
+  	return eventNotHandledErr;
 }
 
 int  _glfwInstallEventHandlers( void )
@@ -507,7 +553,6 @@ int  _glfwInstallEventHandlers( void )
                                  NULL );
     if ( error != noErr )
     {
-        // TO DO: fix leak of UPP
         return GL_FALSE;
     }
     
@@ -521,7 +566,6 @@ int  _glfwInstallEventHandlers( void )
                                  NULL );
     if ( error != noErr )
     {
-      // TO DO: fix leak of UPPs
       return GL_FALSE;
     }
     
@@ -535,7 +579,6 @@ int  _glfwInstallEventHandlers( void )
                                  NULL );
     if ( error != noErr )
     {
-        // TO DO: fix leak of UPPs
         return GL_FALSE;
     }
 
@@ -642,13 +685,14 @@ int  _glfwPlatformOpenWindow( int width,
     // create AGL context
 
     _glfwWin.AGLContext = aglCreateContext( pixelFormat, NULL );
+    
+    aglDestroyPixelFormat( pixelFormat );
+
     if ( _glfwWin.AGLContext == NULL )
     {
-        aglDestroyPixelFormat( pixelFormat );
+        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
-
-    aglDestroyPixelFormat( pixelFormat );
 
     // create window
 
@@ -664,7 +708,7 @@ int  _glfwPlatformOpenWindow( int width,
                              &( _glfwWin.MacWindow ) );
     if ( ( error != noErr ) || ( _glfwWin.MacWindow == NULL ) )
     {
-        aglDestroyContext( _glfwWin.AGLContext );
+        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -680,8 +724,7 @@ int  _glfwPlatformOpenWindow( int width,
                                          NULL );
       if ( error != noErr )
       {
-        aglDestroyContext( _glfwWin.AGLContext );
-        // TO DO: fix leak of UPPs
+        _glfwPlatformCloseWindow();
         return GL_FALSE;
       }
     }
@@ -704,7 +747,7 @@ int  _glfwPlatformOpenWindow( int width,
         cgError = CGCaptureAllDisplays();
         if ( cgError != CGDisplayNoErr )
         {
-            // TO DO: clean up
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -719,7 +762,7 @@ int  _glfwPlatformOpenWindow( int width,
                                 refreshrate,
                                 0 ) )
         {
-            // TO DO: clean up
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
     }
@@ -728,7 +771,7 @@ int  _glfwPlatformOpenWindow( int width,
         if ( !aglSetDrawable( _glfwWin.AGLContext,
                               GetWindowPort( _glfwWin.MacWindow ) ) )
         {
-            // TO DO: clean up
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
     }
@@ -737,7 +780,7 @@ int  _glfwPlatformOpenWindow( int width,
 
     if ( !aglSetCurrentContext( _glfwWin.AGLContext ) )
     {
-        // TO DO: clean up properly
+        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -746,15 +789,31 @@ int  _glfwPlatformOpenWindow( int width,
 
 void _glfwPlatformCloseWindow( void )
 {
-    if ( _glfwWin.WindowFunctions == NULL )
-        return;
-
-    _glfwWin.WindowFunctions->CloseWindow();
-    
-    if ( _glfwWin.WindowUPP != NULL )
+    if( _glfwWin.WindowFunctions != NULL )
     {
-        DisposeEventHandlerUPP( _glfwWin.WindowUPP );
-        _glfwWin.WindowUPP = NULL;
+	    if( _glfwWin.WindowUPP != NULL )
+	    {
+	        DisposeEventHandlerUPP( _glfwWin.WindowUPP );
+	        _glfwWin.WindowUPP = NULL;
+	    }
+	
+	    _glfwWin.WindowFunctions->CloseWindow();
+	    
+	    if( _glfwWin.AGLContext != NULL )
+	    {
+		    aglSetCurrentContext( NULL );
+		    aglSetDrawable( _glfwWin.AGLContext, NULL );
+		    aglDestroyContext( _glfwWin.AGLContext );
+		    _glfwWin.AGLContext = NULL;
+		}
+
+    	if( _glfwWin.MacWindow != NULL )
+    	{
+		    ReleaseWindow( _glfwWin.MacWindow );
+		    _glfwWin.MacWindow = NULL;
+	    }
+
+	    _glfwWin.WindowFunctions = NULL;
     }
 }
 
@@ -873,13 +932,6 @@ int  _glfwMacFSOpenWindow( int width, int height, int redbits, int greenbits, in
 void _glfwMacFSCloseWindow( void )
 {
     // TO DO: un-capture displays, &c.
-    aglSetCurrentContext( NULL );
-    aglSetDrawable( _glfwWin.AGLContext, NULL );
-    aglDestroyContext( _glfwWin.AGLContext );
-    _glfwWin.AGLContext = NULL;
-    ReleaseWindow( _glfwWin.MacWindow );
-    _glfwWin.MacWindow = NULL;
-    _glfwWin.WindowFunctions = NULL;
 }
 
 void _glfwMacFSSetWindowTitle( const char *title )
@@ -932,13 +984,6 @@ int  _glfwMacDWOpenWindow( int width, int height, int redbits, int greenbits, in
 
 void _glfwMacDWCloseWindow( void )
 {
-    aglSetCurrentContext( NULL );
-    aglSetDrawable( _glfwWin.AGLContext, NULL );
-    aglDestroyContext( _glfwWin.AGLContext );
-    _glfwWin.AGLContext = NULL;
-    ReleaseWindow( _glfwWin.MacWindow );
-    _glfwWin.MacWindow = NULL;
-    _glfwWin.WindowFunctions = NULL;
 }
 
 void _glfwMacDWSetWindowTitle( const char *title )

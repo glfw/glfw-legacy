@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.11 2004-06-07 22:20:24 elmindreda Exp $
+// $Id: platform.h,v 1.12 2004-08-01 16:01:02 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -322,9 +322,6 @@ pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 int  _glfwChangeToResourcesDirectory( void );
 
 int  _glfwInstallEventHandlers( void );
-
-void _glfwCGToGLFWVideoMode( CFDictionaryRef cgMode,
-                             GLFWvidmode* glfwMode );
 
 //========================================================================
 // Prototypes for full-screen/desktop-window "virtual" functions

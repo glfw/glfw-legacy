@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.6 2004-06-07 22:20:03 elmindreda Exp $
+// $Id: macosx_init.c,v 1.7 2004-08-01 15:59:01 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -116,6 +116,7 @@ int _glfwPlatformInit( void )
 
     if ( !_glfwInstallEventHandlers() )
     {
+    	_glfwPlatformTerminate();
         return GL_FALSE;
     }
 

@@ -32,13 +32,37 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_fullscreen.c,v 1.4 2004-02-14 20:55:01 marcus256 Exp $
+// $Id: macosx_fullscreen.c,v 1.5 2004-08-01 15:59:01 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
 
-void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
-                            GLFWvidmode* glfwMode)
+//========================================================================
+// _glfwVideoModesEqual() - Compares two video modes
+//========================================================================
+
+static int _glfwVideoModesEqual(GLFWvidmode* first,
+                                GLFWvidmode* second)
+{
+	if( first->Width != second->Width )
+		return 0;
+		
+	if( first->Height != second->Height )
+		return 0;
+		
+	if( first->RedBits + first->GreenBits + first->BlueBits !=
+	   second->RedBits + second->GreenBits + second->BlueBits )
+		return 0;
+	
+	return 1;
+}
+                            
+//========================================================================
+// _glfwCGToGLFWVideoMode() - Converts a CG mode to a GLFW mode
+//========================================================================
+
+static void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
+                                   GLFWvidmode* glfwMode)
 {
     CFNumberGetValue(CFDictionaryGetValue(cgMode, kCGDisplayWidth),
                      kCFNumberIntType,
@@ -57,27 +81,49 @@ void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
     glfwMode->BlueBits = bitsPerSample;
 }
 
+//========================================================================
+// _glfwPlatformGetVideoModes() - Get a list of available video modes
+//========================================================================
+
 int  _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 {
+    int i, j, maxModes, numModes;
+	GLFWvidmode mode;
     CFArrayRef availableModes = CGDisplayAvailableModes( kCGDirectMainDisplay );
     CFIndex numberOfAvailableModes = CFArrayGetCount( availableModes );
 
-    int maxModes = ( numberOfAvailableModes < maxcount ?
-                     numberOfAvailableModes :
-                     maxcount );
+	numModes = 0;
+    maxModes = ( numberOfAvailableModes < maxcount ?
+                 numberOfAvailableModes :
+                 maxcount );
 
-    int i;
     for ( i = 0; i < maxModes; ++i )
     {
         _glfwCGToGLFWVideoMode( CFArrayGetValueAtIndex( availableModes, i ),
-                                &( list[i] ) );
+                                &mode );
+
+        // Is it a valid mode? (only list depths >= 15 bpp)
+		if (mode.RedBits + mode.GreenBits + mode.BlueBits < 15)
+			continue;
+			
+        // Check for duplicate of current mode in target list
+      	for ( j = 0; j < numModes; ++j )
+      	{
+      		if( _glfwVideoModesEqual( &mode, &(list[j]) ) )
+      			break;
+      	}
+      	
+      	// If empty list or no match found
+      	if( numModes == 0 || j == numModes )
+      	    list[numModes++] = mode;
     }
 
-    // TO DO: eliminate "duplicate" modes
-    // TO DO: sort the video modes before returning.
-
-    return maxModes;
+    return numModes;
 }
+
+//========================================================================
+// glfwGetDesktopMode() - Get the desktop video mode
+//========================================================================
 
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
