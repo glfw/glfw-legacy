@@ -50,6 +50,7 @@ GLFW documentation successfully:
  listings
  needspace
  textcase
+ times
  titling
 
 These packages are all available on the TeXLive CD. Just make sure that
@@ -79,5 +80,5 @@ Good luck!
 
 --------------------------------------------------------------------------
 CVS INFO:
-$Id: readme.txt,v 1.2 2003-11-03 21:29:52 marcus256 Exp $
+$Id: readme.txt,v 1.3 2003-11-07 08:42:34 marcus256 Exp $
 --------------------------------------------------------------------------
