@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.10 2004-04-11 11:40:32 marcus256 Exp $
+// $Id: window.c,v 1.11 2004-04-11 11:49:33 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -631,6 +631,24 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 
     // Set callback function
     _glfwWin.WindowCloseCallback = cbfun;
+}
+
+
+//========================================================================
+// glfwSetWindowPaintCallback() - Set callback function for window paint
+// events
+//========================================================================
+
+GLFWAPI void GLFWAPIENTRY glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun )
+{
+    // Is GLFW initialized?
+    if( !_glfwInitialized || !_glfwWin.Opened )
+    {
+        return;
+    }
+
+    // Set callback function
+    _glfwWin.WindowPaintCallback = cbfun;
 }
 
 
