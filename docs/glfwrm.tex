@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.5 2003-11-07 20:49:12 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.6 2003-11-07 21:29:21 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -302,7 +302,7 @@ In order to determine the actual properties of an opened window, use
 \begin{center}
 \begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
-GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows).\\ \hline
+GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows). Zero means system default.\\ \hline
 GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulator buffer.\\ \hline
 GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulator buffer.\\ \hline
 GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulator buffer.\\ \hline
@@ -441,10 +441,13 @@ none
 
 \begin{refdescription}
 The function changes the size of an opened window, and calls the window
-size callback function (if one is registered). If the window is in
-fullscreen mode, the video mode will be changed to a resolution that
-closest matches the width and height parameters (the number of color
-bits will not be changed).
+size callback function (if one is registered). The \textit{width} and
+\textit{height} parameters denote the size of the client area of the
+window (i.e. excluding any window borders and decorations).
+
+If the window is in fullscreen mode, the video mode will be changed to a
+resolution that closest matches the width and height parameters (the
+number of color bits will not be changed).
 \end{refdescription}
 
 \begin{refnotes}
@@ -540,8 +543,8 @@ void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
   \texttt{void GLFWCALL functionname( int width, int height );}
 
   Where \textit{functionname} is the name of the callback function, and
-  \textit{width} and \textit{height} are the window dimension passed to
-  the function.
+  \textit{width} and \textit{height} are the dimensions of the window
+  client area.
 
   If \textit{cbfun} is NULL, any previously selected callback function
   will be deselected.
@@ -568,6 +571,50 @@ callback function.
 
 
 %-------------------------------------------------------------------------
+\subsection{glfwIconifyWindow}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwIconifyWindow( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+Iconify a window. If the window is in fullscreen mode, then the desktop
+video mode will be restored.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwRestoreWindow}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwRestoreWindow( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+Restore an iconified window. If the window that is restored is in
+fullscreen mode, then the fullscreen video mode will be restored.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
 \begin{table}[bhtp]
 \begin{center}
 \begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
@@ -575,7 +622,7 @@ callback function.
 GLFW\_OPENED             & GL\_TRUE if window is opened, else GL\_FALSE.\\ \hline
 GLFW\_ACTIVE             & GL\_TRUE if window has focus, else GL\_FALSE.\\ \hline
 GLFW\_ICONIFIED          & GL\_TRUE if window is iconified, else GL\_FALSE.\\ \hline
-GLFW\_ACCELERATED        & GL\_TRUE if window is hardware accelerated.\\ \hline
+GLFW\_ACCELERATED        & GL\_TRUE if window is hardware accelerated, else GL\_FALSE.\\ \hline
 GLFW\_RED\_BITS          & Number of bits for the red color component.\\ \hline
 GLFW\_GREEN\_BITS        & Number of bits for the green color component.\\ \hline
 GLFW\_BLUE\_BITS         & Number of bits for the blue color component.\\ \hline
@@ -845,37 +892,37 @@ there is no need to call \textbf{glfwPollEvents}.
 \begin{table}[bhtp]
 \begin{center}
 \begin{tabular}{|l|l|} \hline \raggedright
-\textbf{Name}           & \textbf{Description} \\ \hline
-GLFW\_KEY\_SPACE        & Space\\ \hline
-GLFW\_KEY\_ESC          & Escape\\ \hline
-GLFW\_KEY\_F\textit{n}  & Function key n (n can be in the range 1..25).\\ \hline
-GLFW\_KEY\_UP           & Cursor up\\ \hline
-GLFW\_KEY\_DOWN         & Cursor down\\ \hline
-GLFW\_KEY\_LEFT         & Cursor left\\ \hline
-GLFW\_KEY\_RIGHT        & Cursor right\\ \hline
-GLFW\_KEY\_LSHIFT       & Left shift key\\ \hline
-GLFW\_KEY\_RSHIFT       & Right shift key\\ \hline
-GLFW\_KEY\_LCTRL        & Left control key\\ \hline
-GLFW\_KEY\_RCTRL        & Right control key\\ \hline
-GLFW\_KEY\_LALT         & Left alternate function key\\ \hline
-GLFW\_KEY\_RALT         & Right alternate function key\\ \hline
-GLFW\_KEY\_TAB          & Tabulator\\ \hline
-GLFW\_KEY\_ENTER        & Enter\\ \hline
-GLFW\_KEY\_BACKSPACE    & Backspace\\ \hline
-GLFW\_KEY\_INSERT       & Insert\\ \hline
-GLFW\_KEY\_DEL          & Delete\\ \hline
-GLFW\_KEY\_PAGEUP       & Page up\\ \hline
-GLFW\_KEY\_PAGEDOWN     & Page down\\ \hline
-GLFW\_KEY\_HOME         & Home\\ \hline
-GLFW\_KEY\_END          & End\\ \hline
-GLFW\_KEY\_KP\_n        & Keypad numeric key n (n can be in the range 0..9).\\ \hline
-GLFW\_KEY\_KP\_DIVIDE   & Keypad divide (/)\\ \hline
-GLFW\_KEY\_KP\_MULTIPLY & Keypad multiply (*)\\ \hline
-GLFW\_KEY\_KP\_SUBTRACT & Keypad subtract (-)\\ \hline
-GLFW\_KEY\_KP\_ADD      & Keypad add (+)\\ \hline
-GLFW\_KEY\_KP\_DECIMAL  & Keypad decimal (. or , for some languages)\\ \hline
-GLFW\_KEY\_KP\_EQUAL    & Keypad equal (=)\\ \hline
-GLFW\_KEY\_KP\_ENTER    & Keypad enter\\ \hline
+\textbf{Name}             & \textbf{Description} \\ \hline
+GLFW\_KEY\_SPACE          & Space\\ \hline
+GLFW\_KEY\_ESC            & Escape\\ \hline
+GLFW\_KEY\_F\textit{n}    & Function key \textit{n} (\textit{n} can be in the range 1..25).\\ \hline
+GLFW\_KEY\_UP             & Cursor up\\ \hline
+GLFW\_KEY\_DOWN           & Cursor down\\ \hline
+GLFW\_KEY\_LEFT           & Cursor left\\ \hline
+GLFW\_KEY\_RIGHT          & Cursor right\\ \hline
+GLFW\_KEY\_LSHIFT         & Left shift key\\ \hline
+GLFW\_KEY\_RSHIFT         & Right shift key\\ \hline
+GLFW\_KEY\_LCTRL          & Left control key\\ \hline
+GLFW\_KEY\_RCTRL          & Right control key\\ \hline
+GLFW\_KEY\_LALT           & Left alternate function key\\ \hline
+GLFW\_KEY\_RALT           & Right alternate function key\\ \hline
+GLFW\_KEY\_TAB            & Tabulator\\ \hline
+GLFW\_KEY\_ENTER          & Enter\\ \hline
+GLFW\_KEY\_BACKSPACE      & Backspace\\ \hline
+GLFW\_KEY\_INSERT         & Insert\\ \hline
+GLFW\_KEY\_DEL            & Delete\\ \hline
+GLFW\_KEY\_PAGEUP         & Page up\\ \hline
+GLFW\_KEY\_PAGEDOWN       & Page down\\ \hline
+GLFW\_KEY\_HOME           & Home\\ \hline
+GLFW\_KEY\_END            & End\\ \hline
+GLFW\_KEY\_KP\_\textit{n} & Keypad numeric key \textit{n} (\textit{n} can be in the range 0..9).\\ \hline
+GLFW\_KEY\_KP\_DIVIDE     & Keypad divide ($\div$)\\ \hline
+GLFW\_KEY\_KP\_MULTIPLY   & Keypad multiply ($\times$)\\ \hline
+GLFW\_KEY\_KP\_SUBTRACT   & Keypad subtract ($-$)\\ \hline
+GLFW\_KEY\_KP\_ADD        & Keypad add ($+$)\\ \hline
+GLFW\_KEY\_KP\_DECIMAL    & Keypad decimal (. or ,)\\ \hline
+GLFW\_KEY\_KP\_EQUAL      & Keypad equal (=)\\ \hline
+GLFW\_KEY\_KP\_ENTER      & Keypad enter\\ \hline
 \end{tabular}
 \end{center}
 \caption{Special key identifiers}
@@ -1942,6 +1989,172 @@ The function releases the lock of a locked mutex object.
 
 
 %-------------------------------------------------------------------------
+\pagebreak
+\section{Condition Variables}
+Condition variables are used to synchronize threads. A thread can wait for
+a condition variable to be signaled by another thread.
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwCreateCond}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+GLFWcond glfwCreateCond( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns a condition variable handle, or NULL if the condition
+variable could not be created.
+\end{refreturn}
+
+\begin{refdescription}
+The function creates a condition variable object, which can be used to
+synchronize threads.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwDestroyCond}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwDestroyCond( GLFWcond cond )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cond}]\ \\
+  A condition variable object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function destroys a condition variable object. After a condition
+variable object has been destroyed, it may no longer be used by any
+thread.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwWaitCond}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwWaitCond( GLFWcond cond, GLFWmutex mutex, double timeout )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cond}]\ \\
+  A condition variable object handle.
+\item [\textit{mutex}]\ \\
+  A mutex object handle.
+\item [\textit{timeout}]\ \\
+  Maximum time to wait for the condition variable. The parameter can
+  either be a positive time (in seconds), or GLFW\_INFINITY.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function atomically unlocks the mutex specified by \textit{mutex}, and
+waits for the condition variable \textit{cond} to be signaled. The thread
+execution is suspended and does not consume any CPU time until the
+condition variable is signaled or the amount of time specified by timeout
+has passed. If timeout is GLFW\_INFINITY, \textbf{glfwWaitCond} will wait
+forever for \textit{cond} to be signaled. Before returning to the calling
+thread, \textbf{glfwWaitCond} automatically re-acquires the mutex.
+\end{refdescription}
+
+\begin{refnotes}
+The mutex specified by \textit{mutex} must be locked by the calling thread
+before entrance to \textbf{glfwWaitCond}.
+
+A condition variable must always be associated with a mutex, to avoid the
+race condition where a thread prepares to wait on a condition variable and
+another thread signals the condition just before the first thread actually
+waits on it.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSignalCond}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSignalCond( GLFWcond cond )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cond}]\ \\
+  A condition variable object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function restarts one of the threads that are waiting on the condition
+variable \textit{cond}. If no threads are waiting on \textit{cond},
+nothing happens. If several threads are waiting on \textit{cond}, exactly
+one is restarted, but it is not specified which.
+\end{refdescription}
+
+\begin{refnotes}
+When several threads are waiting for the condition variable, which thread
+is started depends on operating system scheduling rules, and may vary from
+system to system and from time to time.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwBroadcastCond}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwBroadcastCond( GLFWcond cond )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cond}]\ \\
+  A condition variable object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function restarts all the threads that are waiting on the condition
+variable \textit{cond}. If no threads are waiting on \textit{cond},
+nothing happens.
+\end{refdescription}
+
+\begin{refnotes}
+When several threads are waiting for the condition variable, the order in
+which threads are started depends on operating system scheduling rules,
+and may vary from system to system and from time to time.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
 \subsection{glfwX}
 
 \textbf{C language syntax}
@@ -1951,8 +2164,8 @@ void glfwX( void )
 
 \begin{refparameters}
 \begin{description}
-\item [\textit{par1}]\ \\
-  Text1.
+\item [\textit{x}]\ \\
+  x
 \end{description}
 \end{refparameters}
 
