@@ -2,7 +2,7 @@
 ; GLFW - An OpenGL framework
 ; File:        glfw.inc
 ; Platform:    Visual Basic/Windows
-; API version: 2.4
+; API version: 2.5
 ; Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ; WWW:         http://glfw.sourceforge.net
 ;------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.1 2004-02-14 20:08:12 marcus256 Exp $
+; $Id: glfw.inc,v 1.2 2004-02-29 20:42:43 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
@@ -38,8 +38,8 @@
 ;#########################################################################
 
 GLFW_VERSION_MAJOR    equ 2
-GLFW_VERSION_MINOR    equ 4
-GLFW_VERSION_REVISION equ 2
+GLFW_VERSION_MINOR    equ 5
+GLFW_VERSION_REVISION equ 0
 
 
 ;#########################################################################
@@ -197,6 +197,7 @@ GLFW_BUTTONS              equ   00050003h
 GLFW_NO_RESCALE_BIT       equ   00000001h ; Only for glfwReadImage
 GLFW_ORIGIN_UL_BIT        equ   00000002h
 GLFW_BUILD_MIPMAPS_BIT    equ   00000004h ; Only for glfwLoadTexture2D
+GLFW_ALPHA_MAP_BIT        equ   00000008h
 
 ; Time spans longer than this (seconds) are considered to be infinity
 GLFW_INFINITY             equ   100000.0

@@ -3,7 +3,7 @@ Attribute VB_Name = "GLFW"
 ' GLFW - An OpenGL framework
 ' File:        glfw.bas
 ' Platform:    Visual Basic/Windows
-' API version: 2.4
+' API version: 2.5
 ' Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ' WWW:         http://glfw.sourceforge.net
 '------------------------------------------------------------------------
@@ -31,7 +31,7 @@ Attribute VB_Name = "GLFW"
 ' Marcus Geelnard
 ' marcus.geelnard at home.se
 '------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.1 2004-02-14 20:35:51 marcus256 Exp $
+' $Id: glfw.bas,v 1.2 2004-02-29 20:42:21 marcus256 Exp $
 '========================================================================
 
 '========================================================================
@@ -39,8 +39,8 @@ Attribute VB_Name = "GLFW"
 '========================================================================
 
 Public Const GLFW_VERSION_MAJOR = 2
-Public Const GLFW_VERSION_MINOR = 4
-Public Const GLFW_VERSION_REVISION = 2
+Public Const GLFW_VERSION_MINOR = 5
+Public Const GLFW_VERSION_REVISION = 0
 
 
 '========================================================================
@@ -198,6 +198,7 @@ Public Const GLFW_BUTTONS = &H50003
 Public Const GLFW_NO_RESCALE_BIT = &H1
 Public Const GLFW_ORIGIN_UL_BIT = &H2
 Public Const GLFW_BUILD_MIPMAPS_BIT = &H4
+Public Const GLFW_ALPHA_MAP_BIT = &H8
 
 ' Time spans longer than this (seconds) are considered to be infinity
 Public Const GLFW_INFINITY = 100000#
