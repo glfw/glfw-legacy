@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2003 Marcus Geelnard
+// Copyright (c) 2002-2004 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_thread.c,v 1.3 2003-10-30 20:44:16 marcus256 Exp $
+// $Id: win32_thread.c,v 1.4 2004-02-14 20:59:29 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"

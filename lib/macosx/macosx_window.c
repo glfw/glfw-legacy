@@ -8,7 +8,7 @@
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2003 Marcus Geelnard
+// Copyright (c) 2002-2004 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.8 2004-01-13 22:04:45 elmindreda Exp $
+// $Id: macosx_window.c,v 1.9 2004-02-14 20:55:00 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -284,7 +284,7 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                             &mouseLocation ) != noErr )
                         break;
                 }
-                
+
                 EventMouseButton button;
                 if ( GetEventParameter( event,
                                         kEventParamMouseButton,
@@ -426,7 +426,7 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
 
 EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
 {
-  { kEventClassWindow, kEventWindowBoundsChanged }, 
+  { kEventClassWindow, kEventWindowBoundsChanged },
   { kEventClassWindow, kEventWindowClose }
 };
 
@@ -438,18 +438,18 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
   {
     case kEventWindowBoundsChanged:
     {
-      WindowRef window;      
+      WindowRef window;
       GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
                         sizeof(WindowRef), NULL, &window);
-      
-      Rect rect;      
+
+      Rect rect;
       GetWindowPortBounds(window, &rect);
-      
+
       if ( _glfwWin.Width != rect.right ||
            _glfwWin.Height != rect.bottom)
       {
         aglUpdateContext(_glfwWin.AGLContext);
-        
+
         _glfwWin.Width  = rect.right;
         _glfwWin.Height = rect.bottom;
         if( _glfwWin.WindowSizeCallback )
@@ -467,7 +467,7 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
       return noErr;
     }
   }
-  
+
   return eventNotHandledErr;
 }
 int  _glfwInstallEventHandlers( void )
@@ -497,7 +497,7 @@ int  _glfwInstallEventHandlers( void )
       // TO DO: fix leak of UPPs
       return GL_FALSE;
     }
-    
+
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  NewEventHandlerUPP( _glfwKeyEventHandler ),
                                  GetEventTypeCount( GLFW_KEY_EVENT_TYPES ),
@@ -654,7 +654,7 @@ int  _glfwPlatformOpenWindow( int width,
         return GL_FALSE;
       }
     }
-    
+
     // Don't care if we fail here
     (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, CFSTR( "GLFW Window" ) );
     (void)RepositionWindow( _glfwWin.MacWindow,
@@ -793,7 +793,7 @@ void _glfwPlatformPollEvents( void )
     EventTargetRef eventDispatcher = GetEventDispatcherTarget();
 
     while ( ReceiveNextEvent( 0, NULL, 0.0, TRUE, &event ) == noErr )
-    {            
+    {
         SendEventToEventTarget( event, eventDispatcher );
         ReleaseEvent( event );
     }

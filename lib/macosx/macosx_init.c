@@ -8,7 +8,7 @@
 //              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2003 Marcus Geelnard
+// Copyright (c) 2002-2004 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.4 2003-11-06 00:07:25 elmindreda Exp $
+// $Id: macosx_init.c,v 1.5 2004-02-14 20:55:00 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -116,7 +116,7 @@ int _glfwPlatformInit( void )
     _glfwWin.WindowFunctions = NULL;
 
     _glfwInput.Modifiers = 0;
-    
+
     return GL_TRUE;
 }
 
