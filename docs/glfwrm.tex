@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.20 2004-07-13 19:33:05 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.21 2004-07-22 20:42:40 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -198,6 +198,29 @@ The second method is useful for applications that need to refresh the
 demos, 3D animations, screen savers and so on.
 
 
+%-------------------------------------------------------------------------
+\section{Callback Functions}
+Using callback functions can be a good method for receiving up to date
+information about window state and user input. When a window has been
+opened, it is possible to register custom callback functions that will
+be called when certain events occur.
+
+Callback functions are called from any of the event polling functions
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
+\textbf{glfwSwapBuffers}.
+
+Callback functions should \emph{only} be used to gather information. Since
+the callback functions are called from within the internal \GLFW\ event
+polling loops, they should not call any \GLFW\ functions that might
+result in considerable \GLFW\ state changes, nor stall the event polling
+loop for a lengthy period of time.
+
+In other words, most or all \OpenGL\ rendering should be called from the
+main application event loop, not from any of the \GLFW\ callback
+functions. Also, the only \GLFW\ functions that may be safely called from
+callback functions are the different Get functions (e.g.
+\textbf{glfwGetKey}, \textbf{glfwGetTime}, \textbf{glfwGetWindowParam}
+etc).
 
 
 
