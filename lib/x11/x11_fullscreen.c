@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        x11_fullscreen.c
 // Platform:    X11 (Unix)
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_fullscreen.c,v 1.6 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_fullscreen.c,v 1.7 2004-03-07 21:14:20 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -69,58 +69,61 @@ static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
 // _glfwGetClosestVideoMode()
 //========================================================================
 
-int _glfwGetClosestVideoMode( int *w, int *h )
+int _glfwGetClosestVideoMode( int scrn, int *w, int *h )
 {
 #ifdef _GLFW_HAS_XF86VIDMODE
     XF86VidModeModeInfo **modelist;
     int modecount, i, bestmode, bestmatch, match;
 #endif
 
+    // Use the XF86VidMode extension to control video resolution?
 #ifdef _GLFW_HAS_XF86VIDMODE
-    // Use the XF86VidMode extension to control video resolution
-
-    // Get a list of all available display modes
-    XF86VidModeGetAllModeLines( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy),
-                                &modecount, &modelist );
-
-    // Find the best matching mode
-    bestmode  = -1;
-    bestmatch = 999999;
-    for( i = 0; i < modecount; i ++ )
+    if( _glfwDisplay.Has_XF86VidMode )
     {
-        match = (*w - modelist[i]->hdisplay) *
-                (*w - modelist[i]->hdisplay) +
-                (*h - modelist[i]->vdisplay) *
-                (*h - modelist[i]->vdisplay);
-        if( match < bestmatch )
+        // Get a list of all available display modes
+        XF86VidModeGetAllModeLines( _glfwDisplay.Dpy, scrn,
+                                    &modecount, &modelist );
+
+        // Find the best matching mode
+        bestmode  = -1;
+        bestmatch = 999999;
+        for( i = 0; i < modecount; i ++ )
         {
-            bestmatch = match;
-            bestmode  = i;
+            match = (*w - modelist[i]->hdisplay) *
+                    (*w - modelist[i]->hdisplay) +
+                    (*h - modelist[i]->vdisplay) *
+                    (*h - modelist[i]->vdisplay);
+            if( match < bestmatch )
+            {
+                bestmatch = match;
+                bestmode  = i;
+            }
         }
+
+        // Report width & height of best matching mode
+        *w = modelist[ bestmode ]->hdisplay;
+        *h = modelist[ bestmode ]->vdisplay;
+
+        // Free modelist
+        XFree( modelist );
+
+        return bestmode;
     }
+    else
+    {
+        // Default: Simply use the screen resolution
+        *w = DisplayWidth( _glfwDisplay.Dpy, scrn );
+        *h = DisplayHeight( _glfwDisplay.Dpy, scrn );
 
-    // Report width & height of best matching mode
-    *w = modelist[ bestmode ]->hdisplay;
-    *h = modelist[ bestmode ]->vdisplay;
-
-    // Free modelist
-    XFree( modelist );
-
-    return bestmode;
-
-#elif defined( _GLFW_HAS_XSGIVC )
-    // Use the XSGIvc extension to control video resolution
-    // * NOT SUPPORTED YET *
-
+        return 0;
+    }
 #else
     // Default: Simply use the screen resolution
-    *w = DisplayWidth( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy) );
-    *h = DisplayHeight( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy) );
+    *w = DisplayWidth( _glfwDisplay.Dpy, scrn );
+    *h = DisplayHeight( _glfwDisplay.Dpy, scrn );
 
     return 0;
-
 #endif
-
 }
 
 
@@ -128,59 +131,48 @@ int _glfwGetClosestVideoMode( int *w, int *h )
 // _glfwSetVideoModeMODE() - Change the current video mode
 //========================================================================
 
-void _glfwSetVideoModeMODE( int mode )
+void _glfwSetVideoModeMODE( int scrn, int mode )
 {
 #ifdef _GLFW_HAS_XF86VIDMODE
     XF86VidModeModeInfo **modelist;
     int modecount;
 #endif
 
+    // Use the XF86VidMode extension to control video resolution?
 #ifdef _GLFW_HAS_XF86VIDMODE
-    // Use the XF86VidMode extension to control video resolution
-
-    // Get a list of all available display modes
-    XF86VidModeGetAllModeLines( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy),
-                                &modecount, &modelist );
-
-    // Unlock mode switch if necessary
-    if( _glfwFS.ModeChanged )
+    if( _glfwDisplay.Has_XF86VidMode )
     {
-        XF86VidModeLockModeSwitch( _glfwWin.Dpy,
-                                   DefaultScreen(_glfwWin.Dpy),
-                                   0 );
+        // Get a list of all available display modes
+        XF86VidModeGetAllModeLines( _glfwDisplay.Dpy, scrn,
+                                    &modecount, &modelist );
+
+        // Unlock mode switch if necessary
+        if( _glfwFS.ModeChanged )
+        {
+            XF86VidModeLockModeSwitch( _glfwDisplay.Dpy, scrn, 0 );
+        }
+
+        // Change the video mode to the desired mode
+        XF86VidModeSwitchToMode(  _glfwDisplay.Dpy, scrn,
+                                  modelist[ mode ] );
+
+        // Set viewport to upper left corner (where our window will be)
+        XF86VidModeSetViewPort( _glfwDisplay.Dpy, scrn, 0, 0 );
+
+        // Lock mode switch
+        XF86VidModeLockModeSwitch( _glfwDisplay.Dpy, scrn, 1 );
+
+        // Remember old mode and flag that we have changed the mode
+        if( !_glfwFS.ModeChanged )
+        {
+            _glfwFS.OldMode = *modelist[ 0 ];
+            _glfwFS.ModeChanged = GL_TRUE;
+        }
+
+        // Free mode list
+        XFree( modelist );
     }
-
-    // Change the video mode to the desired mode
-    XF86VidModeSwitchToMode(  _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy),
-                              modelist[ mode ] );
-
-    // Set viewport to upper left corner (where our window will be)
-    XF86VidModeSetViewPort( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy),
-                            0, 0 );
-
-    // Lock mode switch
-    XF86VidModeLockModeSwitch( _glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy),
-                               1 );
-
-    // Remember old mode and flag that we have changed the mode
-    if( !_glfwFS.ModeChanged )
-    {
-        _glfwFS.OldMode = *modelist[ 0 ];
-        _glfwFS.ModeChanged = GL_TRUE;
-    }
-
-    // Free mode list
-    XFree( modelist );
-
-#elif defined( _GLFW_HAS_XSGIVC )
-    // Use the XSGIvc extension to control video resolution
-    // * NOT SUPPORTED YET *
-
-#else
-    // Default: Nothing to do...
-
 #endif
-
 }
 
 
@@ -188,15 +180,15 @@ void _glfwSetVideoModeMODE( int mode )
 // _glfwSetVideoMode() - Change the current video mode
 //========================================================================
 
-void _glfwSetVideoMode( int *w, int *h )
+void _glfwSetVideoMode( int scrn, int *w, int *h )
 {
     int     bestmode;
 
     // Find a best match mode
-    bestmode = _glfwGetClosestVideoMode( w, h );
+    bestmode = _glfwGetClosestVideoMode( scrn, w, h );
 
     // Change mode
-    _glfwSetVideoModeMODE( bestmode );
+    _glfwSetVideoModeMODE( scrn, bestmode );
 }
 
 
@@ -209,59 +201,52 @@ void _glfwSetVideoMode( int *w, int *h )
 // _glfwPlatformGetVideoModes() - List available video modes
 //========================================================================
 
+#define MAX_COLOR_MODES 32
+#define MAX_RES_MODES   256
+
+struct _res {
+    int w,h;
+};
+
 int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 {
-    int     count, i, j, k, r, g, b, rgba, gl;
-    int     width, height, depth, bpp, m1, m2;
+    int     count, k, l, r, g, b, rgba, gl;
+    int     width, height, depth, scrn;
     Display *dpy;
-    int     scrnid, closedpy;
     XVisualInfo *vislist, dummy;
-    int     viscount;
-#if defined( _GLFW_HAS_XF86VIDMODE )
+    int     viscount, rgbcount, rescount;
+    int     rgbarray[MAX_COLOR_MODES];
+    struct _res resarray[MAX_RES_MODES];
+#ifdef _GLFW_HAS_XF86VIDMODE
     XF86VidModeModeInfo **modelist;
-    int     modecount, l;
+    int     modecount;
 #endif
 
     // Get display and screen
-    if( _glfwWin.Opened )
-    {
-        dpy = _glfwWin.Dpy;
-        closedpy = 0;
-    }
-    else
-    {
-        dpy = XOpenDisplay( 0 );
-        if( !dpy )
-        {
-            return 0;
-        }
-        closedpy = 1;
-    }
-    scrnid = DefaultScreen( dpy );
+    dpy = _glfwDisplay.Dpy;
+    scrn = DefaultScreen( dpy );
 
-#if defined( _GLFW_HAS_XF86VIDMODE )
-    // Use the XF86VidMode extension to get list of video resolutions
-    XF86VidModeGetAllModeLines( dpy, scrnid, &modecount, &modelist );
+    // Get list of video resolutions (XF86VidMode)
+#ifdef _GLFW_HAS_XF86VIDMODE
+    if( _glfwDisplay.Has_XF86VidMode )
+    {
+        XF86VidModeGetAllModeLines( dpy, scrn, &modecount, &modelist );
+    }
 #endif
 
     // Get list of visuals
     vislist = XGetVisualInfo( dpy, 0, &dummy, &viscount );
     if( vislist == NULL )
     {
-#if defined( _GLFW_HAS_XF86VIDMODE )
-        XFree( modelist );
+#ifdef _GLFW_HAS_XF86VIDMODE
+        if( _glfwDisplay.Has_XF86VidMode ) XFree( modelist );
 #endif
-        if( closedpy )
-        {
-            XCloseDisplay( dpy );
-        }
         return 0;
     }
 
-    // Loop through all visuals (and possibly resolutions), and extract
-    // all the UNIQUE modes
-    count = 0;
-    for( k = 0; k < viscount && count < maxcount; k ++ )
+    // Build RGB array
+    rgbcount = 0;
+    for( k = 0; k < viscount && rgbcount < MAX_COLOR_MODES; ++ k )
     {
         // Does the visual support OpenGL & true color?
         glXGetConfig( dpy, &vislist[k], GLX_USE_GL, &gl );
@@ -271,80 +256,86 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
             // Get color depth for this visual
             depth = vislist[k].depth;
 
-            // Convert to RGB, and back to bpp ("mask out" alpha bits etc)
+            // Convert to RGB
             _glfwBPP2RGB( depth, &r, &g, &b );
-            depth = r + g + b;
+            depth = (r<<16) | (g<<8) | b;
 
-#if defined( _GLFW_HAS_XF86VIDMODE )
-            for( l = 0; l < modecount && count < maxcount; l ++ )
+            // Is this mode unique?
+            for( l = 0; l < rgbcount; ++ l )
             {
-                width  = modelist[ l ]->hdisplay;
-                height = modelist[ l ]->vdisplay;
-#else
-                width  = DisplayWidth( dpy, scrnid );
-                height = DisplayHeight( dpy, scrnid );
-#endif
-
-                // Mode "code" for this mode
-                m1 = (depth << 25) | (width * height);
-
-                // Insert mode in list (sorted), and avoid duplicates
-                m2 = 0;
-                for( i = 0; i < count; i ++ )
+                if( depth == rgbarray[ l ] )
                 {
-                    // Mode "code" for already listed mode
-                    bpp = list[i].RedBits + list[i].GreenBits +
-                          list[i].BlueBits;
-                    m2 = (bpp << 25) | (list[i].Width * list[i].Height);
-                    if( m1 <= m2 )
-                    {
-                        break;
-                    }
+                    break;
                 }
-
-                // New entry at the end of the list?
-                if( i >= count && count < maxcount )
-                {
-                    list[count].Width     = width;
-                    list[count].Height    = height;
-                    list[count].RedBits   = r;
-                    list[count].GreenBits = g;
-                    list[count].BlueBits  = b;
-                    count ++;
-                }
-                // Insert new entry in the list?
-                else if( m1 < m2  && count < maxcount )
-                {
-                    for( j = count; j > i; j -- )
-                    {
-                        list[j] = list[j-1];
-                    }
-                    list[i].Width     = width;
-                    list[i].Height    = height;
-                    list[i].RedBits   = r;
-                    list[i].GreenBits = g;
-                    list[i].BlueBits  = b;
-                    count ++;
-                }
-#if defined( _GLFW_HAS_XF86VIDMODE )
             }
+            if( l >= rgbcount )
+            {
+                rgbarray[ rgbcount ] = depth;
+                ++ rgbcount;
+            }
+        }
+    }
+
+    // Build resolution array
+#ifdef _GLFW_HAS_XF86VIDMODE
+    if( _glfwDisplay.Has_XF86VidMode )
+    {
+        rescount = 0;
+        for( k = 0; k < modecount && rescount < MAX_RES_MODES; ++ k )
+        {
+            width  = modelist[ k ]->hdisplay;
+            height = modelist[ k ]->vdisplay;
+
+            // Is this mode unique?
+            for( l = 0; l < rescount; ++ l )
+            {
+                if( width == resarray[ l ].w && height == resarray[ l ].h )
+                {
+                    break;
+                }
+            }
+            if( l >= rescount )
+            {
+                resarray[ rescount ].w = width;
+                resarray[ rescount ].h = height;
+                ++ rescount;
+            }
+        }
+    }
+    else
+    {
+        rescount = 1;
+        resarray[ 0 ].w = DisplayWidth( dpy, scrn );
+        resarray[ 0 ].h = DisplayHeight( dpy, scrn );
+    }
+#else
+    rescount = 1;
+    resarray[ 0 ].w = DisplayWidth( dpy, scrn );
+    resarray[ 0 ].h = DisplayHeight( dpy, scrn );
 #endif
+
+    // Build permutations of colors and resolutions
+    count = 0;
+    for( k = 0; k < rgbcount && count < maxcount; ++ k )
+    {
+        for( l = 0; l < rescount && count < maxcount; ++ l )
+        {
+            list[count].Width     = resarray[ l ].w;
+            list[count].Height    = resarray[ l ].h;
+            list[count].RedBits   = (rgbarray[ k ] >> 16) & 255;
+            list[count].GreenBits = (rgbarray[ k ] >> 8) & 255;
+            list[count].BlueBits  = rgbarray[ k ] & 255;
+            ++ count;
         }
     }
 
     // Free visuals list
     XFree( vislist );
 
-#if defined( _GLFW_HAS_XF86VIDMODE )
+#ifdef _GLFW_HAS_XF86VIDMODE
     // Free list
-    XFree( modelist );
+    if( _glfwDisplay.Has_XF86VidMode ) XFree( modelist );
 #endif
-
-    // Close display connection
-    if( closedpy )
-    {
-        XCloseDisplay( dpy );
-    }
 
     return count;
 }
@@ -357,66 +348,55 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
     Display *dpy;
-    int     scrnid, bpp, closedpy;
-#if defined( _GLFW_HAS_XF86VIDMODE )
+    int     bpp, scrn;
+#ifdef _GLFW_HAS_XF86VIDMODE
     XF86VidModeModeInfo **modelist;
     int     modecount;
 #endif
 
     // Get display and screen
-    if( _glfwWin.Opened )
+    dpy = _glfwDisplay.Dpy;
+    scrn = DefaultScreen( dpy );
+
+#ifdef _GLFW_HAS_XF86VIDMODE
+    if( _glfwDisplay.Has_XF86VidMode )
     {
-        dpy = _glfwWin.Dpy;
-        closedpy = 0;
-    }
-    else
-    {
-        dpy = XOpenDisplay( 0 );
-        if( !dpy )
+        if( _glfwFS.ModeChanged )
         {
-            mode->Width = mode->Height = mode->RedBits = mode->GreenBits =
-            mode->BlueBits = 0;
-            return;
+            // The old (desktop) mode is stored in _glfwFS.OldMode
+            mode->Width  = _glfwFS.OldMode.hdisplay;
+            mode->Height = _glfwFS.OldMode.vdisplay;
         }
-        closedpy = 1;
-    }
-    scrnid = DefaultScreen( dpy );
+        else
+        {
+            // Use the XF86VidMode extension to get list of video modes
+            XF86VidModeGetAllModeLines( dpy, scrn, &modecount,
+                                        &modelist );
 
-#if defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwFS.ModeChanged )
-    {
-        // The old (desktop) mode is stored in _glfwFS.OldMode
-        mode->Width  = _glfwFS.OldMode.hdisplay;
-        mode->Height = _glfwFS.OldMode.vdisplay;
+            // The first mode in the list is the current (desktio) mode
+            mode->Width  = modelist[ 0 ]->hdisplay;
+            mode->Height = modelist[ 0 ]->vdisplay;
+
+            // Free list
+            XFree( modelist );
+        }
     }
     else
     {
-        // Use the XF86VidMode extension to get list of video resolutions
-        XF86VidModeGetAllModeLines( dpy, scrnid, &modecount, &modelist );
-
-        // The first mode in the list is the current mode (desktop mode)
-        mode->Width  = modelist[ 0 ]->hdisplay;
-        mode->Height = modelist[ 0 ]->vdisplay;
-
-        // Free list
-        XFree( modelist );
+        // Get current display width and height
+        mode->Width  = DisplayWidth( dpy, scrn );
+        mode->Height = DisplayHeight( dpy, scrn );
     }
 #else
     // Get current display width and height
-    mode->Width  = DisplayWidth( dpy, scrnid );
-    mode->Height = DisplayHeight( dpy, scrnid );
+    mode->Width  = DisplayWidth( dpy, scrn );
+    mode->Height = DisplayHeight( dpy, scrn );
 #endif
 
     // Get display depth
-    bpp = DefaultDepth( dpy, scrnid );
+    bpp = DefaultDepth( dpy, scrn );
 
     // Convert BPP to RGB bits
     _glfwBPP2RGB( bpp, &mode->RedBits, &mode->GreenBits,
                   &mode->BlueBits );
-
-    // Close display connection
-    if( closedpy )
-    {
-        XCloseDisplay( dpy );
-    }
 }
