@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        glfw.pas
 // Platform:    Delphi/Windows
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.1 2004-02-14 19:56:21 marcus256 Exp $
+// $Id: glfw.pas,v 1.2 2004-02-29 20:40:51 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -43,8 +43,8 @@ const
   // GLFW version
   //========================================================================
   GLFW_VERSION_MAJOR    = 2;
-  GLFW_VERSION_MINOR    = 4;
-  GLFW_VERSION_REVISION = 2;
+  GLFW_VERSION_MINOR    = 5;
+  GLFW_VERSION_REVISION = 0;
 
   //========================================================================
   // Input handling definitions
@@ -201,6 +201,7 @@ const
   GLFW_NO_RESCALE_BIT       = $00000001; // Only for glfwReadImage
   GLFW_ORIGIN_UL_BIT        = $00000002;
   GLFW_BUILD_MIPMAPS_BIT    = $00000004; // Only for glfwLoadTexture2D
+  GLFW_ALPHA_MAP_BIT        = $00000008;
 
   // Time spans longer than this (seconds) are considered to be infinity
   GLFW_INFINITY             = 100000.0;
