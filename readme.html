@@ -1,7 +1,11 @@
 <html>
+
+<!-- $Id: readme.html,v 1.2 2003-03-08 13:04:36 marcus256 Exp $ -->
+
 <head>
   <title>GLFW Readme file</title>
 </head>
+
 <body>
 
 <!-- TITLE -------------------------------------------------------------->
@@ -9,6 +13,7 @@
 <font face="bookman old style,arial" size=+4><b>GLFW v2.4.1</b></font><br>
 <font face="bookman old style,arial" size=+3>source distribution</font>
 </center>
+
 
 <!-- CONTENTS ----------------------------------------------------------->
 <p>
@@ -129,11 +134,11 @@ option.
 <p><br><h3>2.3 Note for Unix/X11 users</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <b>compile.sh</b>. It has only been tested on Linux Mandrake 8.0
-with GCC and under SunOS 5.6 with GCC, but should run on the majority of
-available Unix/Unix-like systems and generate functional Makefiles. You do
-not have to run the script manually, since it is called from the top level
-Makefile.
+called <b>compile.sh</b>. It has only been tested under Linux Mandrake 8.0
+with GCC, Mac OS X 10.2, SunOS 5.6 with GCC and IRIX 5.3, but should run
+on the majority of available Unix/Unix-like systems and generate
+functional Makefiles. You do not have to run the script manually, since it
+is called from the top level Makefile.
 
 
 <p><br><h3>2.4 Note for AmigaOS users</h3>
@@ -144,6 +149,11 @@ version of GNU make 3.75, which can be found on Aminet. You also need
 VBCC (an excellent free C compiler), the StormMesa developer package, and
 of course the AmigaOS include files (not included with VBCC due to
 copyright reasons).
+
+<p>It should also be noted that the current version of GLFW for AmigaOS is
+only a subset of the full GLFW API. Most of the core functionality has
+been implemented, but there are still some things missing (e.g. joystick
+support, iconification handling etc).
 
 
 <!----------------------------------------------------------------------->
@@ -371,6 +381,7 @@ style comments.
 <p><h3>v2.4.1</h3>
 <ul>
  <li>Added AmigaOS support (preliminary)</li>
+ <li>GLFW for the X Window System now works under Mac OS X</li>
  <li>Bugfix: [Win32] glfwWaitCond treated the timeout as milliseconds
      instead of seconds</li>
  <li>Bugfix: [X11] GLFW should now compile under IRIX v5.3</li>
@@ -609,6 +620,7 @@ style comments.
  <li>Only supported Windows.</li>
 </ul>
 
+
 <!----------------------------------------------------------------------->
 <p><hr>
 <!----------------------------------------------------------------------->
@@ -750,6 +762,7 @@ style comments.
 <tr valign="top"><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 </table>
 
+
 <!----------------------------------------------------------------------->
 <p><hr>
 <!----------------------------------------------------------------------->
@@ -761,10 +774,11 @@ style comments.
 Please contact me if you have any problems with GLFW, or any questions at
 all concerning compiling or using GLFW.
 
-<p>The GLFW web site can be found here:
-<a href="http://hem.passagen.se/opengl/glfw/">http://hem.passagen.se/opengl/glfw/</a>.
+<p>The official GLFW web site can be found here:
+<a href="http://glfw.sourceforge.net/">http://glfw.sourceforge.net/</a>.
 It contains the latest version of GLFW, news and other information that is
 useful for OpenGL development.
+
 
 <!----------------------------------------------------------------------->
 <p><hr>
@@ -775,6 +789,14 @@ useful for OpenGL development.
 
 <p>GLFW would not be what it is today without the help from:
 <ul>
+  <li>Keith Bauer, for his invaluable help with porting GLFW to Mac OS X
+  (presently X11 only, but soon native Carbon too), and for his many
+  ideas.</li><br><br>
+
+  <li>Ozzy @ <a href="http://www.orkysquad.org" target="_blank">Orkysquad</a>,
+  for his dedication to GLFW, for debugging my source, and for his
+  valuable experience with game development.<br><br>
+
   <li>Jeff Molofee, the author of the excellent OpenGL tutorials at <a
   href="http://nehe.gamedev.net/" target="_blank">NeHe Productions</a>.
   Much of the Windows code of GLFW was originally based on Jeff's
@@ -785,10 +807,6 @@ useful for OpenGL development.
   target="_blank">Strategies for Implementing POSIX Condition Variables on
   Win32</a>, which is the basis for the Win32 condition variable
   implementation in GLFW.</li><br><br>
-
-  <li>Ozzy @ <a href="http://www.orkysquad.org" target="_blank">Orkysquad</a>,
-  for his dedication to GLFW, for debugging my source, and for his
-  valuable experience with game development.<br><br>
 
   <li>Gerald Franz, who made GLFW compile under IRIX, and supplied patches
   for the X11 keyboard translation routine.</li><br><br>
