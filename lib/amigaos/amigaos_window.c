@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.3 2003-05-04 21:18:05 marcus256 Exp $
+// $Id: amigaos_window.c,v 1.4 2003-05-19 19:48:09 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -301,6 +301,33 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.Context       = NULL;
     _glfwWin.PointerHidden = 0;
     _glfwWin.PointerSprite = NULL;
+    _glfwWin.InputMP       = NULL;
+    _glfwWin.InputIO       = NULL;
+
+    // Create input.device message port
+    if( !(_glfwWin.InputMP = CreatePort( NULL, 0 )) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Create input.device I/O request
+    if( !(_glfwWin.InputIO = (struct IOStdReq *)
+          CreateExtIO( _glfwWin.InputMP, sizeof(struct IOStdReq) )) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Open input.device (for pointer position manipulation)
+    if( OpenDevice( "input.device", 0,
+                    (struct IORequest *)_glfwWin.InputIO, 0 ) )
+    {
+        DeleteExtIO( (struct IORequest *) _glfwWin.InputIO );
+        _glfwWin.InputIO = NULL;
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
 
     // Do we want fullscreen?
     if( _glfwWin.Fullscreen )
@@ -495,6 +522,22 @@ void _glfwPlatformCloseWindow( void )
         CloseScreen( _glfwWin.Screen );
     }
     _glfwWin.Screen = NULL;
+
+    // Close input device I/O request
+    if( _glfwWin.InputIO )
+    {
+        CloseDevice( (struct IORequest *) _glfwWin.InputIO );
+        DeleteExtIO( (struct IORequest *) _glfwWin.InputIO );
+        _glfwWin.InputIO = NULL;
+    }
+
+    // Close input device message port
+    if( _glfwWin.InputMP )
+    {
+        DeletePort( _glfwWin.InputMP );
+        _glfwWin.InputMP = NULL;
+    }
+
 }
 
 
@@ -633,7 +676,7 @@ void _glfwPlatformRefreshWindowParams( void )
     glGetIntegerv( GL_AUX_BUFFERS, &x );
     _glfwWin.AuxBuffers     = x;
     glGetBooleanv( GL_AUX_BUFFERS, &b );
-    _glfwWin.Stereo         = b ? GLFW_TRUE : GLFW_FALSE;
+    _glfwWin.Stereo         = b ? GL_TRUE : GL_FALSE;
 
     // Get ModeID information (refresh rate)
     _glfwGetModeIDInfo( _glfwWin.ModeID, NULL, NULL, NULL, NULL, NULL,
@@ -741,5 +784,31 @@ void _glfwPlatformShowMouseCursor( void )
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    // Not implemented yet (can it be done?!?!)
+    struct IEPointerPixel ppxl;
+    struct InputEvent     event;
+
+    // Adjust coordinates to window client area upper left corner
+    x += _glfwWin.Window->LeftEdge;
+    y += _glfwWin.Window->TopEdge;
+
+    /* Set up IEPointerPixel fields */
+    ppxl.iepp_Screen     = _glfwWin.Screen;
+    ppxl.iepp_Position.X = x;
+    ppxl.iepp_Position.Y = y;
+
+    /* Set up InputEvent fields */
+    event.ie_EventAddress = (APTR)&ppxl;           /* IEPointerPixel */
+    event.ie_NextEvent    = NULL;
+    event.ie_Class        = IECLASS_NEWPOINTERPOS; /* new mouse pos */
+    event.ie_SubClass     = IESUBCLASS_PIXEL;      /* on pixel */
+    event.ie_Code         = IECODE_NOBUTTON;
+    event.ie_Qualifier    = 0;                     /* absolute pos */
+
+    /* Set up I/O request */
+    _glfwWin.InputIO->io_Data    = (APTR)&event;
+    _glfwWin.InputIO->io_Length  = sizeof(struct InputEvent);
+    _glfwWin.InputIO->io_Command = IND_WRITEEVENT;
+
+    /* Perform I/O (move mouse cursor) */
+    DoIO( (struct IORequest *)_glfwWin.InputIO );
 }
