@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.5 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: x11_window.c,v 1.6 2004-02-28 12:40:20 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -603,20 +603,17 @@ static int _glfwGetNextEvent( void )
 
         // Were any of the mouse-buttons pressed?
         case ButtonPress:
-            if( event.xbutton.state & Button1Mask ||
-                event.xbutton.button == Button1 )
+            if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
                                       GLFW_PRESS );
             }
-            if( event.xbutton.state & Button2Mask ||
-                event.xbutton.button == Button2 )
+            else if( event.xbutton.button == Button2 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE,
                                       GLFW_PRESS );
             }
-            if( event.xbutton.state & Button3Mask ||
-                event.xbutton.button == Button3 )
+            else if( event.xbutton.button == Button3 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT,
                                       GLFW_PRESS );
@@ -624,8 +621,7 @@ static int _glfwGetNextEvent( void )
 
             // XFree86 3.3.2 and later translates mouse wheel up/down into
             // mouse button 4 & 5 presses
-            if( event.xbutton.state & Button4Mask ||
-                event.xbutton.button == Button4 )
+            else if( event.xbutton.button == Button4 )
             {
                 _glfwInput.WheelPos ++;  // To verify: is this up or down?
                 if( _glfwWin.MouseWheelCallback )
@@ -633,8 +629,7 @@ static int _glfwGetNextEvent( void )
                     _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
                 }
             }
-            if( event.xbutton.state & Button5Mask ||
-                event.xbutton.button == Button5 )
+            else if( event.xbutton.button == Button5 )
             {
                 _glfwInput.WheelPos --;
                 if( _glfwWin.MouseWheelCallback )
@@ -646,20 +641,17 @@ static int _glfwGetNextEvent( void )
 
         // Were any of the mouse-buttons released?
         case ButtonRelease:
-            if( event.xbutton.state & Button1Mask ||
-                event.xbutton.button == Button1 )
+            if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
                                       GLFW_RELEASE );
             }
-            if( event.xbutton.state & Button2Mask ||
-                event.xbutton.button == Button2 )
+            else if( event.xbutton.button == Button2 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE,
                                       GLFW_RELEASE );
             }
-            if( event.xbutton.state & Button3Mask ||
-                event.xbutton.button == Button3 )
+            else if( event.xbutton.button == Button3 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT,
                                       GLFW_RELEASE );
