@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.22 2004-08-31 19:21:28 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.23 2005-03-06 19:24:10 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -222,6 +222,19 @@ callback functions are the different Get functions (e.g.
 \textbf{glfwGetKey}, \textbf{glfwGetTime}, \textbf{glfwGetWindowParam}
 etc).
 
+
+%-------------------------------------------------------------------------
+\section{Threads}
+\GLFW\ has functions for creating threads, which means that it is possible
+to make multi threaded applications with \GLFW . The thread that calls
+glfwInit becomes the main thread, and it is recommended that all
+\GLFW\ and \OpenGL\ functions are called from the main thread. Additional
+threads should primarily be used for CPU heavy tasks or for managing
+other resources, such as file or sound I/O.
+
+It should be noted that the current implementation of \GLFW\ is not thread
+safe, so you should never call \GLFW\ functions from different threads.
+\footnote{Of course, all thread managing functions are thread safe.}
 
 
 %-------------------------------------------------------------------------
