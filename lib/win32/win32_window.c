@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.15 2005-01-10 21:39:23 marcus256 Exp $
+// $Id: win32_window.c,v 1.16 2005-01-18 18:38:17 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -725,18 +725,17 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Set window style, depending on fullscreen mode
     if( _glfwWin.Fullscreen )
     {
-        dwStyle = WS_POPUP;
         // Here's a trick for helping us getting window focus
         // (SetForegroundWindow doesn't work properly under
         // Win98/ME/2K/XP/.NET/+)
-        if( !(_glfwSys.WinVer == _GLFW_WIN_95 ||
-              _glfwSys.WinVer == _GLFW_WIN_NT4) )
+        if( _glfwSys.WinVer == _GLFW_WIN_95 ||
+            _glfwSys.WinVer == _GLFW_WIN_NT4 )
         {
-            dwStyle = dwStyle | WS_MINIMIZE;
+            dwStyle = WS_POPUP | WS_VISIBLE;
         }
         else
         {
-            dwStyle = dwStyle | WS_VISIBLE;
+            dwStyle = WS_POPUP;
         }
         dwExStyle = WS_EX_APPWINDOW;
     }
