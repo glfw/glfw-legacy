@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_thread.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: x11_thread.c,v 1.3 2003-09-04 20:12:55 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -39,6 +39,8 @@
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+#ifdef _GLFW_HAS_PTHREAD
 
 //========================================================================
 // _glfwNewThread() - This is simply a "wrapper" for calling the user
@@ -90,6 +92,8 @@ void * _glfwNewThread( void * arg )
     return NULL;
 }
 
+#endif // _GLFW_HAS_PTHREAD
+
 
 
 //************************************************************************
@@ -102,6 +106,8 @@ void * _glfwNewThread( void * arg )
 
 GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     GLFWthread  ID;
     _GLFWthread *t;
     int         result;
@@ -149,6 +155,12 @@ GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
 
     // Return the GLFW thread ID
     return ID;
+
+#else
+
+    return -1;
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -160,6 +172,8 @@ GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
 
 void _glfwPlatformDestroyThread( GLFWthread ID )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     _GLFWthread *t;
 
     // Enter critical section
@@ -181,6 +195,8 @@ void _glfwPlatformDestroyThread( GLFWthread ID )
 
     // Leave critical section
     LEAVE_THREAD_CRITICAL_SECTION
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -190,6 +206,8 @@ void _glfwPlatformDestroyThread( GLFWthread ID )
 
 int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     pthread_t   thread;
     _GLFWthread *t;
 
@@ -223,6 +241,12 @@ int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
     (void) pthread_join( thread, NULL );
 
     return GL_TRUE;
+
+#else
+
+    return GL_TRUE;
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -233,6 +257,8 @@ int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
 
 GLFWthread _glfwPlatformGetThreadID( void )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     _GLFWthread *t;
     GLFWthread  ID = -1;
     pthread_t   posixID;
@@ -259,6 +285,12 @@ GLFWthread _glfwPlatformGetThreadID( void )
 
     // Return the found GLFW thread identifier
     return ID;
+
+#else
+
+    return 0;
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -268,6 +300,8 @@ GLFWthread _glfwPlatformGetThreadID( void )
 
 GLFWmutex _glfwPlatformCreateMutex( void )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     pthread_mutex_t *mutex;
 
     // Allocate memory for mutex
@@ -282,6 +316,12 @@ GLFWmutex _glfwPlatformCreateMutex( void )
 
     // Cast to GLFWmutex and return
     return (GLFWmutex) mutex;
+
+#else
+
+    return (GLFWmutex) 0;
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -291,11 +331,15 @@ GLFWmutex _glfwPlatformCreateMutex( void )
 
 void _glfwPlatformDestroyMutex( GLFWmutex mutex )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Destroy the mutex object
     pthread_mutex_destroy( (pthread_mutex_t *) mutex );
 
     // Free memory for mutex object
     free( (void *) mutex );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -305,8 +349,12 @@ void _glfwPlatformDestroyMutex( GLFWmutex mutex )
 
 void _glfwPlatformLockMutex( GLFWmutex mutex )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Wait for mutex to be released
     (void) pthread_mutex_lock( (pthread_mutex_t *) mutex );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -316,8 +364,12 @@ void _glfwPlatformLockMutex( GLFWmutex mutex )
 
 void _glfwPlatformUnlockMutex( GLFWmutex mutex )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Release mutex
     pthread_mutex_unlock( (pthread_mutex_t *) mutex );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -327,6 +379,8 @@ void _glfwPlatformUnlockMutex( GLFWmutex mutex )
 
 GLFWcond _glfwPlatformCreateCond( void )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     pthread_cond_t *cond;
 
     // Allocate memory for condition variable
@@ -341,6 +395,12 @@ GLFWcond _glfwPlatformCreateCond( void )
 
     // Cast to GLFWcond and return
     return (GLFWcond) cond;
+
+#else
+
+    return (GLFWcond) 0;
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -350,11 +410,15 @@ GLFWcond _glfwPlatformCreateCond( void )
 
 void _glfwPlatformDestroyCond( GLFWcond cond )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Destroy the condition variable object
     (void) pthread_cond_destroy( (pthread_cond_t *) cond );
 
     // Free memory for condition variable object
     free( (void *) cond );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -365,6 +429,8 @@ void _glfwPlatformDestroyCond( GLFWcond cond )
 void _glfwPlatformWaitCond( GLFWcond cond, GLFWmutex mutex,
     double timeout )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     struct timeval  currenttime;
     struct timespec wait;
     long dt_sec, dt_usec;
@@ -394,6 +460,8 @@ void _glfwPlatformWaitCond( GLFWcond cond, GLFWmutex mutex,
         (void) pthread_cond_timedwait( (pthread_cond_t *) cond,
                    (pthread_mutex_t *) mutex, &wait );
     }
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -403,8 +471,12 @@ void _glfwPlatformWaitCond( GLFWcond cond, GLFWmutex mutex,
 
 void _glfwPlatformSignalCond( GLFWcond cond )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Signal condition
     (void) pthread_cond_signal( (pthread_cond_t *) cond );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
@@ -415,8 +487,12 @@ void _glfwPlatformSignalCond( GLFWcond cond )
 
 void _glfwPlatformBroadcastCond( GLFWcond cond )
 {
+#ifdef _GLFW_HAS_PTHREAD
+
     // Broadcast condition
     (void) pthread_cond_broadcast( (pthread_cond_t *) cond );
+
+#endif // _GLFW_HAS_PTHREAD
 }
 
 
