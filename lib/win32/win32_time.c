@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.4 2003-10-20 21:35:08 marcus256 Exp $
+// $Id: win32_time.c,v 1.5 2003-10-20 21:42:42 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -314,6 +314,7 @@ static int _glfwHasRDTSC( void )
     cpu_brandID   &= 0x000000ff;
     has_rdtsc      = feature_flags & 0x00000010;
     has_htt        = feature_flags & 0x10000000;
+    if( num_logical == 0 ) num_logical = 1;
 
     // Is RDTSC supported?
     if( !has_rdtsc )
