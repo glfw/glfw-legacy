@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.13 2005-01-10 22:06:11 marcus256 Exp $
+// $Id: window.c,v 1.14 2005-01-10 22:23:28 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -286,7 +286,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwPlatformRefreshWindowParams();
 
     // Get OpenGL version
-    glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMajor, &x );
+    glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor, &x );
 
     // Do we have automatic mipmap generation?
     _glfwWin.Has_GL_SGIS_generate_mipmap =
