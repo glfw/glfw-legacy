@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.17 2004-07-09 20:18:22 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.18 2004-07-09 21:20:30 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -123,6 +123,64 @@ Mac OS\textsuperscript{\textregistered} X.
 \item AmigaOS\footnotemark[\value{footnote}]
 \item MS--DOS\textsuperscript{\textregistered}\footnotemark[\value{footnote}]
 \end{itemize}
+
+
+
+%-------------------------------------------------------------------------
+% GLFW Operation
+%-------------------------------------------------------------------------
+\chapter{GLFW Operation Overview}
+\thispagestyle{fancy}
+
+
+%-------------------------------------------------------------------------
+\section{The GLFW Window}
+\GLFW\ only supports one opened window at a time. The window can be either
+a normal desktop window or a fullscreen window. The latter is completely
+undecorated, without window borders, and covers the entire monitor. With
+a fullscreen window, it is also possible to select which video mode to use.
+
+When a window is opened, an \OpenGL\ rendering context is created and
+attached to the entire client area of the window. When the window is closed,
+the \OpenGL\ rendering context is detached and destroyed.
+
+Through a window it is possible to receive user input in the form of
+keyboard and mouse input. User input is exposed through the \GLFW\ API via
+callback functions. There are different callback functions for dealing with
+different kinds of user input. Also, \GLFW\ stores most user input as
+internal state that can be queried through different \GLFW\ API functions
+(for instance it is possible to query the position of the mouse cursor
+with the \textbf{glfwGetMousePos} function).
+
+As for user input, it is possible to recieve information about window
+state changes, such as window resize or close events, through callback
+functions. It is also possible to query different kinds of window
+information through different \GLFW\ API functions.
+
+
+%-------------------------------------------------------------------------
+\section{The GLFW Event Loop}
+The \GLFW\ event loop is an open loop, which means that it is up to the
+programmer to design the loop. Events are processed by calling specific
+\GLFW\ functions, which in turn query the system for new input and window
+events, and reports these events back to the program through callback
+functions.
+
+The programmer decides when to call the event processing functions, and
+when to abort the event loop.
+
+In C language, a typical event loop might look like this:
+
+\begin{lstlisting}
+  while( 1 )
+  {
+    glfwWaitEvents();
+    if( !glfwGetWindowParam( GLFW_OPENED ) ) break;
+  }
+\end{lstlisting}
+
+The loop in the example only waits until the window is closed, and then
+aborts the loop (possibly continuing by terminating the application).
 
 
 
@@ -804,6 +862,50 @@ the hardware.
 \begin{refnotes}
 This function will only have an effect on hardware and drivers that
 support user selection of the swap interval.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwSetWindowPaintCallback}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwSetWindowPaintCallback( GLFWwindowpaintfun cbfun )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{cbfun}]\ \\
+  Pointer to a callback function that will be called when the window client
+  area needs to be refreshed. The function should have the following C
+  language prototype:
+
+  \texttt{void GLFWCALL functionname( void );}
+
+  Where \textit{functionname} is the name of the callback function.
+
+  If \textit{cbfun} is NULL, any previously selected callback function
+  will be deselected.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function selects which function to be called upon a window paint
+event, which occurs when any part of the window client area has been
+damaged, and needs to be repainted (for instance, if a part of the window
+that was previously occluded by another window has become visible).
+
+A window has to be opened for this function to have any effect.
+\end{refdescription}
+
+\begin{refnotes}
+Window paint events are recorded continuously, but only reported when
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
+\textbf{glfwSwapBuffers} is called.
 \end{refnotes}
 
 
