@@ -29,15 +29,205 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.3 2003-05-04 21:21:41 marcus256 Exp $
+// $Id: x11_window.c,v 1.4 2004-02-14 19:43:51 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
 
 
+/* KDE decoration values */
+enum {
+  KDE_noDecoration = 0,
+  KDE_normalDecoration = 1,
+  KDE_tinyDecoration = 2,
+  KDE_noFocus = 256,
+  KDE_standaloneMenuBar = 512,
+  KDE_desktopIcon = 1024 ,
+  KDE_staysOnTop = 2048
+};
+
+
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+//========================================================================
+// _glfwWaitForMapNotify()
+//========================================================================
+
+Bool _glfwWaitForMapNotify( Display *d, XEvent *e, char *arg )
+{
+    return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
+}
+
+
+//========================================================================
+// _glfwWaitForUnmapNotify()
+//========================================================================
+
+Bool _glfwWaitForUnmapNotify( Display *d, XEvent *e, char *arg )
+{
+    return (e->type == UnmapNotify) && (e->xmap.window == (Window)arg);
+}
+
+
+//========================================================================
+// _glfwDisableDecorations() - Turn off window decorations
+// Based on xawdecode: src/wmhooks.c
+//========================================================================
+
+#define MWM_HINTS_DECORATIONS (1L << 1)
+
+static void _glfwDisableDecorations( void )
+{
+    int                   RemovedDecorations;
+    Atom                  HintAtom;
+    XSetWindowAttributes  attributes;
+
+    RemovedDecorations = 0;
+
+    // First try to set MWM hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "_MOTIF_WM_HINTS", True );
+    if ( HintAtom != None )
+    {
+        struct {
+            unsigned long flags;
+            unsigned long functions;
+            unsigned long decorations;
+                     long input_mode;
+            unsigned long status;
+        } MWMHints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
+
+        XChangeProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+                         32, PropModeReplace, (unsigned char *)&MWMHints,
+                         sizeof(MWMHints)/4 );
+        RemovedDecorations = 1;
+    }
+
+    // Now try to set KWM hints
+    HintAtom = XInternAtom(_glfwWin.Dpy, "KWM_WIN_DECORATION", True );
+    if ( HintAtom != None )
+    {
+        long KWMHints = KDE_tinyDecoration;
+
+        XChangeProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+                         32, PropModeReplace, (unsigned char *)&KWMHints,
+                         sizeof(KWMHints)/4 );
+        RemovedDecorations = 1;
+    }
+
+    // Now try to set GNOME hints
+    HintAtom = XInternAtom(_glfwWin.Dpy, "_WIN_HINTS", True );
+    if ( HintAtom != None )
+    {
+        long GNOMEHints = 0;
+
+        XChangeProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+                         32, PropModeReplace, (unsigned char *)&GNOMEHints,
+                         sizeof(GNOMEHints)/4 );
+        RemovedDecorations = 1;
+    }
+
+    // Now try to set KDE NET_WM hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "_NET_WM_WINDOW_TYPE", True );
+    if ( HintAtom != None )
+    {
+        Atom NET_WMHints[2];
+
+        NET_WMHints[0] = XInternAtom( _glfwWin.Dpy, "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE", True );
+        /* define a fallback... */
+        NET_WMHints[1] = XInternAtom( _glfwWin.Dpy, "_NET_WM_WINDOW_TYPE_NORMAL", True );
+
+        XChangeProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom, XA_ATOM,
+                         32, PropModeReplace, (unsigned char *)&NET_WMHints,
+                         2 );
+        RemovedDecorations = 1;
+    }
+
+    // Did we sucessfully remove the window decorations?
+    if( RemovedDecorations )
+    {
+        // Finally set the transient hints
+        XSetTransientForHint( _glfwWin.Dpy, _glfwWin.Win, RootWindow(_glfwWin.Dpy, DefaultScreen(_glfwWin.Dpy)) );
+        XUnmapWindow( _glfwWin.Dpy, _glfwWin.Win );
+        XMapWindow( _glfwWin.Dpy, _glfwWin.Win );
+    }
+    else
+    {
+        // The Butcher way of removing window decorations
+        attributes.override_redirect = True;
+        XChangeWindowAttributes( _glfwWin.Dpy, _glfwWin.Win,
+                                 CWOverrideRedirect, &attributes );
+        _glfwWin.OverrideRedirect = GL_TRUE;
+    }
+}
+
+
+//========================================================================
+// _glfwEnableDecorations() - Turn on window decorations
+//========================================================================
+
+static void _glfwEnableDecorations( void )
+{
+    int                   ActivatedDecorations;
+    Atom                  HintAtom;
+
+    // If this is an override redirect window, skip it...
+    if( _glfwWin.OverrideRedirect )
+    {
+        return;
+    }
+
+    ActivatedDecorations = 0;
+
+    // First try to unset MWM hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "_MOTIF_WM_HINTS", True );
+    if ( HintAtom != None )
+    {
+        XDeleteProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom );
+        ActivatedDecorations = 1;
+    }
+
+    // Now try to unset KWM hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "KWM_WIN_DECORATION", True );
+    if ( HintAtom != None )
+    {
+        XDeleteProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom );
+        ActivatedDecorations = 1;
+    }
+
+    // Now try to unset GNOME hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "_WIN_HINTS", True );
+    if ( HintAtom != None )
+    {
+        XDeleteProperty( _glfwWin.Dpy, _glfwWin.Win, HintAtom );
+        ActivatedDecorations = 1;
+    }
+
+    // Now try to unset NET_WM hints
+    HintAtom = XInternAtom( _glfwWin.Dpy, "_NET_WM_WINDOW_TYPE", True );
+    if ( HintAtom != None )
+    {
+        Atom NET_WMHints = XInternAtom( _glfwWin.Dpy, "_NET_WM_WINDOW_TYPE_NORMAL", True);
+        if( NET_WMHints != None )
+        {
+            XChangeProperty( _glfwWin.Dpy, _glfwWin.Win,
+                            HintAtom, XA_ATOM, 32, PropModeReplace,
+                            (unsigned char *)&NET_WMHints, 1 );
+            ActivatedDecorations = 1;
+        }
+    }
+
+    // Finally unset the transient hints if necessary
+    if( ActivatedDecorations )
+    {
+        // NOTE: Does this work?
+        XSetTransientForHint( _glfwWin.Dpy, _glfwWin.Win, None);
+        XUnmapWindow( _glfwWin.Dpy, _glfwWin.Win );
+        XMapWindow( _glfwWin.Dpy, _glfwWin.Win );
+    }
+}
+
 
 //========================================================================
 // _glfwChooseVisual() - We do our own function here, since
@@ -214,16 +404,6 @@ XVisualInfo * _glfwChooseVisual( Display *Dpy, int Screen, int r, int g,
 
 
 //========================================================================
-// _glfwWaitForNotify()
-//========================================================================
-
-Bool _glfwWaitForNotify( Display *d, XEvent *e, char *arg )
-{
-    return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
-}
-
-
-//========================================================================
 // _glfwTranslateKey() - Translates an X Window key to internal coding
 //========================================================================
 
@@ -368,8 +548,8 @@ static int _glfwTranslateChar( XKeyEvent *event )
 static int _glfwGetNextEvent( void )
 {
     XEvent event, next_event;
-    XSetWindowAttributes wa;
 
+    // Pull next event from event queue
     XNextEvent( _glfwWin.Dpy, &event );
 
     // Handle certain window messages
@@ -487,23 +667,23 @@ static int _glfwGetNextEvent( void )
 
         // Was the mouse moved?
         case MotionNotify:
-            if( event.xmotion.x != _glfwInput.OldMouseX ||
-                event.xmotion.y != _glfwInput.OldMouseY )
+            if( event.xmotion.x != _glfwInput.CursorPosX ||
+                event.xmotion.y != _glfwInput.CursorPosY )
             {
                 if( _glfwWin.MouseLock )
                 {
                     _glfwInput.MousePosX += event.xmotion.x -
-                                            _glfwInput.OldMouseX;
+                                            _glfwInput.CursorPosX;
                     _glfwInput.MousePosY += event.xmotion.y -
-                                            _glfwInput.OldMouseY;
+                                            _glfwInput.CursorPosY;
                 }
                 else
                 {
                     _glfwInput.MousePosX = event.xmotion.x;
                     _glfwInput.MousePosY = event.xmotion.y;
                 }
-                _glfwInput.OldMouseX = event.xmotion.x;
-                _glfwInput.OldMouseY = event.xmotion.y;
+                _glfwInput.CursorPosX = event.xmotion.x;
+                _glfwInput.CursorPosY = event.xmotion.y;
                 _glfwInput.MouseMoved = GL_TRUE;
 
                 // Call user callback function
@@ -562,33 +742,6 @@ static int _glfwGetNextEvent( void )
         case MapNotify:
             if( _glfwWin.Iconified )
             {
-                // Lock mouse, if necessary
-                if( _glfwWin.MouseLock )
-                {
-                    // Hide cursor
-                    if( !_glfwWin.PointerHidden )
-                    {
-                        XDefineCursor( _glfwWin.Dpy, _glfwWin.Win,
-                            _glfwCreateNULLCursor( _glfwWin.Dpy,
-                                                   _glfwWin.Win ) );
-                        _glfwWin.PointerHidden = GL_TRUE;
-                    }
-
-                    // Grab cursor
-                    if( !_glfwWin.PointerGrabbed )
-                    {
-                        if( XGrabPointer( _glfwWin.Dpy, _glfwWin.Win,
-                                True, ButtonPressMask |
-                                ButtonReleaseMask | PointerMotionMask,
-                                GrabModeAsync, GrabModeAsync,
-                                _glfwWin.Win, None, CurrentTime ) ==
-                            GrabSuccess )
-                        {
-                            _glfwWin.PointerGrabbed = GL_TRUE;
-                        }
-                    }
-                }
-
                 // Restore fullscreen mode properties
                 if( _glfwWin.Fullscreen )
                 {
@@ -596,12 +749,40 @@ static int _glfwGetNextEvent( void )
                     _glfwSetVideoMode(&_glfwWin.Width, &_glfwWin.Height);
 
                     // Disable window manager decorations
-                    wa.override_redirect = True;
-                    XChangeWindowAttributes( _glfwWin.Dpy, _glfwWin.Win,
-                                             CWOverrideRedirect, &wa );
+                    _glfwEnableDecorations();
 
                     // Make sure window is in upper left corner
                     XMoveWindow( _glfwWin.Dpy, _glfwWin.Win, 0, 0 );
+
+                    // Get input focus
+                    XSetInputFocus( _glfwWin.Dpy, _glfwWin.Win,
+                                    RevertToParent, CurrentTime );
+                }
+
+                // Hide cursor if necessary
+                if( _glfwWin.MouseLock && !_glfwWin.PointerHidden )
+                {
+                    if( !_glfwWin.PointerHidden )
+                    {
+                        XDefineCursor( _glfwWin.Dpy, _glfwWin.Win,
+                            _glfwCreateNULLCursor( _glfwWin.Dpy,
+                                                   _glfwWin.Win ) );
+                        _glfwWin.PointerHidden = GL_TRUE;
+                    }
+                }
+
+                // Grab cursor if necessary
+                if( (_glfwWin.MouseLock || _glfwWin.Fullscreen) &&
+                    !_glfwWin.PointerGrabbed )
+                {
+                    if( XGrabPointer( _glfwWin.Dpy, _glfwWin.Win, True,
+                            ButtonPressMask | ButtonReleaseMask |
+                            PointerMotionMask, GrabModeAsync,
+                            GrabModeAsync, _glfwWin.Win, None,
+                            CurrentTime ) == GrabSuccess )
+                    {
+                        _glfwWin.PointerGrabbed = GL_TRUE;
+                    }
                 }
 
                 _glfwWin.Iconified = GL_FALSE;
@@ -694,12 +875,13 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     XEvent      event;
 
     // Clear platform specific GLFW window state
-    _glfwWin.Dpy             = NULL;
-    _glfwWin.VI              = NULL;
-    _glfwWin.CX              = (GLXContext)0;
-    _glfwWin.Win             = (Window)0;
-    _glfwWin.PointerGrabbed  = GL_FALSE;
-    _glfwWin.KeyboardGrabbed = GL_FALSE;
+    _glfwWin.Dpy              = NULL;
+    _glfwWin.VI               = NULL;
+    _glfwWin.CX               = (GLXContext)0;
+    _glfwWin.Win              = (Window)0;
+    _glfwWin.PointerGrabbed   = GL_FALSE;
+    _glfwWin.KeyboardGrabbed  = GL_FALSE;
+    _glfwWin.OverrideRedirect = GL_FALSE;
 
     // Fullscreen & screen saver settings
     _glfwFS.ModeChanged     = GL_FALSE;
@@ -774,11 +956,6 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
         ExposureMask | FocusChangeMask | VisibilityChangeMask;
 
-    // For fullscreen mode, disable window manager intervention (remove
-    // window borders etc). Note: I am aware that this is a fairly ugly
-    // brute force way of doing it, but it works...
-    wa.override_redirect = (mode == GLFW_FULLSCREEN ? True : False);
-
     // Create a window
     _glfwWin.Win = XCreateWindow(
         _glfwWin.Dpy,
@@ -789,7 +966,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         _glfwWin.VI->depth,              // Depth
         InputOutput,
         _glfwWin.VI->visual,
-        CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
+        CWBorderPixel | CWColormap | CWEventMask,
         &wa
     );
     if( !_glfwWin.Win )
@@ -802,11 +979,17 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     XSetWMProtocols( _glfwWin.Dpy, _glfwWin.Win, &_glfwWin.WMDeleteWindow,
                      1 );
 
+    // Remove window decorations for fullscreen windows
+    if( mode == GLFW_FULLSCREEN )
+    {
+        _glfwDisableDecorations();
+    }
+
     // Map window
     XMapWindow( _glfwWin.Dpy, _glfwWin.Win );
 
-    // Wait for notification
-    XIfEvent( _glfwWin.Dpy, &event, _glfwWaitForNotify,
+    // Wait for map notification
+    XIfEvent( _glfwWin.Dpy, &event, _glfwWaitForMapNotify,
               (char*)_glfwWin.Win );
 
     // Make sure that our window ends up on top of things
@@ -1028,7 +1211,11 @@ void _glfwPlatformSetWindowPos( int x, int y )
 
 void _glfwPlatformIconifyWindow( void )
 {
-    XSetWindowAttributes wa;
+    // We can't do this for override redirect windows
+    if( _glfwWin.OverrideRedirect )
+    {
+        return;
+    }
 
     // In fullscreen mode, we need to restore the desktop video mode
     if( _glfwWin.Fullscreen )
@@ -1044,11 +1231,6 @@ void _glfwPlatformIconifyWindow( void )
             DefaultScreen(_glfwWin.Dpy), &_glfwFS.OldMode );
 #endif
         _glfwFS.ModeChanged = GL_FALSE;
-
-        // Allow window manager to iconify the window
-        wa.override_redirect = False;
-        XChangeWindowAttributes( _glfwWin.Dpy, _glfwWin.Win,
-                                 CWOverrideRedirect, &wa );
     }
 
     // Show mouse pointer
@@ -1080,7 +1262,11 @@ void _glfwPlatformIconifyWindow( void )
 
 void _glfwPlatformRestoreWindow( void )
 {
-    XSetWindowAttributes wa;
+    // We can't do this for override redirect windows
+    if( _glfwWin.OverrideRedirect )
+    {
+        return;
+    }
 
     // In fullscreen mode, change back video mode to user selected mode
     if( _glfwWin.Fullscreen )
@@ -1091,16 +1277,15 @@ void _glfwPlatformRestoreWindow( void )
     // Un-iconify window
     XMapWindow( _glfwWin.Dpy, _glfwWin.Win );
 
-    // In fullscreen mode, remove window border after de-iconification
+    // In fullscreen mode...
     if( _glfwWin.Fullscreen )
     {
-        // Disable window manager decorations
-        wa.override_redirect = True;
-        XChangeWindowAttributes( _glfwWin.Dpy, _glfwWin.Win,
-                                 CWOverrideRedirect, &wa );
-
         // Make sure window is in upper left corner
         XMoveWindow( _glfwWin.Dpy, _glfwWin.Win, 0, 0 );
+
+        // Get input focus
+        XSetInputFocus( _glfwWin.Dpy, _glfwWin.Win, RevertToParent,
+                        CurrentTime );
     }
 
     // Lock mouse, if necessary
@@ -1229,19 +1414,8 @@ void _glfwPlatformPollEvents( void )
 {
     int winclosed;
 
-    // Flag: mouse was not moved (will be changed by _glfwGetNextEvent if
-    // there was a mouse move event)
+    // Flag that the cursor has not moved
     _glfwInput.MouseMoved = GL_FALSE;
-    if( _glfwWin.MouseLock )
-    {
-        _glfwInput.OldMouseX = _glfwWin.Width/2;
-        _glfwInput.OldMouseY = _glfwWin.Height/2;
-    }
-    else
-    {
-        _glfwInput.OldMouseX = _glfwInput.MousePosX;
-        _glfwInput.OldMouseY = _glfwInput.MousePosY;
-    }
 
     // Use XSync to synchronise events to the X display.
     // I don't know if this can have a serious performance impact. My
@@ -1251,7 +1425,7 @@ void _glfwPlatformPollEvents( void )
     // is not used, so I decided to use it.
     XSync( _glfwWin.Dpy, False );
 
-    // Get next window event
+    // Empty the window event queue
     winclosed = GL_FALSE;
     while( XPending( _glfwWin.Dpy ) )
     {
@@ -1261,13 +1435,27 @@ void _glfwPlatformPollEvents( void )
         }
     }
 
-    // Did we have mouse movement in locked cursor mode?
+    // Did we get mouse movement in locked cursor mode?
     if( _glfwInput.MouseMoved && _glfwWin.MouseLock )
     {
-        // Move the mouse pointer back to the window centre so that it
-        // does not wander off...
-        _glfwPlatformSetMouseCursorPos( _glfwWin.Width/2,
-                                        _glfwWin.Height/2 );
+        int maxx, minx, maxy, miny;
+
+        // Calculate movement threshold
+        minx = _glfwWin.Width / 4;
+        maxx = (_glfwWin.Width * 3) / 4;
+        miny = _glfwWin.Height / 4;
+        maxy = (_glfwWin.Height * 3) / 4;
+
+        // Did the mouse cursor move beyond our movement threshold
+        if(_glfwInput.CursorPosX < minx || _glfwInput.CursorPosX > maxx ||
+           _glfwInput.CursorPosY < miny || _glfwInput.CursorPosY > maxy)
+        {
+            // Move the mouse pointer back to the window center so that it
+            // does not wander off...
+            _glfwPlatformSetMouseCursorPos( _glfwWin.Width/2,
+                                            _glfwWin.Height/2 );
+            XSync( _glfwWin.Dpy, False );
+        }
     }
 
     // Was there a window close request?
@@ -1339,5 +1527,7 @@ void _glfwPlatformShowMouseCursor( void )
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
     // Change cursor position
+    _glfwInput.CursorPosX = x;
+    _glfwInput.CursorPosY = y;
     XWarpPointer( _glfwWin.Dpy, None, _glfwWin.Win, 0,0,0,0, x, y );
 }
