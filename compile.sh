@@ -2,16 +2,15 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-09-04 20:04:05 $
-# $Revision: 1.10 $
+# $Date: 2003-09-04 23:33:01 $
+# $Revision: 1.11 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
 #
 # This script is not very nice at all (especially the Makefile generation
 # is very ugly and hardcoded). Hopefully it will be cleaned up in the
-# future, but for now it does a pretty good job (much better than the
-# three separate Makefiles in older distributions anyway).
+# future, but for now it does a pretty good job.
 ##########################################################################
 
 ##########################################################################
@@ -78,6 +77,7 @@ else
 fi
 CFLAGS=
 LFLAGS=
+INCS=
 LIBS="-lGL -lX11"
 
 
@@ -89,50 +89,35 @@ link='$CC -o conftest $CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
-# Check for X11 libs/include directory
+# Check for X11 libs/include directories
 ##########################################################################
 echo "Checking for X11 libraries location... " 1>&6
 
+# X11R6 in /usr/X11/lib ?
+if [ -r "/usr/X11/lib" ]; then
+ LFLAGS="$LFLAGS -L/usr/X11/lib"
+ INCS="-I/usr/X11/include"
+ echo " X11 libraries location: /usr/X11/lib" 1>&6
 # X11R6 in /usr/X11R6/lib ?
-if [ -r "/usr/X11R6/lib/libX11.so" ]; then
-
+elif [ -r "/usr/X11R6/lib" ]; then
  LFLAGS="$LFLAGS -L/usr/X11R6/lib"
- CFLAGS="$CFLAGS -I/usr/X11R6/include"
+ INCS="-I/usr/X11R6/include"
  echo " X11 libraries location: /usr/X11R6/lib" 1>&6
-
 # X11R5 in /usr/X11R5/lib ?
-elif [ -r "/usr/X11R5/lib/libX11.so" ]; then
-
+elif [ -r "/usr/X11R5/lib" ]; then
  LFLAGS="$LFLAGS -L/usr/X11R5/lib"
- CFLAGS="$CFLAGS -I/usr/X11R5/include"
+ INCS="-I/usr/X11R5/include"
  echo " X11 libraries location: /usr/X11R5/lib" 1>&6
-
-# Mac OS X: X11R6 in /usr/X11R6/lib, uses .dylib instead of .so
-elif [ -r "/usr/X11R6/lib/libX11.dylib" ]; then
-
- LFLAGS="$LFLAGS -L/usr/X11R6/lib"
- CFLAGS="$CFLAGS -I/usr/X11R6/include"
- echo " X11 libraries location: /usr/X11R6/lib" 1>&6
-
-# QNX: X11R6 in /opt/X11R6/lib ?
-elif [ -r "/opt/X11R6/lib/libX11.so" ]; then
-
+# X11R6 in /opt/X11R6/lib (e.g. QNX)?
+elif [ -r "/opt/X11R6/lib" ]; then
  LFLAGS="$LFLAGS -L/opt/X11R6/lib"
- CFLAGS="$CFLAGS -I/opt/X11R6/include"
+ INCS="-I/opt/X11R6/include"
  echo " X11 libraries location: /opt/X11R6/lib" 1>&6
-
-elif [ -r "/opt/X11R6/lib/libX11.so.6" ]; then
-
- LFLAGS="$LFLAGS -L/opt/X11R6/lib"
- CFLAGS="$CFLAGS -I/opt/X11R6/include"
- echo " X11 libraries location: /opt/X11R6/lib" 1>&6
-
 else
-
  echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
-
 fi
 echo " " 1>&6
+CFLAGS="$CFLAGS $INCS"
 
 
 ##########################################################################
@@ -157,6 +142,41 @@ rm -f conftest*
 echo " Using GNU C: ""$use_gcc" 1>&6
 if [ "x$use_gcc" = xyes ]; then
   CC=gcc
+fi
+echo " " 1>&6
+
+
+##########################################################################
+# Check for XFree86 VidMode availability
+##########################################################################
+echo "Checking for XFree86 VidMode support... " 1>&6
+echo "$config_script: Checking for XFree86 VidMode support" >&5
+has_xf86vm=no
+
+cat > conftest.c <<EOF
+#include <X11/Xlib.h>
+#include <X11/extensions/xf86vmode.h>
+
+#if defined(__APPLE_CC__)
+#error Not supported under Mac OS X
+#endif
+
+int main() {; return 0;}
+EOF
+
+if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+  rm -rf conftest*
+  has_xf86vm=yes
+else
+  echo "$config_script: failed program was:" >&5
+  cat conftest.c >&5
+fi
+rm -f conftest*
+
+echo " XFree86 VidMode extension: ""$has_xf86vm" 1>&6
+if [ "x$has_xf86vm" = xyes ]; then
+  CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
+  LIBS="$LIBS -lXxf86vm -lXext"
 fi
 echo " " 1>&6
 
@@ -213,41 +233,6 @@ if [ "x$has_pthread" = xyes ]; then
   CFLAGS="$CFLAGS -D_GLFW_HAS_PTHREAD"
 else
   LIBS="$LIBS_OLD"
-fi
-echo " " 1>&6
-
-
-##########################################################################
-# Check for XFree86 VidMode availability
-##########################################################################
-echo "Checking for XFree86 VidMode 1.0 support... " 1>&6
-echo "$config_script: Checking for XFree86 VidMode 1.0 support" >&5
-has_xf86vm=no
-
-cat > conftest.c <<EOF
-#include <X11/Xlib.h>
-#include <X11/extensions/xf86vmode.h>
-
-#if defined(__APPLE_CC__)
-#error Not supported under Mac OS X
-#endif
-
-int main() {; return 0;}
-EOF
-
-if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
-  rm -rf conftest*
-  has_xf86vm=yes
-else
-  echo "$config_script: failed program was:" >&5
-  cat conftest.c >&5
-fi
-rm -f conftest*
-
-echo " XFree86 VidMode extension: ""$has_xf86vm" 1>&6
-if [ "x$has_xf86vm" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
-  LIBS="$LIBS -lXxf86vm -lXext"
 fi
 echo " " 1>&6
 
@@ -438,17 +423,17 @@ echo " " 1>&6
 ##########################################################################
 # Post fixups
 ##########################################################################
-if [ "x$CC" = xgcc ]; then
+if [ "x$use_gcc" = xyes ]; then
   CFLAGS_SPEED="-c -I. -I.. $CFLAGS -O3 -ffast-math -Wall"
   CFLAGS="-c -I. -I.. $CFLAGS -Os -Wall"
-  CFLAGS_LINK="-O3 -ffast-math -Wall"
+  CFLAGS_LINK="$INCS -O3 -ffast-math -Wall"
 else
   CFLAGS_SPEED="-c -I. -I.. $CFLAGS -O"
   CFLAGS="-c -I. -I.. $CFLAGS -O"
-  CFLAGS_LINK="-O"
+  CFLAGS_LINK="$INCS -O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
-LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lm"
+LFLAGS_LINK="-L../lib/x11 $LFLAGS -lglfw -lGLU $LIBS -lm"
 
 
 ##########################################################################
@@ -479,6 +464,6 @@ echo "# Automatically generated Makefile for GLFW" >>$MKNAME
 echo "##########################################################################" >>$MKNAME
 echo "CC     = $CC" >>$MKNAME
 echo "CFLAGS = $CFLAGS_LINK" >>$MKNAME
-echo "LFLAGS =$LFLAGS" >>$MKNAME
+echo "LFLAGS = $LFLAGS_LINK" >>$MKNAME
 echo " " >>$MKNAME
 cat ./examples/Makefile.x11.in >>$MKNAME
