@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.7 2004-02-14 20:42:00 marcus256 Exp $
+// $Id: glfw.h,v 1.8 2004-02-25 22:04:24 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -333,6 +333,7 @@ extern "C" {
 #define GLFW_NO_RESCALE_BIT       0x00000001 // Only for glfwReadImage
 #define GLFW_ORIGIN_UL_BIT        0x00000002
 #define GLFW_BUILD_MIPMAPS_BIT    0x00000004 // Only for glfwLoadTexture2D
+#define GLFW_ALPHA_MAP_BIT        0x00000008
 
 // Time spans longer than this (seconds) are considered to be infinity
 #define GLFW_INFINITY 100000.0
