@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        win32_window.c
 // Platform:    Windows
-// API version: 2.4
+// API version: 2.5
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.6 2004-02-14 20:59:29 marcus256 Exp $
+// $Id: win32_window.c,v 1.7 2004-04-09 11:09:34 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1241,6 +1241,20 @@ void _glfwPlatformPollEvents( void )
     {
         glfwCloseWindow();
     }
+}
+
+
+//========================================================================
+// _glfwPlatformWaitEvents() - Wait for new window and input events
+//========================================================================
+
+void _glfwPlatformWaitEvents( void )
+{
+    // Wait for new events
+    WaitMessage();
+
+    // Poll new events
+    _glfwPlatformPollEvents();
 }
 
 
