@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_time.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
+// $Id: x11_time.c,v 1.3 2003-10-20 21:41:04 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -209,15 +209,8 @@ static int _glfwHasRDTSC( void )
 
     unsigned int cpu_name1, cpu_name2, cpu_name3;
     unsigned int cpu_signature, cpu_brandID;
-    unsigned int has_rdtsc, max_base;
+    unsigned int max_base, feature_flags, has_rdtsc, has_htt, num_logical;
     unsigned int dummy;
-
-    // We do not support RDTSC on SMP systems (SMT is OK though)
-    _glfw_numprocessors( dummy );
-    if( dummy > 1 )
-    {
-        return GL_FALSE;
-    }
 
     // Get processor vendor string (will return 0 if CPUID is not
     // supported)
@@ -233,10 +226,13 @@ static int _glfwHasRDTSC( void )
     }
 
     // Get CPU capabilities, CPU Brand ID & CPU Signature
-    _glfwCPUID( 1, &cpu_signature, &cpu_brandID, &dummy, &has_rdtsc );
+    _glfwCPUID( 1, &cpu_signature, &cpu_brandID, &dummy, &feature_flags );
     cpu_signature &= 0x00000fff;
+    num_logical    = (cpu_brandID & 0x00ff0000) >> 16;
     cpu_brandID   &= 0x000000ff;
-    has_rdtsc     &= 0x00000010;
+    has_rdtsc      = feature_flags & 0x00000010;
+    has_htt        = feature_flags & 0x10000000;
+    if( num_logical == 0 ) num_logical = 1;
 
     // Is RDTSC supported?
     if( !has_rdtsc )
@@ -245,6 +241,7 @@ static int _glfwHasRDTSC( void )
     }
 
     // Detect Intel "Mobile" CPU (a bit tricky, this one...)
+    // Also detect Intel HTT flag (Hyper-Threading)
     if( cpu_name1 == 0x756e6547 &&  // Genu
         cpu_name2 == 0x49656e69 &&  // ineI
         cpu_name3 == 0x6c65746e )   // ntel
@@ -303,6 +300,11 @@ static int _glfwHasRDTSC( void )
             }
         }
     }
+    else
+    {
+        // We don't trust Hyper-Threading info on non-Intel CPUs
+        has_htt = 0;
+    }
 
     // Detect AMD PowerNOW! support
     if( cpu_name1 == 0x68747541 &&  // Auth
@@ -329,6 +331,17 @@ static int _glfwHasRDTSC( void )
     //  - Cyrix/VIA: Does not support a dynamic core frequency (AFAIK)
     //  - Transmeta: LongRun does not affect the TSC frequency, so we do
     //     not have to check for LongRun support :)
+
+    // We do not support RDTSC on SMP systems (but single CPU SMT is OK)
+    _glfw_numprocessors( dummy );
+    if( has_htt )
+    {
+        dummy /= num_logical;
+    }
+    if( dummy > 1 )
+    {
+        return GL_FALSE;
+    }
 
     // Finally: RDTSC is supported, we are running on a single processor
     // system, and we (hopefully) have a constant TSC frequency
