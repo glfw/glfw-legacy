@@ -1,11 +1,10 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:     x11_joystick.c
-// Platform: X11 (Unix)
-// Version:  2.4
-// Date:     2003.01.08
-// Author:   Marcus Geelnard (marcus.geelnard@home.se)
-// WWW:      http://hem.passagen.se/opengl/glfw/
+// File:        x11_joystick.c
+// Platform:    X11 (Unix)
+// API version: 2.4
+// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2003 Marcus Geelnard
 //
@@ -28,7 +27,9 @@
 //    distribution of GLFW.
 //
 // Marcus Geelnard
-// marcus.geelnard@home.se
+// marcus.geelnard at home.se
+//------------------------------------------------------------------------
+// $Id: x11_joystick.c,v 1.2 2003-02-02 21:24:56 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
