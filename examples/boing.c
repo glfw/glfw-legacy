@@ -28,7 +28,7 @@
  *****************************************************************************/
 
 /************************************************************************
- * $Id: boing.c,v 1.2 2003-02-02 22:34:12 marcus256 Exp $
+ * $Id: boing.c,v 1.3 2003-05-23 22:12:45 marcus256 Exp $
  ************************************************************************/
 
 #include <stdlib.h>
@@ -43,9 +43,7 @@
 /* Prototypes */
 void init( void );
 void display( void );
-void reshape( int w, int h );
-void loop( int dontcare );
-void keyboard( unsigned char key, int x, int y );
+void GLFWCALL reshape( int w, int h );
 void DrawBoingBall( void );
 void BounceBall( double dt );
 void DrawBoingBallBand( GLfloat long_lo, GLfloat long_hi );
