@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.18 2004-07-09 21:20:30 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.19 2004-07-11 21:02:12 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -40,8 +40,9 @@
 %-------------------------------------------------------------------------
 \chapter*{Summary}
 
-This document is a function reference manual for the \GLFW\ API. For a
-description of how to use \GLFW\ you should refer to the \textit{GLFW Users Guide}.
+This document is primarily a function reference manual for the \GLFW\ API.
+For a description of how to use \GLFW\ you should refer to the
+\textit{GLFW Users Guide}.
 \vspace{10cm}
 
 \large
@@ -169,18 +170,17 @@ functions.
 The programmer decides when to call the event processing functions, and
 when to abort the event loop.
 
-In C language, a typical event loop might look like this:
+In pseudo language, a typical event loop might look like this:
 
 \begin{lstlisting}
-  while( 1 )
+  repeat until window is closed
   {
-    glfwWaitEvents();
-    if( !glfwGetWindowParam( GLFW_OPENED ) ) break;
+    poll events
+    draw OpenGL graphics
   }
 \end{lstlisting}
 
-The loop in the example only waits until the window is closed, and then
-aborts the loop (possibly continuing by terminating the application).
+
 
 
 
