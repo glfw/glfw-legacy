@@ -1,7 +1,7 @@
 ;========================================================================
 ; GLFW - An OpenGL framework
 ; File:        glfw.inc
-; Platform:    Visual Basic/Windows
+; Platform:    MASM/Windows
 ; API version: 2.5
 ; Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ; WWW:         http://glfw.sourceforge.net
@@ -30,7 +30,7 @@
 ; Marcus Geelnard
 ; marcus.geelnard at home.se
 ;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.2 2004-02-29 20:42:43 marcus256 Exp $
+; $Id: glfw.inc,v 1.3 2004-03-04 21:37:30 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
