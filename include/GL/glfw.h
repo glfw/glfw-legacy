@@ -28,7 +28,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.3 2003-02-02 21:00:08 marcus256 Exp $
+// $Id: glfw.h,v 1.4 2003-04-09 19:23:42 marcus256 Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -174,7 +174,7 @@ extern "C" {
 
 #define GLFW_VERSION_MAJOR    2
 #define GLFW_VERSION_MINOR    4
-#define GLFW_VERSION_REVISION 0
+#define GLFW_VERSION_REVISION 1
 
 
 //========================================================================
