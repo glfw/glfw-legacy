@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: amigaos_time.c,v 1.2 2003-02-02 22:20:54 marcus256 Exp $
+// $Id: amigaos_time.c,v 1.3 2003-05-19 19:48:50 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -44,10 +44,46 @@
 // _glfwInitTimer() - Initialize timer
 //========================================================================
 
-void _glfwInitTimer( void )
+int _glfwInitTimer( void )
 {
     ULONG            freq;
     struct EClockVal t;
+
+    // Start by clearing all handles
+    TimerBase          = NULL;
+    _glfwTimer.TimerMP = NULL;
+    _glfwTimer.TimerIO = NULL;
+
+    // Open timer.device (used as a library for ReadEClock)
+    if( _glfwTimer.TimerMP = CreatePort( NULL, 0 ) )
+    {
+        // Create the I/O request
+        if( _glfwTimer.TimerIO = (struct timerequest *)
+            CreateExtIO(_glfwTimer.TimerMP, sizeof(struct timerequest)) )
+        {
+            // Open the timer device
+            if( !( OpenDevice( "timer.device", UNIT_MICROHZ,
+                               (struct IORequest *) _glfwTimer.TimerIO,
+                               0 ) ) )
+            {
+                // Set up pointer for timer functions
+                TimerBase =
+                   (struct Device *)_glfwTimer.TimerIO->tr_node.io_Device;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
+    }
 
     // Get current time
     freq = ReadEClock( &t );
@@ -58,6 +94,47 @@ void _glfwInitTimer( void )
     // Convert to 64-bit integer
     _glfwTimer.t0 = (long long) t.ev_hi * (long long) 4294967296 +
                     (long long) t.ev_lo;
+
+    return 1;
+}
+
+
+//========================================================================
+// _glfwTerminateTimer() - Terminate timer
+//========================================================================
+
+void _glfwTerminateTimer( void )
+{
+    // Empty the timer.device message port queue
+    if( _glfwTimer.TimerMP )
+    {
+        struct Message *msg;
+        while( NULL != (msg = GetMsg( _glfwTimer.TimerMP )) )
+        {
+            ReplyMsg( msg );
+        }
+    }
+
+    // Close timer.device
+    if( TimerBase )
+    {
+        CloseDevice( (struct IORequest *) _glfwTimer.TimerIO );
+        TimerBase = NULL;
+    }
+
+    // Delete timer.device I/O request
+    if( _glfwTimer.TimerIO )
+    {
+        DeleteExtIO( (struct IORequest *) _glfwTimer.TimerIO );
+        _glfwTimer.TimerIO = NULL;
+    }
+
+    // Delete timer.device message port
+    if( _glfwTimer.TimerMP )
+    {
+        DeletePort( _glfwTimer.TimerMP );
+        _glfwTimer.TimerMP = NULL;
+    }
 }
 
 
