@@ -8,7 +8,7 @@
 # Once the '.lib' files are created, you may come back to this directory and type 'scons' to build the executables.
 # To run the executables, the ../../win32dll/glfw.dll file must be somewhere in your path, or you can copy it to this directory.
 #
-# $Id: SConstruct,v 1.1 2004-03-26 16:18:15 glennmlewis Exp $
+# $Id: SConstruct,v 1.2 2004-03-26 22:55:09 glennmlewis Exp $
 
 path = ['/dmd/bin', '/dm/bin']
 env = Environment(ENV = {'PATH' : path}, DPATH = '-I../imports')
@@ -17,6 +17,6 @@ libs = '../lib/glfwdll.lib ../lib/glu32.lib ../lib/opengl32.lib'
 
 env.Program('splitview', Split('splitview.d '+libs))
 env.Program('triangle', Split('triangle.d '+libs))
-# env.Program('particles', Split('particles.d '+libs))
-# env.Program('boing', Split('boing.d '+libs))
-# env.Program('gears', Split('gears.d '+libs))
+env.Program('gears', Split('gears.d '+libs))
+env.Program('particles', Split('particles.d '+libs))
+env.Program('boing', Split('boing.d '+libs))
