@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.5 2003-12-07 22:22:27 marcus256 Exp $
+// $Id: dos_window.c,v 1.6 2003-12-10 20:36:15 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -295,9 +295,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Start mouse handler
     if( !_glfwInitMouse() )
     {
-        printf("Unable to start mouse driver\n");
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
+        printf("***Warning: Unable to start mouse driver\n");
     }
 
     // Remember actual screen/window size
