@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.9 2004-04-11 11:40:32 marcus256 Exp $
+// $Id: win32_window.c,v 1.10 2004-04-13 19:47:13 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -639,6 +639,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     DWORD       dwStyle, dwExStyle;
     int         full_width, full_height;
     PIXELFORMATDESCRIPTOR pfd;
+    RECT        wa;
 
     // Clear platform specific GLFW window state
     _glfwWin.DC                = NULL;
@@ -717,13 +718,17 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
                             &full_height );
 
+    // Adjust window position to working area (e.g. if the task bar is at
+    // the top of the display)...
+    SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
+
     // Create window
     _glfwWin.Wnd = CreateWindowEx(
                dwExStyle,                 // Extended style
                "GLFW",                    // Class name
                "GLFW Window",             // Window title
                dwStyle,                   // Defined window style
-               0, 0,                      // Window position
+               wa.left, wa.top,           // Window position
                full_width,                // Decorated window width
                full_height,               // Decorated window height
                NULL,                      // No parent window
