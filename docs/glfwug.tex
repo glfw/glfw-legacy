@@ -1,0 +1,119 @@
+%-------------------------------------------------------------------------
+% GLFW Users Guide
+% API Version: 2.4
+% $Id: glfwug.tex,v 1.1 2003-11-03 21:23:21 marcus256 Exp $
+%-------------------------------------------------------------------------
+
+% Document class
+\documentclass[a4paper,11pt,oneside]{report}
+
+% Document title and API version
+\newcommand{\glfwdoctype}[1][0]{Users Guide}
+\newcommand{\glfwapiver}[1][0]{2.4}
+
+% Common document settings and macros
+\input{glfwdoc.sty}
+
+% PDF specific document settings
+\hypersetup{pdftitle={GLFW Users Guide}}
+\hypersetup{pdfauthor={Marcus Geelnard}}
+\hypersetup{pdfkeywords={GLFW,OpenGL,guide,manual}}
+
+
+%-------------------------------------------------------------------------
+% Document body
+%-------------------------------------------------------------------------
+
+\begin{document}
+
+% Title page
+\glfwmaketitle
+
+% Summary, trademarks and table of contents
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+%-------------------------------------------------------------------------
+% Summary and Trademarks
+%-------------------------------------------------------------------------
+\chapter*{Summary}
+
+This document is a users guide for the \GLFW\ API. For a detailed
+description of the \GLFW\ API you should refer to the
+\textit{GLFW Reference Manual}.
+\vspace{10cm}
+
+\large
+Trademarks
+
+\small
+OpenGL and IRIX are registered trademarks of Silicon Graphics, Inc.\linebreak
+Microsoft, Windows and MS­-DOS are registered trademarks of Microsoft Corporation.\linebreak
+Mac OS is a registered trademark of Apple Computer, Inc.\linebreak
+Linux is a registered trademark of Linus Torvalds.\linebreak
+FreeBSD is a registered trademark of Wind River Systems, Inc.\linebreak
+Solaris is a trademark of Sun Microsystems, Inc.\linebreak
+UNIX is a registered trademark of The Open Group.\linebreak
+X Window System is a trademark of The Open Group.\linebreak
+POSIX is a trademark of IEEE.\linebreak
+Truevision, TARGA and TGA are registered trademarks of Truevision, Inc.\linebreak
+
+All other trademarks mentioned in this document are the property of their respective owners.
+\normalsize
+
+
+%-------------------------------------------------------------------------
+% Table of contents
+%-------------------------------------------------------------------------
+\tableofcontents
+\pagebreak
+
+% Document chapters starts here...
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+
+%-------------------------------------------------------------------------
+% Introduction
+%-------------------------------------------------------------------------
+\chapter{Introduction}
+\thispagestyle{fancy}
+
+\GLFW\ is a portable API (Application Program Interface) that handles
+operating system specific tasks related to \OpenGL\ programming. While
+\OpenGL\ in general is portable, easy to use and often results in tidy and
+compact code, the operating system specific mechanisms that are required
+to set up and manage an \OpenGL\ window are quite the opposite. \GLFW\ tries
+to remedy this by providing the following functionality:
+
+\begin{itemize}
+\item Opening and managing an \OpenGL\ window.
+\item Keyboard, mouse and joystick input.
+\item A high precision timer.
+\item Multi threading support.
+\item Support for querying and using \OpenGL\ extensions.
+\item Image file loading support.
+\end{itemize}
+\vspace{18pt}
+
+All this functionality is implemented as a set of easy-to-use functions,
+which makes it possible to write an \OpenGL\ application framework in just a
+few lines of code. The \GLFW\ API is completely operating system and
+platform independent, which makes it very simple to port \GLFW\ based \OpenGL\
+applications to a variety of platforms.
+
+Currently supported platforms are:
+\begin{itemize}
+\item Microsoft Windows\textsuperscript{\textregistered} 95/98/ME/NT/2000/XP/.NET Server.
+\item Unix\textsuperscript{\textregistered} or Unix­-like systems running the
+X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
+IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
+Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
+Mac OS\textsuperscript{\textregistered} X.
+\item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Only a subset of the \GLFW\ API is supported for this platform at the time of writing.}
+\item AmigaOS\footnotemark[\value{footnote}]
+\end{itemize}
+
+
+
+\end{document}
