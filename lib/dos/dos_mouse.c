@@ -31,7 +31,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.5 2003-12-09 22:12:29 marcus256 Exp $
+// $Id: dos_mouse.c,v 1.6 2003-12-09 22:16:18 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -46,7 +46,6 @@
 //========================================================================
 
 #define _GLFW_MOUSE_STACK_SIZE 16384
-
 
 // Assembler function prototypes
 extern void _glfwMouseWrap( void );
@@ -180,8 +179,8 @@ static void _glfwMouseInt( __dpmi_regs *r )
 // _glfwMouseWrap()
 //========================================================================
 
-// Hack alert: `_glfwMouseWrap_end' actually holds the address of stack in a
-// safe data selector.
+// Hack alert: `_glfwMouseWrap_end' actually holds the address of stack in
+// a safe data selector.
 
 __asm("\n\
                 .text                           \n\
@@ -204,7 +203,7 @@ __glfwMouseWrap:                                \n\
                 pushl   %fs                     \n\
                 popl    %gs                     \n\
                 pushl   %edi                    \n\
-                call    _mouse                  \n\
+                call    __glfwMouseInt          \n\
                 popl    %edi                    \n\
                 movl    %ebx, %ss               \n\
                 movl    %esi, %esp              \n\
