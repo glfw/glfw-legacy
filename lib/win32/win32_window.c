@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.10 2004-04-13 19:47:13 marcus256 Exp $
+// $Id: win32_window.c,v 1.11 2004-07-09 20:12:19 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -499,25 +499,55 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
         // Were any of the mouse-buttons pressed?
         case WM_LBUTTONDOWN:
+            SetCapture(hWnd);
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
             return 0;
         case WM_RBUTTONDOWN:
+            SetCapture(hWnd);
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT, GLFW_PRESS );
             return 0;
         case WM_MBUTTONDOWN:
+            SetCapture(hWnd);
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
             return 0;
+        case WM_XBUTTONDOWN:
+            if( (wParam >> 8) == XBUTTON1 )
+            {
+                SetCapture(hWnd);
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_4, GLFW_PRESS );
+            }
+            else if( (wParam >> 8) == XBUTTON2 )
+            {
+                SetCapture(hWnd);
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_PRESS );
+            }
+            return 1;
 
         // Were any of the mouse-buttons released?
         case WM_LBUTTONUP:
+            ReleaseCapture();
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE );
             return 0;
         case WM_RBUTTONUP:
+            ReleaseCapture();
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT, GLFW_RELEASE );
             return 0;
         case WM_MBUTTONUP:
+            ReleaseCapture();
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE );
             return 0;
+        case WM_XBUTTONUP:
+            if( (wParam >> 8) == XBUTTON1 )
+            {
+                ReleaseCapture();
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_4, GLFW_RELEASE );
+            }
+            else if( (wParam >> 8) == XBUTTON2 )
+            {
+                ReleaseCapture();
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_RELEASE );
+            }
+            return 1;
 
         // Did the mouse move?
         case WM_MOUSEMOVE:
