@@ -29,7 +29,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.2 2003-02-02 22:20:54 marcus256 Exp $
+// $Id: platform.h,v 1.3 2003-05-19 19:51:23 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -64,6 +64,9 @@
 #include <graphics/rastport.h>
 #include <devices/timer.h>
 #include <devices/keymap.h>
+#include <devices/input.h>
+#include <devices/inputevent.h>
+#include <devices/gameport.h>
 
 #include <proto/exec.h>
 #include <proto/dos.h>
@@ -109,9 +112,6 @@ struct Library       * KeymapBase;
 struct UtilityBase   * UtilityBase;
 struct Device        * TimerBase;
 #endif
-
-GLFWGLOBAL struct MsgPort       * TimerMP;
-GLFWGLOBAL struct timerequest   * TimerIO;
 
 
 //------------------------------------------------------------------------
@@ -164,11 +164,13 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
-    struct Screen            *Screen;   // Screen handle
-    struct Window            *Window;   // Window handle
-    ULONG     ModeID;                   // ModeID
-    APTR      PointerSprite;            // Memory for blank pointer sprite
-    int       PointerHidden;            // Is pointer hidden?
+    struct Screen   *Screen;       // Screen handle
+    struct Window   *Window;       // Window handle
+    ULONG           ModeID;        // ModeID
+    APTR            PointerSprite; // Memory for blank pointer sprite
+    int             PointerHidden; // Is pointer hidden?
+    struct MsgPort  *InputMP;      // Message port (pointer movement)
+    struct IOStdReq *InputIO;      // I/O request (pointer movement)
 
     // Mesa/OpenGL flavour specific
 #ifdef _GLFW_STORMMESA
@@ -218,8 +220,10 @@ GLFWGLOBAL struct {
 // Timer status
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    double       Resolution;
-    long long    t0;
+    struct MsgPort     *TimerMP;
+    struct timerequest *TimerIO;
+    double             Resolution;
+    long long          t0;
 } _glfwTimer;
 
 
@@ -281,6 +285,20 @@ GLFWGLOBAL struct {
 } _glfwThrd;
 
 
+//------------------------------------------------------------------------
+// Joystick information & state
+//------------------------------------------------------------------------
+GLFWGLOBAL struct {
+    int                    Present;
+    int                    GameDeviceOpen;
+    struct IOStdReq        *GameIO;
+    struct MsgPort         *GameMP;
+    struct InputEvent      GameEvent;
+    float                  Axis[ 2 ];
+    unsigned char          Button[ 2 ];
+} _glfwJoy;
+
+
 //========================================================================
 // Macros for encapsulating critical code sections (i.e. making parts
 // of GLFW thread safe)
@@ -298,7 +316,8 @@ GLFWGLOBAL struct {
 //========================================================================
 
 // Time
-void _glfwInitTimer( void );
+int  _glfwInitTimer( void );
+void _glfwTerminateTimer( void );
 
 // Fullscreen
 int _glfwOpenScreen( int *width, int *height, int *r, int *g, int *b,
@@ -307,5 +326,9 @@ int _glfwGetClosestVideoMode( int *w, int *h, int *r, int *g, int *b,
                               int refresh );
 void _glfwGetModeIDInfo( ULONG ModeID, int *w, int *h, int *r, int *g,
                          int *b, int *refresh );
+// Joystick
+void _glfwInitJoysticks( void );
+void _glfwTerminateJoysticks( void );
+
 
 #endif // _platform_h_
