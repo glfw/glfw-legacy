@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.7 2003-11-06 14:56:42 elmindreda Exp $
+// $Id: macosx_window.c,v 1.8 2004-01-13 22:04:45 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -240,43 +240,18 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                 else
                 {
                     HIPoint mouseLocation;
-                    if ( GetEventParameter( event,
-                                            kEventParamWindowMouseLocation,
-                                            typeHIPoint,
-                                            NULL,
-                                            sizeof( HIPoint ),
-                                            NULL,
-                                            &mouseLocation ) == noErr )
+                    if ( !_glfwWin.Fullscreen )
                     {
-                        EventMouseButton button;
                         if ( GetEventParameter( event,
-                                                kEventParamMouseButton,
-                                                typeMouseButton,
+                                                kEventParamWindowMouseLocation,
+                                                typeHIPoint,
                                                 NULL,
-                                                sizeof( EventMouseButton ),
+                                                sizeof( HIPoint ),
                                                 NULL,
-                                                &button ) == noErr )
-                        {
-                            _glfwInputMouseClick( button
-                                                  - kEventMouseButtonPrimary
-                                                  + GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
-                            return noErr;
-                        }
+                                                &mouseLocation ) != noErr )
+                            break;
                     }
-                }
-            }
-            break;
-        case kEventMouseUp:
-            {
-                HIPoint mouseLocation;
-                if ( GetEventParameter( event,
-                                        kEventParamWindowMouseLocation,
-                                        typeHIPoint,
-                                        NULL,
-                                        sizeof( HIPoint ),
-                                        NULL,
-                                        &mouseLocation ) == noErr )
-                {
+
                     EventMouseButton button;
                     if ( GetEventParameter( event,
                                             kEventParamMouseButton,
@@ -288,9 +263,41 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                     {
                         _glfwInputMouseClick( button
                                               - kEventMouseButtonPrimary
-                                              + GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE );
+                                              + GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
                         return noErr;
                     }
+                }
+            }
+            break;
+        case kEventMouseUp:
+            {
+                HIPoint mouseLocation;
+
+                if ( !_glfwWin.Fullscreen )
+                {
+                    if ( GetEventParameter( event,
+                                            kEventParamWindowMouseLocation,
+                                            typeHIPoint,
+                                            NULL,
+                                            sizeof( HIPoint ),
+                                            NULL,
+                                            &mouseLocation ) != noErr )
+                        break;
+                }
+                
+                EventMouseButton button;
+                if ( GetEventParameter( event,
+                                        kEventParamMouseButton,
+                                        typeMouseButton,
+                                        NULL,
+                                        sizeof( EventMouseButton ),
+                                        NULL,
+                                        &button ) == noErr )
+                {
+                    _glfwInputMouseClick( button
+                                          - kEventMouseButtonPrimary
+                                          + GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE );
+                    return noErr;
                 }
             }
             break;
@@ -298,25 +305,48 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
         case kEventMouseDragged:
             {
                 HIPoint mouseLocation;
-                if ( GetEventParameter( event,
-                                        kEventParamWindowMouseLocation,
-                                        typeHIPoint,
-                                        NULL,
-                                        sizeof( HIPoint ),
-                                        NULL,
-                                        &mouseLocation ) == noErr )
+                if ( _glfwWin.Fullscreen )
                 {
-                    Rect structure, content;
-                    GetWindowBounds(_glfwWin.MacWindow, kWindowStructureRgn, &structure);
-                    GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
-                    _glfwInput.MousePosX = mouseLocation.x - content.left + structure.left;
-                    _glfwInput.MousePosY = mouseLocation.y - content.top + structure.top;
-                    if( _glfwWin.MousePosCallback )
+                    if ( GetEventParameter( event,
+                                            kEventParamMouseLocation,
+                                            typeHIPoint,
+                                            NULL,
+                                            sizeof( HIPoint ),
+                                            NULL,
+                                            &mouseLocation ) == noErr )
                     {
-                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                                                   _glfwInput.MousePosY );
+                        _glfwInput.MousePosX = mouseLocation.x;
+                        _glfwInput.MousePosY = mouseLocation.y;
+                        if( _glfwWin.MousePosCallback )
+                        {
+                            _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                                       _glfwInput.MousePosY );
+                        }
+                        return noErr;
                     }
-                    return noErr;
+                }
+                else
+                {
+                    if ( GetEventParameter( event,
+                                            kEventParamWindowMouseLocation,
+                                            typeHIPoint,
+                                            NULL,
+                                            sizeof( HIPoint ),
+                                            NULL,
+                                            &mouseLocation ) == noErr )
+                    {
+                        Rect structure, content;
+                        GetWindowBounds(_glfwWin.MacWindow, kWindowStructureRgn, &structure);
+                        GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
+                        _glfwInput.MousePosX = mouseLocation.x - content.left + structure.left;
+                        _glfwInput.MousePosY = mouseLocation.y - content.top + structure.top;
+                        if( _glfwWin.MousePosCallback )
+                        {
+                            _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                                       _glfwInput.MousePosY );
+                        }
+                        return noErr;
+                    }
                 }
             }
             break;
@@ -380,15 +410,66 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
                             NULL,
                             &command ) == noErr )
     {
-        if ( command.commandID == kHICommandQuit )
+        switch ( command.commandID )
         {
-            glfwCloseWindow();
+            case kHICommandClose:
+            case kHICommandQuit:
+            {
+                glfwCloseWindow();
+                break;
+            }
         }
     }
 
     return eventNotHandledErr;
 }
 
+EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
+{
+  { kEventClassWindow, kEventWindowBoundsChanged }, 
+  { kEventClassWindow, kEventWindowClose }
+};
+
+OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
+                              EventRef event,
+                              void *userData )
+{
+  switch (GetEventKind(event))
+  {
+    case kEventWindowBoundsChanged:
+    {
+      WindowRef window;      
+      GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
+                        sizeof(WindowRef), NULL, &window);
+      
+      Rect rect;      
+      GetWindowPortBounds(window, &rect);
+      
+      if ( _glfwWin.Width != rect.right ||
+           _glfwWin.Height != rect.bottom)
+      {
+        aglUpdateContext(_glfwWin.AGLContext);
+        
+        _glfwWin.Width  = rect.right;
+        _glfwWin.Height = rect.bottom;
+        if( _glfwWin.WindowSizeCallback )
+        {
+          _glfwWin.WindowSizeCallback( _glfwWin.Width,
+                                       _glfwWin.Height );
+        }
+      }
+      break;
+    }
+
+    case kEventWindowClose:
+    {
+      glfwCloseWindow();
+      return noErr;
+    }
+  }
+  
+  return eventNotHandledErr;
+}
 int  _glfwInstallEventHandlers( void )
 {
     OSStatus error;
@@ -413,10 +494,10 @@ int  _glfwInstallEventHandlers( void )
                                  NULL );
     if ( error != noErr )
     {
-        // TO DO: fix leak of UPPs
-        return GL_FALSE;
+      // TO DO: fix leak of UPPs
+      return GL_FALSE;
     }
-
+    
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  NewEventHandlerUPP( _glfwKeyEventHandler ),
                                  GetEventTypeCount( GLFW_KEY_EVENT_TYPES ),
@@ -558,6 +639,22 @@ int  _glfwPlatformOpenWindow( int width,
         return GL_FALSE;
     }
 
+    if ( !_glfwWin.Fullscreen )
+    {
+      error = InstallWindowEventHandler( _glfwWin.MacWindow,
+                                         NewEventHandlerUPP( _glfwWindowEventHandler ),
+                                         GetEventTypeCount( GLFW_WINDOW_EVENT_TYPES ),
+                                         GLFW_WINDOW_EVENT_TYPES,
+                                         NULL,
+                                         NULL );
+      if ( error != noErr )
+      {
+        aglDestroyContext( _glfwWin.AGLContext );
+        // TO DO: fix leak of UPPs
+        return GL_FALSE;
+      }
+    }
+    
     // Don't care if we fail here
     (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, CFSTR( "GLFW Window" ) );
     (void)RepositionWindow( _glfwWin.MacWindow,
