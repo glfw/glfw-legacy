@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_joystick.c,v 1.7 2005-03-06 18:57:38 marcus256 Exp $
+// $Id: x11_joystick.c,v 1.8 2005-03-06 19:02:02 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -114,8 +114,10 @@ void _glfwInitJoysticks( void )
         {
         case 0:
             joy_base_name = "/dev/input/js";  // USB sticks
+            break;
         case 1:
             joy_base_name = "/dev/js";        // "Legacy" sticks
+            break;
         default:
             continue;                         // (should never happen)
         }
