@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.6 2004-02-14 21:01:45 marcus256 Exp $
+// $Id: platform.h,v 1.7 2004-02-25 22:26:44 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -189,8 +189,9 @@ struct _GLFWwin_struct {
     int       Stereo;
     int       RefreshRate;     // Vertical monitor refresh rate
 
-    // Extensions
+    // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
+    int       GLVerMajor,GLVerMinor;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
