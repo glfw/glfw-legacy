@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.4
-% $Id: glfwug.tex,v 1.9 2004-01-06 09:00:57 marcus256 Exp $
+% $Id: glfwug.tex,v 1.10 2004-01-31 20:20:13 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -330,7 +330,7 @@ The \textit{target} argument can be one of the constants listed in table~
 specified target.
 
 %-------------------------------------------------------------------------
-\begin{table}[bhtp]
+\begin{table}[p]
 \begin{center}
 \begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
@@ -416,7 +416,7 @@ The argument \textit{param} can be one of the tokens listed in table
 requested value.
 
 %-------------------------------------------------------------------------
-\begin{table}[bhtp]
+\begin{table}[p]
 \begin{center}
 \begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Description} \\ \hline
@@ -925,8 +925,8 @@ which parameter to retrieve. To determine if a joystick is connected,
 \textit{param} should be GLFW\_PRESENT, which will cause the function to
 return GL\_TRUE if the joystick is connected, or GL\_FALSE if it is not.
 To determine the number of axes or buttons that are supported by the
-joystick, \textit{param} should be GLFW\_JOYSTICK\_AXES or
-GLFW\_JOYSTICK\_BUTTONS, respectively.
+joystick, \textit{param} should be GLFW\_AXES or GLFW\_BUTTONS,
+respectively.
 
 
 %-------------------------------------------------------------------------
