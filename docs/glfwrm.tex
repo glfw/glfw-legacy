@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.4 2003-11-07 08:47:57 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.5 2003-11-07 20:49:12 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -25,6 +25,8 @@
 %-------------------------------------------------------------------------
 
 \begin{document}
+
+\pagestyle{plain}
 
 % Title page
 \glfwmaketitle
@@ -69,6 +71,7 @@ All other trademarks mentioned in this document are the property of their respec
 
 
 % Document chapters starts here...
+\pagestyle{fancy}
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
@@ -297,15 +300,15 @@ In order to determine the actual properties of an opened window, use
 %-------------------------------------------------------------------------
 \begin{table}[bhtp]
 \begin{center}
-\begin{tabular}{|l|p{9.5cm}|} \hline \raggedright
-\textbf{Name}            & \textbf{Description} \\ \hline
-GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz (only used for fullscreen windows).\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
-GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
-GLFW\_STEREO             & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
+\begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
+\textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
+GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows).\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
+GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
 \end{tabular}
 \end{center}
 \caption{Targets for \textbf{glfwOpenWindowHint}}
@@ -340,7 +343,7 @@ For a hint to be registered, the function must be called before calling
 \textbf{glfwOpenWindow}. When the \textbf{glfwOpenWindow} function is
 called, any hints that were registered with the \textbf{glfwOpenWindowHint}
 function are used for setting the corresponding window properties, and
-then all hints are reset to ``do not care''.
+then all hints are reset to their default values.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1597,9 +1600,345 @@ An \OpenGL\ context must be created before this function can be called
 (i.e. an \OpenGL\ window must have been opened with
 \textbf{glfwOpenWindow}).
 
-Under Windows, WGL extensions are also tested, in addition to standard
-GL extensions.
+In addition to checking for \OpenGL\ extensions, \GLFW\ also checks for
+extensions in the operating system ``glue API'', such as WGL extensions
+under Windows and glX extensions under the X Window System.
 \end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetProcAddress}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void * glfwGetProcAddress( const char *procname )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{procname}]\ \\
+  A null terminated ISO~8859-1 string containing the name of an \OpenGL\
+  extension function.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the pointer to the specified \OpenGL\ function if it
+is supported, otherwise NULL is returned.
+\end{refreturn}
+
+\begin{refdescription}
+The function acquires the pointer to an \OpenGL\ extension function. Some
+(but not all) \OpenGL\ extensions define new API functions, which are
+usually not available through normal linking. It is therefore necessary to
+get access to those API functions at runtime.
+\end{refdescription}
+
+\begin{refnotes}
+An \OpenGL\ context must be created before this function can be called
+(i.e. an \OpenGL\ window must have been opened with
+\textbf{glfwOpenWindow}).
+
+Some systems do not support dynamic function pointer retrieval, in which
+case \textbf{glfwGetProcAddress} will always return NULL.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetGLVersion}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwGetGLVersion( int *major, int *minor, int *rev )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{major}]\ \\
+  Pointer to an integer that will hold the major version number.
+\item [\textit{minor}]\ \\
+  Pointer to an integer that will hold the minor version number.
+\item [\textit{rev}]\ \\
+  Pointer to an integer that will hold the revision.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns the major and minor version numbers and the revision
+for the currently used \OpenGL\ implementation.
+\end{refreturn}
+
+\begin{refdescription}
+The function returns the \OpenGL\ implementation version. This is a
+convenient function that parses the version number information from the
+string returned by calling \texttt{glGetString(~GL\_VERSION~)}. The
+\OpenGL\ version information can be used to determine what functionality
+is supported by the used \OpenGL\ implementation.
+\end{refdescription}
+
+\begin{refnotes}
+An \OpenGL\ context must be created before this function can be called
+(i.e. an \OpenGL\ window must have been opened with
+\textbf{glfwOpenWindow}).
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\pagebreak
+\section{Threads}
+A thread is a separate execution path within a process. All threads within
+a process share the same address space and resources. Threads execute in
+parallel, either virtually by means of time-sharing on a single processor,
+or truly in parallel on several processors. Even on a multi-processor
+system, time-sharing is employed in order to maximize processor
+utilization and to ensure fair scheduling. \GLFW\ provides an operating
+system independent interface to thread management.
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwCreateThread}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+GLFWthread glfwCreateThread( GLFWthreadfun fun, void *arg )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{fun}]\ \\
+  A pointer to a function that acts as the entry point for the new thread.
+  The function should have the following C language prototype:
+
+  \texttt{void GLFWCALL functionname( void *arg );}
+
+  Where \textit{functionname} is the name of the thread function, and
+  \textit{arg} is the user supplied argument (see below).
+\item [\textit{arg}]\ \\
+  An arbitrary argument for the thread. \textit{arg} will be passed as the
+  argument to the thread function pointed to by \textit{fun}. For
+  instance, \textit{arg} can point to data that is to be processed by the
+  thread.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns a thread identification number if the thread was
+created successfully. This number is always positive. If the function
+fails, a negative number is returned.
+\end{refreturn}
+
+\begin{refdescription}
+The function creates a new thread, which executes within the same address
+space as the calling process. The thread entry point is specified with the
+\textit{fun} argument.
+
+Once the thread function \textit{fun} returns, the thread dies.
+\end{refdescription}
+
+\begin{refnotes}
+Even if the function returns a positive thread ID, indicating that the
+thread was created successfully, the thread may be unable to execute, for
+instance if the thread start address is not a valid thread entry point.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwDestroyThread}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwDestroyThread( GLFWthread ID )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{ID}]\ \\
+  A thread identification handle, which is returned by
+  \textbf{glfwCreateThread} or \textbf{glfwGetThreadID}.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function kills a running thread and removes it from the thread list.
+\end{refdescription}
+
+\begin{refnotes}
+This function is a very dangerous operation, which may interrupt a thread
+in the middle of an important operation, and its use is discouraged. You
+should always try to end a thread in a graceful way using thread
+communication, and use \textbf{glfwWaitThread} in order to wait for the
+thread to die.
+\end{refnotes}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwWaitThread}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+int glfwWaitThread( GLFWthread ID, int waitmode )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{ID}]\ \\
+  A thread identification handle, which is returned by
+  \textbf{glfwCreateThread} or \textbf{glfwGetThreadID}.
+\item [\textit{waitmode}]\ \\
+  Can be either GLFW\_WAIT or GLFW\_NOWAIT.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+The function returns GL\_TRUE if the specified thread died after the
+function was called, or the thread did not exist, in which case
+\textbf{glfwWaitThread} will return immediately regardless of
+\textit{waitmode}. The function returns GL\_FALSE if \textit{waitmode}
+is GLFW\_NOWAIT, and the specified thread exists and is still running.
+\end{refreturn}
+
+\begin{refdescription}
+If \textit{waitmode} is GLFW\_WAIT, the function waits for a thread to
+die. If \textit{waitmode} is GLFW\_NOWAIT, the function checks if a thread
+exists and returns immediately.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwGetThreadID}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+GLFWthread glfwGetThreadID( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns a thread identification handle for the calling
+thread.
+\end{refreturn}
+
+\begin{refdescription}
+The function determines the thread ID for the calling thread. The ID is
+the same value as was returned by \textbf{glfwCreateThread} when the
+thread was created.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\pagebreak
+\section{Mutexes}
+Mutexes are used to securely share data between threads. A mutex object
+can only be owned by one thread at a time. If more than one thread
+requires access to a mutex object, all but one thread will be put to sleep
+until they get access to it.
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwCreateMutex}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+GLFWmutex glfwCreateMutex( void )
+\end{lstlisting}
+
+\begin{refparameters}
+none
+\end{refparameters}
+
+\begin{refreturn}
+The function returns a mutex handle, or NULL if the mutex could not be
+created.
+\end{refreturn}
+
+\begin{refdescription}
+The function creates a mutex object, which can be used to control access
+to data that is shared between threads.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwDestroyMutex}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwDestroyMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{mutex}]\ \\
+  A mutex object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function destroys a mutex object. After a mutex object has been
+destroyed, it may no longer be used by any thread.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwLockMutex}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwLockMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{mutex}]\ \\
+  A mutex object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function will acquire a lock on the selected mutex object. If the
+mutex is already locked by another thread, the function will block the
+calling thread until it is released by the locking thread. Once the
+function returns, the calling thread has an exclusive lock on the mutex.
+To release the mutex, call \textbf{glfwUnlockMutex}.
+\end{refdescription}
+
+
+%-------------------------------------------------------------------------
+\subsection{glfwUnlockMutex}
+
+\textbf{C language syntax}
+\begin{lstlisting}
+void glfwUnlockMutex( GLFWmutex mutex )
+\end{lstlisting}
+
+\begin{refparameters}
+\begin{description}
+\item [\textit{mutex}]\ \\
+  A mutex object handle.
+\end{description}
+\end{refparameters}
+
+\begin{refreturn}
+none
+\end{refreturn}
+
+\begin{refdescription}
+The function releases the lock of a locked mutex object.
+\end{refdescription}
 
 
 %-------------------------------------------------------------------------
