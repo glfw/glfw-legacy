@@ -3,6 +3,8 @@
 #-------------------------------------------------------------------------
 # To compile GLFW using this makefile, run:
 # "wmake -ms -f Makefile.win32.ow" or "nmake -f Makefile.win32.ow"
+#-------------------------------------------------------------------------
+# $Id: Makefile.win32.ow,v 1.2 2003-05-23 21:57:37 marcus256 Exp $
 ##########################################################################
 
 ##########################################################################
@@ -10,11 +12,13 @@
 ##########################################################################
 default: glfw.lib glfw.dll
 
+
 ##########################################################################
 # GLFW version
 ##########################################################################
 VERMAJOR = 2
 VERMINOR = 4
+
 
 ##########################################################################
 # Compiler settings
@@ -27,6 +31,7 @@ CFLAGS_DLL = $(CFLAGS) /DGLFW_BUILD_DLL
 CFLAGS_SPEED     = /nologo /c /O2tgiy /Gs /W3 /I. /I..
 CFLAGS_SPEED_DLL = $(CFLAGS_SPEED) /DGLFW_BUILD_DLL
 
+
 ##########################################################################
 # Library builder settings
 ##########################################################################
@@ -38,6 +43,7 @@ LIBFLAGS  = /nologo
 LINK      = wlink
 LINKFLAGS = OPTION { quiet version=$(VERMAJOR).$(VERMINOR) } SYSTEM nt_dll initinstance terminstance
 LINKLIBS  = opengl32.lib user32.lib
+
 
 ##########################################################################
 # Object files for static library
@@ -62,6 +68,7 @@ OBJS = \
 	win32_thread.obj \
 	win32_time.obj \
 	win32_window.obj
+
 
 ##########################################################################
 # Object files for dynamic library
@@ -88,17 +95,21 @@ DLLOBJS = \
 	win32_time_dll.obj \
 	win32_window_dll.obj
 
+
+
 ##########################################################################
 # Rule for building static library
 ##########################################################################
 glfw.lib: $(OBJS)
 	$(MKLIB) $(LIBFLAGS) /OUT:glfw.lib $(OBJS)
 
+
 ##########################################################################
 # Rule for building dynamic library
 ##########################################################################
 glfw.dll: $(DLLOBJS)
 	$(LINK) $(LINKFLAGS) NAME glfw.dll OPTION { modname='GLFW.DLL' implib=glfwdll.lib stack=1M START=__DLLstartw_ } REFERENCE __DLLstartw_ FILE { $(DLLOBJS) } LIBRARY { $(LINKLIBS) }
+
 
 ##########################################################################
 # Rules for building static library object files
@@ -159,6 +170,7 @@ win32_time.obj: win32_time.c ..\\internal.h platform.h
 
 win32_window.obj: win32_window.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) /Fo$@ win32_window.c
+
 
 ##########################################################################
 # Rules for building dynamic library object files

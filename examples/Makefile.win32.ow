@@ -3,6 +3,8 @@
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
 # "wmake -ms -f Makefile.win32.ow" or "nmake -f Makefile.win32.ow"
+#-------------------------------------------------------------------------
+# $Id: Makefile.win32.ow,v 1.2 2003-05-23 21:59:37 marcus256 Exp $
 ##########################################################################
 
 # Compiler settings
@@ -18,10 +20,12 @@ LFLAGS = ..\\lib\\win32\\glfw.lib opengl32.lib glu32.lib user32.lib
 WINDOWS = -"RUNTIME windows=4.0 REFERENCE 'mainCRTStartup' OPTION { start='mainCRTStartup' quiet stack=1M }"
 CONSOLE = -"RUNTIME console REFERENCE _cstart_ OPTION { START=_cstart_ quiet stack=1M }"
 
+
 # Default: Build all tests
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
 	particles.exe splitview.exe mipmaps.exe keytest.exe gears.exe \
 	boing.exe wave.exe
+
 
 # Rule for triangle
 triangle.exe: triangle.c
