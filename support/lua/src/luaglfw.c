@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.5 2004-07-18 20:19:20 marcus256 Exp $
+// $Id: luaglfw.c,v 1.6 2004-07-19 19:48:30 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -53,9 +53,10 @@ struct lua_constant
 //****                        Handy functions                         ****
 //************************************************************************
 
+// Check the number of arguments on the Lua stack
 static int badArgs( lua_State *L, int n, char const *name )
 {
-    if( lua_gettop(L) < n )
+    if( lua_gettop(L) != n )
     {
         lua_settop( L, 0 );
         lua_pushstring( L, "Bad arguments passed to function: " );
@@ -67,6 +68,7 @@ static int badArgs( lua_State *L, int n, char const *name )
     return 0;
 }
 
+// Get a numeric value from a Lua table
 static void getNumber( lua_State *L, int index, char *key, lua_Number *num )
 {
     lua_pushstring( L, key );
@@ -90,6 +92,17 @@ static void addConstants( lua_State *L, struct lua_constant *cn )
         ++ cn;
     }
 }
+
+// Report error for unsupported functions
+static void unsupportedFunction( lua_State *L, char const *name )
+{
+    lua_settop( L, 0 );
+    lua_pushstring( L, "Unsupported function: " );
+    lua_pushstring( L, name );
+    lua_concat( L, 2 );
+    lua_error( L );
+}
+
 
 
 //************************************************************************
@@ -423,6 +436,8 @@ static int glfw_SwapInterval( lua_State *L )
 static int glfw_GetVideoModes( lua_State *L )
 {
     // !!TODO!!
+    unsupportedFunction( L, "GetVideoModes" );
+    return 0;
 }
 
 static int glfw_GetDesktopMode( lua_State *L )
@@ -520,7 +535,7 @@ static int glfw_SetMousePos( lua_State *L )
 static int glfw_GetMouseWheel( lua_State *L )
 {
     int pos;
-    glfwGetMouseWheel( &pos );
+    pos = glfwGetMouseWheel();
     lua_settop( L, 0 );
     lua_pushnumber( L, (lua_Number)pos );
     return 1;
@@ -558,8 +573,8 @@ static int glfw_GetJoystickParam( lua_State *L )
 
 static int glfw_GetJoystickPos( lua_State *L )
 {
-    int        joy, numaxes, res, i;
-    float      pos[ LUAGLFW_MAX_JOY_AXES ];
+    int   joy, numaxes, res, i;
+    float pos[ LUAGLFW_MAX_JOY_AXES ];
 
     // Get arguments
     if( badArgs( L, 2, "GetJoystickPos" ) ) return 0;
@@ -588,8 +603,8 @@ static int glfw_GetJoystickPos( lua_State *L )
 
 static int glfw_GetJoystickButtons( lua_State *L )
 {
-    int        joy, numbuttons, res, i;
-    float      buttons[ LUAGLFW_MAX_JOY_AXES ];
+    int           joy, numbuttons, res, i;
+    unsigned char buttons[ LUAGLFW_MAX_JOY_AXES ];
 
     // Get arguments
     if( badArgs( L, 2, "GetJoystickButtons" ) ) return 0;
@@ -608,7 +623,7 @@ static int glfw_GetJoystickButtons( lua_State *L )
     for( i = 0; i < res; ++ i )
     {
         lua_pushnumber( L, (lua_Number)(i+1) );
-        lua_pushnumber( L, buttons[ i ] );
+        lua_pushnumber( L, (lua_Number)buttons[ i ] );
         lua_rawset( L, -3 );
     }
 
@@ -651,10 +666,95 @@ static int glfw_Sleep( lua_State *L )
 
 
 //========================================================================
-// Threading support
+// Threading support (not possible in Lua)
 //========================================================================
 
-// Disabled - not possible through Lua
+static int glfw_CreateThread( lua_State *L )
+{
+    unsupportedFunction( L, "CreateThread" );
+    return 0;
+}
+
+static int glfw_DestroyThread( lua_State *L )
+{
+    unsupportedFunction( L, "DestroyThread" );
+    return 0;
+}
+
+static int glfw_WaitThread( lua_State *L )
+{
+    unsupportedFunction( L, "WaitThread" );
+    return 0;
+}
+
+static int glfw_GetThreadID( lua_State *L )
+{
+    unsupportedFunction( L, "GetThreadID" );
+    return 0;
+}
+
+static int glfw_CreateMutex( lua_State *L )
+{
+    unsupportedFunction( L, "CreateMutex" );
+    return 0;
+}
+
+static int glfw_DestroyMutex( lua_State *L )
+{
+    unsupportedFunction( L, "DestroyMutex" );
+    return 0;
+}
+
+static int glfw_LockMutex( lua_State *L )
+{
+    unsupportedFunction( L, "LockMutex" );
+    return 0;
+}
+
+static int glfw_UnlockMutex( lua_State *L )
+{
+    unsupportedFunction( L, "UnlockMutex" );
+    return 0;
+}
+
+static int glfw_CreateCond( lua_State *L )
+{
+    unsupportedFunction( L, "CreateCond" );
+    return 0;
+}
+
+static int glfw_DestroyCond( lua_State *L )
+{
+    unsupportedFunction( L, "DestroyCond" );
+    return 0;
+}
+
+static int glfw_WaitCond( lua_State *L )
+{
+    unsupportedFunction( L, "WaitCond" );
+    return 0;
+}
+
+static int glfw_SignalCond( lua_State *L )
+{
+    unsupportedFunction( L, "SignalCond" );
+    return 0;
+}
+
+static int glfw_BroadcastCond( lua_State *L )
+{
+    unsupportedFunction( L, "BroadcastCond" );
+    return 0;
+}
+
+static int glfw_GetNumberOfProcessors( lua_State *L )
+{
+    int n;
+    n = glfwGetNumberOfProcessors();
+    lua_settop( L,0 );
+    lua_pushnumber( L, (lua_Number)n );
+    return 1;
+}
 
 
 //========================================================================
@@ -719,19 +819,29 @@ static int glfw_Disable( lua_State *L )
 
 static int glfw_ReadImage( lua_State *L )
 {
-    // TODO
+    unsupportedFunction( L, "ReadImage" );
+    return 0;
 }
 
 static int glfw_FreeImage( lua_State *L )
 {
-    // TODO
+    unsupportedFunction( L, "FreeImage" );
+    return 0;
 }
 
 static int glfw_LoadTexture2D( lua_State *L )
 {
-    // TODO
+    const char *name;
+    lua_Number flags;
+    int        res;
+    if( badArgs( L, 2, "LoadTexture2D" ) ) return 0;
+    name  = lua_tostring( L, 1 );
+    flags = lua_tonumber( L, 2 );
+    lua_settop( L, 0 );
+    res = glfwLoadTexture2D( name, (int)flags );
+    lua_pushnumber( L, (lua_Number)res );
+    return 1;
 }
-
 
 
 //========================================================================
@@ -1038,16 +1148,30 @@ static const luaL_reg glfwlib[] = {
     { "GetMouseButton", glfw_GetMouseButton },
     { "GetMousePos", glfw_GetMousePos },
     { "SetMousePos", glfw_SetMousePos },
-    { "GetMouseWheel", glfw_GetMouseWheel };
-    { "SetMouseWheel", glfw_SetMouseWheel };
-    { "GetJoystickParam", glfw_GetJoystickParam };
-    { "GetJoystickPos", glfw_GetJoystickPos };
-    { "GetJoystickButtons", glfw_GetJoystickButtons };
+    { "GetMouseWheel", glfw_GetMouseWheel },
+    { "SetMouseWheel", glfw_SetMouseWheel },
+    { "GetJoystickParam", glfw_GetJoystickParam },
+    { "GetJoystickPos", glfw_GetJoystickPos },
+    { "GetJoystickButtons", glfw_GetJoystickButtons },
     { "GetTime", glfw_GetTime },
     { "SetTime", glfw_SetTime },
     { "Sleep", glfw_Sleep },
     { "GetGLVersion", glfw_GetGLVersion },
     { "ExtensionSupported", glfw_ExtensionSupported },
+    { "CreateThread", glfw_CreateThread },
+    { "DestroyThread", glfw_DestroyThread },
+    { "WaitThread", glfw_WaitThread },
+    { "GetThreadID", glfw_GetThreadID },
+    { "CreateMutex", glfw_CreateMutex },
+    { "DestroyMutex", glfw_DestroyMutex },
+    { "LockMutex", glfw_LockMutex },
+    { "UnlockMutex", glfw_UnlockMutex },
+    { "CreateCond", glfw_CreateCond },
+    { "DestroyCond", glfw_DestroyCond },
+    { "WaitCond", glfw_WaitCond },
+    { "SignalCond", glfw_SignalCond },
+    { "BroadcastCond", glfw_BroadcastCond },
+    { "GetNumberOfProcessors", glfw_GetNumberOfProcessors },
     { "Enable", glfw_Enable },
     { "Disable", glfw_Disable },
     { "ReadImage", glfw_ReadImage },
