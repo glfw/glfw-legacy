@@ -10,7 +10,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.d,v 1.2 2004-03-26 16:06:23 glennmlewis Exp $
+ * $Id: splitview.d,v 1.3 2004-04-09 11:38:06 marcus256 Exp $
  ************************************************************************/
 
 import std.math;
@@ -437,8 +437,6 @@ extern (Windows)
 int main()
 {
     int     running;
-    double    t, t0, fps;
-    char[]    titlestr;
 
     // Initialise GLFW
     glfwInit();
@@ -459,35 +457,25 @@ int main()
     // Enable mouse cursor (only needed for fullscreen mode)
     glfwEnable( GLFW_MOUSE_CURSOR );
 
+    // Disable automatic event polling
+    glfwDisable( GLFW_AUTO_POLL_EVENTS );
+
     // Set callback functions
     glfwSetWindowSizeCallback( &WindowSizeFun );
     glfwSetMousePosCallback( &MousePosFun );
     glfwSetMouseButtonCallback( &MouseButtonFun );
 
     // Main loop
-    int frames = 0;
-    t0 = glfwGetTime();
     do
     {
-        // Get time
-        t = glfwGetTime();
-
-        // Calculate and display FPS (frames per second)
-        if( (t-t0) > 1.0 || frames == 0 )
-        {
-            fps = (double)frames / (t-t0);
-            titlestr = "Split View (" ~ toString(fps) ~ " FPS)\0";
-            glfwSetWindowTitle( titlestr );
-            t0 = t;
-            frames = 0;
-        }
-        frames ++;
-
         // Draw all views
         DrawAllViews();
 
         // Swap buffers
         glfwSwapBuffers();
+
+        // Wait for new events
+        glfwWaitEvents();
 
         // Check if the ESC key was pressed or the window was closed
         running = !glfwGetKey( GLFW_KEY_ESC ) &&
