@@ -1,3 +1,10 @@
+--------------------------------------------------------------------------
+-- Simple test program testing GLFW and OpenGL from Lua
+--------------------------------------------------------------------------
+-- $Id: test1.lua,v 1.2 2004-07-19 20:32:48 marcus256 Exp $
+--------------------------------------------------------------------------
+
+
 local running = true
 
 
@@ -23,12 +30,12 @@ end
 -- Main program and event loop
 function main()
     -- Init GLFW
-    if not glfw.Init() then
+    if glfw.Init() ~= glfw.TRUE then
         return
     end
 
     -- Open window
-    if not glfw.OpenWindow( 640,480, {depth=24} ) then
+    if glfw.OpenWindow( 640,480,0,0,0,0,24,0,glfw.WINDOW ) ~= glfw.TRUE then
         glfw.Terminate()
         return
     end
@@ -36,7 +43,6 @@ function main()
     -- Set window properties
     glfw.SetWindowTitle( "Hello world!" )
     glfw.Enable( glfw.KEY_REPEAT )
-    glfw.Enable( glfw.AUTO_POLL_EVENTS )
     glfw.SwapInterval( 0 )
 
     -- Set callback functions

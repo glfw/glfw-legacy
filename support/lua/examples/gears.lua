@@ -1,17 +1,44 @@
-
+--------------------------------------------------------------------------
+-- 3-D gear wheels.  This program is in the public domain.
+--
+-- Command line options:
+--    -info      print GL implementation information
+--    -exit      automatically exit after 30 seconds
+--
+--
+-- Brian Paul
+--
+--
+-- Marcus Geelnard:
+--   - Conversion to GLFW
+--   - Time based rendering (frame rate independent)
+--   - Slightly modified camera that should work better for stereo viewing
+--   - Ported to Lua (thanks to David Medlock for the original Lua port)
+--------------------------------------------------------------------------
+-- $Id: gears.lua,v 1.2 2004-07-19 20:32:48 marcus256 Exp $
+--------------------------------------------------------------------------
 
 local t0 = 0.0
 local t = 0
 local dt = 0
-local speed = 100
 
 local Frames = 0
 local autoexit = 0
 
 
+--------------------------------------------------------------------------
+--  Draw a gear wheel.  You'll probably want to call this function when
+--  building a display list since we do a lot of trig here.
+--
+--  Input:  inner_radius - radius of hole at center
+--          outer_radius - radius at center of teeth
+--          width - width of gear
+--          teeth - number of teeth
+--          tooth_depth - depth of tooth
+--------------------------------------------------------------------------
 local function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 
-	local PI = 3.141592654
+  local PI = 3.141592654
   local r0 = inner_radius
   local r1 = outer_radius - ( tooth_depth / 2.0 )
   local r2 = outer_radius + ( tooth_depth / 2.0 )
@@ -131,6 +158,9 @@ local gear1, gear2, gear3
 local angle = 0.0
 
 
+--------------------------------------------------------------------------
+-- OpenGL draw function & timing
+--------------------------------------------------------------------------
 local function draw()
   gl.Clear("DEPTH_BUFFER_BIT,COLOR_BUFFER_BIT")
 
@@ -175,12 +205,14 @@ local function draw()
         t0 = t;
         Frames = 0;
         if (t >= 0.999 * autoexit) and autoexit then running = 0 end
-     end -- if
-  end -- do
-end -- draw()
+     end
+  end
+end
 
 
-
+--------------------------------------------------------------------------
+-- Initialize OpenGL
+--------------------------------------------------------------------------
 local function init(args)
   pos = {5.0, 5.0, 10.0, 0.0}
   red = {0.8, 0.1, 0.0, 1.0}
@@ -215,31 +247,29 @@ local function init(args)
 
   gl.Enable("NORMALIZE")
 
-
-
   if args then
-  	for parm in args do
-    	if parm == "-exit" then
-      	autoexit = 30
-      	print("Auto Exit after ", autoexit ," seconds."  );
-    	end
-  	end
+    for parm in args do
+      if parm == "-exit" then
+        autoexit = 30
+        print("Auto Exit after ", autoexit ," seconds."  );
+      end
+    end
   end
 end
 
 
+--------------------------------------------------------------------------
 -- update animation parameters
+--------------------------------------------------------------------------
 local function animate()
-	if speed < 0 then speed= 0
-  else if speed > 400 then speed = 400 end
-  end
-
-  angle = angle + speed*dt
+  angle = angle + 100.0*dt
 end
 
 
+--------------------------------------------------------------------------
 -- new window size
-local function reshape( width, height )
+--------------------------------------------------------------------------
+function reshape( width, height )
   local h = height / width
 
   local znear = 5.0
@@ -257,91 +287,77 @@ local function reshape( width, height )
 end
 
 
+--------------------------------------------------------------------------
 -- change view angle, exit upon ESC
-local function checkKeys()
+--------------------------------------------------------------------------
+function key( k, action )
+  if action ~= glfw.PRESS then return end
 
---	glfw.PollEvents()
-
-	local keys = glfw.keys
-
-  if glfw.GetKey( 'Z' )==keys.PRESS then
-    if  glfw.GetKey( keys.LSHIFT )==keys.PRESS then
-    	view.rotz = view.rotz - 1.0
+  -- 'Z'?
+  if k == 90 then
+    if glfw.GetKey( glfw.KEY_LSHIFT ) == glfw.PRESS then
+      view.rotz = view.rotz - 5.0
     else
-    	view.rotz = view.rotz + 1.0
+      view.rotz = view.rotz + 5.0
     end
-    return;
-	end
-
-	if glfw.GetKey( keys.ESC )==keys.PRESS then
-		running = false
     return
   end
 
-  if glfw.GetKey( keys.UP )==keys.PRESS then
-  	view.rotx = view.rotx + 1
+  if k == glfw.KEY_ESC then
+    running = false
     return
   end
 
-  if glfw.GetKey( keys.DOWN )==keys.PRESS then
-  	view.rotx = view.rotx - 1
+  if k == glfw.KEY_UP then
+    view.rotx = view.rotx + 5.0
     return
   end
 
-  if glfw.GetKey( keys.LEFT )==keys.PRESS then
-  	view.roty = view.roty - 1
+  if k == glfw.KEY_DOWN then
+    view.rotx = view.rotx - 5.0
     return
   end
 
-  if glfw.GetKey( keys.RIGHT )==keys.PRESS then
-  	view.roty = view.roty + 1
+  if k == glfw.KEY_LEFT then
+    view.roty = view.roty + 5.0
     return
   end
 
-  if glfw.GetKey( keys.PAGEUP )==keys.PRESS then
-  	speed = speed + 1
-
-  end
-
-  if glfw.GetKey( keys.PAGEDOWN )==keys.PRESS then
-  	speed = speed - 1
-  end
-
-  if glfw.GetKey( keys.HOME )==keys.PRESS then
-  	speed = 100
-  end
-
-  if glfw.GetKey( keys.END )==keys.PRESS then
-		speed = 0
+  if k == glfw.KEY_RIGHT then
+    view.roty = view.roty - 5.0
     return
   end
-
 end
 
 
-
+--------------------------------------------------------------------------
+-- main()
+--------------------------------------------------------------------------
 local function main()
-    -- Init GLFW and open window
-    glfw.Init()
---    if not glfw.OpenWindow( 800,600, {depth=16} ) then
-    if not glfw.FullScreen( 800,600, {depth=24} ) then
+    -- Init GLFW
+    if glfw.Init() ~= glfw.TRUE then
+        return
+    end
+
+    -- Open window
+    if glfw.OpenWindow( 640,480,0,0,0,0,24,0,glfw.WINDOW ) ~= glfw.TRUE then
         glfw.Terminate()
         return
     end
 
     glfw.SetWindowTitle( "Gears" );
-    --glfw.Enable( glfw.KEY_REPEAT );
+    glfw.Enable( glfw.KEY_REPEAT );
     glfw.SwapInterval( 0 );
 
     -- Special args?
     init(args);
 
     -- Set callback functions
-    reshape( 800,600 )
-    --glfwSetKeyCallback( key );
+    glfw.SetWindowSizeCallback( "reshape" );
+    glfw.SetKeyCallback( "key" );
 
     while running do
-    		-- Draw gears
+        -- Draw gears
         draw()
 
         -- Update animation
@@ -350,11 +366,9 @@ local function main()
         -- Swap buffers
         glfw.SwapBuffers()
 
-        checkKeys()
-
         -- Was the window closed?
-        if not glfw.GetWindowParam( glfw.param.OPENED ) then
-        	running = false
+        if glfw.GetWindowParam( glfw.OPENED ) ~= glfw.TRUE then
+          running = false
         end
 
     end
@@ -365,7 +379,6 @@ local function main()
     -- Exit program
     return
 end
-
 
 
 -- execute!
