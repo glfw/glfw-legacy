@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.4 2003-10-30 20:46:01 marcus256 Exp $
+// $Id: platform.h,v 1.5 2004-01-06 08:45:36 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -82,7 +82,7 @@
 
 // Amiga Mesa/OpenGL implementation dependent include
 #ifdef _GLFW_STORMMESA
-  #include <GL/amigamesa.h>
+  #include <GL/Amigamesa.h>
 #endif
 
 // MorphOS support
@@ -91,7 +91,11 @@
 #endif
 
 // GLFW+GL+GLU defines
-#include "//include/GL/glfw.h"
+#ifdef __GNUC__
+  #include "../../include/GL/glfw.h"
+#else
+  #include "//include/GL/glfw.h"
+#endif
 
 
 // Stack size for each thread (in bytes)
