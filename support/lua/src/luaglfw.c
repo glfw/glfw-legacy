@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.3 2004-07-13 21:57:20 marcus256 Exp $
+// $Id: luaglfw.c,v 1.4 2004-07-16 19:33:18 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -311,6 +311,17 @@ static int glfw_OpenWindow( lua_State *L )
     return 1;
 }
 
+static int glfw_OpenWindowHint( lua_State *L )
+{
+    lua_Number target, hint;
+    if( badArgs( L, 2, "OpenWindowHint" ) ) return 0;
+    target = lua_tonumber( L, 1 );
+    hint   = lua_tonumber( L, 2 );
+    lua_settop( L, 0 );
+    glfwOpenWindowHint( (int)target, (int)hint );
+    return 0;
+}
+
 static int glfw_CloseWindow( lua_State *L )
 {
     glfwCloseWindow();
@@ -327,7 +338,6 @@ static int glfw_SetWindowTitle( lua_State *L )
     return 0;
 }
 
-
 static int glfw_SetWindowSize( lua_State *L )
 {
     lua_Number w, h;
@@ -339,6 +349,16 @@ static int glfw_SetWindowSize( lua_State *L )
     return 0;
 }
 
+static int glfw_GetWindowSize( lua_State *L )
+{
+    int w, h;
+    glfwGetWindowSize( &w, &h );
+    lua_settop( L, 0 );
+    lua_pushnumber( L, (lua_Number)w );
+    lua_pushnumber( L, (lua_Number)h );
+    return 2;
+}
+
 static int glfw_SetWindowPos( lua_State *L )
 {
     lua_Number x, y;
@@ -347,6 +367,18 @@ static int glfw_SetWindowPos( lua_State *L )
     y = lua_tonumber( L, 2 );
     lua_settop( L, 0 );
     glfwSetWindowPos( (int)x, (int)y );
+    return 0;
+}
+
+static int glfw_IconifyWindow( lua_State *L )
+{
+    glfwIconifyWindow();
+    return 0;
+}
+
+static int glfw_RestoreWindow( lua_State *L )
+{
+    glfwRestoreWindow();
     return 0;
 }
 
@@ -361,17 +393,6 @@ static int glfw_GetWindowParam( lua_State *L )
     return 1;
 }
 
-static int glfw_IconifyWindow( lua_State *L )
-{
-    glfwIconifyWindow();
-    return 0;
-}
-
-static int glfw_RestoreWindow( lua_State *L )
-{
-    glfwRestoreWindow();
-    return 0;
-}
 
 
 //========================================================================
@@ -398,6 +419,11 @@ static int glfw_SwapInterval( lua_State *L )
 //========================================================================
 // Video modes
 //========================================================================
+
+static int glfw_GetVideoModes( lua_State *L )
+{
+    // !!TODO!!
+}
 
 static int glfw_GetDesktopMode( lua_State *L )
 {
@@ -470,13 +496,6 @@ static int glfw_GetMouseButton( lua_State *L )
     return 1;
 }
 
-static int glfw_GetMouseWheel( lua_State *L )
-{
-    lua_settop( L, 0 );
-    lua_pushnumber( L, glfwGetMouseWheel() );
-    return 1;
-}
-
 static int glfw_GetMousePos( lua_State *L )
 {
     int x, y;
@@ -491,10 +510,29 @@ static int glfw_SetMousePos( lua_State *L )
 {
     lua_Number x, y;
     if( badArgs( L, 2, "SetMousePos" ) ) return 0;
-    x = lua_tonumber( L, -2 );
-    y = lua_tonumber( L, -1 );
+    x = lua_tonumber( L, 1 );
+    y = lua_tonumber( L, 2 );
     lua_settop( L, 0 );
     glfwSetMousePos( (int)x, (int)y );
+    return 0;
+}
+
+static int glfw_GetMouseWheel( lua_State *L )
+{
+    int pos;
+    glfwGetMouseWheel( &pos );
+    lua_settop( L, 0 );
+    lua_pushnumber( L, (lua_Number)pos );
+    return 1;
+}
+
+static int glfw_SetMouseWheel( lua_State *L )
+{
+    lua_Number pos;
+    if( badArgs( L, 1, "SetMouseWheel" ) ) return 0;
+    pos = lua_tonumber( L, 1 );
+    lua_settop( L, 0 );
+    glfwSetMouseWheel( (int)pos );
     return 0;
 }
 
@@ -516,7 +554,7 @@ static int glfw_SetTime( lua_State *L )
 {
     lua_Number t;
     if ( badArgs( L, 1, "SetTime" ) ) return 0;
-    t = lua_tonumber( L, -1 );
+    t = lua_tonumber( L, 1 );
     lua_settop( L, 0 );
     glfwSetTime( (double)t );
     return 0;
@@ -526,7 +564,7 @@ static int glfw_Sleep( lua_State *L )
 {
     lua_Number t;
     if ( badArgs( L, 1, "Sleep" ) ) return 0;
-    t = lua_tonumber( L, -1 );
+    t = lua_tonumber( L, 1 );
     lua_settop( L, 0 );
     glfwSleep( (double)t );
     return 0;
@@ -541,7 +579,7 @@ static int glfw_Enable( lua_State *L )
 {
     lua_Number param;
     if ( badArgs( L, 1, "Enable" ) ) return 0;
-    param = lua_tonumber( L, -1 );
+    param = lua_tonumber( L, 1 );
     lua_settop( L, 0 );
     glfwEnable( (int)param );
     return 0;
@@ -551,7 +589,7 @@ static int glfw_Disable( lua_State *L )
 {
     lua_Number param;
     if ( badArgs( L, 1, "Disable" ) ) return 0;
-    param = lua_tonumber( L, -1 );
+    param = lua_tonumber( L, 1 );
     lua_settop( L, 0 );
     glfwDisable( (int)param );
     return 0;
@@ -579,7 +617,7 @@ static int glfw_ExtensionSupported( lua_State *L )
     int        result;
     if( badArgs( L, 1, "ExtensionSupported" ) ) return 0;
 
-    str = lua_tostring( L, -1 );
+    str = lua_tostring( L, 1 );
     result = glfwExtensionSupported( str );
 
     lua_settop( L, 0 );
@@ -874,23 +912,27 @@ static const luaL_reg glfwlib[] = {
     { "Terminate", glfw_Terminate },
     { "GetVersion", glfw_GetVersion },
     { "OpenWindow", glfw_OpenWindow },
+    { "OpenWindowHint", glfw_OpenWindowHint },
     { "CloseWindow", glfw_CloseWindow },
     { "SetWindowTitle", glfw_SetWindowTitle },
     { "SetWindowSize", glfw_SetWindowSize },
+    { "GetWindowSize", glfw_GetWindowSize },
     { "SetWindowPos", glfw_SetWindowPos },
-    { "GetWindowParam", glfw_GetWindowParam },
     { "IconifyWindow", glfw_IconifyWindow },
     { "RestoreWindow", glfw_RestoreWindow },
+    { "GetWindowParam", glfw_GetWindowParam },
     { "SwapBuffers", glfw_SwapBuffers },
     { "SwapInterval", glfw_SwapInterval },
+    { "GetVideoModes", glfw_GetVideoModes },
     { "GetDesktopMode", glfw_GetDesktopMode },
     { "PollEvents", glfw_PollEvents },
     { "WaitEvents", glfw_WaitEvents },
     { "GetKey", glfw_GetKey },
     { "GetMouseButton", glfw_GetMouseButton },
-    { "GetMouseWheel", glfw_GetMouseWheel },
     { "GetMousePos", glfw_GetMousePos },
     { "SetMousePos", glfw_SetMousePos },
+    { "GetMouseWheel", glfw_GetMouseWheel };
+    { "SetMouseWheel", glfw_SetMouseWheel };
     { "GetTime", glfw_GetTime },
     { "SetTime", glfw_SetTime },
     { "Sleep", glfw_Sleep },
