@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.17 2005-01-20 22:30:39 marcus256 Exp $
+// $Id: win32_window.c,v 1.18 2005-01-21 18:47:28 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -745,9 +745,17 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
                             &full_height );
 
-    // Adjust window position to working area (e.g. if the task bar is at
-    // the top of the display)...
-    SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
+   // Adjust window position to working area (e.g. if the task bar is at
+   // the top of the display). Fullscreen windows are always opened in
+   // the upper left corner regardless of the desktop working area. 
+    if( _glfwWin.Fullscreen )
+    {
+        wa.left = wa.top = 0;
+    }
+    else
+    {
+        SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
+    }
 
     // Create window
     _glfwWin.Wnd = CreateWindowEx(
