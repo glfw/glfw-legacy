@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.3 2003-12-01 21:39:48 marcus256 Exp $
+// $Id: platform.h,v 1.4 2003-12-07 22:22:27 marcus256 Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -42,7 +42,17 @@
 
 
 // Include files
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
+#include <dpmi.h>
+#include <fcntl.h>
+#include <pc.h>
+#include <sys/stat.h>
+#include <sys/exceptn.h>
+#include <sys/farptr.h>
+#include <sys/segments.h>
 
 // GLFW+GL+GLU defines
 #include "../../include/GL/glfw.h"
@@ -115,6 +125,11 @@ struct _GLFWwin_struct {
     DMesaVisual  Visual;
     DMesaContext Context;
     DMesaBuffer  Buffer;
+
+    // Standard output redirection
+    char OutName[L_tmpnam];
+    char ErrName[L_tmpnam];
+    int  hOut,hOutOld,hErr,hErrOld;
 
     // Platform specific extensions
 
@@ -228,6 +243,54 @@ GLFWGLOBAL struct {
 
 
 //========================================================================
+// DOS events
+//========================================================================
+
+// Valid event types
+#define _GLFW_DOS_KEY_EVENT          1
+#define _GLFW_DOS_MOUSE_MOVE_EVENT   2
+#define _GLFW_DOS_MOUSE_WHEEL_EVENT  3
+#define _GLFW_DOS_MOUSE_BUTTON_EVENT 4
+
+// Keyboard event structure
+struct key_event {
+    int Type;
+    int Key;
+    int KeyNoMod;
+    int Action;
+};
+
+// Mouse move event structure
+struct mousemove_event {
+    int Type;
+    int DeltaX, DeltaY;
+};
+
+// Mouse wheel event structure
+struct mousewheel_event {
+    int Type;
+    int WheelDelta;
+};
+
+// Mouse button event structure
+struct mousebutton_event {
+    int Type;
+    int Button;
+    int Action;
+};
+
+// DOS event structure
+typedef union {
+    int Type;
+    struct key_event            Key;
+    struct mousemove_event      MouseMove;
+    struct mousewheel_event     MouseWheel;
+    struct mousebutton_event    MouseButton;
+} _GLFWdosevent;
+
+
+
+//========================================================================
 // Prototypes for platform specific internal functions
 //========================================================================
 
@@ -237,12 +300,40 @@ void _glfwTerminateTimer( void );
 
 // Fullscreen
 
+// Events
+int  _glfwInitEvents( void );
+void _glfwTerminateEvents( void );
+int  _glfwGetNextEvent( _GLFWdosevent *event );
+void _glfwPostDOSEvent( _GLFWdosevent *event );
+
+// Mouse
+int  _glfwInitMouse( void );
+void _glfwTerminateMouse( void );
+
+// Keyboard
+int  _glfwInitKeyboard( void );
+void _glfwTerminateKeyboard( void );
+
 // Joystick
 void _glfwInitJoysticks( void );
 void _glfwTerminateJoysticks( void );
 
 // Threads
-int _glfwInitThreads( void );
+int  _glfwInitThreads( void );
 void _glfwTerminateThreads( void );
+
+// Interrupt handling
+int _glfwInstallDOSIrq( int i, int (*handler) () );
+int _glfwRemoveDOSIrq( int i );
+
+// Interrupt macros
+#define ENABLE()  __asm __volatile("sti")
+#define DISABLE() __asm __volatile("cli")
+
+// Memory macros (for locking memory)
+#define ENDOFUNC(x)    static void x##_end() { }
+#define LOCKFUNC(x)    _go32_dpmi_lock_code((void *)x, (long)x##_end - (long)x)
+#define LOCKDATA(x)    _go32_dpmi_lock_data((void *)&x, sizeof(x))
+#define LOCKBUFF(x, l) _go32_dpmi_lock_data((void *)x, l)
 
 #endif // _platform_h_

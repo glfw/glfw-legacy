@@ -6,7 +6,7 @@
 # NOTE: You need long filename support (e.g. compile under Windows9x or
 # use a LFN driver such as DOSLFN)
 #-------------------------------------------------------------------------
-# $Id: Makefile.dos.djgpp,v 1.1 2003-11-26 20:45:03 marcus256 Exp $
+# $Id: Makefile.dos.djgpp,v 1.2 2003-12-07 22:22:27 marcus256 Exp $
 ##########################################################################
 
 ##########################################################################
@@ -29,7 +29,7 @@ CC         = gcc
 CFLAGS     = -c -I. -I.. -Wall -Os
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED     = -c -I. -I.. -Wall -O3 -ffast-math
+CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math
 
 
 ##########################################################################
@@ -55,10 +55,14 @@ OBJS = \
        time.o \
        window.o \
        dos_enable.o \
+       dos_events.o \
        dos_fullscreen.o \
        dos_glext.o \
        dos_init.o \
+       dos_irq.o \
        dos_joystick.o \
+       dos_keyboard.o \
+       dos_mouse.o \
        dos_thread.o \
        dos_time.o \
        dos_window.o
@@ -110,6 +114,9 @@ window.o: ..\\window.c ..\\internal.h platform.h
 dos_enable.o: dos_enable.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ dos_enable.c
 
+dos_events.o: dos_events.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ dos_events.c
+
 dos_fullscreen.o: dos_fullscreen.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ dos_fullscreen.c
 
@@ -119,8 +126,17 @@ dos_glext.o: dos_glext.c ..\\internal.h platform.h
 dos_init.o: dos_init.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ dos_init.c
 
+dos_irq.o: dos_irq.s ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -x assembler-with-cpp -o $@ dos_irq.s
+
 dos_joystick.o: dos_joystick.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ dos_joystick.c
+
+dos_keyboard.o: dos_keyboard.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ dos_keyboard.c
+
+dos_mouse.o: dos_mouse.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ dos_mouse.c
 
 dos_thread.o: dos_thread.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ dos_thread.c

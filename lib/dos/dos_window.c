@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        dos_window.c
-// Platforms:   DOS
+// Platform:    DOS
 // API version: 2.4
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_window.c,v 1.4 2003-12-01 21:41:09 marcus256 Exp $
+// $Id: dos_window.c,v 1.5 2003-12-07 22:22:27 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -38,96 +38,94 @@
 
 
 //************************************************************************
-//****                           PC_HW                                ****
-//************************************************************************
-
-#include <dpmi.h>
-#include <fcntl.h>
-#include <sys/stat.h> /* for mode definitions */
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-
-/*
- * standard redirection
- */
-static char *outname = "c:\\stdout00.txt";
-static int h_out, h_outbak;
-static char *errname = "c:\\stderr00.txt";
-static int h_err, h_errbak;
-
-int pc_open_stdout (void)
-{
-// tmpnam(outname);
-
- if ((h_out=open(outname, O_WRONLY | O_CREAT | O_TEXT | O_TRUNC, S_IREAD | S_IWRITE)) > 0) {
-    h_outbak = dup(STDOUT_FILENO);
-    fflush(stdout);
-    dup2(h_out, STDOUT_FILENO);
- }
-
- return h_out;
-}
-
-void pc_close_stdout (void)
-{
- FILE *f;
- char *line = alloca(512);
-
- if (h_out > 0) {
-    dup2(h_outbak, STDOUT_FILENO);
-    close(h_out);
-    close(h_outbak);
-
-    f = fopen(outname, "rt");
-    while (fgets(line, 512, f)) {
-          fputs(line, stdout);
-    }
-    fclose(f);
-
-    remove(outname);
- }
-}
-
-int pc_open_stderr (void)
-{
-// tmpnam(errname);
-
- if ((h_err=open(errname, O_WRONLY | O_CREAT | O_TEXT | O_TRUNC, S_IREAD | S_IWRITE)) > 0) {
-    h_errbak = dup(STDERR_FILENO);
-    fflush(stderr);
-    dup2(h_err, STDERR_FILENO);
- }
-
- return h_err;
-}
-
-void pc_close_stderr (void)
-{
- FILE *f;
- char *line = alloca(512);
-
- if (h_err > 0) {
-    dup2(h_errbak, STDERR_FILENO);
-    close(h_err);
-    close(h_errbak);
-
-    f = fopen(errname, "rt");
-    while (fgets(line, 512, f)) {
-          fputs(line, stderr);
-    }
-    fclose(f);
-
-    remove(errname);
- }
-}
-
-
-
-//************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+//========================================================================
+// _glfwRedirectOutput() - Standard output redirection
+//========================================================================
+
+static void _glfwRedirectOutput( void )
+{
+    // Generate temporary names
+    tmpnam( _glfwWin.OutName );
+    tmpnam( _glfwWin.ErrName );
+
+    // Open temporary output files
+    _glfwWin.hOut = open( _glfwWin.OutName, O_WRONLY | O_CREAT | O_TEXT |
+                                            O_TRUNC, S_IREAD | S_IWRITE );
+    _glfwWin.hErr = open( _glfwWin.ErrName, O_WRONLY | O_CREAT | O_TEXT |
+                                            O_TRUNC, S_IREAD | S_IWRITE );
+
+    // Redirect stdout
+    if( _glfwWin.hOut > 0 )
+    {
+        _glfwWin.hOutOld = dup( STDOUT_FILENO );
+        fflush( stdout );
+        dup2( _glfwWin.hOut, STDOUT_FILENO );
+    }
+
+    // Redirect stderr
+    if( _glfwWin.hErr > 0 )
+    {
+        _glfwWin.hErrOld = dup( STDERR_FILENO );
+        fflush( stderr );
+        dup2( _glfwWin.hErr, STDERR_FILENO );
+    }
+}
+
+
+//========================================================================
+// _glfwRestoreOutput() - Standard output redirection
+//========================================================================
+
+static void _glfwRestoreOutput( void )
+{
+    FILE *f;
+    char *str = alloca( 512 );
+
+    // Dump from temporary file to stdout
+    if( _glfwWin.hOut > 0)
+    {
+        // Restore old stdout
+        dup2( _glfwWin.hOutOld, STDOUT_FILENO );
+        close( _glfwWin.hOut );
+        close( _glfwWin.hOutOld );
+        _glfwWin.hOut = 0;
+
+        // Dump file to stdout
+        f = fopen( _glfwWin.OutName, "rt" );
+        while( fgets( str, 512, f ) )
+        {
+            fputs( str, stdout );
+        }
+        fclose( f );
+
+        // Remove temporary file
+        remove( _glfwWin.OutName );
+     }
+
+    // Dump from temporary file to stderr
+    if( _glfwWin.hOut > 0)
+    {
+        // Restore old stderr
+        dup2( _glfwWin.hErrOld, STDERR_FILENO );
+        close( _glfwWin.hErr );
+        close( _glfwWin.hErrOld );
+        _glfwWin.hErr = 0;
+
+        // Dump file to stderr
+        f = fopen( _glfwWin.ErrName, "rt" );
+        while( fgets( str, 512, f ) )
+        {
+            fputs( str, stderr );
+        }
+        fclose( f );
+
+        // Remove temporary file
+        remove( _glfwWin.ErrName );
+     }
+}
 
 
 //========================================================================
@@ -136,19 +134,36 @@ void pc_close_stderr (void)
 
 static int _glfwTranslateChar( int keycode )
 {
-    // TODO
-    return 'A';
+    // Unicode?
+    if( (keycode >= 32 && keycode <= 126) || keycode >= 160 )
+    {
+        return keycode;
+    }
+
+    return -1;
 }
 
 
 //========================================================================
-// _glfwTranslateKey() - Translates a DOS key code to internal coding
+// _glfwTranslateKey() - Translates a DOS key code to GLFW coding
 //========================================================================
 
 static int _glfwTranslateKey( int keycode )
 {
-    // TODO
-    return 'A';
+    // ISO 8859-1?
+    if( ((keycode>=32) && (keycode<=126)) ||
+        ((keycode>=160) && (keycode<=254)) )
+    {
+        return keycode;
+    }
+
+    // Special keys?
+    if( keycode < 0 )
+    {
+        return -keycode;
+    }
+
+    return -1;
 }
 
 
@@ -174,6 +189,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.Visual  = NULL;
     _glfwWin.Context = NULL;
     _glfwWin.Buffer  = NULL;
+    _glfwWin.hOut    = 0;
+    _glfwWin.hErr    = 0;
 
     // For now, we only support 640x480, 800x600 and 1024x768
     if( (width*height) < (700*500) )
@@ -209,6 +226,9 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // For now, we always set refresh rate = 0 (default)
     refreshrate = 0;
 
+    // stdout/stderr redirection
+    _glfwRedirectOutput();
+
     // Create visual
     _glfwWin.Visual = DMesaCreateVisual(
                         width, height,
@@ -228,10 +248,6 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
-
-    // stdout/stderr redirection
-    pc_open_stdout();
-    pc_open_stderr();
 
     // Create context
     _glfwWin.Context = DMesaCreateContext( _glfwWin.Visual, NULL );
@@ -260,6 +276,30 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         return GL_FALSE;
     }
 
+    // Start DOS event handler
+    if( !_glfwInitEvents() )
+    {
+        printf("Unable to start event handler\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Start keyboard handler
+    if( !_glfwInitKeyboard() )
+    {
+        printf("Unable to start keyboard driver\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    // Start mouse handler
+    if( !_glfwInitMouse() )
+    {
+        printf("Unable to start mouse driver\n");
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
     // Remember actual screen/window size
     _glfwWin.Width  = width;
     _glfwWin.Height = height;
@@ -274,6 +314,15 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
 void _glfwPlatformCloseWindow( void )
 {
+    // Terminate mouse handler
+    _glfwTerminateMouse();
+
+    // Terminate keyboard handler
+    _glfwTerminateKeyboard();
+
+    // Terminate event handler
+    _glfwTerminateEvents();
+
     // Destroy buffer
     if( _glfwWin.Buffer != NULL )
     {
@@ -293,11 +342,10 @@ void _glfwPlatformCloseWindow( void )
     {
         DMesaDestroyVisual( _glfwWin.Visual );
         _glfwWin.Visual = NULL;
-
-        // stdout/stderr redirection
-        pc_close_stdout();
-        pc_close_stderr();
     }
+
+    // stdout/stderr redirection
+    _glfwRestoreOutput();
 }
 
 
@@ -417,7 +465,64 @@ void _glfwPlatformRefreshWindowParams( void )
 
 void _glfwPlatformPollEvents( void )
 {
-    // TODO
+    _GLFWdosevent event;
+    struct key_event         *key;
+    struct mousemove_event   *mousemove;
+    struct mousewheel_event  *mousewheel;
+    struct mousebutton_event *mousebutton;
+
+    // Empty the event queue
+    while( _glfwGetNextEvent( &event ) )
+    {
+        switch( event.Type )
+        {
+        // Keyboard event?
+        case _GLFW_DOS_KEY_EVENT:
+            key = &event.Key;
+            _glfwInputKey( _glfwTranslateKey( key->KeyNoMod ),
+                           key->Action );
+            _glfwInputChar( _glfwTranslateChar( key->Key ),
+                            key->Action );
+            break;
+
+        // Mouse move event?
+        case _GLFW_DOS_MOUSE_MOVE_EVENT:
+            mousemove = &event.MouseMove;
+            _glfwInput.MousePosX += mousemove->DeltaX;
+            _glfwInput.MousePosY += mousemove->DeltaY;
+
+            // Call user callback function
+            if( _glfwWin.MousePosCallback )
+            {
+                _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                           _glfwInput.MousePosY );
+            }
+            break;
+
+        // Mouse wheel event?
+        case _GLFW_DOS_MOUSE_WHEEL_EVENT:
+            mousewheel = &event.MouseWheel;
+            _glfwInput.WheelPos += mousewheel->WheelDelta;
+
+            // Call user callback function
+            if( _glfwWin.MouseWheelCallback )
+            {
+                _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+            }
+            break;
+
+        // Mouse button event?
+        case _GLFW_DOS_MOUSE_BUTTON_EVENT:
+            mousebutton = &event.MouseButton;
+            _glfwInputMouseClick( mousebutton->Button,
+                                  mousebutton->Action );
+            break;
+
+        default:
+            break;
+        }
+
+    }
 }
 
 
