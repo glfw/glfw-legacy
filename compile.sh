@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2003-02-02 22:07:34 $
-# $Revision: 1.3 $
+# $Date: 2003-02-02 22:52:16 $
+# $Revision: 1.4 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -307,7 +307,7 @@ cat > conftest.c <<EOF
 #include <unistd.h>
 #ifndef _SC_NPROCESSORS_ONLN
 #ifndef _SC_NPROC_ONLN
-;error;
+ ! @ $ % ^ & * error
 #endif
 #endif
 int main() {long x=sysconf(_SC_ARG_MAX); return 0; }
@@ -372,7 +372,7 @@ else
   CFLAGS_LINK="-O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
-LFLAGS="$LFLAGS -L../lib/x11 -s -lglfw -lGLU $LIBS -lpthread -lm"
+LFLAGS="$LFLAGS -L../lib/x11 -lglfw -lGLU $LIBS -lpthread -lm"
 
 
 ##########################################################################
