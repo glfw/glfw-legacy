@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.8 2004-12-30 18:21:28 marcus256 Exp $
+// $Id: glfw.pas,v 1.9 2005-03-14 21:06:10 marcus256 Exp $
 //========================================================================
 
 unit glfw;
@@ -432,4 +432,3 @@ procedure glfwFreeImage; external DLLNAME;
 function  glfwLoadTexture2D; external DLLNAME;
 
 end.
-

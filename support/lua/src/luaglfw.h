@@ -6,7 +6,7 @@
 // Author:      Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2005 Marcus Geelnard
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.h,v 1.1 2004-07-13 19:41:02 marcus256 Exp $
+// $Id: luaglfw.h,v 1.2 2005-03-14 21:09:49 marcus256 Exp $
 //========================================================================
 
 #ifndef __luaglfw_h_

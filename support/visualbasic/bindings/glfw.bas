@@ -7,7 +7,7 @@ Attribute VB_Name = "GLFW"
 ' Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ' WWW:         http://glfw.sourceforge.net
 '------------------------------------------------------------------------
-' Copyright (c) 2002-2004 Marcus Geelnard
+' Copyright (c) 2002-2005 Marcus Geelnard
 '
 ' This software is provided 'as-is', without any express or implied
 ' warranty. In no event will the authors be held liable for any damages
@@ -31,7 +31,7 @@ Attribute VB_Name = "GLFW"
 ' Marcus Geelnard
 ' marcus.geelnard at home.se
 '------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.7 2004-08-31 19:22:04 marcus256 Exp $
+' $Id: glfw.bas,v 1.8 2005-03-14 21:19:15 marcus256 Exp $
 '========================================================================
 
 '========================================================================
