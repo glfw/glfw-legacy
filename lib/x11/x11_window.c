@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.7 2004-03-07 21:14:00 marcus256 Exp $
+// $Id: x11_window.c,v 1.8 2004-03-09 19:27:51 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1087,14 +1087,17 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwFS.ModeChanged )
     {
 #if defined( _GLFW_HAS_XF86VIDMODE )
-        // Unlock mode switch
-        XF86VidModeLockModeSwitch( _glfwDisplay.Dpy,
-                                   _glfwWin.Scrn,
-                                   0 );
+        if( _glfwDisplay.Has_XF86VidMode )
+        {
+            // Unlock mode switch
+            XF86VidModeLockModeSwitch( _glfwDisplay.Dpy,
+                                       _glfwWin.Scrn,
+                                       0 );
 
-        // Change the video mode back to the old mode
-        XF86VidModeSwitchToMode( _glfwDisplay.Dpy,
-            _glfwWin.Scrn, &_glfwFS.OldMode );
+            // Change the video mode back to the old mode
+            XF86VidModeSwitchToMode( _glfwDisplay.Dpy,
+                _glfwWin.Scrn, &_glfwFS.OldMode );
+        }
 #endif
         _glfwFS.ModeChanged = GL_FALSE;
     }
@@ -1202,14 +1205,17 @@ void _glfwPlatformIconifyWindow( void )
     if( _glfwWin.Fullscreen )
     {
 #if defined( _GLFW_HAS_XF86VIDMODE )
-        // Unlock mode switch
-        XF86VidModeLockModeSwitch( _glfwDisplay.Dpy,
-                                   _glfwWin.Scrn,
-                                   0 );
+        if( _glfwDisplay.Has_XF86VidMode )
+        {
+            // Unlock mode switch
+            XF86VidModeLockModeSwitch( _glfwDisplay.Dpy,
+                                       _glfwWin.Scrn,
+                                       0 );
 
-        // Change the video mode back to the old mode
-        XF86VidModeSwitchToMode( _glfwDisplay.Dpy,
-            _glfwWin.Scrn, &_glfwFS.OldMode );
+            // Change the video mode back to the old mode
+            XF86VidModeSwitchToMode( _glfwDisplay.Dpy,
+                _glfwWin.Scrn, &_glfwFS.OldMode );
+        }
 #endif
         _glfwFS.ModeChanged = GL_FALSE;
     }
@@ -1371,19 +1377,22 @@ void _glfwPlatformRefreshWindowParams( void )
 
     // Calulate refresh rate
 #if defined( _GLFW_HAS_XF86VIDMODE )
-
-    // Use the XF86VidMode extension to get current video mode
-    XF86VidModeGetModeLine( _glfwDisplay.Dpy, _glfwWin.Scrn,
-                            &dotclock, &modeline );
-    pixels_per_second = 1000.0f * (float) dotclock;
-    pixels_per_frame  = (float) modeline.htotal * modeline.vtotal;
-    _glfwWin.RefreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
-
+    if( _glfwDisplay.Has_XF86VidMode )
+    {
+        // Use the XF86VidMode extension to get current video mode
+        XF86VidModeGetModeLine( _glfwDisplay.Dpy, _glfwWin.Scrn,
+                                &dotclock, &modeline );
+        pixels_per_second = 1000.0f * (float) dotclock;
+        pixels_per_frame  = (float) modeline.htotal * modeline.vtotal;
+        _glfwWin.RefreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
+    }
+    else
+    {
+        _glfwWin.RefreshRate = 0;
+    }
 #else
-
     // Refresh rate is unknown (=0 according to GLFW spec)
     _glfwWin.RefreshRate = 0;
-
 #endif
 }
 
