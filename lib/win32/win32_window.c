@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.13 2004-08-31 19:20:38 marcus256 Exp $
+// $Id: win32_window.c,v 1.14 2004-12-31 20:24:32 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -551,30 +551,38 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
         // Did the mouse move?
         case WM_MOUSEMOVE:
-            if( LOWORD(lParam) != _glfwInput.OldMouseX ||
-                HIWORD(lParam) != _glfwInput.OldMouseY )
             {
-                if( _glfwWin.MouseLock )
-                {
-                    _glfwInput.MousePosX += LOWORD(lParam) -
-                                            _glfwInput.OldMouseX;
-                    _glfwInput.MousePosY += HIWORD(lParam) -
-                                            _glfwInput.OldMouseY;
-                }
-                else
-                {
-                    _glfwInput.MousePosX = LOWORD(lParam);
-                    _glfwInput.MousePosY = HIWORD(lParam);
-                }
-                _glfwInput.OldMouseX = LOWORD(lParam);
-                _glfwInput.OldMouseY = HIWORD(lParam);
-                _glfwInput.MouseMoved = GL_TRUE;
+                int NewMouseX, NewMouseY;
 
-                // Call user callback function
-                if( _glfwWin.MousePosCallback )
+                // Get signed (!) mouse position
+                NewMouseX = (int)((short)LOWORD(lParam));
+                NewMouseY = (int)((short)HIWORD(lParam));
+
+                if( NewMouseX != _glfwInput.OldMouseX ||
+                    NewMouseY != _glfwInput.OldMouseY )
                 {
-                    _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                                               _glfwInput.MousePosY );
+                    if( _glfwWin.MouseLock )
+                    {
+                        _glfwInput.MousePosX += NewMouseX -
+                                                _glfwInput.OldMouseX;
+                        _glfwInput.MousePosY += NewMouseY -
+                                                _glfwInput.OldMouseY;
+                    }
+                    else
+                    {
+                        _glfwInput.MousePosX = NewMouseX;
+                        _glfwInput.MousePosY = NewMouseY;
+                    }
+                    _glfwInput.OldMouseX = NewMouseX;
+                    _glfwInput.OldMouseY = NewMouseY;
+                    _glfwInput.MouseMoved = GL_TRUE;
+    
+                    // Call user callback function
+                    if( _glfwWin.MousePosCallback )
+                    {
+                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                                   _glfwInput.MousePosY );
+                    }
                 }
             }
             return 0;
