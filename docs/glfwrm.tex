@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.19 2004-07-11 21:02:12 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.20 2004-07-13 19:33:05 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -153,7 +153,7 @@ internal state that can be queried through different \GLFW\ API functions
 (for instance it is possible to query the position of the mouse cursor
 with the \textbf{glfwGetMousePos} function).
 
-As for user input, it is possible to recieve information about window
+As for user input, it is possible to receive information about window
 state changes, such as window resize or close events, through callback
 functions. It is also possible to query different kinds of window
 information through different \GLFW\ API functions.
@@ -179,6 +179,23 @@ In pseudo language, a typical event loop might look like this:
     draw OpenGL graphics
   }
 \end{lstlisting}
+
+There are two ways to handle events in \GLFW :
+
+\begin{itemize}
+  \item Block the event loop while waiting for new events.
+  \item Poll for new events, and continue the loop regardless if there are
+        any new events or not.
+\end{itemize}
+
+The first method is useful for interactive applications that do not
+need to refresh the \OpenGL\ display unless the user interacts with the
+application through user input. Typical applications are CAD software
+and other kinds of editors.
+
+The second method is useful for applications that need to refresh the
+\OpenGL\ display constantly, regardless of user input, such as games,
+demos, 3D animations, screen savers and so on.
 
 
 
