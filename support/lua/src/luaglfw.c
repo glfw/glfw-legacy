@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: luaglfw.c,v 1.2 2004-07-13 20:04:56 marcus256 Exp $
+// $Id: luaglfw.c,v 1.3 2004-07-13 21:57:20 marcus256 Exp $
 //========================================================================
 
 #include <lauxlib.h>
@@ -98,32 +98,27 @@ static void addConstants( lua_State *L, struct lua_constant *cn )
 
 static lua_State * callback_lua_state = (lua_State *) 0;
 
+static const char * windowsize_name;
+static const char * windowclose_name;
+static const char * windowpaint_name;
+static const char * mousebutton_name;
+static const char * mousepos_name;
+static const char * mousewheel_name;
+static const char * key_name;
+static const char * char_name;
+
+
 void GLFWCALL luaglfw_windowsizefun( int w, int h )
 {
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, windowsize_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_windowsizefun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)w );
-            lua_pushnumber( L, (lua_Number)h );
-            lua_call( L, 2, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)w );
+        lua_pushnumber( L, (lua_Number)h );
+        lua_pcall( L, 2, 0, 0 );
     }
 }
 
@@ -133,27 +128,12 @@ int GLFWCALL luaglfw_windowclosefun( void )
     int do_close = 1;
     if( L == NULL ) return 1;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, windowclose_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_windowclosefun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_call( L, 0, 1 );
-            do_close = (int) lua_tonumber( L, -1 );
-            lua_pop( L, 1 );
-        }
+        lua_pcall( L, 0, 1, 0 );
+        do_close = (int) lua_tonumber( L, -1 );
+        lua_pop( L, 1 );
     }
     return do_close;
 }
@@ -163,25 +143,10 @@ void GLFWCALL luaglfw_windowpaintfun( void )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, windowpaint_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_windowpaintfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_call( L, 0, 0 );
-        }
+        lua_pcall( L, 0, 0, 0 );
     }
 }
 
@@ -190,27 +155,12 @@ void GLFWCALL luaglfw_mousebuttonfun( int button, int action )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, mousebutton_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_mousebuttonfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)button );
-            lua_pushnumber( L, (lua_Number)action );
-            lua_call( L, 2, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)button );
+        lua_pushnumber( L, (lua_Number)action );
+        lua_pcall( L, 2, 0, 0 );
     }
 }
 
@@ -219,27 +169,12 @@ void GLFWCALL luaglfw_mouseposfun( int x, int y )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, mousepos_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_mouseposfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)x );
-            lua_pushnumber( L, (lua_Number)y );
-            lua_call( L, 2, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)x );
+        lua_pushnumber( L, (lua_Number)y );
+        lua_pcall( L, 2, 0, 0 );
     }
 }
 
@@ -248,26 +183,11 @@ void GLFWCALL luaglfw_mousewheelfun( int wheelpos )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, mousewheel_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_mousewheelfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)wheelpos );
-            lua_call( L, 1, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)wheelpos );
+        lua_pcall( L, 1, 0, 0 );
     }
 }
 
@@ -276,27 +196,12 @@ void GLFWCALL luaglfw_keyfun( int key, int action )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, key_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_keyfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)key );
-            lua_pushnumber( L, (lua_Number)action );
-            lua_call( L, 2, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)key );
+        lua_pushnumber( L, (lua_Number)action );
+        lua_pcall( L, 2, 0, 0 );
     }
 }
 
@@ -305,27 +210,12 @@ void GLFWCALL luaglfw_charfun( int key, int action )
     lua_State *L = callback_lua_state;
     if( L == NULL ) return;
 
-    lua_pushstring( L, "glfw" );
-    lua_rawget( L, LUA_GLOBALSINDEX );
-    if( lua_isnil( L, -1 ) )
+    lua_getglobal( L, char_name );
+    if( lua_isfunction( L, -1 ) )
     {
-        lua_remove( L, -1 );
-    }
-    else
-    {
-        lua_pushstring( L, "_charfun" );
-        lua_rawget( L, -2 );
-        if( lua_isnil( L, -1 ) )
-        {
-            lua_remove( L, -1 );
-            lua_remove( L, -1 );
-        }
-        else
-        {
-            lua_pushnumber( L, (lua_Number)key );
-            lua_pushnumber( L, (lua_Number)action );
-            lua_call( L, 2, 0 );
-        }
+        lua_pushnumber( L, (lua_Number)key );
+        lua_pushnumber( L, (lua_Number)action );
+        lua_pcall( L, 2, 0, 0 );
     }
 }
 
@@ -705,217 +595,97 @@ static int glfw_ExtensionSupported( lua_State *L )
 
 static int glfw_SetWindowSizeCallback( lua_State *L )
 {
-    const char *str;
-    GLFWwinowsizefun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWwindowsizefun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_windowsizefun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_windowsizefun;
-            }
-        }
+        windowsize_name = lua_tostring( L, 1 );
+        fun = luaglfw_windowsizefun;
     }
-    lua_settop( L, 0 );
     glfwSetWindowSizeCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetWindowCloseCallback( lua_State *L )
 {
-    const char *str;
-    GLFWwinowclosefun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWwindowclosefun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_windowclosefun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_windowclosefun;
-            }
-        }
+        windowclose_name = lua_tostring( L, 1 );
+        fun = luaglfw_windowclosefun;
     }
-    lua_settop( L, 0 );
     glfwSetWindowCloseCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetWindowPaintCallback( lua_State *L )
 {
-    const char *str;
-    GLFWwinowpaintfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWwindowpaintfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_windowpaintfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_windowpaintfun;
-            }
-        }
+        windowpaint_name = lua_tostring( L, 1 );
+        fun = luaglfw_windowpaintfun;
     }
-    lua_settop( L, 0 );
     glfwSetWindowPaintCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetMouseButtonCallback( lua_State *L )
 {
-    const char *str;
-    GLFWmousebuttonfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWmousebuttonfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_mousebuttonfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_mousebuttonfun;
-            }
-        }
+        mousebutton_name = lua_tostring( L, 1 );
+        fun = luaglfw_mousebuttonfun;
     }
-    lua_settop( L, 0 );
     glfwSetMouseButtonCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetMousePosCallback( lua_State *L )
 {
-    const char *str;
-    GLFWmouseposfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWmouseposfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_mouseposfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_mouseposfun;
-            }
-        }
+        mousepos_name = lua_tostring( L, 1 );
+        fun = luaglfw_mouseposfun;
     }
-    lua_settop( L, 0 );
     glfwSetMousePosCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetMouseWheelCallback( lua_State *L )
 {
-    const char *str;
-    GLFWmousewheelfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWmousewheelfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_mousewheelfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_mousewheelfun;
-            }
-        }
+        mousewheel_name = lua_tostring( L, 1 );
+        fun = luaglfw_mousewheelfun;
     }
-    lua_settop( L, 0 );
     glfwSetMouseWheelCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetKeyCallback( lua_State *L )
 {
-    const char *str;
-    GLFWkeyfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWkeyfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_keyfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_keyfun;
-            }
-        }
+        key_name = lua_tostring( L, 1 );
+        fun = luaglfw_keyfun;
     }
-    lua_settop( L, 0 );
     glfwSetKeyCallback( fun );
-
     return 0;
 }
 
 static int glfw_SetCharCallback( lua_State *L )
 {
-    const char *str;
-    GLFWcharfun *fun = NULL;
-
-    if( lua_gettop(L) == 1 )
+    GLFWcharfun fun = NULL;
+    if( lua_isstring( L, 1 ) )
     {
-        str = lua_tostring( L, -1 );
-        if( str[0] != 0 )
-        {
-            lua_pushstring( L, "glfw" );
-            lua_rawget( L, LUA_GLOBALSINDEX );
-            if( !lua_isnil( L, -1 ) )
-            {
-                lua_pushstring( L, "_charfun" );
-                lua_pushstring( L, str );
-                lua_rawset( L, -3 );
-                fun = luaglfw_charfun;
-            }
-        }
+        char_name = lua_tostring( L, 1 );
+        fun = luaglfw_charfun;
     }
-    lua_settop( L, 0 );
     glfwSetCharCallback( fun );
-
     return 0;
 }
 
@@ -928,6 +698,10 @@ static int glfw_SetCharCallback( lua_State *L )
 // GLFW constants are stored in the global Lua table "glfw"
 static struct lua_constant glfw_constants[] =
 {
+    // GL constants (GL_TRUE/GL_FALSE)
+    { "TRUE", GL_TRUE },
+    { "FALSE", GL_FALSE },
+
     // GLFW version
     { "VERSION_MAJOR", GLFW_VERSION_MAJOR },
     { "VERSION_MINOR", GLFW_VERSION_MINOR },
@@ -1145,7 +919,7 @@ int luaopen_glfw( lua_State *L )
     // Store GLFW constants in "glfw" table
     lua_pushstring( L, "glfw" );
     lua_gettable( L, LUA_GLOBALSINDEX );
-    addConstants( L, key_constants );
+    addConstants( L, glfw_constants );
     lua_settop( L, 0 );
 
     // Remember Lua state for callback functions
