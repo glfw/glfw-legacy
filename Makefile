@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2004-01-06 19:31:54 $
-# $Revision: 1.7 $
+# $Date: 2004-04-05 20:11:31 $
+# $Revision: 1.8 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -29,6 +29,7 @@ default:
 	@echo "  $(MAKE) win32-bcc       for Borland C++ Builder 5.x for Windows"
 	@echo "  $(MAKE) win32-msvc      for MS Visual C++ 6.x for Windows"
 	@echo "  $(MAKE) win32-ow        for OpenWatcom for Windows"
+	@echo "  $(MAKE) win32-pellesc   for Pelles C for Windows"
 	@echo "  $(MAKE) win32-clean     to remove any compiled files for Windows"
 	@echo "  $(MAKE) cygwin-clean    to remove any compiled files for Cygwin/Windows"
 	@echo "-----------------------------------------------------------------------------"
@@ -117,6 +118,11 @@ win32-ow:
 	@.\\compile.bat $(MAKE) ow
 
 
+# Windows, Pelles C
+win32-pellesc:
+	@.\\compile.bat $(MAKE) pellesc
+
+
 
 ###########################################################################
 # X11 (Unix and Unix-like systems)
@@ -158,7 +164,7 @@ x11-gcc: $(MAKEFILES_X11_GCC)
 
 
 ###########################################################################
-# Mac OS X (not supported yet)
+# Mac OS X
 ###########################################################################
 
 # Cleanup for Mac OS X
