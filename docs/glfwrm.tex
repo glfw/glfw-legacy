@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.4
-% $Id: glfwrm.tex,v 1.11 2003-11-15 21:51:45 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.12 2004-01-13 20:02:52 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -447,8 +447,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the size of an opened window, and calls the window
-size callback function (if one is registered). The \textit{width} and
+The function changes the size of an opened window. The \textit{width} and
 \textit{height} parameters denote the size of the client area of the
 window (i.e. excluding any window borders and decorations).
 
@@ -461,8 +460,8 @@ number of color bits will not be changed).
 The \OpenGL\ context is guaranteed to be preserved after calling
 \textbf{glfwSetWindowSize}, even if the video mode is changed.
 
-Changing the size of a fullscreen window is not supported under AmigaOS,
-since that would destroy the associated \OpenGL\ context.
+Changing the size of a fullscreen window is not supported under AmigaOS or
+DOS, since that would destroy the associated \OpenGL\ context.
 \end{refnotes}
 
 
@@ -565,15 +564,14 @@ none
 \begin{refdescription}
 The function selects which function to be called upon a window size
 change event.
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
 Window size changes are recorded continuously, but only reported when
 \textbf{glfwPollEvents} or \textbf{glfwSwapBuffers} is called.
 
-Calling \textbf{glfwSetWindowSize} generates a window size callback event,
-so be careful with calling \textbf{glfwSetWindowSize} from within the
-callback function.
 \end{refnotes}
 
 
@@ -1078,8 +1076,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the position of the mouse, and calls the mouse
-position callback function (if one is registered). If the cursor is
+The function changes the position of the mouse. If the cursor is
 visible (not disabled), the cursor will be moved to the specified
 position, relative to the upper left corner of the window client area.
 If the cursor is hidden (disabled), only the mouse position that is
@@ -1137,8 +1134,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the position of the mouse wheel, and calls the mouse
-wheel callback function (if one is registered).
+The function changes the position of the mouse wheel.
 \end{refdescription}
 
 
@@ -1179,6 +1175,8 @@ The function selects which function to be called upon a keyboard key
 event. The callback function is called every time the state of a single
 key is changed (from released to pressed or vice versa). The reported keys
 are unaffected by any modifiers (such as shift or alt).
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1222,6 +1220,8 @@ The function selects which function to be called upon a keyboard character
 event. The callback function is called every time a key that results in a
 printable Unicode character is pressed or released. Characters are
 affected by modifiers (such as shift or alt).
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1275,6 +1275,8 @@ none
 \begin{refdescription}
 The function selects which function to be called upon a mouse button
 event.
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1314,6 +1316,8 @@ none
 
 \begin{refdescription}
 The function selects which function to be called upon a mouse motion event.
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1353,6 +1357,8 @@ none
 
 \begin{refdescription}
 The function selects which function to be called upon a mouse wheel event.
+
+A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
