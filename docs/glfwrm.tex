@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
 % API Version: 2.5
-% $Id: glfwrm.tex,v 1.23 2005-03-06 19:24:10 marcus256 Exp $
+% $Id: glfwrm.tex,v 1.24 2005-04-14 19:42:40 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -1092,8 +1092,8 @@ none
 
 \begin{refdescription}
 The function is used for polling for events, such as user input and
-window resize events. Upon calling this function, all window state and
-keyboard and mouse input state is updated. If any related callback
+window resize events. Upon calling this function, all window states,
+keyboard states and mouse states are updated. If any related callback
 functions are registered, these are called during the call to
 \textbf{glfwPollEvents}.
 \end{refdescription}
@@ -1393,7 +1393,7 @@ are recorded and reported by \textbf{glfwGetMouseWheel}.
 
 \textbf{C language syntax}
 \begin{lstlisting}
-void glfwSetMousePos( int pos )
+void glfwSetMouseWheel( int pos )
 \end{lstlisting}
 
 \begin{refparameters}
