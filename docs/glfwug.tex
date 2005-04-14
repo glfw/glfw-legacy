@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Users Guide
 % API Version: 2.5
-% $Id: glfwug.tex,v 1.13 2004-07-09 20:16:30 marcus256 Exp $
+% $Id: glfwug.tex,v 1.14 2005-04-14 20:43:42 marcus256 Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -59,6 +59,7 @@ UNIX is a registered trademark of The Open Group.\linebreak
 X Window System is a trademark of The Open Group.\linebreak
 POSIX is a trademark of IEEE.\linebreak
 Truevision, TARGA and TGA are registered trademarks of Truevision, Inc.\linebreak
+IBM is a registered trademark of IBM Corporation.\linebreak
 
 All other trademarks mentioned in this document are the property of their respective owners.
 \normalsize
@@ -1097,7 +1098,7 @@ To make combinations of the flags, or them together (e.g. like this:
 \texttt{GLFW\_ORIGIN\_UL\_BIT | GLFW\_BUILD\_MIPMAPS\_BIT}).
 
 Here is an example of how to upload a texture from a file to \OpenGL\
-texture memroy, and configure the texture for trilinear interpolation
+texture memory, and configure the texture for trilinear interpolation
 (assuming an \OpenGL\ window has been opened successfully):
 
 \begin{mysamepage}[10]
@@ -1449,18 +1450,14 @@ programming will be presented.
 If an application is divided into several threads that can execute
 concurrently, these threads will automatically execute on separate
 processors in parallel on an SMP (symmetric multi-processing) system.
-Multi processor platforms are becoming increasingly common, and the price
-to pay is generally not much higher than for a single processor system.
 
-A multi processor system is especially appealing if you consider that in
-general, for the price of the fastest processor available you can get two
-processors of a model that performs only slightly worse.
-
-The problem with SMP systems is of course that if an application is not
-multi threaded, only one of the available processors will actually be
-used to execute the application. This is probably the most important
-aspect of multi threading. For SMP systems to be really useful, programs
-must be multi threaded.
+Multi processor platforms are becoming increasingly common, in many
+different forms. The classic multi processor system is based around several
+processor chips that execute in parallel. More recent solutions focus on
+placing several processor cores on a single chip. These cores may be
+a few identical general purpose processors, or they may be several smaller,
+specialized cores, such as in the Cell architecture by IBM, which is
+used in the Playstation~3 game console.
 
 Another emerging technology known as SMT (symmetric multi threading) is
 also becoming more and more popular. In short, it takes a single physical
@@ -1468,6 +1465,12 @@ processor, and divides it into several logical processors that can execute
 separate threads. The idea behind this is to better utilize all available
 CPU resources by running independent pieces of code on the same physical
 CPU.
+
+The problem with SMP systems is of course that if an application is not
+multi threaded, only one of the available processors will actually be
+used to execute the application. This is probably the most important
+aspect of multi threading. For SMP systems to be really useful, programs
+\emph{must} be multi threaded.
 
 
 %-------------------------------------------------------------------------
@@ -1588,6 +1591,7 @@ To sum up what we have learned so far, here is an example program which
 will print ``Hello world!'' (error checking has been left out for
 brevity):
 
+\begin{mysamepage}[20]
 \begin{lstlisting}
 #include <stdio.h>
 #include <GL/glfw.h>
@@ -1610,6 +1614,7 @@ int main( void )
     return 0;
 }
 \end{lstlisting}
+\end{mysamepage}
 
 The program starts by initializing \GLFW , as always, and then it goes on
 by creating a thread that will execute the function \texttt{HelloFun}. The
@@ -1642,7 +1647,7 @@ if thread $A$ adds an element to the vector at the same time as thread $B$
 is removing an element from the vector? Figure \ref{fig:nomutex} shows a
 possible scenario.
 
-\begin{figure}[hbp]
+\begin{figure}[p]
 \begin{center}
 \begin{tabular}{cc}
 \textbf{Thread A} & \textbf{Thread B}\\
@@ -1732,11 +1737,11 @@ void glfwUnlockMutex( GLFWmutex mutex )
 As soon as \textbf{glfwUnlockMutex} has been called, other threads may
 lock it again.
 
-Figure \ref{fig:withmutex} shows the the scenario with the two threads
+Figure \ref{fig:withmutex} shows the scenario with the two threads
 trying to access the same vector, but this time they use a mutex object
 (\textit{vecmutex}).
 
-\begin{figure}[hbp]
+\begin{figure}[p]
 \begin{center}
 \begin{tabular}{cc}
 \textbf{Thread A} & \textbf{Thread B}\\
@@ -1829,6 +1834,7 @@ is equal to 2.
 If we assume that \textit{mutex} has been created successfully, the code
 for the three threads ($A$, $B$ and $C$) could be the following:
 
+\begin{mysamepage}[8]
 Thread~$A$: Wait for both thread~$B$ and $C$ to finish.
 \lstset{backgroundcolor=\color{codeA}}
 \begin{lstlisting}
@@ -1840,7 +1846,9 @@ do
 }
 while( !done );
 \end{lstlisting}
+\end{mysamepage}
 
+\begin{mysamepage}[4]
 Thread~$B$ and $C$: Tell thread~$A$ that I am done.
 \lstset{backgroundcolor=\color{codeB}}
 \begin{lstlisting}
@@ -1849,6 +1857,7 @@ threadsdone ++;
 glfwUnlockMutex( mutex );
 \end{lstlisting}
 \lstset{backgroundcolor=\color{code}}
+\end{mysamepage}
 
 The problem is that when thread~$A$ discovers that thread~$B$ and $C$ are
 not done, it needs to check \textit{threadsdone} over and over again until
@@ -1861,7 +1870,7 @@ is exactly what condition variables do.
 
 \GLFW\ supports three condition variable operations: wait, signal and
 broadcast. One or more threads may wait to be woken up on a condition, and
-one ore more threads may signal or broadcast a condition. The difference
+one or more threads may signal or broadcast a condition. The difference
 between signal and broadcast is that broadcasting a condition wakes up all
 waiting threads (in an unspecified order, which is decided by task
 scheduling rules), while signaling a condition only wakes up one waiting
@@ -1942,6 +1951,7 @@ If we assume that \textit{mutex} and \textit{cond} have been created
 successfully, the code for the three threads ($A$, $B$ and $C$) could be
 the following:
 
+\begin{mysamepage}[12]
 Thread~$A$: Wait for both thread~$B$ and $C$ to finish.
 \lstset{backgroundcolor=\color{codeA}}
 \begin{lstlisting}
@@ -1957,7 +1967,9 @@ do
 while( !done );
 glfwUnlockMutex( mutex );
 \end{lstlisting}
+\end{mysamepage}
 
+\begin{mysamepage}[6]
 Thread~$B$ and $C$: Tell thread~$A$ that I am done.
 \lstset{backgroundcolor=\color{codeB}}
 \begin{lstlisting}
@@ -1967,6 +1979,7 @@ glfwUnlockMutex( mutex );
 glfwSignalCond( cond );
 \end{lstlisting}
 \lstset{backgroundcolor=\color{code}}
+\end{mysamepage}
 
 With the addition of a condition variable, the busy waiting loop turned
 into a nice condition waiting loop, and thread~$A$ no longer wastes any
