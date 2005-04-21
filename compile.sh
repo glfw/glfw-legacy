@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2004-07-24 20:36:46 $
-# $Revision: 1.12 $
+# $Date: 2005-04-21 22:38:31 $
+# $Revision: 1.13 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -86,6 +86,22 @@ LIBS="-lGL -lX11"
 ##########################################################################
 compile='$CC -c $CFLAGS conftest.c 1>&5'
 link='$CC -o conftest $CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
+
+
+##########################################################################
+# Check if we are running on GNU/Linux
+##########################################################################
+echo "Checking if this is a Linux system... " 1>&6
+
+if [ "x`uname 2> /dev/null`" = xLinux ]; then
+  CFLAGS="$CFLAGS -Dlinux"
+  on_linux="yes"
+else
+  on_linux="no"
+fi
+
+echo " On Linux: ""$on_linux" 1>&6
+echo " " 1>&6
 
 
 ##########################################################################
