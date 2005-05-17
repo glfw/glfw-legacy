@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.11 2005-03-14 20:28:04 marcus256 Exp $
+// $Id: win32_time.c,v 1.12 2005-05-17 07:17:59 marcus256 Exp $
 //========================================================================
 
 #include "internal.h"
@@ -671,6 +671,17 @@ void _glfwPlatformSleep( double time )
 {
     DWORD t;
 
-    t = (DWORD)(time*1000.0 + 0.5);
-    Sleep( t > 0 ? t : 1 );
+    if( time < 1.0 )
+    {
+        t = 1;
+    }
+    else if( time > 2147483647.0 )
+    {
+        t = 2147483647;
+    }
+    else
+    {
+        t = (DWORD)(time*1000.0 + 0.5);
+    }
+    Sleep( t );
 }
