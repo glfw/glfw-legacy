@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.14 2005-03-19 19:09:42 marcus256 Exp $
+// $Id: platform.h,v 1.15 2005-08-23 11:12:53 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -64,6 +64,8 @@
 
 #define GLFW_MAX_PATH_LENGTH (8192)
 
+#define MAC_KEY_ENTER       0x24
+#define MAC_KEY_RETURN      0x34
 #define MAC_KEY_ESC         0x35
 #define MAC_KEY_F1          0x7A
 #define MAC_KEY_F2          0x78

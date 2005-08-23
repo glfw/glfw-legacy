@@ -32,7 +32,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.16 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_window.c,v 1.17 2005-08-23 11:12:53 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -87,6 +87,8 @@ void _glfwHandleMacKeyChange( UInt32 keyCode, int action )
 {
     switch ( keyCode )
     {
+        case MAC_KEY_ENTER:       _glfwInputKey( GLFW_KEY_ENTER,       action); break;
+        case MAC_KEY_RETURN:      _glfwInputKey( GLFW_KEY_KP_ENTER,    action); break;
         case MAC_KEY_ESC:         _glfwInputKey( GLFW_KEY_ESC,         action); break;
         case MAC_KEY_F1:          _glfwInputKey( GLFW_KEY_F1,          action); break;
         case MAC_KEY_F2:          _glfwInputKey( GLFW_KEY_F2,          action); break;
