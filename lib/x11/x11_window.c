@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.17 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: x11_window.c,v 1.18 2007-03-15 04:08:30 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1427,7 +1427,9 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-#if defined( _GLFW_HAS_XF86VIDMODE )
+#if defined( _GLFW_HAS_XRANDR )
+    XRRScreenConfiguration *sc;
+#elif defined( _GLFW_HAS_XF86VIDMODE )
     XF86VidModeModeLine modeline;
     int dotclock;
     float pixels_per_second, pixels_per_frame;
@@ -1461,9 +1463,13 @@ void _glfwPlatformRefreshWindowParams( void )
                   &_glfwWin.AccumAlphaBits );
     glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_AUX_BUFFERS,
                   &_glfwWin.AuxBuffers );
+
+    // Get stereo rendering setting
     glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_STEREO,
                   &_glfwWin.Stereo );
     _glfwWin.Stereo = _glfwWin.Stereo ? 1 : 0;
+
+    // Get multisample buffer samples
     glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_SAMPLES,
 		  &_glfwWin.Samples );
     glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_SAMPLE_BUFFERS, 
@@ -1471,9 +1477,19 @@ void _glfwPlatformRefreshWindowParams( void )
     if( sample_buffers == 0 )
       _glfwWin.Samples = 0;
     
+    // Default to refresh rate unknown (=0 according to GLFW spec)
+    _glfwWin.RefreshRate = 0;
 		  
-    // Calulate refresh rate
-#if defined( _GLFW_HAS_XF86VIDMODE )
+    // Retrieve refresh rate, if possible
+#if defined( _GLFW_HAS_XRANDR )
+    if( _glfwLibrary.XRandR.Available )
+    {
+	sc = XRRGetScreenInfo( _glfwLibrary.Dpy,
+	                       RootWindow( _glfwLibrary.Dpy, _glfwWin.Scrn ) );
+	_glfwWin.RefreshRate = XRRConfigCurrentRate( sc );
+	XRRFreeScreenConfigInfo( sc );
+    }
+#elif defined( _GLFW_HAS_XF86VIDMODE )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Use the XF86VidMode extension to get current video mode
@@ -1483,13 +1499,6 @@ void _glfwPlatformRefreshWindowParams( void )
         pixels_per_frame  = (float) modeline.htotal * modeline.vtotal;
         _glfwWin.RefreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
     }
-    else
-    {
-        _glfwWin.RefreshRate = 0;
-    }
-#else
-    // Refresh rate is unknown (=0 according to GLFW spec)
-    _glfwWin.RefreshRate = 0;
 #endif
 }
 
