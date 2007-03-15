@@ -2,9 +2,6 @@
 // GLFW - An OpenGL framework
 // File:        glfw.h
 // API version: 2.6
-// Authors:     Marcus Geelnard (marcus.geelnard at home.se)
-//              Robin Leffmann (djinky at gmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -29,7 +26,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.17 2007-03-15 03:20:19 elmindreda Exp $
+// $Id: glfw.h,v 1.18 2007-03-15 04:00:42 elmindreda Exp $
 //========================================================================
 
 #ifndef __glfw_h_
