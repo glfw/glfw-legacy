@@ -4,7 +4,7 @@
 # To compile the test files using this makefile, run:
 #  make -f Makefile.macosx.gcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.macosx.gcc,v 1.5 2004-08-01 15:59:52 elmindreda Exp $
+# $Id: Makefile.macosx.gcc,v 1.6 2007-03-15 03:20:19 elmindreda Exp $
 ##########################################################################
 
 # Compiler settings
@@ -12,7 +12,7 @@ CC     = gcc
 CFLAGS = -I../include
 
 # Linker settings
-LFLAGS = -L../lib/macosx/ -lglfw -framework AGL -framework OpenGL -framework Carbon
+LFLAGS = ../lib/macosx/libglfw.a -framework AGL -framework OpenGL -framework Carbon
 
 # Default: Build all tests
 all: Triangle.app/Contents/MacOS/GLFWApplication \
@@ -95,3 +95,4 @@ Wave.app/Contents/MacOS/GLFWApplication: wave.c
 clean:
 	rm -rf Triangle.app ListModes.app MTHello.app Pong3D.app MTBench.app \
   Particles.app SplitView.app Mipmaps.app KeyTest.app Gears.app Boing.app Wave.app
+

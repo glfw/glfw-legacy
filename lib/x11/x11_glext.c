@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        x11_glext.c
 // Platform:    X11 (Unix)
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_glext.c,v 1.5 2005-01-23 12:02:28 marcus256 Exp $
+// $Id: x11_glext.c,v 1.6 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -41,17 +38,16 @@
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformExtensionSupported() - Check if an OpenGL extension is
-// available at runtime
+// Check if an OpenGL extension is available at runtime
 //========================================================================
 
 int _glfwPlatformExtensionSupported( const char *extension )
 {
-    const char *extensions;
+    const GLubyte *extensions;
 
     // Get list of GLX extensions
-    extensions = glXQueryExtensionsString( _glfwDisplay.Dpy,
-                                           _glfwWin.Scrn );
+    extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.Dpy,
+                                                            _glfwWin.Scrn );
     if( extensions != NULL )
     {
         if( _glfwStringInExtensionString( extension, extensions ) )
@@ -65,11 +61,11 @@ int _glfwPlatformExtensionSupported( const char *extension )
 
 
 //========================================================================
-// _glfwPlatformGetProcAddress() - Get the function pointer to an OpenGL
-// function
+// Get the function pointer to an OpenGL function
 //========================================================================
 
 void * _glfwPlatformGetProcAddress( const char *procname )
 {
     return (void *) _glfw_glXGetProcAddress( (const GLubyte *) procname );
 }
+

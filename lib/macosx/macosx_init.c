@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        macosx_init.c
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,13 +26,21 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.9 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_init.c,v 1.10 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
+
+#include <unistd.h>
+
+//========================================================================
+// Global variables
+//========================================================================
+
+// KCHR resource pointer for keycode translation
+void *KCHRPtr;
+
 
 //========================================================================
 // _glfwInitThreads() - Initialize GLFW thread package
@@ -57,16 +62,16 @@ static void _glfwInitThreads( void )
     _glfwThrd.First.Next     = NULL;
 }
 
-int  _glfwChangeToResourcesDirectory( void )
+int _glfwChangeToResourcesDirectory( void )
 {
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
-    char resourcesPath[GLFW_MAX_PATH_LENGTH];
+    char resourcesPath[ _GLFW_MAX_PATH_LENGTH ];
 
-    if ( !CFURLGetFileSystemRepresentation( resourcesURL,
-                                            TRUE,
-                                            (UInt8*)resourcesPath,
-                                            GLFW_MAX_PATH_LENGTH ) )
+    if( !CFURLGetFileSystemRepresentation( resourcesURL,
+                                           TRUE,
+                                           (UInt8*)resourcesPath,
+                                           _GLFW_MAX_PATH_LENGTH ) )
     {
         CFRelease( resourcesURL );
         return GL_FALSE;
@@ -74,7 +79,7 @@ int  _glfwChangeToResourcesDirectory( void )
 
     CFRelease( resourcesURL );
 
-    if ( chdir( resourcesPath ) != 0 )
+    if( chdir( resourcesPath ) != 0 )
     {
         return GL_FALSE;
     }
@@ -84,8 +89,12 @@ int  _glfwChangeToResourcesDirectory( void )
 
 int _glfwPlatformInit( void )
 {
+    struct timeval tv;
+    UInt32 nullDummy = 0;
+
     _glfwWin.MacWindow = NULL;
     _glfwWin.AGLContext = NULL;
+    _glfwWin.CGLContext = NULL;
     _glfwWin.WindowFunctions = NULL;
     _glfwWin.MouseUPP = NULL;
     _glfwWin.CommandUPP = NULL;
@@ -94,50 +103,63 @@ int _glfwPlatformInit( void )
     
     _glfwInput.Modifiers = 0;
     
-    _glfwLibs.OpenGLFramework
+    _glfwLibrary.Libs.OpenGLFramework
         = CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
-    if ( _glfwLibs.OpenGLFramework == NULL )
+    if( _glfwLibrary.Libs.OpenGLFramework == NULL )
     {
         return GL_FALSE;
     }
 
     _glfwDesktopVideoMode = CGDisplayCurrentMode( kCGDirectMainDisplay );
-    if ( _glfwDesktopVideoMode == NULL )
+    if( _glfwDesktopVideoMode == NULL )
     {
         return GL_FALSE;
     }
 
     _glfwInitThreads();
 
-    if ( !_glfwChangeToResourcesDirectory() )
+    if( !_glfwChangeToResourcesDirectory() )
     {
         return GL_FALSE;
     }
 
-    if ( !_glfwInstallEventHandlers() )
+    if( !_glfwInstallEventHandlers() )
     {
     	_glfwPlatformTerminate();
         return GL_FALSE;
     }
 
-    _glfwTimer.t0 = GetCurrentEventTime();
+    // Ugly hack to reduce the nasty jump that occurs at the first non-
+    // sys keypress, caused by OS X loading certain meta scripts used
+    // for lexical- and raw keycode translation - instead of letting
+    // this happen while our application is running, we do some blunt
+    // function calls in advance just to get the script caching out of
+    // the way BEFORE our window/screen is opened. These calls might
+    // generate err return codes, but we don't care in this case.
+    // NOTE: KCHRPtr is declared globally, because we need it later on.
+    KCHRPtr = (void *)GetScriptVariable( smCurrentScript, smKCHRCache );
+    KeyTranslate( KCHRPtr, 0, &nullDummy );
+    UppercaseText( (char *)&nullDummy, 0, smSystemScript );
+
+    gettimeofday( &tv, NULL );
+    _glfwLibrary.Timer.t0 = tv.tv_sec + (double) tv.tv_usec / 1000000.0;
 
     return GL_TRUE;
 }
 
 int _glfwPlatformTerminate( void )
 {
-    if ( _glfwWin.MouseUPP != NULL )
+    if( _glfwWin.MouseUPP != NULL )
     {
         DisposeEventHandlerUPP( _glfwWin.MouseUPP );
         _glfwWin.MouseUPP = NULL;
     }
-    if ( _glfwWin.CommandUPP != NULL )
+    if( _glfwWin.CommandUPP != NULL )
     {
         DisposeEventHandlerUPP( _glfwWin.CommandUPP );
         _glfwWin.CommandUPP = NULL;
     }
-    if ( _glfwWin.KeyboardUPP != NULL )
+    if( _glfwWin.KeyboardUPP != NULL )
     {
         DisposeEventHandlerUPP( _glfwWin.KeyboardUPP );
         _glfwWin.KeyboardUPP = NULL;
@@ -145,3 +167,4 @@ int _glfwPlatformTerminate( void )
     
     return GL_TRUE;
 }
+

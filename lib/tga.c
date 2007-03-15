@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        tga.c
 // Platform:    Any
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: tga.c,v 1.5 2005-03-14 20:34:35 marcus256 Exp $
+// $Id: tga.c,v 1.6 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 //========================================================================
@@ -99,14 +96,14 @@ typedef struct {
 // valid)
 //========================================================================
 
-static int _glfwReadTGAHeader( FILE *f, _tga_header_t *h )
+static int _glfwReadTGAHeader( _GLFWstream *s, _tga_header_t *h )
 {
     unsigned char buf[ 18 ];
     int pos;
 
     // Read TGA file header from file
-    pos = ftell( f );
-    fread( buf, 18, 1, f );
+    pos = _glfwTellStream( s );
+    _glfwReadStream( s, buf, 18 );
 
     // Interpret header (endian independent parsing)
     h->idlen         = (int) buf[0];
@@ -136,31 +133,31 @@ static int _glfwReadTGAHeader( FILE *f, _tga_header_t *h )
           h->bitsperpixel == 32) )
     {
         // Skip the ID field
-        fseek( f, h->idlen, SEEK_CUR );
+        _glfwSeekStream( s, h->idlen, SEEK_CUR );
 
         // Indicate that the TGA header was valid
-        return 1;
+        return GL_TRUE;
     }
     else
     {
         // Restore file position
-        fseek( f, pos, SEEK_SET );
+        _glfwSeekStream( s, pos, SEEK_SET );
 
         // Indicate that the TGA header was invalid
-        return 0;
+        return GL_FALSE;
     }
 }
-
 
 //========================================================================
 // _glfwReadTGA_RLE() - Read Run-Length Encoded data
 //========================================================================
 
 static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
-    FILE *f )
+    _GLFWstream *s )
 {
     int repcount, bytes, k, n;
     unsigned char pixel[ 4 ];
+    char c;
 
     // Dummy check
     if( bpp > 4 )
@@ -171,7 +168,8 @@ static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
     while( size > 0 )
     {
         // Get repetition count
-        repcount = (unsigned int) fgetc( f );
+	_glfwReadStream( s, &c, 1 );
+        repcount = (unsigned int) c;
         bytes = ((repcount & 127) + 1) * bpp;
         if( size < bytes )
         {
@@ -181,7 +179,7 @@ static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
         // Run-Length packet?
         if( repcount & 128 )
         {
-            fread( pixel, bpp, 1, f );
+            _glfwReadStream( s, pixel, bpp );
             for( n = 0; n < (repcount & 127) + 1; n ++ )
             {
                 for( k = 0; k < bpp; k ++ )
@@ -193,7 +191,7 @@ static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
         else
         {
             // It's a Raw packet
-            fread( buf, bytes, 1, f );
+            _glfwReadStream( s, buf, bytes );
             buf += bytes;
         }
 
@@ -206,7 +204,7 @@ static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
 // _glfwReadTGA() - Read a TGA image from a file
 //========================================================================
 
-int _glfwReadTGA( FILE *f, GLFWimage *img, int flags )
+int _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags )
 {
     _tga_header_t h;
     unsigned char *cmap, *pix, tmp, *src, *dst;
@@ -214,7 +212,7 @@ int _glfwReadTGA( FILE *f, GLFWimage *img, int flags )
     int bpp, bpp2, k, m, n, swapx, swapy;
 
     // Read TGA header
-    if( !_glfwReadTGAHeader( f, &h ) )
+    if( !_glfwReadTGAHeader( s, &h ) )
     {
         return 0;
     }
@@ -239,7 +237,7 @@ int _glfwReadTGA( FILE *f, GLFWimage *img, int flags )
         }
 
         // Read colormap from file
-        fread( cmap, cmapsize, 1, f );
+        _glfwReadStream( s, cmap, cmapsize );
     }
     else
     {
@@ -280,11 +278,11 @@ int _glfwReadTGA( FILE *f, GLFWimage *img, int flags )
     // Read pixel data from file
     if( h.imagetype >= _TGA_IMAGETYPE_CMAP_RLE )
     {
-        _glfwReadTGA_RLE( pix, pixsize, bpp, f );
+        _glfwReadTGA_RLE( pix, pixsize, bpp, s );
     }
     else
     {
-        fread( pix, pixsize, 1, f );
+        _glfwReadStream( s, pix, pixsize );
     }
 
     // If the image origin is not what we want, re-arrange the pixels
@@ -406,3 +404,4 @@ int _glfwReadTGA( FILE *f, GLFWimage *img, int flags )
 
     return 1;
 }
+

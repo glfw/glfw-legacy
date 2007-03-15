@@ -4,7 +4,7 @@
 # To compile GLFW using this makefile, run:
 #  make -f Makefile.win32.mgw
 #-------------------------------------------------------------------------
-# $Id: Makefile.win32.mgw,v 1.3 2004-04-07 20:58:26 marcus256 Exp $
+# $Id: Makefile.win32.mgw,v 1.4 2007-03-15 03:20:20 elmindreda Exp $
 ##########################################################################
 
 ##########################################################################
@@ -56,6 +56,7 @@ OBJS = \
        init.o \
        input.o \
        joystick.o \
+       stream.o \
        tga.o \
        thread.o \
        time.o \
@@ -81,6 +82,7 @@ DLLOBJS = \
        init_dll.o \
        input_dll.o \
        joystick_dll.o \
+       stream_dll.o \
        tga_dll.o \
        thread_dll.o \
        time_dll.o \
@@ -135,6 +137,9 @@ input.o: ..\\input.c ..\\internal.h platform.h
 
 joystick.o: ..\\joystick.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ ..\\joystick.c
+
+stream.o: ..\\stream.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ ..\\stream.c
 
 tga.o: ..\\tga.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_SPEED) -o $@ ..\\tga.c
@@ -196,6 +201,9 @@ input_dll.o: ..\\input.c ..\\internal.h platform.h
 
 joystick_dll.o: ..\\joystick.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) -o $@ ..\\joystick.c
+
+stream_dll.o: ..\\stream.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS_DLL) -o $@ ..\\stream.c
 
 tga_dll.o: ..\\tga.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_SPEED_DLL) -o $@ ..\\tga.c

@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        win32_enable.c
 // Platform:    Windows
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_enable.c,v 1.5 2005-03-14 20:28:04 marcus256 Exp $
+// $Id: win32_enable.c,v 1.6 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -121,7 +118,7 @@ void _glfwPlatformEnableSystemKeys( void )
     BOOL bOld;
 
     // Use different methods depending on operating system version
-    if( _glfwSys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
     {
         if( _glfwWin.KeyboardHook != NULL )
         {
@@ -141,7 +138,7 @@ void _glfwPlatformDisableSystemKeys( void )
     BOOL bOld;
 
     // Use different methods depending on operating system version
-    if( _glfwSys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
     {
         // Under Windows NT, install a low level keyboard hook
         _glfwWin.KeyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,

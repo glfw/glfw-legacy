@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        macosx_thread.c
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_thread.c,v 1.6 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_thread.c,v 1.7 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -71,8 +66,8 @@ void * _glfwNewThread( void * arg )
         _glfwRemoveThread( t );
     LEAVE_THREAD_CRITICAL_SECTION
 
-        // When the thread function returns, the thread will die...
-        return NULL;
+    // When the thread function returns, the thread will die...
+    return NULL;
 }
 
 
@@ -94,8 +89,8 @@ GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
     // Enter critical section
     ENTER_THREAD_CRITICAL_SECTION
 
-        // Create a new thread information memory area
-        t = (_GLFWthread *) malloc( sizeof(_GLFWthread) );
+    // Create a new thread information memory area
+    t = (_GLFWthread *) malloc( sizeof(_GLFWthread) );
     if( t == NULL )
     {
         // Leave critical section
@@ -123,7 +118,7 @@ GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
     {
         free( (void *) t );
         LEAVE_THREAD_CRITICAL_SECTION
-            return -1;
+        return -1;
     }
 
     // Append thread to thread list
@@ -132,8 +127,8 @@ GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg )
     // Leave critical section
     LEAVE_THREAD_CRITICAL_SECTION
 
-        // Return the GLFW thread ID
-        return ID;
+    // Return the GLFW thread ID
+    return ID;
 }
 
 
@@ -150,8 +145,8 @@ void _glfwPlatformDestroyThread( GLFWthread ID )
     // Enter critical section
     ENTER_THREAD_CRITICAL_SECTION
 
-        // Get thread information pointer
-        t = _glfwGetThreadPointer( ID );
+    // Get thread information pointer
+    t = _glfwGetThreadPointer( ID );
     if( t == NULL )
     {
         LEAVE_THREAD_CRITICAL_SECTION
@@ -181,8 +176,8 @@ int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
     // Enter critical section
     ENTER_THREAD_CRITICAL_SECTION
 
-        // Get thread information pointer
-        t = _glfwGetThreadPointer( ID );
+    // Get thread information pointer
+    t = _glfwGetThreadPointer( ID );
 
     // Is the thread already dead?
     if( t == NULL )
@@ -204,8 +199,8 @@ int _glfwPlatformWaitThread( GLFWthread ID, int waitmode )
     // Leave critical section
     LEAVE_THREAD_CRITICAL_SECTION
 
-        // Wait for thread to die
-        (void) pthread_join( thread, NULL );
+    // Wait for thread to die
+    (void) pthread_join( thread, NULL );
 
     return GL_TRUE;
 }
@@ -228,22 +223,22 @@ GLFWthread _glfwPlatformGetThreadID( void )
     // Enter critical section
     ENTER_THREAD_CRITICAL_SECTION
 
-        // Loop through entire list of threads to find the matching POSIX
-        // thread ID
-        for( t = &_glfwThrd.First; t != NULL; t = t->Next )
+    // Loop through entire list of threads to find the matching POSIX
+    // thread ID
+    for( t = &_glfwThrd.First; t != NULL; t = t->Next )
+    {
+        if( t->PosixID == posixID )
         {
-            if( t->PosixID == posixID )
-            {
-                ID = t->ID;
-                break;
-            }
+            ID = t->ID;
+            break;
         }
+    }
 
     // Leave critical section
     LEAVE_THREAD_CRITICAL_SECTION
 
-        // Return the found GLFW thread identifier
-        return ID;
+    // Return the found GLFW thread identifier
+    return ID;
 }
 
 
@@ -418,3 +413,4 @@ int _glfwPlatformGetNumberOfProcessors( void )
     _glfw_numprocessors( n );
     return n;
 }
+

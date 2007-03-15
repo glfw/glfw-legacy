@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    X11 (Unix)
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.13 2005-03-14 20:26:17 marcus256 Exp $
+// $Id: platform.h,v 1.14 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -54,6 +51,7 @@
 // Do we have pthread support?
 #ifdef _GLFW_HAS_PTHREAD
  #include <pthread.h>
+ #include <sched.h>
 #endif
 
 // With XFree86, we can use the XF86VidMode extension
@@ -61,19 +59,14 @@
  #include <X11/extensions/xf86vmode.h>
 #endif
 
+#if defined( _GLFW_HAS_XRANDR )
+ #include <X11/extensions/Xrandr.h>
+#endif
+
 // Do we have support for dlopen/dlsym?
 #if defined( _GLFW_HAS_DLOPEN )
  #include <dlfcn.h>
 #endif
-
-// IRIX hardware counter support
-#ifdef __sgi
- #include <time.h>
- #include <sys/syssgi.h>
- #if defined(CLOCK_SGI_CYCLE) && defined(SGI_CYCLECNTR_SIZE)
-  #define _GLFW_HAS_CLOCK_SGI_CYCLE
- #endif
-#endif // __sgi
 
 // We support two different ways for getting the number of processors in
 // the system: sysconf (POSIX) and sysctl (BSD?)
@@ -117,10 +110,14 @@
 #else
 
  // If neither sysconf nor sysctl is supported, assume single processor
- // system (warning: x86 RDTSC timing may bail out on SMP systems!)
+ // system
  #define _glfw_numprocessors(n) n=1
 
 #endif
+
+void (*glXGetProcAddress(const GLubyte *procName))();
+void (*glXGetProcAddressARB(const GLubyte *procName))();
+void (*glXGetProcAddressEXT(const GLubyte *procName))();
 
 // We support four different ways for getting addresses for GL/GLX
 // extension functions: glXGetProcAddress, glXGetProcAddressARB,
@@ -170,6 +167,7 @@ struct _GLFWwin_struct {
     int       MouseLock;       // Mouse-lock flag
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
+    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
 
     // Window status & parameters
     int       Opened;          // Flag telling if window is opened or not
@@ -190,9 +188,11 @@ struct _GLFWwin_struct {
     int       AuxBuffers;
     int       Stereo;
     int       RefreshRate;     // Vertical monitor refresh rate
+    int       Samples;
 
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
+    int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor;
 
 
@@ -204,6 +204,8 @@ struct _GLFWwin_struct {
     XVisualInfo *VI;             // Visual
     GLXContext  CX;              // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
+    Atom        WMPing;          // For WM ping response
+    XSizeHints  *Hints;          // WM size hints
 
     // Platform specific extensions
     GLXSWAPINTERVALSGI_T SwapInterval;
@@ -216,6 +218,28 @@ struct _GLFWwin_struct {
     int         MapNotifyCount;  // Used for during processing
     int         FocusInCount;    // Used for during processing
 
+    // Screensaver data
+    struct {
+	int     Changed;
+	int     Timeout;
+	int     Interval;
+	int     Blanking;
+	int     Exposure;
+    } Saver;
+
+    // Fullscreen data
+    struct {
+	int     ModeChanged;
+#if defined( _GLFW_HAS_XF86VIDMODE )
+	XF86VidModeModeInfo OldMode;
+#endif
+#if defined( _GLFW_HAS_XRANDR )
+        SizeID   OldSizeID;
+	int      OldWidth;
+	int      OldHeight;
+	Rotation OldRotation;
+#endif
+    } FS;
 };
 
 GLFWGLOBAL _GLFWwin _glfwWin;
@@ -252,53 +276,40 @@ GLFWGLOBAL struct {
 
 
 //------------------------------------------------------------------------
-// Fullscreen info
+// Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    int         ModeChanged;
-#if defined( _GLFW_HAS_XF86VIDMODE )
-    XF86VidModeModeInfo OldMode;
-#endif
-} _glfwFS;
 
+// ========= PLATFORM SPECIFIC PART ======================================
 
-//------------------------------------------------------------------------
-// Display info
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
     Display     *Dpy;
     int         NumScreens;
     int         DefaultScreen;
-    int         Has_XF86VidMode;
-} _glfwDisplay;
 
+    struct {
+	int	Available;
+	int     EventBase;
+	int     ErrorBase;
+    } XF86VidMode;
 
-//------------------------------------------------------------------------
-// Screen saver info
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-    int         SaverChanged;
-    int         Timeout;
-    int         Interval;
-    int         Blanking;
-    int         Exposure;
-} _glfwSaver;
+    struct {
+	int	Available;
+	int     EventBase;
+	int     ErrorBase;
+    } XRandR;
 
+    // Timer data
+    struct {
+	double       Resolution;
+	long long    t0;
+    } Timer;
 
-//------------------------------------------------------------------------
-// Timer status
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-    double       Resolution;
-    long long    t0;
-#ifdef _GLFW_HAS_CLOCK_SGI_CYCLE
-    long long    WrapLimit;    // Needed for short (e.g. 32-bit) counters
-    long long    t_old;        // -"-
-    long long    t_comp;       // -"-
-#else
-    int          HasRDTSC;
+#if defined(_GLFW_DLOPEN_LIBGL)
+    struct {
+	void        *libGL;          // dlopen handle for libGL.so
+    } Libs;
 #endif
-} _glfwTimer;
+} _glfwLibrary;
 
 
 //------------------------------------------------------------------------
@@ -363,16 +374,6 @@ GLFWGLOBAL struct {
 } _glfwJoy[ GLFW_JOYSTICK_LAST + 1 ];
 
 
-//------------------------------------------------------------------------
-// Dynamically loaded libraries
-//------------------------------------------------------------------------
-#if defined(_GLFW_DLOPEN_LIBGL)
-GLFWGLOBAL struct {
-    void        *libGL;          // dlopen handle for libGL.so
-} _glfwLibs;
-#endif
-
-
 //========================================================================
 // Macros for encapsulating critical code sections (i.e. making parts
 // of GLFW thread safe)
@@ -398,9 +399,9 @@ GLFWGLOBAL struct {
 void _glfwInitTimer( void );
 
 // Fullscreen support
-int  _glfwGetClosestVideoMode( int scrn, int *w, int *h );
-void _glfwSetVideoModeMODE( int scrn, int mode );
-void _glfwSetVideoMode( int scrn, int *w, int *h );
+int  _glfwGetClosestVideoMode( int screen, int *width, int *height );
+void _glfwSetVideoModeMODE( int screen, int mode );
+void _glfwSetVideoMode( int screen, int *width, int *height );
 
 // Cursor handling
 Cursor _glfwCreateNULLCursor( Display *display, Window root );

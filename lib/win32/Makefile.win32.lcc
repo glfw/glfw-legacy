@@ -4,7 +4,7 @@
 # To compile GLFW using this makefile, run:
 #  make -f Makefile.win32.lcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.win32.lcc,v 1.3 2004-04-07 20:58:26 marcus256 Exp $
+# $Id: Makefile.win32.lcc,v 1.4 2007-03-15 03:20:20 elmindreda Exp $
 ##########################################################################
 
 ##########################################################################
@@ -56,6 +56,7 @@ OBJS = \
        init.obj \
        input.obj \
        joystick.obj \
+       stream.obj \
        tga.obj \
        thread.obj \
        time.obj \
@@ -81,6 +82,7 @@ DLLOBJS = \
        init_dll.obj \
        input_dll.obj \
        joystick_dll.obj \
+       stream_dll.obj \
        tga_dll.obj \
        thread_dll.obj \
        time_dll.obj \
@@ -138,6 +140,9 @@ input.obj: ..\\input.c ..\\internal.h platform.h
 
 joystick.obj: ..\\joystick.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) -Fo$@ ..\\joystick.c
+
+stream.obj: ..\\stream.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS) -Fo$@ ..\\stream.c
 
 tga.obj: ..\\tga.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_SPEED) -Fo$@ ..\\tga.c
@@ -199,6 +204,9 @@ input_dll.obj: ..\\input.c ..\\internal.h platform.h
 
 joystick_dll.obj: ..\\joystick.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) -Fo$@ ..\\joystick.c
+
+stream_dll.obj: ..\\stream.c ..\\internal.h platform.h
+	$(CC) $(CFLAGS_DLL) -Fo$@ ..\\stream.c
 
 tga_dll.obj: ..\\tga.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_SPEED_DLL) -Fo$@ ..\\tga.c

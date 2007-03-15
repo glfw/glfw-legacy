@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        image.c
 // Platform:    Any
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: image.c,v 1.7 2005-03-14 20:34:35 marcus256 Exp $
+// $Id: image.c,v 1.8 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 //========================================================================
@@ -212,6 +209,62 @@ static int _glfwHalveImage( GLubyte *src, int *width, int *height,
 }
 
 
+//========================================================================
+// _glfwRescaleImage() - Rescales an image into power-of-two dimensions
+//========================================================================
+
+static int _glfwRescaleImage( GLFWimage* image )
+{
+    int     width, height, log2, newsize;
+    unsigned char *data;
+
+    // Calculate next larger 2^N width
+    for( log2 = 0, width = image->Width; width > 1; width >>= 1, log2 ++ )
+      ;
+    width  = (int) 1 << log2;
+    if( width < image->Width )
+    {
+	width <<= 1;
+    }
+
+    // Calculate next larger 2^M height
+    for( log2 = 0, height = image->Height; height > 1; height >>= 1, log2 ++ )
+      ;
+    height = (int) 1 << log2;
+    if( height < image->Height )
+    {
+	height <<= 1;
+    }
+
+    // Do we really need to rescale?
+    if( width != image->Width || height != image->Height )
+    {
+        // Allocate memory for new (upsampled) image data
+        newsize = width * height * image->BytesPerPixel;
+        data = (unsigned char *) malloc( newsize );
+        if( data == NULL )
+        {
+            free( image->Data );
+            return GL_FALSE;
+        }
+
+        // Copy old image data to new image data with interpolation
+        _glfwUpsampleImage( image->Data, data, image->Width, image->Height,
+                            width, height, image->BytesPerPixel );
+
+        // Free memory for old image data (not needed anymore)
+        free( image->Data );
+
+        // Set pointer to new image data, and set new image dimensions
+        image->Data   = data;
+        image->Width  = width;
+        image->Height = height;
+    }
+
+    return GL_TRUE;
+}
+
+
 //************************************************************************
 //****                    GLFW user functions                         ****
 //************************************************************************
@@ -223,9 +276,13 @@ static int _glfwHalveImage( GLubyte *src, int *width, int *height,
 GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     int flags )
 {
-    int     success, width, height, log2, newsize;
-    FILE    *f;
-    unsigned char *data;
+    _GLFWstream stream;
+
+    // Is GLFW initialized?
+    if( !_glfwInitialized )
+    {
+        return GL_FALSE;
+    }
 
     // Start with an empty image descriptor
     img->Width         = 0;
@@ -234,71 +291,99 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     img->Data          = NULL;
 
     // Open file
-    f = fopen( name, "rb" );
-    if( f == NULL )
+    if( !_glfwOpenFileStream( &stream, name, "rb" ) )
     {
         return GL_FALSE;
     }
 
     // We only support TGA files at the moment
-    success = _glfwReadTGA( f, img, flags );
-    if( !success )
+    if( !_glfwReadTGA( &stream, img, flags ) )
     {
-        fclose( f );
+	_glfwCloseStream( &stream );
         return GL_FALSE;
     }
 
-    // Close file
-    fclose( f );
+    // Close stream
+    _glfwCloseStream( &stream );
 
     // Should we rescale the image to closest 2^N x 2^M resolution?
     if( !(flags & GLFW_NO_RESCALE_BIT) )
     {
-        // Calculate next larger 2^N width
-        for( log2 = 0, width = img->Width; width > 1; width >>= 1, log2 ++ );
-        width  = (int) 1 << log2;
-        if( width < img->Width )
-        {
-            width <<= 1;
-        }
-
-        // Calculate next larger 2^M height
-        for( log2 = 0, height = img->Height; height > 1; height >>= 1, log2 ++ );
-        height = (int) 1 << log2;
-        if( height < img->Height )
-        {
-            height <<= 1;
-        }
-    }
-    else
-    {
-        width  = img->Width;
-        height = img->Height;
+	if( !_glfwRescaleImage( img ) )
+	{
+	    return GL_FALSE;
+	}
     }
 
-    // Do we really need to rescale?
-    if( width != img->Width || height != img->Height )
+    // Interpret BytesPerPixel as an OpenGL format
+    switch( img->BytesPerPixel )
     {
-        // Allocate memory for new (upsampled) image data
-        newsize = width * height * img->BytesPerPixel;
-        data = (unsigned char *) malloc( newsize );
-        if( data == NULL )
-        {
-            free( img->Data );
-            return GL_FALSE;
-        }
+        default:
+        case 1:
+            if( flags & GLFW_ALPHA_MAP_BIT )
+            {
+                img->Format = GL_ALPHA;
+            }
+            else
+            {
+                img->Format = GL_LUMINANCE;
+            }
+            break;
+        case 3:
+            img->Format = GL_RGB;
+            break;
+        case 4:
+            img->Format = GL_RGBA;
+            break;
+    }
 
-        // Copy old image data to new image data with interpolation
-        _glfwUpsampleImage( img->Data, data, img->Width, img->Height,
-                            width, height, img->BytesPerPixel );
+    return GL_TRUE;
+}
 
-        // Free memory for old image data (not needed anymore)
-        free( img->Data );
 
-        // Set pointer to new image data, and set new image dimensions
-        img->Data   = data;
-        img->Width  = width;
-        img->Height = height;
+//========================================================================
+// glfwReadMemoryImage() - Read an image file from a memory buffer
+//========================================================================
+
+GLFWAPI int  GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags )
+{
+    _GLFWstream stream;
+
+    // Is GLFW initialized?
+    if( !_glfwInitialized )
+    {
+        return GL_FALSE;
+    }
+
+    // Start with an empty image descriptor
+    img->Width         = 0;
+    img->Height        = 0;
+    img->BytesPerPixel = 0;
+    img->Data          = NULL;
+
+    // Open buffer
+    if( !_glfwOpenBufferStream( &stream, (void*) data, size ) )
+    {
+        return GL_FALSE;
+    }
+
+    // We only support TGA files at the moment
+    if( !_glfwReadTGA( &stream, img, flags ) )
+    {
+	_glfwCloseStream( &stream );
+        return GL_FALSE;
+    }
+
+    // Close stream
+    _glfwCloseStream( &stream );
+
+    // Should we rescale the image to closest 2^N x 2^M resolution?
+    if( !(flags & GLFW_NO_RESCALE_BIT) )
+    {
+	if( !_glfwRescaleImage( img ) )
+	{
+	    return GL_FALSE;
+	}
     }
 
     // Interpret BytesPerPixel as an OpenGL format
@@ -333,6 +418,12 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
 
 GLFWAPI void GLFWAPIENTRY glfwFreeImage( GLFWimage *img )
 {
+    // Is GLFW initialized?
+    if( !_glfwInitialized )
+    {
+        return;
+    }
+
     // Free memory
     if( img->Data != NULL )
     {
@@ -356,6 +447,82 @@ GLFWAPI void GLFWAPIENTRY glfwFreeImage( GLFWimage *img )
 GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
 {
     GLFWimage img;
+
+    // Is GLFW initialized?
+    if( !_glfwInitialized || !_glfwWin.Opened )
+    {
+        return GL_FALSE;
+    }
+
+    // Force rescaling if necessary
+    if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
+    {
+      flags &= (~GLFW_NO_RESCALE_BIT);
+    }
+
+    // Read image from file
+    if( !glfwReadImage( name, &img, flags ) )
+    {
+        return GL_FALSE;
+    }
+
+    if( !glfwLoadTextureImage2D( &img, flags ) )
+    {
+	return GL_FALSE;
+    }
+
+    // Data buffer is not needed anymore
+    glfwFreeImage( &img );
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
+// glfwLoadMemoryTexture2D() - Read an image from a buffer, and upload it to
+// texture memory
+//========================================================================
+
+GLFWAPI int  GLFWAPIENTRY glfwLoadMemoryTexture2D( const void *data, long size, int flags )
+{
+    GLFWimage img;
+
+    // Is GLFW initialized?
+    if( !_glfwInitialized || !_glfwWin.Opened )
+    {
+        return GL_FALSE;
+    }
+
+    // Force rescaling if necessary
+    if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
+    {
+      flags &= (~GLFW_NO_RESCALE_BIT);
+    }
+
+    // Read image from file
+    if( !glfwReadMemoryImage( data, size, &img, flags ) )
+    {
+        return GL_FALSE;
+    }
+
+    if( !glfwLoadTextureImage2D( &img, flags ) )
+    {
+	return GL_FALSE;
+    }
+
+    // Data buffer is not needed anymore
+    glfwFreeImage( &img );
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
+// glfwLoadTextureImage2D() - Upload an image object to texture memory
+//========================================================================
+
+GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
+{
     GLint   UnpackAlignment, GenMipMap;
     int     level, format, AutoGen, newsize, n;
     unsigned char *data, *dataptr;
@@ -366,43 +533,41 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
         return GL_FALSE;
     }
 
-    // Read image from file
-    if( !glfwReadImage( name, &img, flags & (~GLFW_NO_RESCALE_BIT) ) )
-    {
-        return GL_FALSE;
-    }
+    // TODO: Use GL_MAX_TEXTURE_SIZE or GL_PROXY_TEXTURE_2D to determine
+    //       whether the image size is valid.
+    // NOTE: May require box filter downsampling routine.
 
     // Do we need to convert the alpha map to RGBA format (OpenGL 1.0)?
     if( (_glfwWin.GLVerMajor == 1) && (_glfwWin.GLVerMinor == 0) &&
-        (img.Format == GL_ALPHA) )
+        (img->Format == GL_ALPHA) )
     {
         // We go to RGBA representation instead
-        img.BytesPerPixel = 4;
+        img->BytesPerPixel = 4;
 
         // Allocate memory for new RGBA image data
-        newsize = img.Width * img.Height * img.BytesPerPixel;
+        newsize = img->Width * img->Height * img->BytesPerPixel;
         data = (unsigned char *) malloc( newsize );
         if( data == NULL )
         {
-            free( img.Data );
+            free( img->Data );
             return GL_FALSE;
         }
 
         // Convert Alpha map to RGBA
         dataptr = data;
-        for( n = 0; n < (img.Width*img.Height); ++ n )
+        for( n = 0; n < (img->Width*img->Height); ++ n )
         {
             *dataptr ++ = 255;
             *dataptr ++ = 255;
             *dataptr ++ = 255;
-            *dataptr ++ = img.Data[n];
+            *dataptr ++ = img->Data[n];
         }
 
         // Free memory for old image data (not needed anymore)
-        free( img.Data );
+        free( img->Data );
 
         // Set pointer to new image data
-        img.Data = data;
+        img->Data = data;
     }
 
     // Set unpack alignment to one byte
@@ -425,11 +590,11 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     // Format specification is different for OpenGL 1.0
     if( _glfwWin.GLVerMajor == 1 && _glfwWin.GLVerMinor == 0 )
     {
-        format = img.BytesPerPixel;
+        format = img->BytesPerPixel;
     }
     else
     {
-        format = img.Format;
+        format = img->Format;
     }
 
     // Upload to texture memeory
@@ -438,14 +603,14 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     {
         // Upload this mipmap level
         glTexImage2D( GL_TEXTURE_2D, level, format,
-            img.Width, img.Height, 0, format,
-            GL_UNSIGNED_BYTE, (void*) img.Data );
+            img->Width, img->Height, 0, format,
+            GL_UNSIGNED_BYTE, (void*) img->Data );
 
         // Build next mipmap level manually, if required
         if( ( flags & GLFW_BUILD_MIPMAPS_BIT ) && !AutoGen )
         {
-            level = _glfwHalveImage( img.Data, &img.Width,
-                        &img.Height, img.BytesPerPixel ) ?
+            level = _glfwHalveImage( img->Data, &img->Width,
+                        &img->Height, img->BytesPerPixel ) ?
                     level + 1 : 0;
         }
     }
@@ -461,8 +626,6 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     // Restore old unpack alignment
     glPixelStorei( GL_UNPACK_ALIGNMENT, UnpackAlignment );
 
-    // Data buffer is not needed anymore
-    free( img.Data );
-
     return GL_TRUE;
 }
+

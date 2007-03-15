@@ -4,8 +4,10 @@
 # To compile GLFW using this makefile, run:
 #  make -f Makefile.win32.cygwin
 #-------------------------------------------------------------------------
-# $Id: Makefile.win32.cygwin,v 1.3 2004-04-07 20:58:26 marcus256 Exp $
+# $Id: Makefile.win32.cygwin,v 1.4 2007-03-15 03:20:20 elmindreda Exp $
 ##########################################################################
+
+PREFIX ?= /usr/local
 
 ##########################################################################
 # Default: Build static and dynamic versions of GLFW
@@ -44,6 +46,33 @@ LINK      = gcc
 LINKFLAGS = -shared -s -Wl,--kill-at,--major-image-version,$(VERMAJOR),--minor-image-version,$(VERMINOR)
 LINKLIBS  = -lopengl32
 
+SED         = sed
+INSTALL     = install
+
+
+##########################################################################
+# Install GLFW header and static library
+##########################################################################
+install: libglfw.a libglfw.pc
+	$(INSTALL) -d $(PREFIX)/lib
+	$(INSTALL) -c -m 644 libglfw.a $(PREFIX)/lib/libglfw.a
+	$(INSTALL) -d $(PREFIX)/include/GL
+	$(INSTALL) -c -m 644 ../../include/GL/glfw.h $(PREFIX)/include/GL/glfw.h
+	$(INSTALL) -d $(PREFIX)/lib/pkgconfig
+	$(INSTALL) -c -m 644 libglfw.pc $(PREFIX)/lib/pkgconfig/libglfw.pc
+
+
+##########################################################################
+# Clean up generated files
+##########################################################################
+clean:
+	@rm -f *.o
+	@rm -f *.obj
+	@rm -f *.tds
+	@rm -f lib*.a
+	@rm -f glfw.dll
+	@rm -f libglfw.pc
+
 
 ##########################################################################
 # Object files for static library
@@ -56,6 +85,7 @@ OBJS = \
        init.o \
        input.o \
        joystick.o \
+       stream.o \
        tga.o \
        thread.o \
        time.o \
@@ -81,6 +111,7 @@ DLLOBJS = \
        init_dll.o \
        input_dll.o \
        joystick_dll.o \
+       stream_dll.o \
        tga_dll.o \
        thread_dll.o \
        time_dll.o \
@@ -95,6 +126,12 @@ DLLOBJS = \
        win32_time_dll.o \
        win32_window_dll.o
 
+
+##########################################################################
+# Rule for building libglfw.pc
+##########################################################################
+libglfw.pc: libglfw.pc.in
+	$(SED) -e 's,\@PREFIX\@,$(PREFIX),' libglfw.pc.in > libglfw.pc
 
 
 ##########################################################################
@@ -135,6 +172,9 @@ input.o: ../input.c ../internal.h platform.h
 
 joystick.o: ../joystick.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ ../joystick.c
+
+stream.o: ../stream.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ ../stream.c
 
 tga.o: ../tga.c ../internal.h platform.h
 	$(CC) $(CFLAGS_SPEED) -o $@ ../tga.c
@@ -197,6 +237,9 @@ input_dll.o: ../input.c ../internal.h platform.h
 joystick_dll.o: ../joystick.c ../internal.h platform.h
 	$(CC) $(CFLAGS_DLL) -o $@ ../joystick.c
 
+stream_dll.o: ../stream.c ../internal.h platform.h
+	$(CC) $(CFLAGS_DLL) -o $@ ../stream.c
+
 tga_dll.o: ../tga.c ../internal.h platform.h
 	$(CC) $(CFLAGS_SPEED_DLL) -o $@ ../tga.c
 
@@ -235,3 +278,4 @@ win32_time_dll.o: win32_time.c ../internal.h platform.h
 
 win32_window_dll.o: win32_window.c ../internal.h platform.h
 	$(CC) $(CFLAGS_DLL) -o $@ win32_window.c
+

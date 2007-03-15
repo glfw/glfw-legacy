@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        internal.h
 // Platform:    Any
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: internal.h,v 1.6 2005-03-14 20:34:35 marcus256 Exp $
+// $Id: internal.h,v 1.7 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 #ifndef _internal_h_
@@ -46,6 +43,14 @@
 #else
 #define GLFWGLOBAL extern
 #endif
+
+
+//========================================================================
+// Input handling definitions
+//========================================================================
+
+// Internal key and button state/action definitions
+#define GLFW_STICK              2
 
 
 //========================================================================
@@ -73,14 +78,14 @@
 #if defined( _init_c_ )
 int _glfwInitialized = 0;
 #else
-extern int _glfwInitialized;
+GLFWGLOBAL int _glfwInitialized;
 #endif
 
 
 //------------------------------------------------------------------------
 // Window hints (set by glfwOpenWindowHint - will go into _GLFWthread)
 //------------------------------------------------------------------------
-GLFWGLOBAL struct {
+typedef struct {
     int          RefreshRate;
     int          AccumRedBits;
     int          AccumGreenBits;
@@ -88,8 +93,22 @@ GLFWGLOBAL struct {
     int          AccumAlphaBits;
     int          AuxBuffers;
     int          Stereo;
-} _glfwWinHints;
+    int          WindowNoResize;
+    int		 Samples;
+} _GLFWhints;
 
+GLFWGLOBAL _GLFWhints _glfwWinHints;
+
+
+//------------------------------------------------------------------------
+// Abstracted data stream (for image I/O)
+//------------------------------------------------------------------------
+typedef struct {
+    FILE*     File;
+    void*     Data;
+    long      Position;
+    long      Size;
+} _GLFWstream;
 
 
 //========================================================================
@@ -139,7 +158,7 @@ void   _glfwPlatformSetTime( double time );
 void   _glfwPlatformSleep( double time );
 
 // Window management
-int  _glfwPlatformOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode, int accumredbits, int accumgreenbits, int accumbluebits, int accumalphabits, int auxbuffers, int stereo, int refreshrate );
+int  _glfwPlatformOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode, _GLFWhints* hints );
 void _glfwPlatformCloseWindow( void );
 void _glfwPlatformSetWindowTitle( const char *title );
 void _glfwPlatformSetWindowSize( int width, int height );
@@ -160,8 +179,12 @@ void _glfwPlatformSetMouseCursorPos( int x, int y );
 // Prototypes for platform independent internal functions
 //========================================================================
 
+// Window management (window.c)
+void _glfwClearWindowHints( void );
+
 // Input handling (window.c)
 void _glfwClearInput( void );
+void _glfwInputDeactivation( void );
 void _glfwInputKey( int key, int action );
 void _glfwInputChar( int character, int action );
 void _glfwInputMouseClick( int button, int action );
@@ -174,8 +197,16 @@ void _glfwRemoveThread( _GLFWthread * t );
 // OpenGL extensions (glext.c)
 int _glfwStringInExtensionString( const char *string, const GLubyte *extensions );
 
-// Image/texture I/O support (tga.c)
-int _glfwReadTGA( FILE *f, GLFWimage *img, int flags );
+// Abstracted data streams (stream.c)
+int  _glfwOpenFileStream( _GLFWstream *stream, const char *name, const char *mode );
+int  _glfwOpenBufferStream( _GLFWstream *stream, void *data, long size );
+long _glfwReadStream( _GLFWstream *stream, void *data, long size );
+long _glfwTellStream( _GLFWstream *stream );
+int  _glfwSeekStream( _GLFWstream *stream, long offset, int whence );
+void _glfwCloseStream( _GLFWstream *stream );
+
+// Targa image I/O (tga.c)
+int  _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags );
 
 
 #endif // _internal_h_

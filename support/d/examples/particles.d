@@ -38,11 +38,11 @@
 //========================================================================
 
 /************************************************************************
- * $Id: particles.d,v 1.1 2004-03-26 22:55:01 glennmlewis Exp $
+ * $Id: particles.d,v 1.2 2007-03-15 03:20:21 elmindreda Exp $
  ************************************************************************/
 
 import std.math;
-import std.string;
+import std.c.string;
 import std.random;
 import glfw;
 
@@ -163,7 +163,7 @@ const int MAX_PARTICLES   = 3000;
 const float LIFE_SPAN       = 8.0f;
 
 // A new particle is born every [BIRTH_INTERVAL] second
-const float BIRTH_INTERVAL = (LIFE_SPAN/(float)MAX_PARTICLES);
+const float BIRTH_INTERVAL = (LIFE_SPAN/cast(float)MAX_PARTICLES);
 
 // Particle size (meters)
 const float PARTICLE_SIZE   = 0.7f;
@@ -241,27 +241,27 @@ void InitParticle( PARTICLE* p, double t )
     p.z = FOUNTAIN_HEIGHT;
 
     // Start velocity is up (Z)...
-    p.vz = 0.7f + (0.3/4096.0) * (float) (rand() & 4095);
+    p.vz = 0.7f + (0.3/4096.0) * cast(float) (rand() & 4095);
 
     // ...and a randomly chosen X/Y direction
-    xy_angle = (2.0*PI/4096.0) * (float) (rand() & 4095);
-    p.vx = 0.4f * (float) cos( xy_angle );
-    p.vy = 0.4f * (float) sin( xy_angle );
+    xy_angle = (2.0*PI/4096.0) * cast(float) (rand() & 4095);
+    p.vx = 0.4f * cast(float) cos( xy_angle );
+    p.vy = 0.4f * cast(float) sin( xy_angle );
 
     // Scale velocity vector according to a time-varying velocity
-    velocity = VELOCITY*(0.8f + 0.1f*(float)(sin( 0.5*t )+sin( 1.31*t )));
+    velocity = VELOCITY*(0.8f + 0.1f*cast(float)(sin( 0.5*t )+sin( 1.31*t )));
     p.vx *= velocity;
     p.vy *= velocity;
     p.vz *= velocity;
 
     // Color is time-varying
-    p.r = 0.7f + 0.3f * (float) sin( 0.34*t + 0.1 );
-    p.g = 0.6f + 0.4f * (float) sin( 0.63*t + 1.1 );
-    p.b = 0.6f + 0.4f * (float) sin( 0.91*t + 2.1 );
+    p.r = 0.7f + 0.3f * cast(float) sin( 0.34*t + 0.1 );
+    p.g = 0.6f + 0.4f * cast(float) sin( 0.63*t + 1.1 );
+    p.b = 0.6f + 0.4f * cast(float) sin( 0.91*t + 2.1 );
 
     // Store settings for fountain glow lighting
-    glow_pos[0] = 0.4f * (float) sin( 1.34*t );
-    glow_pos[1] = 0.4f * (float) sin( 3.11*t );
+    glow_pos[0] = 0.4f * cast(float) sin( 1.34*t );
+    glow_pos[1] = 0.4f * cast(float) sin( 3.11*t );
     glow_pos[2] = FOUNTAIN_HEIGHT + 1.0f;
     glow_pos[3] = 1.0f;
     glow_color[0] = p.r;
@@ -494,10 +494,10 @@ void DrawParticles( double t, float dt )
 
             // Convert color from float to 8-bit (store it in a 32-bit
             // integer using endian independent type casting)
-            ((GLubyte *)&rgba)[0] = (GLubyte)(pptr.r * 255.0f);
-            ((GLubyte *)&rgba)[1] = (GLubyte)(pptr.g * 255.0f);
-            ((GLubyte *)&rgba)[2] = (GLubyte)(pptr.b * 255.0f);
-            ((GLubyte *)&rgba)[3] = (GLubyte)(alpha * 255.0f);
+            (cast(GLubyte *)&rgba)[0] = cast(GLubyte)(pptr.r * 255.0f);
+            (cast(GLubyte *)&rgba)[1] = cast(GLubyte)(pptr.g * 255.0f);
+            (cast(GLubyte *)&rgba)[2] = cast(GLubyte)(pptr.b * 255.0f);
+            (cast(GLubyte *)&rgba)[3] = cast(GLubyte)(alpha * 255.0f);
 
             // 3) Translate the quad to the correct position in modelview
             // space and store its parameters in vertex arrays (we also
@@ -636,9 +636,9 @@ void DrawFountain()
             glBegin( GL_TRIANGLE_STRIP );
             for( m = 0; m <= FOUNTAIN_SWEEP_STEPS; m ++ )
             {
-                angle = (double) m * (2.0*PI/(double)FOUNTAIN_SWEEP_STEPS);
-                x = (float) cos( angle );
-                y = (float) sin( angle );
+                angle = cast(double) m * (2.0*PI/cast(double)FOUNTAIN_SWEEP_STEPS);
+                x = cast(float) cos( angle );
+                y = cast(float) sin( angle );
 
                 // Draw triangle strip
                 glNormal3f( x * fountain_normal[ n*2+2 ],
@@ -819,7 +819,7 @@ void Draw( double t )
     float  dt;
 
     // Calculate frame-to-frame delta time
-    dt = (float)(t-t_old);
+    dt = cast(float)(t-t_old);
     t_old = t;
 
     // Setup viewport
@@ -832,7 +832,7 @@ void Draw( double t )
     // Setup projection
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
-    gluPerspective( 65.0, (double)width/(double)height, 1.0, 60.0 );
+    gluPerspective( 65.0, cast(double)width/cast(double)height, 1.0, 60.0 );
 
     // Setup camera
     glMatrixMode( GL_MODELVIEW );
@@ -1144,7 +1144,7 @@ int main(char[][] args)
 
     // Display profiling information
     printf( "%d frames in %.2f seconds = %.1f FPS", frames, t,
-            (double)frames / t );
+            cast(double)frames / t );
     printf( " (multithreading %.*s)\n", multithreading ? "on" : "off" );
 
     // Terminate OpenGL

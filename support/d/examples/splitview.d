@@ -10,7 +10,7 @@
 //========================================================================
 
 /************************************************************************
- * $Id: splitview.d,v 1.3 2004-04-09 11:38:06 marcus256 Exp $
+ * $Id: splitview.d,v 1.4 2007-03-15 03:20:21 elmindreda Exp $
  ************************************************************************/
 
 import std.math;
@@ -84,8 +84,8 @@ void DrawTorus()
                     ny *= scale;
                     nz *= scale;
 
-                    glNormal3f( (float)nx, (float)ny, (float)nz );
-                    glVertex3f( (float)x, (float)y, (float)z );
+                    glNormal3f( cast(float)nx, cast(float)ny, cast(float)nz );
+                    glVertex3f( cast(float)x, cast(float)y, cast(float)z );
                 }
             }
             glEnd();
@@ -115,9 +115,9 @@ void DrawScene()
     glPushMatrix();
 
     // Rotate the object
-    glRotatef( (GLfloat)rot_x*0.5f, 1.0f, 0.0f, 0.0f );
-    glRotatef( (GLfloat)rot_y*0.5f, 0.0f, 1.0f, 0.0f );
-    glRotatef( (GLfloat)rot_z*0.5f, 0.0f, 0.0f, 1.0f );
+    glRotatef( cast(GLfloat)rot_x*0.5f, 1.0f, 0.0f, 0.0f );
+    glRotatef( cast(GLfloat)rot_y*0.5f, 0.0f, 1.0f, 0.0f );
+    glRotatef( cast(GLfloat)rot_z*0.5f, 0.0f, 0.0f, 1.0f );
 
     // Set model color (used for orthogonal views, lighting disabled)
     glColor4fv( model_diffuse );
@@ -164,8 +164,8 @@ void DrawGrid( float scale, int steps )
     glBegin( GL_LINES );
 
     // Horizontal lines
-    x = scale * 0.5f * (float)(steps-1);
-    y = -scale * 0.5f * (float)(steps-1);
+    x = scale * 0.5f * cast(float)(steps-1);
+    y = -scale * 0.5f * cast(float)(steps-1);
     for( i = 0; i < steps; i ++ )
     {
         glVertex3f( -x, y, 0.0f );
@@ -174,8 +174,8 @@ void DrawGrid( float scale, int steps )
     }
 
     // Vertical lines
-    x = -scale * 0.5f * (float)(steps-1);
-    y = scale * 0.5f * (float)(steps-1);
+    x = -scale * 0.5f * cast(float)(steps-1);
+    y = scale * 0.5f * cast(float)(steps-1);
     for( i = 0; i < steps; i ++ )
     {
         glVertex3f( x, -y, 0.0f );
@@ -207,7 +207,7 @@ void DrawAllViews()
     // Calculate aspect of window
     if( height > 0 )
     {
-        aspect = (double)width / (double)height;
+        aspect = cast(double)width / cast(double)height;
     }
     else
     {

@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2005-04-21 22:38:31 $
-# $Revision: 1.13 $
+# $Date: 2007-03-15 03:20:18 $
+# $Revision: 1.14 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -16,15 +16,10 @@
 ##########################################################################
 # Check arguments
 ##########################################################################
-force_gcc=no
 silent=no
 for arg in "$@"; do
 {
   case "$arg" in
-    # Force gcc?
-    -gcc | -force-gcc | --gcc | --force-gcc | -gnuc | -gnu-c)
-      force_gcc=yes ;;
-
     # Silent?
     -q | -quiet | --quiet | --quie | --qui | --qu | --q \
     | -silent | --silent | --silen | --sile | --sil)
@@ -60,23 +55,17 @@ This file contains any messages produced by compilers while
 running $config_script, to aid debugging if $config_script makes a mistake.
 " 1>&5
 
-# Add .gcc to the file name of the generated makefiles if GCC was forced
-makefile_ext=
-if [ "x$force_gcc" = "xyes" ]; then
-  makefile_ext=".gcc"
-fi
-
 
 ##########################################################################
 # Default compiler settings
 ##########################################################################
-if [ "x$force_gcc" = xyes ]; then
-  CC=gcc
-else
-  CC=${CC-cc}
+if [ "x$CC" = x ]; then
+  CC=cc
 fi
+
 CFLAGS=
 LFLAGS=
+LDFLAGS=
 INCS=
 LIBS="-lGL -lX11"
 
@@ -89,18 +78,27 @@ link='$CC -o conftest $CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
-# Check if we are running on GNU/Linux
+# Check on what system we are running
 ##########################################################################
-echo "Checking if this is a Linux system... " 1>&6
+echo "Checking what kind of system this is... " 1>&6
 
-if [ "x`uname 2> /dev/null`" = xLinux ]; then
+case "x`uname 2> /dev/null`" in
+xLinux)
   CFLAGS="$CFLAGS -Dlinux"
-  on_linux="yes"
-else
-  on_linux="no"
-fi
+  LDFLAGS="-shared -soname libglfw.so"
+  echo " Linux" 1>&6
+  ;;
+xDarwin)
+  CFLAGS="$CFLAGS"
+  LDFLAGS="-flat_namespace -undefined suppress"
+  echo " Mac OS X" 1>&6
+  ;;
+*)
+  LDFLAGS="-shared -soname libglfw.so"
+  echo " Generic Unix" 1>&6
+  ;;
+esac
 
-echo " On Linux: ""$on_linux" 1>&6
 echo " " 1>&6
 
 
@@ -111,31 +109,37 @@ echo "Checking for X11 libraries location... " 1>&6
 
 # X11R6 in /usr/X11/lib ?
 if [ -r "/usr/X11/lib" ]; then
- LFLAGS="$LFLAGS -L/usr/X11/lib"
- INCS="-I/usr/X11/include"
- echo " X11 libraries location: /usr/X11/lib" 1>&6
+  LFLAGS="$LFLAGS -L/usr/X11/lib"
+  INCS="-I/usr/X11/include"
+  echo " X11 libraries location: /usr/X11/lib" 1>&6
+# X11R/ in /usr/X11R7/lib ?
+elif [ -r "/usr/X11R7/lib" ]; then
+  LFLAGS="$LFLAGS -L/usr/X11R7/lib"
+  INCS="-I/usr/X11R7/include"
+  echo " X11 libraries location: /usr/X11R7/lib" 1>&6
 # X11R6 in /usr/X11R6/lib ?
 elif [ -r "/usr/X11R6/lib" ]; then
- LFLAGS="$LFLAGS -L/usr/X11R6/lib"
- INCS="-I/usr/X11R6/include"
- echo " X11 libraries location: /usr/X11R6/lib" 1>&6
+  LFLAGS="$LFLAGS -L/usr/X11R6/lib"
+  INCS="-I/usr/X11R6/include"
+  echo " X11 libraries location: /usr/X11R6/lib" 1>&6
 # X11R5 in /usr/X11R5/lib ?
 elif [ -r "/usr/X11R5/lib" ]; then
- LFLAGS="$LFLAGS -L/usr/X11R5/lib"
- INCS="-I/usr/X11R5/include"
- echo " X11 libraries location: /usr/X11R5/lib" 1>&6
+  LFLAGS="$LFLAGS -L/usr/X11R5/lib"
+  INCS="-I/usr/X11R5/include"
+  echo " X11 libraries location: /usr/X11R5/lib" 1>&6
 # X11R6 in /opt/X11R6/lib (e.g. QNX)?
 elif [ -r "/opt/X11R6/lib" ]; then
- LFLAGS="$LFLAGS -L/opt/X11R6/lib"
- INCS="-I/opt/X11R6/include"
- echo " X11 libraries location: /opt/X11R6/lib" 1>&6
+  LFLAGS="$LFLAGS -L/opt/X11R6/lib"
+  INCS="-I/opt/X11R6/include"
+  echo " X11 libraries location: /opt/X11R6/lib" 1>&6
 # X11R6 in /usr/X/lib ?
 elif [ -r "/usr/X/lib" ]; then
- LFLAGS="$LFLAGS -L/usr/X/lib"
- INCS="-I/usr/X/include"
- echo " X11 libraries location: /usr/X/lib" 1>&6
+  LFLAGS="$LFLAGS -L/usr/X/lib"
+  INCS="-I/usr/X/include"
+  echo " X11 libraries location: /usr/X/lib" 1>&6
 else
- echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
+  # TODO: Detect and report X11R7 in /usr/lib
+  echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
 fi
 echo " " 1>&6
 CFLAGS="$CFLAGS $INCS"
@@ -168,13 +172,46 @@ echo " " 1>&6
 
 
 ##########################################################################
-# Check for XFree86 VidMode availability
+# Check for X11 RandR availability
 ##########################################################################
-echo "Checking for XFree86 VidMode support... " 1>&6
-echo "$config_script: Checking for XFree86 VidMode support" >&5
-has_xf86vm=no
+echo "Checking for X11 RandR support... " 1>&6
+echo "$config_script: Checking for X11 RandR support" >&5
+has_xrandr=no
 
 cat > conftest.c <<EOF
+#include <X11/Xlib.h>
+#include <X11/extensions/Xrandr.h>
+
+int main() {; return 0;}
+EOF
+
+if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+  rm -rf conftest*
+  has_xrandr=yes
+else
+  echo "$config_script: failed program was:" >&5
+  cat conftest.c >&5
+fi
+rm -f conftest*
+
+echo " X11 RandR extension: ""$has_xrandr" 1>&6
+if [ "x$has_xrandr" = xyes ]; then
+  CFLAGS="$CFLAGS -D_GLFW_HAS_XRANDR"
+  LIBS="$LIBS -lXrandr"
+fi
+echo " " 1>&6
+
+
+##########################################################################
+# Check for X11 VidMode availability
+##########################################################################
+if [ "x$has_xrandr" != xyes ]; then
+
+  echo "Checking for X11 VidMode support... " 1>&6
+  echo "$config_script: Checking for X11 VidMode support" >&5
+  has_xf86vm=no
+
+  cat > conftest.c <<EOF
 #include <X11/Xlib.h>
 #include <X11/extensions/xf86vmode.h>
 
@@ -185,21 +222,23 @@ cat > conftest.c <<EOF
 int main() {; return 0;}
 EOF
 
-if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
-  rm -rf conftest*
-  has_xf86vm=yes
-else
-  echo "$config_script: failed program was:" >&5
-  cat conftest.c >&5
-fi
-rm -f conftest*
+  if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+    rm -rf conftest*
+    has_xf86vm=yes
+  else
+    echo "$config_script: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+  rm -f conftest*
 
-echo " XFree86 VidMode extension: ""$has_xf86vm" 1>&6
-if [ "x$has_xf86vm" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
-  LIBS="$LIBS -lXxf86vm -lXext"
+  echo " X11 VidMode extension: ""$has_xf86vm" 1>&6
+  if [ "x$has_xf86vm" = xyes ]; then
+    CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
+    LIBS="$LIBS -lXxf86vm -lXext"
+  fi
+  echo " " 1>&6
+
 fi
-echo " " 1>&6
 
 
 ##########################################################################
@@ -256,6 +295,51 @@ else
   LIBS="$LIBS_OLD"
 fi
 echo " " 1>&6
+
+
+##########################################################################
+# Check for sched_yield support
+##########################################################################
+if [ "x$has_pthread" = xyes ]; then
+
+  echo "Checking for sched_yield support... " 1>&6
+  echo "$config_script: Checking for sched_yield support" >&5
+  has_sched_yield=no
+
+  LIBS_OLD="$LIBS"
+
+  cat > conftest.c <<EOF
+#include <pthread.h>
+int main() {sched_yield(); return 0;}
+EOF
+
+  if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+    has_sched_yield=yes
+  else
+    echo "$config_script: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+
+  if [ "x$has_sched_yield" = xno ]; then
+    LIBS="$LIBS_OLD -lrt"
+    if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+      has_sched_yield=yes
+    else
+      echo "$config_script: failed program was:" >&5
+      cat conftest.c >&5
+      LIBS="$LIBS_OLD"
+    fi
+  fi
+
+  rm -f conftest*
+
+  echo " sched_yield: ""$has_sched_yield" 1>&6
+  if [ "x$has_sched_yield" = xyes ]; then
+    CFLAGS="$CFLAGS -D_GLFW_HAS_SCHED_YIELD"
+  fi
+  echo " " 1>&6
+
+fi
 
 
 ##########################################################################
@@ -440,7 +524,6 @@ fi
 echo " " 1>&6
 
 
-
 ##########################################################################
 # Post fixups
 ##########################################################################
@@ -454,7 +537,7 @@ else
   CFLAGS_LINK="$INCS -O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
-LFLAGS_LINK="-L../lib/x11 $LFLAGS -lglfw -lGLU $LIBS -lm"
+LFLAGS_LINK="../lib/x11/libglfw.a $LFLAGS -lGLU $LIBS -lm"
 
 
 ##########################################################################
@@ -462,7 +545,7 @@ LFLAGS_LINK="-L../lib/x11 $LFLAGS -lglfw -lGLU $LIBS -lm"
 ##########################################################################
 
 # ./lib/x11/Makefile.x11
-MKNAME="./lib/x11/Makefile.x11""$makefile_ext"
+MKNAME='./lib/x11/Makefile.x11'
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 echo "$config_script: Creating ""$MKNAME""..." >&5
@@ -472,11 +555,12 @@ echo "##########################################################################
 echo "CC           = $CC" >>$MKNAME
 echo "CFLAGS       = $CFLAGS" >>$MKNAME
 echo "CFLAGS_SPEED = $CFLAGS_SPEED" >>$MKNAME
+echo "LDFLAGS      = $LDFLAGS" >>$MKNAME
 echo " " >>$MKNAME
-cat ./lib/x11/Makefile.x11.in >>$MKNAME
+cat './lib/x11/Makefile.x11.in' >>$MKNAME
 
 # ./examples/Makefile.x11
-MKNAME="./examples/Makefile.x11""$makefile_ext"
+MKNAME='./examples/Makefile.x11'
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 echo "$config_script: Creating ""$MKNAME""..." >&5
@@ -487,4 +571,29 @@ echo "CC     = $CC" >>$MKNAME
 echo "CFLAGS = $CFLAGS_LINK" >>$MKNAME
 echo "LFLAGS = $LFLAGS_LINK" >>$MKNAME
 echo " " >>$MKNAME
-cat ./examples/Makefile.x11.in >>$MKNAME
+cat './examples/Makefile.x11.in' >>$MKNAME
+
+
+##########################################################################
+# Create pkg-config template file
+##########################################################################
+
+# ./lib/x11/libglfw.pc.in
+MKNAME="./lib/x11/libglfw.pc.in"
+echo "Creating ""$MKNAME""..." 1>&6
+echo " " 1>&6
+echo "$config_script: Creating ""$MKNAME""..." >&5
+cat > "$MKNAME" <<EOF
+prefix=@PREFIX@
+exec_prefix=@PREFIX@
+libdir=@PREFIX@/lib
+includedir=@PREFIX@/include
+
+Name: GLFW
+Description: A portable framework for OpenGL development
+Version: 2.6.0
+URL: http://glfw.sourceforge.net/
+Libs: -L\${libdir} -lglfw $LFLAGS $LIBS -lm
+Cflags: -I\${includedir}
+EOF
+

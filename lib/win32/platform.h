@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    Windows
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.14 2005-03-14 20:28:04 marcus256 Exp $
+// $Id: platform.h,v 1.15 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -136,7 +133,83 @@ typedef struct tagKBDLLHOOKSTRUCT {
 
 // wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
 typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int interval);
+// wglChoosePixelFormatARB typedef
+typedef BOOL (WINAPI * WGLCHOOSEPIXELFORMATARB_T) (HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
+// wglGetPixelFormatAttribivARB typedef
+typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, const int *piAttributes, int *piValues);
 
+#define WGL_DRAW_TO_WINDOW_ARB    0x2001
+#define WGL_SUPPORT_OPENGL_ARB    0x2010
+#define WGL_ACCELERATION_ARB      0x2003
+#define WGL_FULL_ACCELERATION_ARB 0x2027
+#define WGL_DOUBLE_BUFFER_ARB     0x2011
+#define WGL_STEREO_ARB            0x2012
+#define WGL_COLOR_BITS_ARB        0x2014
+#define WGL_RED_BITS_ARB          0x2015
+#define WGL_GREEN_BITS_ARB        0x2017
+#define WGL_BLUE_BITS_ARB         0x2019
+#define WGL_ALPHA_BITS_ARB        0x201B
+#define WGL_ACCUM_BITS_ARB        0x201D 
+#define WGL_ACCUM_RED_BITS_ARB    0x201E 
+#define WGL_ACCUM_GREEN_BITS_ARB  0x201F 
+#define WGL_ACCUM_BLUE_BITS_ARB   0x2020 
+#define WGL_ACCUM_ALPHA_BITS_ARB  0x2021 
+#define WGL_DEPTH_BITS_ARB        0x2022
+#define WGL_STENCIL_BITS_ARB      0x2023
+#define WGL_AUX_BUFFERS_ARB       0x2024 
+#define WGL_SAMPLE_BUFFERS_ARB    0x2041
+#define WGL_SAMPLES_ARB           0x2042
+
+
+//========================================================================
+// DLLs that are loaded at glfwInit()
+//========================================================================
+
+// gdi32.dll function pointer typedefs
+#ifndef _GLFW_NO_DLOAD_GDI32
+typedef int  (WINAPI * CHOOSEPIXELFORMAT_T) (HDC,CONST PIXELFORMATDESCRIPTOR*);
+typedef int  (WINAPI * DESCRIBEPIXELFORMAT_T) (HDC,int,UINT,LPPIXELFORMATDESCRIPTOR);
+typedef int  (WINAPI * GETPIXELFORMAT_T) (HDC);
+typedef BOOL (WINAPI * SETPIXELFORMAT_T) (HDC,int,const PIXELFORMATDESCRIPTOR*);
+typedef BOOL (WINAPI * SWAPBUFFERS_T) (HDC);
+#endif // _GLFW_NO_DLOAD_GDI32
+
+// winmm.dll function pointer typedefs
+#ifndef _GLFW_NO_DLOAD_WINMM
+typedef MMRESULT (WINAPI * JOYGETDEVCAPSA_T) (UINT,LPJOYCAPSA,UINT);
+typedef MMRESULT (WINAPI * JOYGETPOS_T) (UINT,LPJOYINFO);
+typedef MMRESULT (WINAPI * JOYGETPOSEX_T) (UINT,LPJOYINFOEX);
+typedef DWORD (WINAPI * TIMEGETTIME_T) (void);
+#endif // _GLFW_NO_DLOAD_WINMM
+
+
+// gdi32.dll shortcuts
+#ifndef _GLFW_NO_DLOAD_GDI32
+#define _glfw_ChoosePixelFormat   _glfwLibrary.Libs.ChoosePixelFormat
+#define _glfw_DescribePixelFormat _glfwLibrary.Libs.DescribePixelFormat
+#define _glfw_GetPixelFormat      _glfwLibrary.Libs.GetPixelFormat
+#define _glfw_SetPixelFormat      _glfwLibrary.Libs.SetPixelFormat
+#define _glfw_SwapBuffers         _glfwLibrary.Libs.SwapBuffers
+#else
+#define _glfw_ChoosePixelFormat   ChoosePixelFormat
+#define _glfw_DescribePixelFormat DescribePixelFormat
+#define _glfw_GetPixelFormat      GetPixelFormat
+#define _glfw_SetPixelFormat      SetPixelFormat
+#define _glfw_SwapBuffers         SwapBuffers
+#endif // _GLFW_NO_DLOAD_GDI32
+
+// winmm.dll shortcuts
+#ifndef _GLFW_NO_DLOAD_WINMM
+#define _glfw_joyGetDevCaps _glfwLibrary.Libs.joyGetDevCapsA
+#define _glfw_joyGetPos     _glfwLibrary.Libs.joyGetPos
+#define _glfw_joyGetPosEx   _glfwLibrary.Libs.joyGetPosEx
+#define _glfw_timeGetTime   _glfwLibrary.Libs.timeGetTime
+#else
+#define _glfw_joyGetDevCaps joyGetDevCapsA
+#define _glfw_joyGetPos     joyGetPos
+#define _glfw_joyGetPosEx   joyGetPosEx
+#define _glfw_timeGetTime   timeGetTime
+#endif // _GLFW_NO_DLOAD_WINMM
 
 
 //========================================================================
@@ -167,6 +240,7 @@ struct _GLFWwin_struct {
     int       MouseLock;       // Mouse-lock flag
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
+    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
 
     // Window status & parameters
     int       Opened;          // Flag telling if window is opened or not
@@ -187,9 +261,11 @@ struct _GLFWwin_struct {
     int       AuxBuffers;
     int       Stereo;
     int       RefreshRate;     // Vertical monitor refresh rate
+    int       Samples;
 
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
+    int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor;
 
 
@@ -207,6 +283,8 @@ struct _GLFWwin_struct {
 
     // Platform specific extensions (context specific)
     WGLSWAPINTERVALEXT_T SwapInterval;
+    WGLCHOOSEPIXELFORMATARB_T ChoosePixelFormat;
+    WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
 
     // Various platform specific internal variables
     int       OldMouseLock;    // Old mouse-lock flag (used for remembering
@@ -250,15 +328,52 @@ GLFWGLOBAL struct {
 
 
 //------------------------------------------------------------------------
-// Timer status
+// Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    int          HasPerformanceCounter;
-    int          HasRDTSC;
-    double       Resolution;
-    unsigned int t0_32;
-    __int64      t0_64;
-} _glfwTimer;
+
+// ========= PLATFORM SPECIFIC PART ======================================
+
+  // Timer data
+  struct {
+      int          HasPerformanceCounter;
+      double       Resolution;
+      unsigned int t0_32;
+      __int64      t0_64;
+  } Timer;
+
+  // System information
+  struct {
+      int     WinVer;
+      int     HasUnicode;
+      DWORD   ForegroundLockTimeout;
+  } Sys;
+
+#if !defined(_GLFW_NO_DLOAD_WINMM) || !defined(_GLFW_NO_DLOAD_GDI32)
+  // Library handles and function pointers
+  struct {
+#ifndef _GLFW_NO_DLOAD_GDI32
+      // gdi32.dll
+      HINSTANCE             gdi32;
+      CHOOSEPIXELFORMAT_T   ChoosePixelFormat;
+      DESCRIBEPIXELFORMAT_T DescribePixelFormat;
+      GETPIXELFORMAT_T      GetPixelFormat;
+      SETPIXELFORMAT_T      SetPixelFormat;
+      SWAPBUFFERS_T         SwapBuffers;
+#endif // _GLFW_NO_DLOAD_GDI32
+
+      // winmm.dll
+#ifndef _GLFW_NO_DLOAD_WINMM
+      HINSTANCE             winmm;
+      JOYGETDEVCAPSA_T      joyGetDevCapsA;
+      JOYGETPOS_T           joyGetPos;
+      JOYGETPOSEX_T         joyGetPosEx;
+      TIMEGETTIME_T         timeGetTime;
+#endif // _GLFW_NO_DLOAD_WINMM
+  } Libs;
+#endif
+
+} _glfwLibrary;
 
 
 //------------------------------------------------------------------------
@@ -306,88 +421,6 @@ GLFWGLOBAL struct {
 
 } _glfwThrd;
 
-
-
-//------------------------------------------------------------------------
-// System information
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-    int     WinVer;
-    int     HasUnicode;
-    DWORD   ForegroundLockTimeout;
-} _glfwSys;
-
-
-//========================================================================
-// DLLs that are loaded at glfwInit()
-//========================================================================
-
-// gdi32.dll function pointer typedefs
-#ifndef _GLFW_NO_DLOAD_GDI32
-typedef int  (WINAPI * CHOOSEPIXELFORMAT_T) (HDC,CONST PIXELFORMATDESCRIPTOR*);
-typedef int  (WINAPI * DESCRIBEPIXELFORMAT_T) (HDC,int,UINT,LPPIXELFORMATDESCRIPTOR);
-typedef int  (WINAPI * GETPIXELFORMAT_T) (HDC);
-typedef BOOL (WINAPI * SETPIXELFORMAT_T) (HDC,int,const PIXELFORMATDESCRIPTOR*);
-typedef BOOL (WINAPI * SWAPBUFFERS_T) (HDC);
-#endif // _GLFW_NO_DLOAD_GDI32
-
-// winmm.dll function pointer typedefs
-#ifndef _GLFW_NO_DLOAD_WINMM
-typedef MMRESULT (WINAPI * JOYGETDEVCAPSA_T) (UINT,LPJOYCAPSA,UINT);
-typedef MMRESULT (WINAPI * JOYGETPOS_T) (UINT,LPJOYINFO);
-typedef MMRESULT (WINAPI * JOYGETPOSEX_T) (UINT,LPJOYINFOEX);
-typedef DWORD (WINAPI * TIMEGETTIME_T) (void);
-#endif // _GLFW_NO_DLOAD_WINMM
-
-// Library handles and function pointers
-GLFWGLOBAL struct {
-#ifndef _GLFW_NO_DLOAD_GDI32
-    // gdi32.dll
-    HINSTANCE             gdi32;
-    CHOOSEPIXELFORMAT_T   ChoosePixelFormat;
-    DESCRIBEPIXELFORMAT_T DescribePixelFormat;
-    GETPIXELFORMAT_T      GetPixelFormat;
-    SETPIXELFORMAT_T      SetPixelFormat;
-    SWAPBUFFERS_T         SwapBuffers;
-#endif // _GLFW_NO_DLOAD_GDI32
-
-    // winmm.dll
-#ifndef _GLFW_NO_DLOAD_WINMM
-    HINSTANCE             winmm;
-    JOYGETDEVCAPSA_T      joyGetDevCapsA;
-    JOYGETPOS_T           joyGetPos;
-    JOYGETPOSEX_T         joyGetPosEx;
-    TIMEGETTIME_T         timeGetTime;
-#endif // _GLFW_NO_DLOAD_WINMM
-} _glfwLibs;
-
-// gdi32.dll shortcuts
-#ifndef _GLFW_NO_DLOAD_GDI32
-#define _glfw_ChoosePixelFormat   _glfwLibs.ChoosePixelFormat
-#define _glfw_DescribePixelFormat _glfwLibs.DescribePixelFormat
-#define _glfw_GetPixelFormat      _glfwLibs.GetPixelFormat
-#define _glfw_SetPixelFormat      _glfwLibs.SetPixelFormat
-#define _glfw_SwapBuffers         _glfwLibs.SwapBuffers
-#else
-#define _glfw_ChoosePixelFormat   ChoosePixelFormat
-#define _glfw_DescribePixelFormat DescribePixelFormat
-#define _glfw_GetPixelFormat      GetPixelFormat
-#define _glfw_SetPixelFormat      SetPixelFormat
-#define _glfw_SwapBuffers         SwapBuffers
-#endif // _GLFW_NO_DLOAD_GDI32
-
-// winmm.dll shortcuts
-#ifndef _GLFW_NO_DLOAD_WINMM
-#define _glfw_joyGetDevCaps _glfwLibs.joyGetDevCapsA
-#define _glfw_joyGetPos     _glfwLibs.joyGetPos
-#define _glfw_joyGetPosEx   _glfwLibs.joyGetPosEx
-#define _glfw_timeGetTime   _glfwLibs.timeGetTime
-#else
-#define _glfw_joyGetDevCaps joyGetDevCapsA
-#define _glfw_joyGetPos     joyGetPos
-#define _glfw_joyGetPosEx   joyGetPosEx
-#define _glfw_timeGetTime   timeGetTime
-#endif // _GLFW_NO_DLOAD_WINMM
 
 
 //========================================================================

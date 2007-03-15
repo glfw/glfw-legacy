@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        win32_fullscreen.c
 // Platform:    Windows
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: win32_fullscreen.c,v 1.5 2005-03-14 20:28:04 marcus256 Exp $
+// $Id: win32_fullscreen.c,v 1.6 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -161,7 +158,7 @@ int _glfwGetClosestVideoMode( int *w, int *h, int *r, int *g, int *b,
 
 
 //========================================================================
-// _glfwSetVideoModeMODE() - Change the current video mode
+// Change the current video mode
 //========================================================================
 
 void _glfwSetVideoModeMODE( int mode )
@@ -180,6 +177,7 @@ void _glfwSetVideoModeMODE( int mode )
     if( _glfwWin.DesiredRefreshRate > 0 )
     {
         dm.dmFields = dm.dmFields | DM_DISPLAYFREQUENCY;
+	dm.dmDisplayFrequency = _glfwWin.DesiredRefreshRate;
     }
 
     // Change display setting
@@ -317,3 +315,5 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
     _glfwBPP2RGB( dm.dmBitsPerPel, &mode->RedBits, &mode->GreenBits,
                   &mode->BlueBits );
 }
+
+

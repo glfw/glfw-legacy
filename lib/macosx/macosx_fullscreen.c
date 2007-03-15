@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        macosx_fullscreen.c
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_fullscreen.c,v 1.7 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_fullscreen.c,v 1.8 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -41,40 +36,41 @@
 // _glfwVideoModesEqual() - Compares two video modes
 //========================================================================
 
-static int _glfwVideoModesEqual(GLFWvidmode* first,
-                                GLFWvidmode* second)
+static int _glfwVideoModesEqual( GLFWvidmode* first,
+                                 GLFWvidmode* second )
 {
-	if( first->Width != second->Width )
-		return 0;
+    if( first->Width != second->Width )
+	return 0;
 		
-	if( first->Height != second->Height )
-		return 0;
+    if( first->Height != second->Height )
+	return 0;
 		
-	if( first->RedBits + first->GreenBits + first->BlueBits !=
-	   second->RedBits + second->GreenBits + second->BlueBits )
-		return 0;
+    if( first->RedBits + first->GreenBits + first->BlueBits !=
+      second->RedBits + second->GreenBits + second->BlueBits )
+	return 0;
 	
-	return 1;
+    return 1;
 }
                             
 //========================================================================
 // _glfwCGToGLFWVideoMode() - Converts a CG mode to a GLFW mode
 //========================================================================
 
-static void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
-                                   GLFWvidmode* glfwMode)
+static void _glfwCGToGLFWVideoMode( CFDictionaryRef cgMode,
+                                    GLFWvidmode* glfwMode )
 {
-    CFNumberGetValue(CFDictionaryGetValue(cgMode, kCGDisplayWidth),
-                     kCFNumberIntType,
-                     &(glfwMode->Width));
-    CFNumberGetValue(CFDictionaryGetValue(cgMode, kCGDisplayHeight),
-                     kCFNumberIntType,
-                     &(glfwMode->Height));
-
     int bitsPerSample;
-    CFNumberGetValue(CFDictionaryGetValue(cgMode, kCGDisplayBitsPerSample),
+
+    CFNumberGetValue( CFDictionaryGetValue( cgMode, kCGDisplayWidth ),
                      kCFNumberIntType,
-                     &bitsPerSample);
+                     &(glfwMode->Width) );
+    CFNumberGetValue( CFDictionaryGetValue( cgMode, kCGDisplayHeight ),
+                     kCFNumberIntType,
+                     &(glfwMode->Height) );
+
+    CFNumberGetValue( CFDictionaryGetValue( cgMode, kCGDisplayBitsPerSample ),
+                     kCFNumberIntType,
+                     &bitsPerSample );
 
     glfwMode->RedBits = bitsPerSample;
     glfwMode->GreenBits = bitsPerSample;
@@ -85,32 +81,32 @@ static void _glfwCGToGLFWVideoMode(CFDictionaryRef cgMode,
 // _glfwPlatformGetVideoModes() - Get a list of available video modes
 //========================================================================
 
-int  _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
+int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 {
     int i, j, maxModes, numModes;
-	GLFWvidmode mode;
+    GLFWvidmode mode;
     CFArrayRef availableModes = CGDisplayAvailableModes( kCGDirectMainDisplay );
     CFIndex numberOfAvailableModes = CFArrayGetCount( availableModes );
 
-	numModes = 0;
+    numModes = 0;
     maxModes = ( numberOfAvailableModes < maxcount ?
                  numberOfAvailableModes :
                  maxcount );
 
-    for ( i = 0; i < maxModes; ++i )
+    for( i = 0; i < maxModes; ++i )
     {
         _glfwCGToGLFWVideoMode( CFArrayGetValueAtIndex( availableModes, i ),
                                 &mode );
 
         // Is it a valid mode? (only list depths >= 15 bpp)
-		if (mode.RedBits + mode.GreenBits + mode.BlueBits < 15)
-			continue;
+	if( mode.RedBits + mode.GreenBits + mode.BlueBits < 15 )
+	    continue;
 			
         // Check for duplicate of current mode in target list
-      	for ( j = 0; j < numModes; ++j )
+      	for( j = 0; j < numModes; ++j )
       	{
-      		if( _glfwVideoModesEqual( &mode, &(list[j]) ) )
-      			break;
+      	    if( _glfwVideoModesEqual( &mode, &(list[j]) ) )
+      		break;
       	}
       	
       	// If empty list or no match found
@@ -129,3 +125,4 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
     _glfwCGToGLFWVideoMode( _glfwDesktopVideoMode, mode );
 }
+

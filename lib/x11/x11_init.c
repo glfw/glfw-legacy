@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        x11_init.c
 // Platform:    X11 (Unix)
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: x11_init.c,v 1.8 2005-03-14 20:26:17 marcus256 Exp $
+// $Id: x11_init.c,v 1.9 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -42,7 +39,7 @@
 //************************************************************************
 
 //========================================================================
-// _glfwInitThreads() - Initialize GLFW thread package
+// Initialize GLFW thread package
 //========================================================================
 
 static void _glfwInitThreads( void )
@@ -56,7 +53,7 @@ static void _glfwInitThreads( void )
     _glfwThrd.NextID = 0;
 
     // Fill out information about the main thread (this thread)
-    _glfwThrd.First.ID       = _glfwThrd.NextID ++;
+    _glfwThrd.First.ID       = _glfwThrd.NextID++;
     _glfwThrd.First.Function = NULL;
     _glfwThrd.First.Previous = NULL;
     _glfwThrd.First.Next     = NULL;
@@ -67,7 +64,7 @@ static void _glfwInitThreads( void )
 
 
 //========================================================================
-// _glfwTerminateThreads() - Terminate GLFW thread package
+// Terminate GLFW thread package
 //========================================================================
 
 static void _glfwTerminateThreads( void )
@@ -108,17 +105,17 @@ static void _glfwTerminateThreads( void )
 
 
 //========================================================================
-// _glfwInitLibraries() - Dynamically load libraries
+// Dynamically load libraries
 //========================================================================
 
 #ifdef _GLFW_DLOPEN_LIBGL
-#define _GLFW_NUM_LIBGL_NAMES 4
-static char * _glfw_libGL_name[ _GLFW_NUM_LIBGL_NAMES ] =
+static char * _glfw_libGL_name[ ] =
 {
     "libGL.so",
     "libGL.so.1",
     "/usr/lib/libGL.so",
-    "/usr/lib/libGL.so.1"
+    "/usr/lib/libGL.so.1",
+    NULL
 };
 #endif
 
@@ -127,18 +124,20 @@ static void _glfwInitLibraries( void )
 #ifdef _GLFW_DLOPEN_LIBGL
     int i;
 
-    _glfwLibs.libGL = NULL;
-    for( i = 0; !_glfwLibs.libGL && (i < _GLFW_NUM_LIBGL_NAMES); i ++ )
+    _glfwLibrary.Libs.libGL = NULL;
+    for( i = 0; !_glfw_libGL_name[ i ] != NULL; i ++ )
     {
-        _glfwLibs.libGL = dlopen( _glfw_libGL_name[ i ],
-                                  RTLD_LAZY | RTLD_GLOBAL );
+        _glfwLibrary.Libs.libGL = dlopen( _glfw_libGL_name[ i ],
+                                          RTLD_LAZY | RTLD_GLOBAL );
+	if( _glfwLibrary.Libs.libGL )
+	    break;
     }
 #endif
 }
 
 
 //========================================================================
-// _glfwTerminate_atexit() - Terminate GLFW when exiting application
+// Terminate GLFW when exiting application
 //========================================================================
 
 void _glfwTerminate_atexit( void )
@@ -148,32 +147,40 @@ void _glfwTerminate_atexit( void )
 
 
 //========================================================================
-// _glfwInitDisplay() - Initialize X11 display
+// Initialize X11 display
 //========================================================================
 
 static int _glfwInitDisplay( void )
 {
-#if defined( _GLFW_HAS_XF86VIDMODE )
-    int     d1, d2;
-#endif
-
     // Open display
-    _glfwDisplay.Dpy = XOpenDisplay( 0 );
-    if( !_glfwDisplay.Dpy )
+    _glfwLibrary.Dpy = XOpenDisplay( 0 );
+    if( !_glfwLibrary.Dpy )
     {
         return GL_FALSE;
     }
 
     // Check screens
-    _glfwDisplay.NumScreens = ScreenCount( _glfwDisplay.Dpy );
-    _glfwDisplay.DefaultScreen = DefaultScreen( _glfwDisplay.Dpy );
+    _glfwLibrary.NumScreens = ScreenCount( _glfwLibrary.Dpy );
+    _glfwLibrary.DefaultScreen = DefaultScreen( _glfwLibrary.Dpy );
 
     // Check for XF86VidMode extension
 #ifdef _GLFW_HAS_XF86VIDMODE
-    _glfwDisplay.Has_XF86VidMode =
-        XF86VidModeQueryExtension( _glfwDisplay.Dpy, &d1, &d2 );
+    _glfwLibrary.XF86VidMode.Available =
+        XF86VidModeQueryExtension( _glfwLibrary.Dpy,
+	                           &_glfwLibrary.XF86VidMode.EventBase,
+	                           &_glfwLibrary.XF86VidMode.ErrorBase);
 #else
-    _glfwDisplay.Has_XF86VidMode = 0;
+    _glfwLibrary.XF86VidMode.Available = 0;
+#endif
+
+    // Check for XRandR extension
+#ifdef _GLFW_HAS_XRANDR
+    _glfwLibrary.XRandR.Available =
+        XRRQueryExtension( _glfwLibrary.Dpy,
+	                   &_glfwLibrary.XRandR.EventBase,
+			   &_glfwLibrary.XRandR.ErrorBase );
+#else
+    _glfwLibrary.XRandR.Available = 0;
 #endif
 
      return GL_TRUE;
@@ -181,16 +188,16 @@ static int _glfwInitDisplay( void )
 
 
 //========================================================================
-// _glfwTerminateDisplay() - Terminate X11 display
+// Terminate X11 display
 //========================================================================
 
 static void _glfwTerminateDisplay( void )
 {
     // Open display
-    if( _glfwDisplay.Dpy )
+    if( _glfwLibrary.Dpy )
     {
-        XCloseDisplay( _glfwDisplay.Dpy );
-        _glfwDisplay.Dpy = NULL;
+        XCloseDisplay( _glfwLibrary.Dpy );
+        _glfwLibrary.Dpy = NULL;
     }
 }
 
@@ -200,7 +207,7 @@ static void _glfwTerminateDisplay( void )
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformInit() - Initialize various GLFW state
+// Initialize various GLFW state
 //========================================================================
 
 int _glfwPlatformInit( void )
@@ -231,7 +238,7 @@ int _glfwPlatformInit( void )
 
 
 //========================================================================
-// _glfwPlatformTerminate() - Close window and kill all threads
+// Close window and kill all threads
 //========================================================================
 
 int _glfwPlatformTerminate( void )
@@ -258,12 +265,13 @@ int _glfwPlatformTerminate( void )
 
     // Unload libGL.so if necessary
 #ifdef _GLFW_DLOPEN_LIBGL
-    if( _glfwLibs.libGL != NULL )
+    if( _glfwLibrary.Libs.libGL != NULL )
     {
-        dlclose( _glfwLibs.libGL );
-        _glfwLibs.libGL = NULL;
+        dlclose( _glfwLibrary.Libs.libGL );
+        _glfwLibrary.Libs.libGL = NULL;
     }
 #endif
 
     return GL_TRUE;
 }
+

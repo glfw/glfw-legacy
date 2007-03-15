@@ -3,8 +3,6 @@
 // File:        dos_irq.s
 // Platform:    DOS
 // API version: 2.4
-// Authors:     Daniel Borca (dborca at yahoo.com)
-//              Marcus Geelnard (marcus.geelnard at home.se)
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2004 Marcus Geelnard
@@ -28,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: dos_irq.s,v 1.4 2004-02-14 20:53:15 marcus256 Exp $
+// $Id: dos_irq.s,v 1.5 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
                 .file   "dos_irq.S"

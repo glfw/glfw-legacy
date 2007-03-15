@@ -28,7 +28,7 @@
  *****************************************************************************/
 
 /************************************************************************
- * $Id: boing.d,v 1.1 2004-03-26 22:54:41 glennmlewis Exp $
+ * $Id: boing.d,v 1.2 2007-03-15 03:20:21 elmindreda Exp $
  ************************************************************************/
 
 import std.math;
@@ -214,13 +214,13 @@ extern (Windows)
 {
   void reshape( int w, int h )
     {
-      glViewport( 0, 0, (GLsizei)w, (GLsizei)h );
+      glViewport( 0, 0, cast(GLsizei)w, cast(GLsizei)h );
 
       glMatrixMode( GL_PROJECTION );
       glLoadIdentity();
 
       gluPerspective( PerspectiveAngle( RADIUS * 2, 200 ),
-		      (GLfloat)w / (GLfloat)h,
+		      cast(GLfloat)w / cast(GLfloat)h,
 		      1.0,
 		      VIEW_SCENE_DIST );
 
@@ -328,23 +328,23 @@ void BounceBall( double dt )
    /* Bounce on walls */
    if ( ball_x >  (BOUNCE_WIDTH/2 + WALL_R_OFFSET ) )
    {
-      ball_x_inc = -0.5 - 0.75 * (GLfloat)((rand()&RAND_MAX)/(GLfloat)RAND_MAX);
+      ball_x_inc = -0.5 - 0.75 * cast(GLfloat)((rand()&RAND_MAX)/cast(GLfloat)RAND_MAX);
       deg_rot_y_inc = -deg_rot_y_inc;
    }
    if ( ball_x < -(BOUNCE_HEIGHT/2 + WALL_L_OFFSET) )
    {
-      ball_x_inc =  0.5 + 0.75 * (GLfloat)((rand()&RAND_MAX)/(GLfloat)RAND_MAX);
+      ball_x_inc =  0.5 + 0.75 * cast(GLfloat)((rand()&RAND_MAX)/cast(GLfloat)RAND_MAX);
       deg_rot_y_inc = -deg_rot_y_inc;
    }
 
    /* Bounce on floor / roof */
    if ( ball_y >  BOUNCE_HEIGHT/2.0      )
    {
-      ball_y_inc = -0.75 - (GLfloat)((rand()&RAND_MAX)/(GLfloat)RAND_MAX);
+      ball_y_inc = -0.75 - cast(GLfloat)((rand()&RAND_MAX)/cast(GLfloat)RAND_MAX);
    }
    if ( ball_y < -BOUNCE_HEIGHT/2.0*0.85 )
    {
-      ball_y_inc =  0.75 + (GLfloat)((rand()&RAND_MAX)/(GLfloat)RAND_MAX);
+      ball_y_inc =  0.75 + cast(GLfloat)((rand()&RAND_MAX)/cast(GLfloat)RAND_MAX);
    }
 
    /* Update ball position */
@@ -589,7 +589,7 @@ int main()
        // Calculate and display FPS (frames per second)
        if( (t-t0) > 1.0 || frames == 0 )
 	 {
-	   fps = (double)frames / (t-t0);
+	   fps = cast(double)frames / (t-t0);
 	   titlestr = "Boing (classic Amiga demo - " ~ toString(fps) ~ " FPS)\0";
 	   glfwSetWindowTitle( titlestr );
 	   t0 = t;

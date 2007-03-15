@@ -1,28 +1,28 @@
 //========================================================================
 // This is a small test application for GLFW.
-// The program opens a window (640x480), and renders a spinning colored
-// triangle (it is controlled with both the GLFW timer and the mouse). It
-// also calculates the rendering speed (FPS), which is displayed in the
-// window title bar.
+// The program shows texture loading with mipmap generation and trilienar
+// filtering.
+// Note: For OpenGL 1.0 compability, we do not use texture objects (this
+// is no issue, since we only have one texture).
 //========================================================================
 
 /************************************************************************
- * $Id: triangle.d,v 1.2 2007-03-15 03:20:21 elmindreda Exp $
+ * $Id: mipmaps.d,v 1.2 2007-03-15 03:22:43 elmindreda Exp $
  ************************************************************************/
 
-import std.string;
 import glfw;
+import std.c.stdio;
 
 
 //========================================================================
 // main()
 //========================================================================
 
-int main()
+int main( )
 {
-    int       width, height, running, frames, x, y;
-    double    t, t0, fps;
-    char[]    titlestr;
+    int     width, height, running, frames, x, y;
+    double  t, t0, fps;
+    char    titlestr[ 200 ];
 
     // Initialise GLFW
     glfwInit();
@@ -40,6 +40,23 @@ int main()
     // Disable vertical sync (on cards that support it)
     glfwSwapInterval( 0 );
 
+    // Load texture from file, and build all mipmap levels. The
+    // texture is automatically uploaded to texture memory.
+    if( !glfwLoadTexture2D( "mipmaps.tga", GLFW_BUILD_MIPMAPS_BIT ) )
+    {
+        glfwTerminate();
+        return 0;
+    }
+
+    // Use trilinear interpolation (GL_LINEAR_MIPMAP_LINEAR)
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                     GL_LINEAR_MIPMAP_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                     GL_LINEAR );
+
+    // Enable texturing
+    glEnable( GL_TEXTURE_2D );
+
     // Main loop
     running = GL_TRUE;
     frames = 0;
@@ -54,7 +71,7 @@ int main()
         if( (t-t0) > 1.0 || frames == 0 )
         {
             fps = cast(double)frames / (t-t0);
-            titlestr = "Spinning Triangle (" ~ toString(fps) ~ " FPS)\0";
+            sprintf( titlestr, "Trilinear interpolation (%.1f FPS)", fps );
             glfwSetWindowTitle( titlestr );
             t0 = t;
             frames = 0;
@@ -69,32 +86,33 @@ int main()
         glViewport( 0, 0, width, height );
 
         // Clear color buffer
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f);
         glClear( GL_COLOR_BUFFER_BIT );
 
         // Select and setup the projection matrix
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
         gluPerspective( 65.0f, cast(GLfloat)width/cast(GLfloat)height, 1.0f,
-            100.0f );
+            50.0f );
 
         // Select and setup the modelview matrix
         glMatrixMode( GL_MODELVIEW );
         glLoadIdentity();
-        gluLookAt( 0.0f, 1.0f, 0.0f,    // Eye-position
-                   0.0f, 20.0f, 0.0f,   // View-point
-                   0.0f, 0.0f, 1.0f );  // Up-vector
+        gluLookAt( 0.0f,  3.0f, -20.0f,    // Eye-position
+                   0.0f, -4.0f, -11.0f,    // View-point
+                   0.0f,  1.0f,   0.0f );  // Up-vector
 
-        // Draw a rotating colorful triangle
-        glTranslatef( 0.0f, 14.0f, 0.0f );
-        glRotatef( 0.3*cast(GLfloat)x + cast(GLfloat)t*100.0f, 0.0f, 0.0f, 1.0f );
-        glBegin( GL_TRIANGLES );
-          glColor3f( 1.0f, 0.0f, 0.0f );
-          glVertex3f( -5.0f, 0.0f, -4.0f );
-          glColor3f( 0.0f, 1.0f, 0.0f );
-          glVertex3f( 5.0f, 0.0f, -4.0f );
-          glColor3f( 0.0f, 0.0f, 1.0f );
-          glVertex3f( 0.0f, 0.0f, 6.0f );
+        // Draw a textured quad
+        glRotatef( 0.05*cast(GLfloat)x + cast(GLfloat)t*5.0f, 0.0f, 1.0f, 0.0f );
+        glBegin( GL_QUADS );
+          glTexCoord2f( -20.0f,  20.0f );
+          glVertex3f( -50.0f, 0.0f, -50.0f );
+          glTexCoord2f(  20.0f,  20.0f );
+          glVertex3f(  50.0f, 0.0f, -50.0f );
+          glTexCoord2f(  20.0f, -20.0f );
+          glVertex3f(  50.0f, 0.0f,  50.0f );
+          glTexCoord2f( -20.0f, -20.0f );
+          glVertex3f( -50.0f, 0.0f,  50.0f );
         glEnd();
 
         // Swap buffers

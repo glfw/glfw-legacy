@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        init.c
 // Platform:    Any
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: init.c,v 1.5 2005-03-14 20:34:35 marcus256 Exp $
+// $Id: init.c,v 1.6 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 #define _init_c_
@@ -60,13 +57,7 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
     _glfwWin.SysKeysDisabled = GL_FALSE;
 
     // Clear window hints
-    _glfwWinHints.RefreshRate    = 0;
-    _glfwWinHints.AccumRedBits   = 0;
-    _glfwWinHints.AccumGreenBits = 0;
-    _glfwWinHints.AccumBlueBits  = 0;
-    _glfwWinHints.AccumAlphaBits = 0;
-    _glfwWinHints.AuxBuffers     = 0;
-    _glfwWinHints.Stereo         = 0;
+    _glfwClearWindowHints();
 
     // Platform specific initialization
     if( !_glfwPlatformInit() )
@@ -116,3 +107,4 @@ GLFWAPI void GLFWAPIENTRY glfwGetVersion( int *major, int *minor,
     if( minor != NULL ) *minor = GLFW_VERSION_MINOR;
     if( rev   != NULL ) *rev   = GLFW_VERSION_REVISION;
 }
+

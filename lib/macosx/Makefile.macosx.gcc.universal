@@ -4,7 +4,7 @@
 # To compile GLFW using this makefile, run:
 #  make -f Makefile.macosx.gcc
 #-------------------------------------------------------------------------
-# $Id: Makefile.macosx.gcc,v 1.5 2007-03-15 03:20:20 elmindreda Exp $
+# $Id: Makefile.macosx.gcc.universal,v 1.2 2007-03-15 03:22:43 elmindreda Exp $
 ##########################################################################
 
 ##########################################################################
@@ -14,32 +14,31 @@ PREFIX ?= /usr/local
 
 
 ##########################################################################
-# Default: Build GLFW static and shared library
+# Default: Build GLFW static library
 ##########################################################################
-default: libglfw.a libglfw.dylib
+default: libglfw.a
 
 
 ##########################################################################
 # Compiler settings
 ##########################################################################
 CC           = gcc
-CFLAGS       = -c -I. -I.. -Wall -Os -fno-common
+FATFLAGS     = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
+CFLAGS       = -c -I. -I.. -Wall -Os -fno-common $(FATFLAGS)
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common
+CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common $(FATFLAGS)
 
 
 ##########################################################################
 # Library builder settings
 ##########################################################################
-AR          = ar
-SED         = sed
-INSTALL     = install
-ARFLAGS     = -rcs
-RANLIB      = ranlib
-DYLIBFLAGS  = -framework AGL -framework Carbon -framework OpenGL \
-              -dynamiclib -Wl,-single_module -compatibility_version 1 \
-              -current_version 1 -install_name @executable_path/libglfw.dylib
+# Static library
+SED       = sed
+INSTALL   = install
+MKLIB     = ar
+LIBFLAGS  = -rcs
+RANLIB    = ranlib
 
 
 ##########################################################################
@@ -56,7 +55,14 @@ install: libglfw.a libglfw.pc
 
 
 ##########################################################################
-# Object files for the GLFW library
+# Rule for cleaning up generated files
+##########################################################################
+clean:
+	@rm -f *.o libglfw.a libglfw.pc
+
+
+##########################################################################
+# Object files which are part of the GLFW library
 ##########################################################################
 OBJS = \
        enable.o \
@@ -89,25 +95,12 @@ libglfw.pc: libglfw.pc.in
 
 
 ##########################################################################
-# Rule for building static library
+# Rule for building library
 ##########################################################################
 libglfw.a: $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS)
+	rm -f $@
+	$(MKLIB) $(LIBFLAGS) $@ $(OBJS)
 	$(RANLIB) $@
-
-
-##########################################################################
-# Rule for building shared library
-##########################################################################
-libglfw.dylib: $(OBJS)
-	$(CC) -o $@ $(DYLIBFLAGS) $(OBJS)
-
-
-##########################################################################
-# Rule for cleaning up generated files
-##########################################################################
-clean:
-	@rm -f *.o libglfw.a libglfw.dylib libglfw.pc
 
 
 ##########################################################################
@@ -172,3 +165,4 @@ macosx_time.o: macosx_time.c ../internal.h platform.h
 
 macosx_window.o: macosx_window.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ macosx_window.c
+

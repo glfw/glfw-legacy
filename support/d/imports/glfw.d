@@ -29,10 +29,10 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.d,v 1.8 2005-03-14 20:59:26 marcus256 Exp $
+// $Id: glfw.d,v 1.9 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
-import gl, glu;
+public import gl, glu;
 
 
 version(Win32)

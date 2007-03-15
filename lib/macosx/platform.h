@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.15 2005-08-23 11:12:53 elmindreda Exp $
+// $Id: platform.h,v 1.16 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -45,7 +40,9 @@
 
 // Include files
 #include <Carbon/Carbon.h>
+#include <OpenGL/OpenGL.h>
 #include <AGL/agl.h>
+#include <sched.h>
 #include <pthread.h>
 #include <sys/sysctl.h>
 #include "../../include/GL/glfw.h"
@@ -55,14 +52,7 @@
 // Defines
 //========================================================================
 
-#define GLFW_WINDOW_ATTRIBUTES ( kWindowCloseBoxAttribute        \
-                               | kWindowFullZoomAttribute        \
-                               | kWindowCollapseBoxAttribute     \
-                               | kWindowResizableAttribute       \
-                               | kWindowStandardHandlerAttribute \
-                               | kWindowLiveResizeAttribute )
-
-#define GLFW_MAX_PATH_LENGTH (8192)
+#define _GLFW_MAX_PATH_LENGTH (8192)
 
 #define MAC_KEY_ENTER       0x24
 #define MAC_KEY_RETURN      0x34
@@ -145,7 +135,7 @@ _GLFWmacwindowfunctions;
 // Global variables (GLFW internals)
 //========================================================================
 
-CFDictionaryRef _glfwDesktopVideoMode;
+GLFWGLOBAL CFDictionaryRef _glfwDesktopVideoMode;
 
 //------------------------------------------------------------------------
 // Window structure
@@ -177,12 +167,15 @@ struct _GLFWwin_struct {
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
     int       RefreshRate;     // Refresh rate (for fullscreen mode)
+    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
+    int	      Samples;
 
     // Window status
     int       Width, Height;   // Window width and heigth
 
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
+    int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor;
 
 
@@ -190,6 +183,7 @@ struct _GLFWwin_struct {
 
     WindowRef               MacWindow;
     AGLContext              AGLContext;
+    CGLContextObj           CGLContext;
 
     EventHandlerUPP         MouseUPP;
     EventHandlerUPP         CommandUPP;
@@ -240,12 +234,6 @@ GLFWGLOBAL struct {
 } _glfwInput;
 
 
-//------------------------------------------------------------------------
-// Timer status
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-    double       t0;
-} _glfwTimer;
 
 
 //------------------------------------------------------------------------
@@ -279,14 +267,22 @@ GLFWGLOBAL struct {
 } _glfwThrd;
 
 
-
 //------------------------------------------------------------------------
-// Dynamically loaded libraries
+// Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
-    // Bundle for dynamically-loading extension function pointers
-    CFBundleRef OpenGLFramework;
-} _glfwLibs;
+
+    // Timer data
+    struct {
+	double       t0;
+    } Timer;
+
+    struct {
+	// Bundle for dynamically-loading extension function pointers
+	CFBundleRef OpenGLFramework;
+    } Libs;
+} _glfwLibrary;
+
 
 
 //========================================================================

@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        macosx_enable.c
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_enable.c,v 1.6 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_enable.c,v 1.7 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 void _glfwPlatformEnableSystemKeys( void )
@@ -46,3 +41,4 @@ void _glfwPlatformDisableSystemKeys( void )
     // Nothing to do; event handling code checks the status of
     // _glfwWin.SysKeysDisabled to ensure this behavior.
 }
+

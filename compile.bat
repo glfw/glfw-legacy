@@ -2,8 +2,8 @@
 
 REM **********************************************************************
 REM * compile.bat - MS Windows compilation batch file
-REM * $Date: 2003-02-02 20:51:40 $
-REM * $Revision: 1.2 $
+REM * $Date: 2007-03-15 03:20:18 $
+REM * $Revision: 1.3 $
 REM *
 REM * This is a "helper" script for the top-level Makefile for GLFW.
 REM * It was introduced to eliminate incompability issues between
@@ -26,8 +26,8 @@ REM ----------------------------------------------------------------------
 REM Check input arguments
 REM ----------------------------------------------------------------------
 
-IF "%1" == "" GOTO Error1
-IF "%1" == "CLEAN" GOTO Cleanup
+IF %1 == CLEAN GOTO Cleanup
+IF %1 == "" GOTO Error1
 IF "%2" == "" GOTO Error1
 IF NOT EXIST .\lib\win32\Makefile.win32.%2 GOTO Error2
 GOTO ArgsOK

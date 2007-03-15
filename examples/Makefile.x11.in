@@ -51,3 +51,4 @@ boing: boing.c
 # Rule for wave
 wave: wave.c
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o $@
+

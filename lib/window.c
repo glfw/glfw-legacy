@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        window.c
 // Platform:    Any
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: window.c,v 1.14 2005-01-10 22:23:28 marcus256 Exp $
+// $Id: window.c,v 1.15 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -40,6 +37,51 @@
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+//========================================================================
+// Clear all open window hints
+//========================================================================
+
+void _glfwClearWindowHints( void )
+{
+    _glfwWinHints.RefreshRate    = 0;
+    _glfwWinHints.AccumRedBits   = 0;
+    _glfwWinHints.AccumGreenBits = 0;
+    _glfwWinHints.AccumBlueBits  = 0;
+    _glfwWinHints.AccumAlphaBits = 0;
+    _glfwWinHints.AuxBuffers     = 0;
+    _glfwWinHints.Stereo         = 0;
+    _glfwWinHints.WindowNoResize = 0;
+    _glfwWinHints.Samples        = 0;
+}
+
+
+//========================================================================
+// Handle the input tracking part of window deactivation
+//========================================================================
+
+void _glfwInputDeactivation( void )
+{
+    int i;
+
+    // Release all keyboard keys
+    for( i = 0; i <= GLFW_KEY_LAST; i ++ )
+    {
+        if( _glfwInput.Key[ i ] == GLFW_PRESS )
+	{
+	    _glfwInputKey( i, GLFW_RELEASE );
+	}
+    }
+
+    // Release all mouse buttons
+    for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i ++ )
+    {
+        if( _glfwInput.MouseButton[ i ] == GLFW_PRESS )
+	{
+	    _glfwInputMouseClick( i, GLFW_RELEASE );
+	}
+    }
+}
 
 
 //========================================================================
@@ -53,7 +95,7 @@ void _glfwClearInput( void )
     // Release all keyboard keys
     for( i = 0; i <= GLFW_KEY_LAST; i ++ )
     {
-        _glfwInput.Key[ i ] = 0;
+        _glfwInput.Key[ i ] = GLFW_RELEASE;
     }
 
     // Clear last character
@@ -62,7 +104,7 @@ void _glfwClearInput( void )
     // Release all mouse buttons
     for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i ++ )
     {
-        _glfwInput.MouseButton[ i ] = 0;
+        _glfwInput.MouseButton[ i ] = GLFW_RELEASE;
     }
 
     // Set mouse position to (0,0)
@@ -89,31 +131,33 @@ void _glfwInputKey( int key, int action )
 {
     int keyrepeat = 0;
 
-    if( key >= 0 && key <= GLFW_KEY_LAST )
+    if( key < 0 || key > GLFW_KEY_LAST )
     {
-        // Are we trying to release an already released key?
-        if( action == GLFW_RELEASE && _glfwInput.Key[ key ] != 1 )
-        {
-            return;
-        }
+	return;
+    }
 
-        // Register key action
-        if( action == GLFW_RELEASE && _glfwInput.StickyKeys )
-        {
-            _glfwInput.Key[ key ] = 2;
-        }
-        else
-        {
-            keyrepeat = (_glfwInput.Key[ key ] == GLFW_PRESS) &&
-                        (action == GLFW_PRESS);
-            _glfwInput.Key[ key ] = (char) action;
-        }
+    // Are we trying to release an already released key?
+    if( action == GLFW_RELEASE && _glfwInput.Key[ key ] != GLFW_PRESS )
+    {
+	return;
+    }
 
-        // Call user callback function
-        if( _glfwWin.KeyCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
-        {
-            _glfwWin.KeyCallback( key, action );
-        }
+    // Register key action
+    if( action == GLFW_RELEASE && _glfwInput.StickyKeys )
+    {
+	_glfwInput.Key[ key ] = GLFW_STICK;
+    }
+    else
+    {
+	keyrepeat = (_glfwInput.Key[ key ] == GLFW_PRESS) &&
+		    (action == GLFW_PRESS);
+	_glfwInput.Key[ key ] = (char) action;
+    }
+
+    // Call user callback function
+    if( _glfwWin.KeyCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
+    {
+	_glfwWin.KeyCallback( key, action );
     }
 }
 
@@ -167,7 +211,7 @@ void _glfwInputMouseClick( int button, int action )
         // Register mouse button action
         if( action == GLFW_RELEASE && _glfwInput.StickyMouseButtons )
         {
-            _glfwInput.MouseButton[ button ] = 2;
+            _glfwInput.MouseButton[ button ] = GLFW_STICK;
         }
         else
         {
@@ -197,14 +241,18 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     int redbits, int greenbits, int bluebits, int alphabits,
     int depthbits, int stencilbits, int mode )
 {
-    int AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits;
-    int AuxBuffers, Stereo, RefreshRate, x;
+    int x;
+    _GLFWhints hints;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || _glfwWin.Opened )
     {
         return GL_FALSE;
     }
+
+    // Copy and clear window hints
+    hints = _glfwWinHints;
+    _glfwClearWindowHints();
 
     // Check input arguments
     if( mode != GLFW_WINDOW && mode != GLFW_FULLSCREEN )
@@ -229,24 +277,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwWin.MouseButtonCallback   = NULL;
     _glfwWin.MouseWheelCallback    = NULL;
 
-    // Get window hints
-    AccumRedBits   = _glfwWinHints.AccumRedBits;
-    AccumGreenBits = _glfwWinHints.AccumGreenBits;
-    AccumBlueBits  = _glfwWinHints.AccumBlueBits;
-    AccumAlphaBits = _glfwWinHints.AccumAlphaBits;
-    AuxBuffers     = _glfwWinHints.AuxBuffers;
-    Stereo         = _glfwWinHints.Stereo;
-    RefreshRate    = _glfwWinHints.RefreshRate;
-
-    // Clear window hints
-    _glfwWinHints.RefreshRate    = 0;
-    _glfwWinHints.AccumRedBits   = 0;
-    _glfwWinHints.AccumGreenBits = 0;
-    _glfwWinHints.AccumBlueBits  = 0;
-    _glfwWinHints.AccumAlphaBits = 0;
-    _glfwWinHints.AuxBuffers     = 0;
-    _glfwWinHints.Stereo         = 0;
-
     // Check width & height
     if( width > 0 && height <= 0 )
     {
@@ -265,16 +295,14 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         height = 480;
     }
 
-    // Remeber window settings
-    _glfwWin.Width      = width;
-    _glfwWin.Height     = height;
-    _glfwWin.Fullscreen = (mode == GLFW_FULLSCREEN ? 1 : 0);
+    // Remember window settings
+    _glfwWin.Width          = width;
+    _glfwWin.Height         = height;
+    _glfwWin.Fullscreen     = (mode == GLFW_FULLSCREEN ? 1 : 0);
 
     // Platform specific window opening routine
     if( !_glfwPlatformOpenWindow( width, height, redbits, greenbits,
-            bluebits, alphabits, depthbits, stencilbits, mode,
-            AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits,
-            AuxBuffers, Stereo, RefreshRate ) )
+            bluebits, alphabits, depthbits, stencilbits, mode, &hints ) )
     {
         return GL_FALSE;
     }
@@ -287,6 +315,10 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 
     // Get OpenGL version
     glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor, &x );
+
+    // Do we have non-power-of-two textures?
+    _glfwWin.Has_GL_ARB_texture_non_power_of_two =
+        glfwExtensionSupported( "GL_ARB_texture_non_power_of_two" );
 
     // Do we have automatic mipmap generation?
     _glfwWin.Has_GL_SGIS_generate_mipmap =
@@ -337,6 +369,12 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
             break;
         case GLFW_STEREO:
             _glfwWinHints.Stereo = hint;
+            break;
+        case GLFW_WINDOW_NO_RESIZE:
+            _glfwWinHints.WindowNoResize = hint;
+            break;
+	case GLFW_FSAA_SAMPLES:
+            _glfwWinHints.Samples = hint;
             break;
         default:
             break;
@@ -586,6 +624,10 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
             return _glfwWin.Stereo;
         case GLFW_REFRESH_RATE:
             return _glfwWin.RefreshRate;
+        case GLFW_WINDOW_NO_RESIZE:
+            return _glfwWin.WindowNoResize;
+	case GLFW_FSAA_SAMPLES:
+	    return _glfwWin.Samples;
         default:
             return 0;
     }
@@ -684,3 +726,4 @@ GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
     // Poll for new events
     _glfwPlatformWaitEvents();
 }
+

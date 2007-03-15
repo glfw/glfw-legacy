@@ -2,13 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        macosx_time.c
 // Platform:    Mac OS X
-// API Version: 2.5
-// Authors:     Keith Bauer (onesadcookie at hotmail.com)
-//              Camilla Berglund (elmindreda at users.sourceforge.net)
-//              Marcus Geelnard (marcus.geelnard at home.se)
+// API Version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -29,26 +26,54 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: macosx_time.c,v 1.6 2005-03-19 19:09:41 marcus256 Exp $
+// $Id: macosx_time.c,v 1.7 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
 
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
+// Return timer value in seconds
+//========================================================================
+
 double _glfwPlatformGetTime( void )
 {
-    return GetCurrentEventTime() - _glfwTimer.t0;
+    struct timeval  tv;
+
+    gettimeofday( &tv, NULL );
+    return tv.tv_sec + (double) tv.tv_usec / 1000000.0 - _glfwLibrary.Timer.t0;
 }
 
-void   _glfwPlatformSetTime( double time )
+
+//========================================================================
+// Set timer value in seconds
+//========================================================================
+
+void _glfwPlatformSetTime( double time )
 {
-    _glfwTimer.t0 = GetCurrentEventTime() - time;
+    struct timeval  tv;
+
+    gettimeofday( &tv, NULL );
+    _glfwLibrary.Timer.t0 = tv.tv_sec + (double) tv.tv_usec / 1000000.0 - time;
 }
 
-void   _glfwPlatformSleep( double time )
+
+//========================================================================
+// Put a thread to sleep for a specified amount of time
+//========================================================================
+
+void _glfwPlatformSleep( double time )
 {
+    if( time == 0.0 )
+    {
+	sched_yield();
+	return;
+    }
+
     struct timeval  currenttime;
     struct timespec wait;
     pthread_mutex_t mutex;
@@ -86,3 +111,4 @@ void   _glfwPlatformSleep( double time )
     pthread_mutex_destroy( &mutex );
     pthread_cond_destroy( &cond );
 }
+

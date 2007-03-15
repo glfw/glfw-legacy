@@ -16,11 +16,11 @@
  */
 
 /************************************************************************
- * $Id: gears.d,v 1.1 2004-03-26 22:54:52 glennmlewis Exp $
+ * $Id: gears.d,v 1.2 2007-03-15 03:20:21 elmindreda Exp $
  ************************************************************************/
 
 import std.math;
-import std.string;
+import std.c.string;
 import glfw;
 
 static int running = 1;
@@ -179,19 +179,19 @@ static void draw()
 
   glPushMatrix();
   glTranslatef(-3.0, -2.0, 0.0);
-  glRotatef((GLfloat)angle, 0.0, 0.0, 1.0);
+  glRotatef(cast(GLfloat)angle, 0.0, 0.0, 1.0);
   glCallList(gear1);
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(3.1, -2.0, 0.0);
-  glRotatef((GLfloat)(-2.0 * angle - 9.0), 0.0, 0.0, 1.0);
+  glRotatef(cast(GLfloat)(-2.0 * angle - 9.0), 0.0, 0.0, 1.0);
   glCallList(gear2);
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(-3.1, 4.2, 0.0);
-  glRotatef((GLfloat)(-2.0 * angle - 25.0), 0.0, 0.0, 1.0);
+  glRotatef(cast(GLfloat)(-2.0 * angle - 25.0), 0.0, 0.0, 1.0);
   glCallList(gear3);
   glPopMatrix();
 
@@ -267,14 +267,14 @@ extern (Windows)
 {
   void reshape( int width, int height )
     {
-      GLfloat h = (GLfloat) height / (GLfloat) width;
+      GLfloat h = cast(GLfloat) height / cast(GLfloat) width;
       GLfloat xmax, znear, zfar;
 
       znear = 5.0f;
       zfar  = 30.0f;
       xmax  = znear * 0.5;
 
-      glViewport( 0, 0, (GLint) width, (GLint) height );
+      glViewport( 0, 0, cast(GLint) width, cast(GLint) height );
       glMatrixMode( GL_PROJECTION );
       glLoadIdentity();
       glFrustum( -xmax, xmax, -xmax*h, xmax*h, znear, zfar );
@@ -322,10 +322,10 @@ static void init(char[][] args)
 
   for ( i=1; i<args.length; i++ ) {
     if (strcmp(args[i], "-info")==0) {
-      printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-      printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
-      printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-      printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
+      printf("GL_RENDERER   = %s\n", cast(char *) glGetString(GL_RENDERER));
+      printf("GL_VERSION    = %s\n", cast(char *) glGetString(GL_VERSION));
+      printf("GL_VENDOR     = %s\n", cast(char *) glGetString(GL_VENDOR));
+      printf("GL_EXTENSIONS = %s\n", cast(char *) glGetString(GL_EXTENSIONS));
     }
     else if ( strcmp(args[i], "-exit")==0) {
       autoexit = 30;

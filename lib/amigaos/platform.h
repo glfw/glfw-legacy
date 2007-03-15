@@ -2,11 +2,10 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platforms:   AmigaOS, MorphOS
-// API version: 2.5
-// Author:      Marcus Geelnard (marcus.geelnard at home.se)
+// API version: 2.6
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2005 Marcus Geelnard
+// Copyright (c) 2002-2006 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-// Marcus Geelnard
-// marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.12 2005-03-14 20:20:35 marcus256 Exp $
+// $Id: platform.h,v 1.13 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -143,6 +140,7 @@ struct _GLFWwin_struct {
     int       MouseLock;       // Mouse-lock flag
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
+    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
 
     // Window status & parameters
     int       Opened;          // Flag telling if window is opened or not
@@ -166,6 +164,7 @@ struct _GLFWwin_struct {
 
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
+    int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor;
 
 

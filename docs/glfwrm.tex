@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------
 % GLFW Reference Manual
-% API Version: 2.5
-% $Id: glfwrm.tex,v 1.24 2005-04-14 19:42:40 marcus256 Exp $
+% API Version: 2.6
+% $Id: glfwrm.tex,v 1.25 2007-03-15 03:20:19 elmindreda Exp $
 %-------------------------------------------------------------------------
 
 % Document class
@@ -9,14 +9,14 @@
 
 % Document title and API version
 \newcommand{\glfwdoctype}[1][0]{Reference Manual}
-\newcommand{\glfwapiver}[1][0]{2.5}
+\newcommand{\glfwapiver}[1][0]{2.6}
 
 % Common document settings and macros
 \input{glfwdoc.sty}
 
 % PDF specific document settings
 \hypersetup{pdftitle={GLFW Reference Manual}}
-\hypersetup{pdfauthor={Marcus Geelnard}}
+\hypersetup{pdfauthor={Camilla Berglund}}
 \hypersetup{pdfkeywords={GLFW,OpenGL,reference,manual}}
 
 
@@ -50,7 +50,7 @@ Trademarks
 
 \small
 OpenGL and IRIX are registered trademarks of Silicon Graphics, Inc.\linebreak
-Microsoft, Windows and MS­-DOS are registered trademarks of Microsoft Corporation.\linebreak
+Microsoft and Windows are registered trademarks of Microsoft Corporation.\linebreak
 Mac OS is a registered trademark of Apple Computer, Inc.\linebreak
 Linux is a registered trademark of Linus Torvalds.\linebreak
 FreeBSD is a registered trademark of Wind River Systems, Inc.\linebreak
@@ -114,15 +114,13 @@ applications to a variety of platforms.
 
 Currently supported platforms are:
 \begin{itemize}
-\item Microsoft Windows\textsuperscript{\textregistered} 95/98/ME/NT/2000/XP/.NET Server.
+\item Microsoft Windows\textsuperscript{\textregistered} 95/98/ME/NT/2000/XP/Vista.
 \item Unix\textsuperscript{\textregistered} or Unix­-like systems running the
 X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
 IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
 Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
 Mac OS\textsuperscript{\textregistered} X.
-\item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Only a subset of the \GLFW\ API is supported for this platform at the time of writing.}
-\item AmigaOS\footnotemark[\value{footnote}]
-\item MS--DOS\textsuperscript{\textregistered}\footnotemark[\value{footnote}]
+\item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Support for joysticks missing at the time of writing.}
 \end{itemize}
 
 
@@ -427,6 +425,8 @@ GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channe
 GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized (not used for fullscreen windows).\\ \hline
+GLFW\_FSAA\_SAMPLES      & 0                & Number of samples to use for the multisampling buffer. Zero disables multisampling.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Targets for \textbf{glfwOpenWindowHint}}
@@ -472,8 +472,6 @@ In order to determine the actual properties of an opened window, use
 GLFW\_STEREO is a hard constraint. If stereo rendering is requested, but
 no stereo rendering capable pixel formats / visuals are available,
 \textbf{glfwOpenWindow} will fail.
-
-GLFW\_REFRESH\_RATE is only supported under Windows.
 
 The GLFW\_REFRESH\_RATE property should be used with caution. Most
 systems have default values for monitor refresh rates that are optimal
@@ -629,9 +627,6 @@ number of color bits will not be changed).
 \begin{refnotes}
 The \OpenGL\ context is guaranteed to be preserved after calling
 \textbf{glfwSetWindowSize}, even if the video mode is changed.
-
-Changing the size of a fullscreen window is not supported under AmigaOS or
-DOS, since that would destroy the associated \OpenGL\ context.
 \end{refnotes}
 
 
@@ -811,6 +806,8 @@ GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulato
 GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
+GLFW\_FSAA\_SAMPLES      & Number of multisampling buffer samples. Zero indicated multisampling is disabled.\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized, else GL\_FALSE.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Window parameters for \textbf{glfwGetWindowParam}}
@@ -850,10 +847,6 @@ always return GL\_TRUE. Under Windows, GLFW\_ACCELERATED means that the
 \OpenGL\ renderer is a 3rd party renderer, rather than the fallback
 Microsoft software \OpenGL\ renderer. In other words, it is not a real
 guarantee that the \OpenGL\ renderer is actually hardware accelerated.
-
-GLFW\_REFRESH\_RATE is only supported under Windows, XFree86 and AmigaOS.
-Other systems will always return zero (0). With some Windows drivers, zero
-(0) may be returned, indicating a default refresh rate.
 \end{refnotes}
 
 
