@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-bundle_name=$1
+bundle_name="$1"
 
 if [ ! -d "${bundle_name}.app/Contents/MacOS" ]; then
   mkdir -p "${bundle_name}.app/Contents/MacOS"
