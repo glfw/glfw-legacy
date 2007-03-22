@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.19 2007-03-22 14:15:28 elmindreda Exp $
+// $Id: macosx_window.c,v 1.20 2007-03-22 14:19:56 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1256,8 +1256,6 @@ void _glfwMacDWSetMouseCursorPos( int x, int y )
 
     _glfwInput.MousePosX = x + content.left;
     _glfwInput.MousePosY = y + content.top;
-
-    printf("%i %i\n", x - _glfwInput.MousePosX, y - _glfwInput.MousePosY );
 
     CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
 			        CGPointMake( _glfwInput.MousePosX,
