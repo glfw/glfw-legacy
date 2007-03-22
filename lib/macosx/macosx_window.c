@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.18 2007-03-15 03:20:20 elmindreda Exp $
+// $Id: macosx_window.c,v 1.19 2007-03-22 14:15:28 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1173,10 +1173,9 @@ void _glfwMacFSRefreshWindowParams( void )
 
 void _glfwMacFSSetMouseCursorPos( int x, int y )
 {
-    // TO DO: play with event suppression interval.  Ugh.
     // TO DO: what if we fail here?
-    (void)CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
-                                      CGPointMake( x, y ) );
+    CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
+                                CGPointMake( x, y ) );
 }
 
 int  _glfwMacDWOpenWindow( int width,
@@ -1252,6 +1251,16 @@ void _glfwMacDWRefreshWindowParams( void )
 
 void _glfwMacDWSetMouseCursorPos( int x, int y )
 {
-    _glfwMacFSSetMouseCursorPos( x, y );
+    Rect content;
+    GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
+
+    _glfwInput.MousePosX = x + content.left;
+    _glfwInput.MousePosY = y + content.top;
+
+    printf("%i %i\n", x - _glfwInput.MousePosX, y - _glfwInput.MousePosY );
+
+    CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
+			        CGPointMake( _glfwInput.MousePosX,
+					     _glfwInput.MousePosY ) );
 }
 
