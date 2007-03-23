@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.20 2007-03-22 14:19:56 elmindreda Exp $
+// $Id: macosx_window.c,v 1.21 2007-03-23 22:58:14 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -241,7 +241,6 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                                  EventRef event,
                                  void *userData )
 {
-    // TO DO: this is probably completely broken for full-screen
     switch( GetEventKind( event ) )
     {
         case kEventMouseDown:
@@ -257,19 +256,6 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
             }
             else
             {
-                HIPoint mouseLocation;
-                if( !_glfwWin.Fullscreen )
-                {
-                    if( GetEventParameter( event,
-                                           kEventParamWindowMouseLocation,
-                                           typeHIPoint,
-                                           NULL,
-                                           sizeof( HIPoint ),
-                                           NULL,
-                                           &mouseLocation ) != noErr )
-                        break;
-                }
-
                 EventMouseButton button;
                 if( GetEventParameter( event,
                                        kEventParamMouseButton,
@@ -294,20 +280,6 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
 
         case kEventMouseUp:
         {
-            HIPoint mouseLocation;
-
-            if( !_glfwWin.Fullscreen )
-            {
-                if( GetEventParameter( event,
-                                       kEventParamWindowMouseLocation,
-                                       typeHIPoint,
-                                       NULL,
-                                       sizeof( HIPoint ),
-                                       NULL,
-                                       &mouseLocation ) != noErr )
-                break;
-            }
-
             EventMouseButton button;
             if( GetEventParameter( event,
                                    kEventParamMouseButton,
@@ -333,49 +305,56 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
         case kEventMouseDragged:
         {
             HIPoint mouseLocation;
-            if( _glfwWin.Fullscreen )
-            {
-                if( GetEventParameter( event,
-                                       kEventParamMouseLocation,
-                                       typeHIPoint,
-                                       NULL,
-                                       sizeof( HIPoint ),
-                                       NULL,
-                                       &mouseLocation ) == noErr )
-                {
-                    _glfwInput.MousePosX = mouseLocation.x;
-                    _glfwInput.MousePosY = mouseLocation.y;
-                    if( _glfwWin.MousePosCallback )
-                    {
-                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                                                   _glfwInput.MousePosY );
-                    }
-                    return noErr;
-                }
-            }
-            else
-            {
-                if( GetEventParameter( event,
-                                       kEventParamWindowMouseLocation,
-                                       typeHIPoint,
-                                       NULL,
-                                       sizeof( HIPoint ),
-                                       NULL,
-                                       &mouseLocation ) == noErr )
-                {
-                    Rect structure, content;
-                    GetWindowBounds(_glfwWin.MacWindow, kWindowStructureRgn, &structure);
-                    GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
-                    _glfwInput.MousePosX = mouseLocation.x - content.left + structure.left;
-                    _glfwInput.MousePosY = mouseLocation.y - content.top + structure.top;
-                    if( _glfwWin.MousePosCallback )
-                    {
-                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                                                   _glfwInput.MousePosY );
-                    }
-                    return noErr;
-                }
-            }
+	    if( _glfwWin.MouseLock )
+	    {
+		if( GetEventParameter( event,
+				       kEventParamMouseDelta,
+				       typeHIPoint,
+				       NULL,
+				       sizeof( HIPoint ),
+				       NULL,
+				       &mouseLocation ) != noErr )
+		{
+		    break;
+		}
+
+		_glfwInput.MousePosX += mouseLocation.x;
+		_glfwInput.MousePosY += mouseLocation.y;
+	    }
+	    else
+	    {
+		if( GetEventParameter( event,
+				       kEventParamMouseLocation,
+				       typeHIPoint,
+				       NULL,
+				       sizeof( HIPoint ),
+				       NULL,
+				       &mouseLocation ) != noErr )
+		{
+		    break;
+		}
+
+		_glfwInput.MousePosX = mouseLocation.x;
+		_glfwInput.MousePosY = mouseLocation.y;
+
+		if( !_glfwWin.Fullscreen )
+		{
+		    Rect content;
+		    GetWindowBounds( _glfwWin.MacWindow,
+		                     kWindowContentRgn,
+				     &content );
+
+		    _glfwInput.MousePosX -= content.left;
+		    _glfwInput.MousePosY -= content.top;
+		}
+	    }
+
+	    if( _glfwWin.MousePosCallback )
+	    {
+		_glfwWin.MousePosCallback( _glfwInput.MousePosX,
+					   _glfwInput.MousePosY );
+	    }
+
             break;
         }
 
@@ -1098,13 +1077,15 @@ void _glfwPlatformWaitEvents( void )
 void _glfwPlatformHideMouseCursor( void )
 {
     // TO DO: What if we fail here?
-    (void)CGDisplayHideCursor( kCGDirectMainDisplay );
+    CGDisplayHideCursor( kCGDirectMainDisplay );
+    CGAssociateMouseAndMouseCursorPosition( false );
 }
 
 void _glfwPlatformShowMouseCursor( void )
 {
     // TO DO: What if we fail here?
-    (void)CGDisplayShowCursor( kCGDirectMainDisplay );
+    CGDisplayShowCursor( kCGDirectMainDisplay );
+    CGAssociateMouseAndMouseCursorPosition( true );
 }
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
