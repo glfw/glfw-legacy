@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.20 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: win32_window.c,v 1.21 2007-03-23 06:00:44 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1266,9 +1266,9 @@ void _glfwPlatformRefreshWindowParams( void )
 
         int values[sizeof(attribs)/sizeof(attribs[0])];
 
-        _glfwWin.wglGetPixelFormatAttribiv( _glfwWin.DC, iPixelFormat, 0, 
-                                            sizeof(attribs)/sizeof(attribs[0]), 
-                                            attribs, values);
+        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, iPixelFormat, 0, 
+                                         sizeof(attribs)/sizeof(attribs[0]), 
+                                         attribs, values);
 
         // Is current OpenGL context accelerated?
         _glfwWin.Accelerated = (values[0] == WGL_FULL_ACCELERATION_ARB);
