@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2007-03-15 03:20:18 $
-# $Revision: 1.9 $
+# $Date: 2007-03-30 20:17:42 $
+# $Revision: 1.10 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -23,31 +23,34 @@ default:
 	@echo "This is the makefile for the GLFW link library and example programs."
 	@echo "Type one of the following:"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) win32-mgw       for MinGW32 for Windows"
-	@echo "  $(MAKE) win32-cygwin    for Cygwin for Windows"
-	@echo "  $(MAKE) win32-lcc       for LCC-Win32 for Windows"
-	@echo "  $(MAKE) win32-bcc       for Borland C++ Builder 5.x for Windows"
-	@echo "  $(MAKE) win32-msvc      for MS Visual C++ 6.x for Windows"
-	@echo "  $(MAKE) win32-ow        for OpenWatcom for Windows"
-	@echo "  $(MAKE) win32-pellesc   for Pelles C for Windows"
-	@echo "  $(MAKE) win32-clean     to remove any compiled files for Windows"
-	@echo "  $(MAKE) cygwin-clean    to remove any compiled files for Cygwin/Windows"
-	@echo "  $(MAKE) cygwin-install  to install the GLFW library and header into Cygwin"
+	@echo "  $(MAKE) win32-mgw         for MinGW32 for Windows"
+	@echo "  $(MAKE) cross-mgw         for MinGW32 for Windows on a Unix machine" 
+	@echo "  $(MAKE) cross-mgw-install to install the GLFW library and header"
+	@echo "  $(MAKE) cross-mgw-clean   fo clean the GLFW library and header"
+	@echo "  $(MAKE) win32-cygwin      for Cygwin for Windows"
+	@echo "  $(MAKE) win32-lcc         for LCC-Win32 for Windows"
+	@echo "  $(MAKE) win32-bcc         for Borland C++ Builder 5.x for Windows"
+	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
+	@echo "  $(MAKE) win32-ow          for OpenWatcom for Windows"
+	@echo "  $(MAKE) win32-pellesc     for Pelles C for Windows"
+	@echo "  $(MAKE) win32-clean       to remove any compiled files for Windows"
+	@echo "  $(MAKE) cygwin-clean      to remove any compiled files for Cygwin/Windows"
+	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header into Cygwin"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) x11             for Unix/X11 (auto-configuring)"
-	@echo "  $(MAKE) x11-clean       to remove any compiled files for Unix/X11"
-	@echo "  $(MAKE) x11-install     to install the GLFW library and header"
+	@echo "  $(MAKE) x11               for Unix/X11 (auto-configuring)"
+	@echo "  $(MAKE) x11-clean         to remove any compiled files for Unix/X11"
+	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx-gcc      for GCC for Mac OS X (free Apple SDK)"
-	@echo "  $(MAKE) macosx-clean    to remove any compiled files for Mac OS X"
-	@echo "  $(MAKE) macosx-install  to install the GLFW library and header"
+	@echo "  $(MAKE) macosx-gcc        for GCC for Mac OS X (free Apple SDK)"
+	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
+	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) amigaos-gcc     for AmigaOS for GCC (Geek Gadgets)"
-	@echo "  $(MAKE) amigaos-vbcc    for AmigaOS for VBCC"
-	@echo "  $(MAKE) amigaos-clean   to remove any compiled files for AmigaOS"
+	@echo "  $(MAKE) amigaos-gcc       for AmigaOS for GCC (Geek Gadgets)"
+	@echo "  $(MAKE) amigaos-vbcc      for AmigaOS for VBCC"
+	@echo "  $(MAKE) amigaos-clean     to remove any compiled files for AmigaOS"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) dos-djgpp       for DOS for DJGPP"
-	@echo "  $(MAKE) dos-clean       to remove any compiled files for DOS"
+	@echo "  $(MAKE) dos-djgpp         for DOS for DJGPP"
+	@echo "  $(MAKE) dos-clean         to remove any compiled files for DOS"
 	@echo "-----------------------------------------------------------------------------"
 
 
@@ -84,9 +87,23 @@ cygwin-clean:
 cygwin-install: win32-cygwin
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin install
 
+# Cleanup for MinGW32 Cross compilation from Unix
+cross-mgw-install: cross-mgw 
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw install 
+
+cross-mgw-clean:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw clean 
+	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw clean
+
+
 # Windows, MinGW32
 win32-mgw:
-	@.\\compile.bat $(MAKE) mgw
+	@./compile.bat $(MAKE) mgw
+
+# Cross compilation from unix to win32 
+cross-mgw:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw
+	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw 
 
 # Windows, Cygwin (Cygwin Make does not support local BAT-files)
 win32-cygwin:
