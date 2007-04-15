@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_joystick.c,v 1.6 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: win32_joystick.c,v 1.7 2007-04-15 22:54:40 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -233,3 +233,4 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
 
     return button;
 }
+

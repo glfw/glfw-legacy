@@ -32,12 +32,15 @@ glfwGetWindowParam
 glfwGetWindowSize
 glfwIconifyWindow
 glfwInit
+glfwLoadMemoryTexture2D
 glfwLoadTexture2D
+glfwLoadTextureImage2D
 glfwLockMutex
 glfwOpenWindow
 glfwOpenWindowHint
 glfwPollEvents
 glfwReadImage
+glfwReadMemoryImage
 glfwRestoreWindow
 glfwSetCharCallback
 glfwSetKeyCallback

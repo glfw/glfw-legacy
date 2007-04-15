@@ -38,6 +38,7 @@ glfwOpenWindow = glfwOpenWindow@36
 glfwOpenWindowHint = glfwOpenWindowHint@8
 glfwPollEvents = glfwPollEvents@0
 glfwReadImage = glfwReadImage@12
+glfwReadMemoryImage = glfwReadMemoryImage@16
 glfwRestoreWindow = glfwRestoreWindow@0
 glfwSetCharCallback = glfwSetCharCallback@4
 glfwSetKeyCallback = glfwSetKeyCallback@4

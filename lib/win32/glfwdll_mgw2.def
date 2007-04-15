@@ -32,12 +32,15 @@ glfwGetWindowParam@4
 glfwGetWindowSize@8
 glfwIconifyWindow@0
 glfwInit@0
+glfwLoadMemoryTexture2D@12
 glfwLoadTexture2D@8
+glfwLoadTextureImage2D@8
 glfwLockMutex@4
 glfwOpenWindow@36
 glfwOpenWindowHint@8
 glfwPollEvents@0
 glfwReadImage@12
+glfwReadMemoryImage@16
 glfwRestoreWindow@0
 glfwSetCharCallback@4
 glfwSetKeyCallback@4

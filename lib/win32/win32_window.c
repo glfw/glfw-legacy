@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.21 2007-03-23 06:00:44 elmindreda Exp $
+// $Id: win32_window.c,v 1.22 2007-04-15 22:54:40 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -37,6 +37,8 @@
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+#define _GLFW_WNDCLASSNAME "GLFW26"
 
 
 //========================================================================
@@ -767,7 +769,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     wc.hCursor       = LoadCursor( NULL, IDC_ARROW ); // Load arrow pointer
     wc.hbrBackground = NULL;                          // No background
     wc.lpszMenuName  = NULL;                          // No menu
-    wc.lpszClassName = "GLFW";                        // Set class name
+    wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
 
     // Register the window class
     if( !RegisterClass( &wc ) )
@@ -827,7 +829,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Create window
     _glfwWin.Wnd = CreateWindowEx(
                dwExStyle,                 // Extended style
-               "GLFW",                    // Class name
+               _GLFW_WNDCLASSNAME,        // Class name
                "GLFW Window",             // Window title
                dwStyle,                   // Defined window style
                wa.left, wa.top,           // Window position
@@ -1005,7 +1007,7 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.Instance )
     {
         // Unregister class
-        UnregisterClass( "GLFW", _glfwWin.Instance );
+        UnregisterClass( _GLFW_WNDCLASSNAME, _glfwWin.Instance );
         _glfwWin.Instance = NULL;
     }
 

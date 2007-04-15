@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_init.c,v 1.8 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: win32_init.c,v 1.9 2007-04-15 22:54:40 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -355,3 +355,4 @@ int _glfwPlatformTerminate( void )
 
     return GL_TRUE;
 }
+

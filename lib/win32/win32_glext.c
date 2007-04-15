@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_glext.c,v 1.6 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: win32_glext.c,v 1.7 2007-04-15 22:54:40 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -48,8 +48,8 @@ typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC hdc );
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformExtensionSupported() - Check if an OpenGL extension is
-// available at runtime (Windows version checks for WGL extensions)
+// Check if an OpenGL extension is available at runtime (Windows version checks
+// for WGL extensions)
 //========================================================================
 
 int _glfwPlatformExtensionSupported( const char *extension )
@@ -93,11 +93,11 @@ int _glfwPlatformExtensionSupported( const char *extension )
 
 
 //========================================================================
-// _glfwPlatformGetProcAddress() - Get the function pointer to an OpenGL
-// function
+// Get the function pointer to an OpenGL function
 //========================================================================
 
 void * _glfwPlatformGetProcAddress( const char *procname )
 {
     return (void *) wglGetProcAddress( procname );
 }
+
