@@ -26,7 +26,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: glfw.h,v 1.18 2007-03-15 04:00:42 elmindreda Exp $
+// $Id: glfw.h,v 1.19 2007-05-02 20:47:13 elmindreda Exp $
 //========================================================================
 
 #ifndef __glfw_h_
@@ -392,7 +392,11 @@ typedef void (GLFWCALL * GLFWthreadfun)(void *);
 // Prototypes
 //========================================================================
 
+/*! @file glfw.h
+ */
 // GLFW initialization, termination and version querying
+/*! @fn glfwInit
+ */
 GLFWAPI int  GLFWAPIENTRY glfwInit( void );
 GLFWAPI void GLFWAPIENTRY glfwTerminate( void );
 GLFWAPI void GLFWAPIENTRY glfwGetVersion( int *major, int *minor, int *rev );

@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: x11_fullscreen.c,v 1.9 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: x11_fullscreen.c,v 1.10 2007-05-02 20:47:14 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -67,10 +67,13 @@ static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
 // Finds the video mode closest in size to the specified desired size
 //========================================================================
 
-int _glfwGetClosestVideoMode( int screen, int *w, int *h )
+int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 {
 #if defined( _GLFW_HAS_XRANDR )
-    int i, sizecount, match, bestmatch, bestsize;
+    int i, match, bestmatch;
+    int sizecount, bestsize;
+    int ratecount, bestrate;
+    short *ratelist;
     XRRScreenConfiguration *sc;
     XRRScreenSize *sizelist;
 
@@ -86,10 +89,10 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
         bestmatch = 999999;
         for( i = 0; i < sizecount; i++ )
         {
-            match = (*w - sizelist[i].width) *
-                    (*w - sizelist[i].width) +
-                    (*h - sizelist[i].height) *
-                    (*h - sizelist[i].height);
+            match = (*width - sizelist[i].width) *
+                    (*width - sizelist[i].width) +
+                    (*height - sizelist[i].height) *
+                    (*height - sizelist[i].height);
             if( match < bestmatch )
             {
                 bestmatch = match;
@@ -100,8 +103,30 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
 	if( bestsize != -1 )
 	{
 	    // Report width & height of best matching mode
-	    *w = sizelist[ bestsize ].width;
-	    *h = sizelist[ bestsize ].height;
+	    *width = sizelist[bestsize].width;
+	    *height = sizelist[bestsize].height;
+
+	    if( *rate > 0 )
+	    {
+		ratelist = XRRConfigRates( sc, bestsize, &ratecount );
+
+		bestrate = -1;
+		bestmatch = 999999;
+		for( i = 0; i < ratecount; i++ )
+		{
+		    match = abs( ratelist[i] - *rate );
+		    if( match < bestmatch )
+		    {
+			bestmatch = match;
+			bestrate = ratelist[i];
+		    }
+		}
+		
+		if( bestrate != -1 )
+		{
+		    *rate = bestrate;
+		}
+	    }
 	}
 
         // Free modelist
@@ -128,10 +153,10 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
         bestmatch = 999999;
         for( i = 0; i < modecount; i++ )
         {
-            match = (*w - modelist[i]->hdisplay) *
-                    (*w - modelist[i]->hdisplay) +
-                    (*h - modelist[i]->vdisplay) *
-                    (*h - modelist[i]->vdisplay);
+            match = (*width - modelist[i]->hdisplay) *
+                    (*width - modelist[i]->hdisplay) +
+                    (*height - modelist[i]->vdisplay) *
+                    (*height - modelist[i]->vdisplay);
             if( match < bestmatch )
             {
                 bestmatch = match;
@@ -142,7 +167,7 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
 	if( bestmode != -1 )
 	{
 	    // Report width & height of best matching mode
-	    *w = modelist[ bestmode ]->hdisplay;
+	    *width = modelist[ bestmode ]->hdisplay;
 	    *h = modelist[ bestmode ]->vdisplay;
 	}
 
@@ -157,8 +182,8 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
 #endif
 
     // Default: Simply use the screen resolution
-    *w = DisplayWidth( _glfwLibrary.Dpy, screen );
-    *h = DisplayHeight( _glfwLibrary.Dpy, screen );
+    *width = DisplayWidth( _glfwLibrary.Dpy, screen );
+    *height = DisplayHeight( _glfwLibrary.Dpy, screen );
 
     return 0;
 }
@@ -168,7 +193,7 @@ int _glfwGetClosestVideoMode( int screen, int *w, int *h )
 // Change the current video mode
 //========================================================================
 
-void _glfwSetVideoModeMODE( int screen, int mode )
+void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 {
 #if defined( _GLFW_HAS_XRANDR )
     XRRScreenConfiguration *sc;
@@ -189,13 +214,27 @@ void _glfwSetVideoModeMODE( int screen, int mode )
             _glfwWin.FS.ModeChanged = GL_TRUE;
         }
 
-	// Set desired configuration
-	XRRSetScreenConfig( _glfwLibrary.Dpy,
-	                    sc,
-			    root,
-			    mode,
-                            RR_Rotate_0,
-			    CurrentTime );
+	if( rate > 0 )
+	{
+	    // Set desired configuration
+	    XRRSetScreenConfigAndRate( _glfwLibrary.Dpy,
+				       sc,
+				       root,
+				       mode,
+				       RR_Rotate_0,
+				       (short) rate,
+				       CurrentTime );
+	}
+	else
+	{
+	    // Set desired configuration
+	    XRRSetScreenConfig( _glfwLibrary.Dpy,
+				sc,
+				root,
+				mode,
+				RR_Rotate_0,
+				CurrentTime );
+	}
 
 	XRRFreeScreenConfigInfo( sc );
     }
@@ -244,15 +283,15 @@ void _glfwSetVideoModeMODE( int screen, int mode )
 // Change the current video mode
 //========================================================================
 
-void _glfwSetVideoMode( int screen, int *w, int *h )
+void _glfwSetVideoMode( int screen, int *width, int *height, int *rate )
 {
     int     bestmode;
 
     // Find a best match mode
-    bestmode = _glfwGetClosestVideoMode( screen, w, h );
+    bestmode = _glfwGetClosestVideoMode( screen, width, height, rate );
 
     // Change mode
-    _glfwSetVideoModeMODE( screen, bestmode );
+    _glfwSetVideoModeMODE( screen, bestmode, *rate );
 }
 
 

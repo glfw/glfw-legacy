@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.18 2007-03-15 04:08:30 elmindreda Exp $
+// $Id: x11_window.c,v 1.19 2007-05-02 20:47:14 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -898,6 +898,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.OverrideRedirect = GL_FALSE;
     _glfwWin.FS.ModeChanged   = GL_FALSE;
     _glfwWin.Saver.Changed    = GL_FALSE;
+    _glfwWin.RefreshRate      = hints->RefreshRate;
 
     // Fullscreen & screen saver settings
     // Check if GLX is supported on this display
@@ -941,7 +942,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     {
         // Change video mode
         _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
-                           &_glfwWin.Height );
+                           &_glfwWin.Height, &_glfwWin.RefreshRate );
 
         // Remember old screen saver settings
         XGetScreenSaver( _glfwLibrary.Dpy, &_glfwWin.Saver.Timeout,
@@ -1213,15 +1214,17 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    int     mode = 0, sizechanged = GL_FALSE;
+    int     mode = 0, rate, sizechanged = GL_FALSE;
     GLint   drawbuffer;
     GLfloat clearcolor[4];
+
+    rate = _glfwWin.RefreshRate;
 
     // If we are in fullscreen mode, get some info about the current mode
     if( _glfwWin.Fullscreen )
     {
         // Get closest match for target video mode
-        mode = _glfwGetClosestVideoMode( _glfwWin.Scrn, &width, &height );
+        mode = _glfwGetClosestVideoMode( _glfwWin.Scrn, &width, &height, &rate );
     }
 
     if( _glfwWin.WindowNoResize )
@@ -1242,8 +1245,8 @@ void _glfwPlatformSetWindowSize( int width, int height )
     // Change fullscreen video mode?
     if( _glfwWin.Fullscreen )
     {
-        // Change video mode
-        _glfwSetVideoModeMODE( _glfwWin.Scrn, mode );
+        // Change video mode (keeping current rate)
+        _glfwSetVideoModeMODE( _glfwWin.Scrn, mode, _glfwWin.RefreshRate );
 
         // Clear the front buffer to black (avoid ugly desktop remains in
         // our OpenGL window)
@@ -1333,7 +1336,7 @@ void _glfwPlatformIconifyWindow( void )
 
 
 //========================================================================
-// _glfwPlatformRestoreWindow() - Window un-iconification
+// Window un-iconification
 //========================================================================
 
 void _glfwPlatformRestoreWindow( void )
@@ -1347,8 +1350,8 @@ void _glfwPlatformRestoreWindow( void )
     // In fullscreen mode, change back video mode to user selected mode
     if( _glfwWin.Fullscreen )
     {
-        _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
-                           &_glfwWin.Height );
+        _glfwSetVideoMode( _glfwWin.Scrn,
+	                   &_glfwWin.Width, &_glfwWin.Height, &_glfwWin.RefreshRate );
     }
 
     // Un-iconify window
@@ -1584,7 +1587,7 @@ void _glfwPlatformPollEvents( void )
         {
             // Change back video mode to user selected mode
             _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
-                               &_glfwWin.Height );
+                               &_glfwWin.Height, &_glfwWin.RefreshRate );
 
             // Disable window manager decorations
             _glfwEnableDecorations();

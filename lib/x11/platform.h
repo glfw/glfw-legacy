@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: platform.h,v 1.14 2007-03-15 03:20:21 elmindreda Exp $
+// $Id: platform.h,v 1.15 2007-05-02 20:47:14 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_
@@ -399,9 +399,9 @@ GLFWGLOBAL struct {
 void _glfwInitTimer( void );
 
 // Fullscreen support
-int  _glfwGetClosestVideoMode( int screen, int *width, int *height );
-void _glfwSetVideoModeMODE( int screen, int mode );
-void _glfwSetVideoMode( int screen, int *width, int *height );
+int  _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate );
+void _glfwSetVideoModeMODE( int screen, int mode, int rate );
+void _glfwSetVideoMode( int screen, int *width, int *height, int *rate );
 
 // Cursor handling
 Cursor _glfwCreateNULLCursor( Display *display, Window root );
