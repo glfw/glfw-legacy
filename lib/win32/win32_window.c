@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.22 2007-04-15 22:54:40 elmindreda Exp $
+// $Id: win32_window.c,v 1.23 2007-05-03 00:40:52 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -795,6 +795,20 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( _glfwWin.Fullscreen )
     {
         dwStyle   |= WS_POPUP;
+
+        // Here's a trick for helping us getting window focus
+        // (SetForegroundWindow doesn't work properly under
+        // Win98/ME/2K/XP/.NET/+)
+        if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
+            _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
+	    _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
+        {
+            dwStyle |= WS_VISIBLE;
+        }
+        else
+        {
+            dwStyle |= WS_MINIMIZE;
+        }
     }
     else
     {
