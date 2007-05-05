@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: win32_window.c,v 1.23 2007-05-03 00:40:52 elmindreda Exp $
+// $Id: win32_window.c,v 1.24 2007-05-05 16:21:57 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -351,12 +351,11 @@ static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
 
 
 //========================================================================
-// _glfwWindowCallback() - Window callback function (handles window
-// events)
+// Window callback function (handles window events)
 //========================================================================
 
 LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
-     WPARAM wParam, LPARAM lParam )
+                                      WPARAM wParam, LPARAM lParam )
 {
     int WheelDelta, Iconified;
 
@@ -365,6 +364,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
     {
         // Window activate message? (iconification?)
         case WM_ACTIVATE:
+	{
             _glfwWin.Active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE :
                                                               GL_FALSE;
             Iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
@@ -372,7 +372,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             // Were we deactivated/iconified?
             if( (!_glfwWin.Active || Iconified) && !_glfwWin.Iconified )
             {
-		_glfwInputDeactivation();
+                _glfwInputDeactivation();
 
                 // If we are in fullscreen mode we need to iconify
                 if( _glfwWin.Fullscreen )
@@ -433,9 +433,11 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
             _glfwWin.Iconified = Iconified;
             return 0;
+	}
 
         // Intercept system commands (forbid certain actions/events)
         case WM_SYSCOMMAND:
+	{
             switch( wParam )
             {
                 // Screensaver trying to start or monitor trying to enter
@@ -456,6 +458,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                     return 0;
             }
             break;
+	}
 
         // Did we receive a close message?
         case WM_CLOSE:
@@ -465,6 +468,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         // Is a key being pressed?
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
+	{
             // Translate and report key press
             _glfwInputKey( _glfwTranslateKey( wParam, lParam ),
                            GLFW_PRESS );
@@ -475,10 +479,12 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwTranslateChar( wParam, lParam, GLFW_PRESS );
             }
             return 0;
+	  }  
 
         // Is a key being released?
         case WM_KEYUP:
         case WM_SYSKEYUP:
+	{
             // Special trick: release both shift keys on SHIFT up event
             if( wParam == VK_SHIFT )
             {
@@ -498,6 +504,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwTranslateChar( wParam, lParam, GLFW_RELEASE );
             }
             return 0;
+	}
 
         // Were any of the mouse-buttons pressed?
         case WM_LBUTTONDOWN:
@@ -513,6 +520,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
             return 0;
         case WM_XBUTTONDOWN:
+	{
             if( HIWORD(wParam) == XBUTTON1 )
             {
                 SetCapture(hWnd);
@@ -524,6 +532,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_PRESS );
             }
             return 1;
+	}
 
         // Were any of the mouse-buttons released?
         case WM_LBUTTONUP:
@@ -539,6 +548,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE );
             return 0;
         case WM_XBUTTONUP:
+	{
             if( HIWORD(wParam) == XBUTTON1 )
             {
                 ReleaseCapture();
@@ -550,9 +560,11 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_RELEASE );
             }
             return 1;
+	}
 
         // Did the mouse move?
         case WM_MOUSEMOVE:
+	{
             {
                 int NewMouseX, NewMouseY;
 
@@ -588,9 +600,11 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 }
             }
             return 0;
+	}
 
         // Mouse wheel action?
         case WM_MOUSEWHEEL:
+	{
             // WM_MOUSEWHEEL is not supported under Windows 95
             if( _glfwLibrary.Sys.WinVer != _GLFW_WIN_95 )
             {
@@ -603,29 +617,59 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 return 0;
             }
             break;
+	}
 
         // Resize the window?
         case WM_SIZE:
+	{
+            // get the new size
             _glfwWin.Width  = LOWORD(lParam);
             _glfwWin.Height = HIWORD(lParam);
+
+            // If the mouse is locked, update the clipping rect
+            if( _glfwWin.MouseLock )
+            {
+                RECT ClipWindowRect;
+		if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+                {
+                    ClipCursor( &ClipWindowRect );
+                }
+            }
+
+            // Call the user-supplied callback, if it exists
             if( _glfwWin.WindowSizeCallback )
             {
                 _glfwWin.WindowSizeCallback( LOWORD(lParam),
                                              HIWORD(lParam) );
             }
             return 0;
+	}
+
+        // Move the window?
+        case WM_MOVE:
+	{
+            // If the mouse is locked, update the clipping rect
+            if( _glfwWin.MouseLock )
+            {
+                RECT ClipWindowRect;
+                if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+                {
+                    ClipCursor( &ClipWindowRect );
+                }
+            }
+            return 0;
+	}
 
         // Was the window contents damaged?
         case WM_PAINT:
+	{
             // Call user callback function
             if( _glfwWin.WindowRefreshCallback )
             {
                 _glfwWin.WindowRefreshCallback();
             }
             break;
-
-        default:
-            break;
+	}
     }
 
     // Pass all unhandled messages to DefWindowProc
@@ -735,8 +779,8 @@ static void _glfwInitWGLExtensions( void )
 
 int _glfwPlatformOpenWindow( int width, int height,
                              int redbits, int greenbits, int bluebits,
-			     int alphabits, int depthbits, int stencilbits,
-			     int mode, _GLFWhints* hints )
+                 int alphabits, int depthbits, int stencilbits,
+                 int mode, _GLFWhints* hints )
 {
     GLuint      PixelFormat;
     WNDCLASS    wc;
@@ -801,7 +845,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         // Win98/ME/2K/XP/.NET/+)
         if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
             _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
-	    _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
+        _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
         {
             dwStyle |= WS_VISIBLE;
         }
@@ -813,11 +857,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     else
     {
         dwStyle   |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-	if( !hints->WindowNoResize )
-	{
+    if( !hints->WindowNoResize )
+    {
             dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
-	    dwExStyle |= WS_EX_WINDOWEDGE;
-	}
+        dwExStyle |= WS_EX_WINDOWEDGE;
+    }
     }
 
     // Remember window styles (used by _glfwGetFullWindowSize)
@@ -1278,7 +1322,7 @@ void _glfwPlatformRefreshWindowParams( void )
             WGL_AUX_BUFFERS_ARB,
             WGL_STEREO_ARB,
             WGL_SAMPLES_ARB
-	};
+    };
 
         int values[sizeof(attribs)/sizeof(attribs[0])];
 
@@ -1423,13 +1467,21 @@ void _glfwPlatformWaitEvents( void )
 
 
 //========================================================================
-// _glfwPlatformHideMouseCursor() - Hide mouse cursor (lock it)
+// Hide mouse cursor (lock it)
 //========================================================================
 
 void _glfwPlatformHideMouseCursor( void )
 {
+    RECT ClipWindowRect;
+
     // Hide cursor
     ShowCursor( FALSE );
+
+    // Clip cursor to the window
+    if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+    {
+        ClipCursor( &ClipWindowRect );
+    }
 
     // Capture cursor to user window
     SetCapture( _glfwWin.Wnd );
@@ -1437,13 +1489,16 @@ void _glfwPlatformHideMouseCursor( void )
 
 
 //========================================================================
-// _glfwPlatformShowMouseCursor() - Show mouse cursor (unlock it)
+// Show mouse cursor (unlock it)
 //========================================================================
 
 void _glfwPlatformShowMouseCursor( void )
 {
     // Un-capture cursor
     ReleaseCapture();
+
+    // Disable cursor clipping
+    ClipCursor( NULL );
 
     // Show cursor
     ShowCursor( TRUE );
