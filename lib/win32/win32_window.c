@@ -351,8 +351,8 @@ static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
 // Window callback function (handles window events)
 //========================================================================
 
-LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
-                                      WPARAM wParam, LPARAM lParam )
+static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
+                                             WPARAM wParam, LPARAM lParam )
 {
     int WheelDelta, Iconified;
 
