@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: macosx_window.c,v 1.21 2007-03-23 22:58:14 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

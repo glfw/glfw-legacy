@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: fullscreen.c,v 1.7 2007-03-15 03:20:19 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

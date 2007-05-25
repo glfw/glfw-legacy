@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: dos_mouse.c,v 1.11 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

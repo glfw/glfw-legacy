@@ -4,8 +4,6 @@
 # Digital Mars C/C++ compiler/linker lib folder (dm\lib) before compiling
 # the programs.
 ##########################################################################
-# $Id: Makefile,v 1.3 2007-03-15 03:20:21 elmindreda Exp $
-##########################################################################
 
 DC     = dmd
 IMPORTSDIR = ..\imports

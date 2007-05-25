@@ -3,10 +3,6 @@
 // The program lists all available fullscreen video modes.
 //========================================================================
 
-/************************************************************************
- * $Id: listmodes.d,v 1.2 2007-03-15 03:22:43 elmindreda Exp $
- ************************************************************************/
-
 import glfw;
 
 // Maximum number of modes that we want to list

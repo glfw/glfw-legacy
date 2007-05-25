@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: amigaos_window.c,v 1.14 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

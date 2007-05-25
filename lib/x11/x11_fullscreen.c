@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: x11_fullscreen.c,v 1.10 2007-05-02 20:47:14 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

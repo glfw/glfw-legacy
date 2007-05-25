@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: macosx_init.c,v 1.10 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

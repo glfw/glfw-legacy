@@ -2,7 +2,7 @@ Attribute VB_Name = "GLU"
 
 '*************************************************************************
 '* GLU 1.3 (glu32.dll) bindings for Visual Basic
-'* Copyright (c) 2002 by Marcus Geelnard
+'* Copyright (c) 2002 Camilla Berglund
 '*
 '* This file was converted from the MinGW32 GL/glu.h include file (using a
 '* custom C parser / Visual Basic writer), which in turn is based on the

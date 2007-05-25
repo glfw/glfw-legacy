@@ -5,7 +5,7 @@
 // API version: 2.4
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2004 Marcus Geelnard
+// Copyright (c) 2002-2004 Camilla Berglund
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: dos_irq.s,v 1.5 2007-03-15 03:20:20 elmindreda Exp $
 //========================================================================
 
                 .file   "dos_irq.S"

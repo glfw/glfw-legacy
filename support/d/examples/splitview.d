@@ -9,10 +9,6 @@
 // example of D programming, but it shows how to use GLFW callbacks in D.
 //========================================================================
 
-/************************************************************************
- * $Id: splitview.d,v 1.4 2007-03-15 03:20:21 elmindreda Exp $
- ************************************************************************/
-
 import std.math;
 import std.string;
 import glfw;

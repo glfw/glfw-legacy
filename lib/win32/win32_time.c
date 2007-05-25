@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: win32_time.c,v 1.13 2007-03-15 03:20:21 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

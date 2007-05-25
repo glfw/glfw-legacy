@@ -25,8 +25,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: glfw.h,v 1.19 2007-05-02 20:47:13 elmindreda Exp $
 //========================================================================
 
 #ifndef __glfw_h_

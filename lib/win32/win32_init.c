@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: win32_init.c,v 1.9 2007-04-15 22:54:40 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

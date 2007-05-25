@@ -13,8 +13,6 @@
  * OpenGL 1.0 - 1.1, and function pointer type definitions exist for
  * OpenGL 1.2 - 1.4 and all the OpenGL extensions.
  *
- ************************************************************************
- * $Id: gl.d,v 1.1 2004-03-04 21:32:29 marcus256 Exp $
  ************************************************************************/
 
 

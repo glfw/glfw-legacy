@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: platform.h,v 1.15 2007-05-02 20:47:14 elmindreda Exp $
 //========================================================================
 
 #ifndef _platform_h_

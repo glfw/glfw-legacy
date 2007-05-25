@@ -15,8 +15,6 @@
 --   - Slightly modified camera that should work better for stereo viewing
 --   - Ported to Lua (thanks to David Medlock for the original Lua port)
 --------------------------------------------------------------------------
--- $Id: gears.lua,v 1.2 2004-07-19 20:32:48 marcus256 Exp $
---------------------------------------------------------------------------
 
 local t0 = 0.0
 local t = 0

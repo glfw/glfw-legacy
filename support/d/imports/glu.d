@@ -8,8 +8,6 @@
  * Originally based on glu.h from the SGI Open Source Sample
  * Implementation.
  *
- ************************************************************************
- * $Id: glu.d,v 1.1 2004-03-04 21:32:29 marcus256 Exp $
  ************************************************************************/
 
 import gl;

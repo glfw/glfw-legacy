@@ -15,10 +15,6 @@
  *   - Slightly modified camera that should work better for stereo viewing
  */
 
-/************************************************************************
- * $Id: gears.d,v 1.2 2007-03-15 03:20:21 elmindreda Exp $
- ************************************************************************/
-
 import std.math;
 import std.c.string;
 import glfw;

@@ -26,8 +26,6 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
-//------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.20 2007-05-25 09:24:15 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"

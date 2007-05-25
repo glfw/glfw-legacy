@@ -4,10 +4,9 @@ Attribute VB_Name = "GLFW"
 ' File:        glfw.bas
 ' Platform:    Visual Basic/Windows
 ' API version: 2.5
-' Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ' WWW:         http://glfw.sourceforge.net
 '------------------------------------------------------------------------
-' Copyright (c) 2002-2005 Marcus Geelnard
+' Copyright (c) 2002-2005 Camilla Berglund
 '
 ' This software is provided 'as-is', without any express or implied
 ' warranty. In no event will the authors be held liable for any damages
@@ -28,10 +27,6 @@ Attribute VB_Name = "GLFW"
 ' 3. This notice may not be removed or altered from any source
 '    distribution.
 '
-' Marcus Geelnard
-' marcus.geelnard at home.se
-'------------------------------------------------------------------------
-' $Id: glfw.bas,v 1.8 2005-03-14 21:19:15 marcus256 Exp $
 '========================================================================
 
 '========================================================================

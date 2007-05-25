@@ -5,8 +5,6 @@
 #  make -f Makefile.dos.djgpp
 # NOTE: You need long filename support (e.g. compile under Windows9x or
 # use a LFN driver such as DOSLFN)
-#-------------------------------------------------------------------------
-# $Id: Makefile.dos.djgpp,v 1.1 2003-11-26 20:54:07 marcus256 Exp $
 ##########################################################################
 
 # Compiler settings

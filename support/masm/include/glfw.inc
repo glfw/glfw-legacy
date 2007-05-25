@@ -3,10 +3,9 @@
 ; File:        glfw.inc
 ; Platform:    MASM/Windows
 ; API version: 2.5
-; Author:      Marcus Geelnard (marcus.geelnard at home.se)
 ; WWW:         http://glfw.sourceforge.net
 ;------------------------------------------------------------------------
-; Copyright (c) 2002-2005 Marcus Geelnard
+; Copyright (c) 2002-2005 Camilla Berglund
 ;
 ; This software is provided 'as-is', without any express or implied
 ; warranty. In no event will the authors be held liable for any damages
@@ -27,10 +26,6 @@
 ; 3. This notice may not be removed or altered from any source
 ;    distribution.
 ;
-; Marcus Geelnard
-; marcus.geelnard at home.se
-;------------------------------------------------------------------------
-; $Id: glfw.inc,v 1.9 2005-03-14 21:14:29 marcus256 Exp $
 ;========================================================================
 
 ;#########################################################################
