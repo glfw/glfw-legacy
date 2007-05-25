@@ -40,7 +40,7 @@
 
 
 //========================================================================
-// _glfwMinMaxAnimations() - Enable/disable minimize/restore animations
+// Enable/disable minimize/restore animations
 //========================================================================
 
 static int _glfwMinMaxAnimations( int enable )
@@ -66,11 +66,10 @@ static int _glfwMinMaxAnimations( int enable )
 
 
 //========================================================================
-// _glfwSetForegroundWindow() - Function for bringing a window into focus
-// and placing it on top of the window z stack. Due to some nastiness
-// with how Win98/ME/2k/XP handles SetForegroundWindow, we have to go
-// through some really bizarre measures to achieve this (thanks again, MS,
-// for making life so much easier)!
+// Function for bringing a window into focus and placing it on top of the
+// window z stack. Due to some nastiness with how Win98/ME/2k/XP handles
+// SetForegroundWindow, we have to go through some really bizarre measures to
+// achieve this (thanks again, MS, for making life so much easier)!
 //========================================================================
 
 static void _glfwSetForegroundWindow( HWND hWnd )
@@ -130,7 +129,7 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 
 
 //========================================================================
-// _glfwTranslateKey() - Translates a windows key to an internal coding
+// Translates a Windows key to the corresponding GLFW key
 //========================================================================
 
 static int _glfwTranslateKey( DWORD wParam, DWORD lParam )
@@ -284,7 +283,7 @@ static int _glfwTranslateKey( DWORD wParam, DWORD lParam )
 
 
 //========================================================================
-// _glfwTranslateChar() - Translates a windows key to Unicode
+// Translates a windows key to Unicode
 //========================================================================
 
 static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
@@ -676,8 +675,7 @@ LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
 
 //========================================================================
-// _glfwGetFullWindowSize() - Translate client window size to full window
-// size (including window borders)
+// Translate client window size to full window size (including window borders)
 //========================================================================
 
 static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
@@ -701,7 +699,7 @@ static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
 
 
 //========================================================================
-// _glfwInitWGLExtensions() - Initialize WGL-specific extensions
+// Initialize WGL-specific extensions
 //========================================================================
 
 static void _glfwInitWGLExtensions( void )
@@ -1021,7 +1019,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 
 //========================================================================
-// _glfwPlatformCloseWindow() - Properly kill the window / video display
+// Properly kill the window / video display
 //========================================================================
 
 void _glfwPlatformCloseWindow( void )
@@ -1078,7 +1076,7 @@ void _glfwPlatformCloseWindow( void )
 
 
 //========================================================================
-// _glfwPlatformSetWindowTitle() - Set the window title
+// Set the window title
 //========================================================================
 
 void _glfwPlatformSetWindowTitle( const char *title )
@@ -1089,7 +1087,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 
 //========================================================================
-// _glfwPlatformSetWindowSize() - Set the window size.
+// Set the window size.
 //========================================================================
 
 void _glfwPlatformSetWindowSize( int width, int height )
@@ -1168,7 +1166,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 
 //========================================================================
-// _glfwPlatformSetWindowPos() - Set the window position
+// Set the window position
 //========================================================================
 
 void _glfwPlatformSetWindowPos( int x, int y )
@@ -1180,7 +1178,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 
 
 //========================================================================
-// _glfwPlatformIconfyWindow() - Window iconification
+// Window iconification
 //========================================================================
 
 void _glfwPlatformIconifyWindow( void )
@@ -1209,7 +1207,7 @@ void _glfwPlatformIconifyWindow( void )
 
 
 //========================================================================
-// _glfwPlatformRestoreWindow() - Window un-iconification
+// Window un-iconification
 //========================================================================
 
 void _glfwPlatformRestoreWindow( void )
@@ -1242,7 +1240,7 @@ void _glfwPlatformRestoreWindow( void )
 
 
 //========================================================================
-// _glfwPlatformSwapBuffers() - Swap buffers (double-buffering)
+// Swap buffers (double-buffering)
 //========================================================================
 
 void _glfwPlatformSwapBuffers( void )
@@ -1252,7 +1250,7 @@ void _glfwPlatformSwapBuffers( void )
 
 
 //========================================================================
-// _glfwPlatformSwapInterval() - Set double buffering swap interval
+// Set double buffering swap interval
 //========================================================================
 
 void _glfwPlatformSwapInterval( int interval )
@@ -1265,7 +1263,7 @@ void _glfwPlatformSwapInterval( int interval )
 
 
 //========================================================================
-// _glfwPlatformRefreshWindowParams()
+// Write back window parameters into GLFW window structure
 //========================================================================
 
 void _glfwPlatformRefreshWindowParams( void )
@@ -1367,7 +1365,7 @@ void _glfwPlatformRefreshWindowParams( void )
 
 
 //========================================================================
-// _glfwPlatformPollEvents() - Poll for new window and input events
+// Poll for new window and input events
 //========================================================================
 
 void _glfwPlatformPollEvents( void )
@@ -1504,7 +1502,7 @@ void _glfwPlatformShowMouseCursor( void )
 
 
 //========================================================================
-// _glfwPlatformSetMouseCursorPos() - Set physical mouse cursor position
+// Set physical mouse cursor position
 //========================================================================
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
