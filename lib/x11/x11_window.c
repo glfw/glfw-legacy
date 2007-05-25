@@ -27,7 +27,7 @@
 //    distribution.
 //
 //------------------------------------------------------------------------
-// $Id: x11_window.c,v 1.19 2007-05-02 20:47:14 elmindreda Exp $
+// $Id: x11_window.c,v 1.20 2007-05-25 09:24:15 elmindreda Exp $
 //========================================================================
 
 #include "internal.h"
@@ -1028,10 +1028,6 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     // Make sure that our window ends up on top of things
     XRaiseWindow( _glfwLibrary.Dpy, _glfwWin.Win );
-
-    // Get input focus
-    XSetInputFocus( _glfwLibrary.Dpy, _glfwWin.Win, RevertToParent,
-                    CurrentTime );
 
     // Fullscreen mode "post processing"
     if( mode == GLFW_FULLSCREEN )
