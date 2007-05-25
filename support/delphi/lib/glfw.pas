@@ -30,7 +30,7 @@
 // Marcus Geelnard
 // marcus.geelnard at home.se
 //------------------------------------------------------------------------
-// $Id: glfw.pas,v 1.9 2005-03-14 21:06:10 marcus256 Exp $
+// $Id: glfw.pas,v 1.10 2007-05-25 09:39:58 elmindreda Exp $
 //========================================================================
 
 unit glfw;
@@ -189,6 +189,8 @@ const
   GLFW_ACCUM_ALPHA_BITS     = $0002000F;
   GLFW_AUX_BUFFERS          = $00020010;
   GLFW_STEREO               = $00020011;
+  GLFW_WINDOW_NO_RESIZE     = $00020012;
+  GLFW_FSAA_SAMPLES         = $00020013;
 
   // glfwEnable/glfwDisable tokens
   GLFW_MOUSE_CURSOR         = $00030001;
