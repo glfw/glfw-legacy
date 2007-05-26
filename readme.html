@@ -438,6 +438,7 @@ version of GLFW.</p>
   <li>Added <code>glfwLoadTextureImage2D</code> function for loading a <code>GLFWImage</code> object into a texture</li>
   <li>Added cross-compilation support for MinGW under a Unix-like host</li>
   <li>Updates to the D bindings and all examples ported to modern D</li>
+  <li>Delphi bindings updated to reflect API additions</li>
   <li>Bugfix: The interaction between key repeat and window focus code caused duplicate presses</li>
   <li>[Win32] Added pkgconfig file generation for Cygwin</li>
   <li>[Win32] Added version number to WNDCLASS name</li>
@@ -455,6 +456,7 @@ version of GLFW.</p>
   <li>[X11] Bugfix: Window re-opening now works properly (including fullscreen windows)</li>
   <li>[X11] Bugfix: Potential crash bug in video mode matching code</li>
   <li>[X11] Bugfix: Static buffers imposed an invisible limit on reported video mode count</li>
+  <li>[X11] Bugfix: Interaction with certain window managers when setting input focus would cause termination with a BadMatch error</li>
   <li>[MacOSX] Added pkgconfig file generation</li>
   <li>[MacOSX] Added building of shared library</li>
   <li>[MacOSX] Added building of Universal libraries</li>
@@ -849,8 +851,8 @@ target="_blank">developer's mailing list</a>, or you could join us on
   <li>Robin Leffmann, for his work on Mac OS X and other platforms, and his
   invaluable support.</li><br>
 
-  <li>Keith Bauer, for his invaluable help with porting GLFW to Mac OS X,
-  and for his many ideas.</li><br>
+  <li>Keith Bauer, for his invaluable help with porting and maintaining GLFW on
+  Mac OS X, and for his many ideas.</li><br>
 
   <li>Ozzy @ <a href="http://www.orkysquad.org" target="_blank">Orkysquad</a>,
   for his dedication to GLFW, for debugging my source, and for his
