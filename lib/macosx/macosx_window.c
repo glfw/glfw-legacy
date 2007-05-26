@@ -880,7 +880,7 @@ int  _glfwPlatformOpenWindow( int width,
         (void)CGLDestroyPixelFormat( CGLpfObj );
 
         // capture the display for our application
-        cgErr = CGDisplayCapture( kCGDirectMainDisplay );
+        cgErr = CGCaptureAllDisplays();
         if( cgErr != kCGErrorSuccess )
 	{
 	    return GL_FALSE;
