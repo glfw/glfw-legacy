@@ -129,6 +129,26 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 
 
 //========================================================================
+// Creates an OpenGL context using a PFD
+//========================================================================
+
+static int _glfwCreateContextPFD( void )
+{
+    return GL_FALSE;
+}
+
+
+//========================================================================
+// Creates an OpenGL context using attributes
+//========================================================================
+
+static int _glfwCreateContextAttrib( void )
+{
+    return GL_FALSE;
+}
+
+
+//========================================================================
 // Translates a Windows key to the corresponding GLFW key
 //========================================================================
 
@@ -361,7 +381,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
     {
         // Window activate message? (iconification?)
         case WM_ACTIVATE:
-	{
+        {
             _glfwWin.Active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE :
                                                               GL_FALSE;
             Iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
@@ -430,11 +450,11 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
             _glfwWin.Iconified = Iconified;
             return 0;
-	}
+        }
 
         // Intercept system commands (forbid certain actions/events)
         case WM_SYSCOMMAND:
-	{
+        {
             switch( wParam )
             {
                 // Screensaver trying to start or monitor trying to enter
@@ -455,7 +475,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                     return 0;
             }
             break;
-	}
+        }
 
         // Did we receive a close message?
         case WM_CLOSE:
@@ -465,7 +485,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         // Is a key being pressed?
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-	{
+        {
             // Translate and report key press
             _glfwInputKey( _glfwTranslateKey( wParam, lParam ),
                            GLFW_PRESS );
@@ -476,12 +496,12 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwTranslateChar( wParam, lParam, GLFW_PRESS );
             }
             return 0;
-	  }  
+          }  
 
         // Is a key being released?
         case WM_KEYUP:
         case WM_SYSKEYUP:
-	{
+        {
             // Special trick: release both shift keys on SHIFT up event
             if( wParam == VK_SHIFT )
             {
@@ -501,7 +521,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwTranslateChar( wParam, lParam, GLFW_RELEASE );
             }
             return 0;
-	}
+        }
 
         // Were any of the mouse-buttons pressed?
         case WM_LBUTTONDOWN:
@@ -517,7 +537,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
             return 0;
         case WM_XBUTTONDOWN:
-	{
+        {
             if( HIWORD(wParam) == XBUTTON1 )
             {
                 SetCapture(hWnd);
@@ -529,7 +549,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_PRESS );
             }
             return 1;
-	}
+        }
 
         // Were any of the mouse-buttons released?
         case WM_LBUTTONUP:
@@ -545,7 +565,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_RELEASE );
             return 0;
         case WM_XBUTTONUP:
-	{
+        {
             if( HIWORD(wParam) == XBUTTON1 )
             {
                 ReleaseCapture();
@@ -557,11 +577,11 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_5, GLFW_RELEASE );
             }
             return 1;
-	}
+        }
 
         // Did the mouse move?
         case WM_MOUSEMOVE:
-	{
+        {
             {
                 int NewMouseX, NewMouseY;
 
@@ -597,11 +617,11 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 }
             }
             return 0;
-	}
+        }
 
         // Mouse wheel action?
         case WM_MOUSEWHEEL:
-	{
+        {
             // WM_MOUSEWHEEL is not supported under Windows 95
             if( _glfwLibrary.Sys.WinVer != _GLFW_WIN_95 )
             {
@@ -614,11 +634,11 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 return 0;
             }
             break;
-	}
+        }
 
         // Resize the window?
         case WM_SIZE:
-	{
+        {
             // get the new size
             _glfwWin.Width  = LOWORD(lParam);
             _glfwWin.Height = HIWORD(lParam);
@@ -627,7 +647,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             if( _glfwWin.MouseLock )
             {
                 RECT ClipWindowRect;
-		if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+                if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
                 {
                     ClipCursor( &ClipWindowRect );
                 }
@@ -640,11 +660,11 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                                              HIWORD(lParam) );
             }
             return 0;
-	}
+        }
 
         // Move the window?
         case WM_MOVE:
-	{
+        {
             // If the mouse is locked, update the clipping rect
             if( _glfwWin.MouseLock )
             {
@@ -655,18 +675,18 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 }
             }
             return 0;
-	}
+        }
 
         // Was the window contents damaged?
         case WM_PAINT:
-	{
+        {
             // Call user callback function
             if( _glfwWin.WindowRefreshCallback )
             {
                 _glfwWin.WindowRefreshCallback();
             }
             break;
-	}
+        }
     }
 
     // Pass all unhandled messages to DefWindowProc
