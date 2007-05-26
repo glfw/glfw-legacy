@@ -188,6 +188,8 @@ const int GLFW_ACCUM_BLUE_BITS      = 0x0002000E;
 const int GLFW_ACCUM_ALPHA_BITS     = 0x0002000F;
 const int GLFW_AUX_BUFFERS          = 0x00020010;
 const int GLFW_STEREO               = 0x00020011;
+const int GLFW_WINDOW_NO_RESIZE     = 0x00020012;
+const int GLFW_FSAA_SAMPLES         = 0x00020013;
 
 // glfwEnable/glfwDisable tokens
 const int GLFW_MOUSE_CURSOR         = 0x00030001;
@@ -339,5 +341,9 @@ void  glfwDisable( int token );
 
 // Image/texture I/O support
 int   glfwReadImage( char *name, GLFWimage *img, int flags );
+int   glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags );
 void  glfwFreeImage( GLFWimage *img );
 int   glfwLoadTexture2D( char *name, int flags );
+int   glfwLoadMemoryTexture2D( const void *data, long size, int flags );
+int   glfwLoadTextureImage2D( GLFWimage *img, int flags );
+
