@@ -339,8 +339,11 @@ procedure glfwDisable(token: Integer); stdcall;
 
 // Image/texture I/O support
 function  glfwReadImage(name: PChar; image: PGLFWimage; flags: Integer): Integer; stdcall;
+function  glfwReadMemoryImage(data: PChar; size: LongInt; img: PGLFWimage; flags: Integer): Integer; stdcall;
 procedure glfwFreeImage(img: PGLFWimage);
 function  glfwLoadTexture2D(name: PChar; flags: Integer): Integer; stdcall;
+function  glfwLoadMemoryTexture2D(data: PChar; size: LongInt; flags: Integer): Integer; stdcall;
+function  glfwLoadTextureImage2D(img: PGLFWimage; flags: Integer): Integer; stdcall;
 
 implementation
 
@@ -425,7 +428,10 @@ procedure glfwDisable; external DLLNAME;
 
 // Image/texture I/O support
 function  glfwReadImage; external DLLNAME;
+function  glfwReadMemoryImage; external DLLNAME;
 procedure glfwFreeImage; external DLLNAME;
 function  glfwLoadTexture2D; external DLLNAME;
+function  glfwLoadMemoryTexture2D; external DLLNAME;
+function  glfwLoadTextureImage2D; external DLLNAME;
 
 end.
