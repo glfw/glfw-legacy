@@ -616,6 +616,7 @@ int  _glfwPlatformOpenWindow( int width,
                               _GLFWhints* hints )
 {
     OSStatus error;
+    ProcessSerialNumber psn;
 
     unsigned int windowAttributes;
 
@@ -696,6 +697,24 @@ int  _glfwPlatformOpenWindow( int width,
         aglDestroyPixelFormat( pixelFormat );
 
         if( _glfwWin.AGLContext == NULL )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+	if( GetCurrentProcess( &psn ) != noErr )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+	if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+	if( SetFrontProcess( &psn ) != noErr )
         {
             _glfwPlatformCloseWindow();
             return GL_FALSE;
