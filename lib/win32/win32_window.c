@@ -194,7 +194,7 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
     }
 
     // Get actual pixel format description
-    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd) )
+    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
     {
         return GL_FALSE;
     }
@@ -220,11 +220,8 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
 //========================================================================
 
 #define _glfwSetWGLAttribute( _glfwName, _glfwValue ) \
-if( (_glfwValue) != 0 ) \
-{ \
     attribs[ count++ ] = _glfwName; \
-    attribs[ count++ ] = _glfwValue; \
-}
+    attribs[ count++ ] = _glfwValue;
 
 static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
                                       int alphabits, int depthbits, int stencilbits,
@@ -304,7 +301,7 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
 // Translates a Windows key to the corresponding GLFW key
 //========================================================================
 
-static int _glfwTranslateKey( DWORD wParam, DWORD lParam )
+static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
 {
     MSG next_msg;
     DWORD msg_time;
@@ -431,16 +428,16 @@ static int _glfwTranslateKey( DWORD wParam, DWORD lParam )
         // The rest (should be printable keys)
         default:
             // Convert to printable character (ISO-8859-1 or Unicode)
-            wParam = MapVirtualKey( wParam, 2 ) & 0x0000FFFF;
+            wParam = MapVirtualKey( (UINT) wParam, 2 ) & 0x0000FFFF;
 
             // Make sure that the character is uppercase
             if( _glfwLibrary.Sys.HasUnicode )
             {
-                wParam = (DWORD) CharUpperW( (LPWSTR) wParam );
+                wParam = (WPARAM) CharUpperW( (LPWSTR) wParam );
             }
             else
             {
-                wParam = (DWORD) CharUpperA( (LPSTR) wParam );
+                wParam = (WPARAM) CharUpperA( (LPSTR) wParam );
             }
 
             // Valid ISO-8859-1 character?
@@ -645,7 +642,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwTranslateChar( wParam, lParam, GLFW_PRESS );
+                _glfwTranslateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
             }
             return 0;
           }  
@@ -670,7 +667,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwTranslateChar( wParam, lParam, GLFW_RELEASE );
+                _glfwTranslateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
             }
             return 0;
         }
@@ -982,11 +979,8 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
 
     if( !_glfwWin.Wnd )
     {
-	printf("Error: %u\n", GetLastError());
         return GL_FALSE;
     }
-
-    printf("Trying with %u samples\n", hints->Samples );
 
     // Get a device context
     _glfwWin.DC = GetDC( _glfwWin.Wnd );
@@ -997,19 +991,19 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
 
     if( _glfwWin.ChoosePixelFormat )
     {
-	if( !_glfwSetPixelFormatAttrib( redbits, greenbits, bluebits, alphabits,
-					depthbits, stencilbits, mode, hints ) )
-	{
-	    return GL_FALSE;
-	}
+        if( !_glfwSetPixelFormatAttrib( redbits, greenbits, bluebits, alphabits,
+                                        depthbits, stencilbits, mode, hints ) )
+        {
+            return GL_FALSE;
+        }
     }
     else
     {
-	if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits,
-				     depthbits, stencilbits, mode, hints ) )
-	{
-	    return GL_FALSE;
-	}
+        if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits,
+                                     depthbits, stencilbits, mode, hints ) )
+        {
+            return GL_FALSE;
+        }
     }
 
     // Get a rendering context
@@ -1185,27 +1179,25 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
     {
         for (;;)
-	{
-	    _glfwDestroyWindow();
+        {
+            _glfwDestroyWindow();
 
-	    if( _glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
+            if( _glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
                                    depthbits, stencilbits, mode, hints ) )
-	    {
-		break;
-	    }
+            {
+                break;
+            }
 
-	    printf("Failed\n");
-
-	    if( hints->Samples > 0 )
-	    {
-		hints->Samples--;
-	    }
-	    else
-	    {
-		_glfwPlatformCloseWindow();
-		return GL_FALSE;
-	    }
-	}
+            if( hints->Samples > 0 )
+            {
+                hints->Samples--;
+            }
+            else
+            {
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
+        }
     }
 
     // Make sure that our window ends up on top of things
@@ -1240,7 +1232,7 @@ void _glfwPlatformCloseWindow( void )
     {
         // Unregister class
         UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.Instance );
-	_glfwWin.ClassAtom = 0;
+        _glfwWin.ClassAtom = 0;
     }
 
     // Are we in fullscreen mode?
