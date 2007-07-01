@@ -41,6 +41,8 @@
 
 static void _glfwEnableMouseCursor( void )
 {
+    int CenterPosX, CenterPosY;
+
     if( !_glfwWin.Opened || !_glfwWin.MouseLock )
     {
         return;
@@ -48,15 +50,22 @@ static void _glfwEnableMouseCursor( void )
 
     // Show mouse cursor
     _glfwPlatformShowMouseCursor();
-    _glfwPlatformSetMouseCursorPos( _glfwWin.Width / 2, _glfwWin.Height / 2 );
 
-    _glfwInput.MousePosX = _glfwWin.Width / 2;
-    _glfwInput.MousePosY = _glfwWin.Height / 2;
+    CenterPosX = _glfwWin.Width / 2;
+    CenterPosY = _glfwWin.Height / 2;
 
-    if( _glfwWin.MousePosCallback )
+    if( CenterPosX != _glfwInput.MousePosX || CenterPosY != _glfwInput.MousePosY )
     {
-        _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
-                                   _glfwInput.MousePosY );
+	_glfwPlatformSetMouseCursorPos( CenterPosX, CenterPosY );
+
+	_glfwInput.MousePosX = CenterPosX;
+	_glfwInput.MousePosY = CenterPosY;
+
+	if( _glfwWin.MousePosCallback )
+	{
+	    _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
+				       _glfwInput.MousePosY );
+	}
     }
 
     // From now on the mouse is unlocked
