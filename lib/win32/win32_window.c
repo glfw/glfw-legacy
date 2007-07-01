@@ -501,7 +501,7 @@ static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
     }
 
     // Report characters
-    for( i = 0; i < num_chars; i ++ )
+    for( i = 0;  i < num_chars;  i++ )
     {
         // Get next character from buffer
         if( unicode )
@@ -669,6 +669,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             {
                 _glfwTranslateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
             }
+
             return 0;
         }
 
@@ -836,6 +837,13 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             }
             break;
         }
+
+	case WM_DISPLAYCHANGE:
+	{
+	    // TODO: Do stuff here.
+
+	    break;
+	}
     }
 
     // Pass all unhandled messages to DefWindowProc
@@ -1438,7 +1446,7 @@ void _glfwPlatformRefreshWindowParams( void )
 {
     PIXELFORMATDESCRIPTOR pfd;
     DEVMODE dm;
-    int     PixelFormat, success, mode;
+    int     PixelFormat, mode;
 
     // Obtain a detailed description of current pixel format
     PixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
@@ -1514,8 +1522,8 @@ void _glfwPlatformRefreshWindowParams( void )
     // Get refresh rate
     mode = _glfwWin.Fullscreen ? _glfwWin.ModeID : ENUM_CURRENT_SETTINGS;
     dm.dmSize = sizeof( DEVMODE );
-    success = EnumDisplaySettings( NULL, mode, &dm );
-    if( success )
+
+    if( EnumDisplaySettings( NULL, mode, &dm ) )
     {
         _glfwWin.RefreshRate = dm.dmDisplayFrequency;
         if( _glfwWin.RefreshRate <= 1 )
@@ -1597,8 +1605,8 @@ void _glfwPlatformPollEvents( void )
     // Did we have mouse movement in locked cursor mode?
     if( _glfwInput.MouseMoved && _glfwWin.MouseLock )
     {
-        _glfwPlatformSetMouseCursorPos( _glfwWin.Width>>1,
-                                        _glfwWin.Height>>1 );
+        _glfwPlatformSetMouseCursorPos( _glfwWin.Width / 2,
+                                        _glfwWin.Height / 2 );
     }
 
     // Was there a window close request?
