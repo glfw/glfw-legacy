@@ -933,6 +933,105 @@ static void _glfwInitWGLExtensions( void )
 }
 
 
+//========================================================================
+// Creates a window
+//========================================================================
+
+static int _glfwCreateWindow( _GLFWhints *hints )
+{
+    DWORD  dwStyle, dwExStyle;
+    int    full_width, full_height;
+    RECT   wa;
+
+    // Clear platform specific GLFW window state
+    _glfwWin.DC                = NULL;
+    _glfwWin.RC                = NULL;
+    _glfwWin.Wnd               = NULL;
+
+    // Set common window styles
+    dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
+    dwExStyle = WS_EX_APPWINDOW;
+
+    // Set window style, depending on fullscreen mode
+    if( _glfwWin.Fullscreen )
+    {
+        dwStyle |= WS_POPUP;
+
+        // Here's a trick for helping us getting window focus
+        // (SetForegroundWindow doesn't work properly under
+        // Win98/ME/2K/XP/.NET/+)
+        if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
+            _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
+            _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
+        {
+            dwStyle |= WS_VISIBLE;
+        }
+        else
+        {
+            dwStyle |= WS_MINIMIZE;
+        }
+    }
+    else
+    {
+        dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+
+        if( !hints->WindowNoResize )
+        {
+            dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
+            dwExStyle |= WS_EX_WINDOWEDGE;
+        }
+    }
+
+    // Remember window styles (used by _glfwGetFullWindowSize)
+    _glfwWin.dwStyle   = dwStyle;
+    _glfwWin.dwExStyle = dwExStyle;
+
+    // Set window size to true requested size (adjust for window borders)
+    _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
+                            &full_height );
+
+    // Adjust window position to working area (e.g. if the task bar is at
+    // the top of the display). Fullscreen windows are always opened in
+    // the upper left corner regardless of the desktop working area. 
+    if( _glfwWin.Fullscreen )
+    {
+        wa.left = wa.top = 0;
+    }
+    else
+    {
+        SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
+    }
+
+    // Create window
+    _glfwWin.Wnd = CreateWindowEx(
+               _glfwWin.dwExStyle,        // Extended style
+               _GLFW_WNDCLASSNAME,        // Class name
+               "GLFW Window",             // Window title
+               _glfwWin.dwStyle,          // Defined window style
+               wa.left, wa.top,           // Window position
+               full_width,                // Decorated window width
+               full_height,               // Decorated window height
+               NULL,                      // No parent window
+               NULL,                      // No menu
+               _glfwLibrary.Instance,     // Instance
+               NULL );                    // Nothing to WM_CREATE
+
+    if( !_glfwWin.Wnd )
+    {
+        return GL_FALSE;
+    }
+
+    // Get a device context
+    _glfwWin.DC = GetDC( _glfwWin.Wnd );
+    if( !_glfwWin.DC )
+    {
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
+}
+
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -948,18 +1047,10 @@ int _glfwPlatformOpenWindow( int width, int height,
                              int alphabits, int depthbits, int stencilbits,
                              int mode, _GLFWhints* hints )
 {
-    GLuint      PixelFormat;
     WNDCLASS    wc;
-    DWORD       dwStyle, dwExStyle;
-    int         full_width, full_height;
-    PIXELFORMATDESCRIPTOR pfd;
-    RECT        wa;
 
     // Clear platform specific GLFW window state
     _glfwWin.ClassAtom         = 0;
-    _glfwWin.DC                = NULL;
-    _glfwWin.RC                = NULL;
-    _glfwWin.Wnd               = NULL;
     _glfwWin.OldMouseLockValid = GL_FALSE;
 
     // Remember desired refresh rate for this window (used only in
@@ -978,10 +1069,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
 
     // Load user-provided icon if available
-    wc.hIcon = LoadIcon( _glfwLibrary.hInstance, "GLFW_ICON" ); // Load user provided icon
+    wc.hIcon = LoadIcon( _glfwLibrary.Instance, "GLFW_ICON" );
     if( !wc.hIcon )
     {
-        wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); // Load default icon
+        // Load default icon
+        wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); 
     }
 
     // Register the window class
@@ -1000,156 +1092,13 @@ int _glfwPlatformOpenWindow( int width, int height,
                            hints->RefreshRate );
     }
 
-    // Set common window styles
-    dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
-    dwExStyle = WS_EX_APPWINDOW;
-
-    // Set window style, depending on fullscreen mode
-    if( _glfwWin.Fullscreen )
-    {
-        dwStyle |= WS_POPUP;
-
-        // Here's a trick for helping us getting window focus
-        // (SetForegroundWindow doesn't work properly under
-        // Win98/ME/2K/XP/.NET/+)
-        if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
-            _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
-        _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
-        {
-            dwStyle |= WS_VISIBLE;
-        }
-        else
-        {
-            dwStyle |= WS_MINIMIZE;
-        }
-    }
-    else
-    {
-        dwStyle   |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-
-        if( !hints->WindowNoResize )
-        {
-            dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
-            dwExStyle |= WS_EX_WINDOWEDGE;
-        }
-    }
-
-    // Remember window styles (used by _glfwGetFullWindowSize)
-    _glfwWin.dwStyle   = dwStyle;
-    _glfwWin.dwExStyle = dwExStyle;
-
-    // Set window size to true requested size (adjust for window borders)
-    _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
-                            &full_height );
-
-   // Adjust window position to working area (e.g. if the task bar is at
-   // the top of the display). Fullscreen windows are always opened in
-   // the upper left corner regardless of the desktop working area. 
-    if( _glfwWin.Fullscreen )
-    {
-        wa.left = wa.top = 0;
-    }
-    else
-    {
-        SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
-    }
-
-    // Create window
-    _glfwWin.Wnd = CreateWindowEx(
-               dwExStyle,                 // Extended style
-               _GLFW_WNDCLASSNAME,        // Class name
-               "GLFW Window",             // Window title
-               dwStyle,                   // Defined window style
-               wa.left, wa.top,           // Window position
-               full_width,                // Decorated window width
-               full_height,               // Decorated window height
-               NULL,                      // No parent window
-               NULL,                      // No menu
-               _glfwLibrary.Instance,     // Instance
-               NULL );                    // Nothing to WM_CREATE
-    if( !_glfwWin.Wnd )
+    if( !_glfwCreateWindow( hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    // Get a device context
-    _glfwWin.DC = GetDC( _glfwWin.Wnd );
-    if( !_glfwWin.DC )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    // Set required pixel format
-    pfd.nSize           = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion        = 1;
-    pfd.dwFlags         = PFD_DRAW_TO_WINDOW | // Draw to window
-                          PFD_SUPPORT_OPENGL | // Support OpenGL
-                          PFD_DOUBLEBUFFER;    // Double buffered window
-    pfd.iPixelType      = PFD_TYPE_RGBA;       // Request an RGBA format
-    pfd.cColorBits      = (BYTE) (redbits +
-                                  greenbits +
-                                  bluebits);   // Color bits (ex. alpha)
-    pfd.cRedBits        = (BYTE) redbits;      // Red bits
-    pfd.cRedShift       = 0;                   // Red shift ignored
-    pfd.cGreenBits      = (BYTE) greenbits;    // Green bits
-    pfd.cGreenShift     = 0;                   // Green shift ignored
-    pfd.cBlueBits       = (BYTE) bluebits;     // Blue bits
-    pfd.cBlueShift      = 0;                   // Blue shift ignored
-    pfd.cAlphaBits      = (BYTE) alphabits;    // Alpha bits
-    pfd.cAlphaShift     = 0;                   // Alpha shift ignored
-    pfd.cAccumBits      = (BYTE) (hints->AccumRedBits +
-                                  hints->AccumGreenBits +
-                                  hints->AccumBlueBits +
-                                  hints->AccumAlphaBits); // Accum. bits
-    pfd.cAccumRedBits   = (BYTE) hints->AccumRedBits;   // Accum. red bits
-    pfd.cAccumGreenBits = (BYTE) hints->AccumGreenBits; // Accum. green bits
-    pfd.cAccumBlueBits  = (BYTE) hints->AccumBlueBits;  // Accum. blue bits
-    pfd.cAccumAlphaBits = (BYTE) hints->AccumAlphaBits; // Accum. alpha bits
-    pfd.cDepthBits      = (BYTE) depthbits;    // Depth buffer bits
-    pfd.cStencilBits    = (BYTE) stencilbits;  // Stencil buffer bits
-    pfd.cAuxBuffers     = (BYTE) hints->AuxBuffers;   // No. of aux buffers
-    pfd.iLayerType      = PFD_MAIN_PLANE;      // Drawing layer: main
-    pfd.bReserved       = 0;                   // (reserved)
-    pfd.dwLayerMask     = 0;                   // Ignored
-    pfd.dwVisibleMask   = 0;                   // "
-    pfd.dwDamageMask    = 0;                   // "
-    if( depthbits <= 0 )
-    {
-        // We do not need a depth buffer
-        pfd.dwFlags |= PFD_DEPTH_DONTCARE;
-    }
-    if( hints->Stereo )
-    {
-        // Request a stereo mode
-        pfd.dwFlags |= PFD_STEREO;
-    }
-
-    // Find a matching pixel format
-    if( !(PixelFormat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd )) )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    // Get actual pixel format description
-    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat,
-            sizeof(PIXELFORMATDESCRIPTOR), &pfd) )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    // "stereo" is a strict requirement
-    if( hints->Stereo && !(pfd.dwFlags & PFD_STEREO) )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    // Set the pixel-format
-    if( !_glfw_SetPixelFormat( _glfwWin.DC, PixelFormat, &pfd ) )
+    if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits, depthbits, stencilbits, mode, hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
