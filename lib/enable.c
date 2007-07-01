@@ -48,6 +48,15 @@ static void _glfwEnableMouseCursor( void )
 
     // Show mouse cursor
     _glfwPlatformShowMouseCursor();
+    _glfwPlatformSetMouseCursorPos( _glfwWin.Width>>1, 
+                                    _glfwWin.Height>>1 );
+    _glfwInput.MousePosX = _glfwWin.Width>>1;
+    _glfwInput.MousePosY = _glfwWin.Height>>1;
+    if( _glfwWin.MousePosCallback )
+    {
+        _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
+                                   _glfwInput.MousePosY );
+    }
 
     // From now on the mouse is unlocked
     _glfwWin.MouseLock = GL_FALSE;
