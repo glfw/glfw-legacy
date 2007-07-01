@@ -36,8 +36,7 @@
 //************************************************************************
 
 //========================================================================
-// _glfwEnableMouseCursor() - Enable (show) mouse cursor
-// _glfwDisableMouseCursor() - Disable (hide) mouse cursor
+// Enable (show) mouse cursor
 //========================================================================
 
 static void _glfwEnableMouseCursor( void )
@@ -53,6 +52,10 @@ static void _glfwEnableMouseCursor( void )
     // From now on the mouse is unlocked
     _glfwWin.MouseLock = GL_FALSE;
 }
+
+//========================================================================
+// Disable (hide) mouse cursor
+//========================================================================
 
 static void _glfwDisableMouseCursor( void )
 {
