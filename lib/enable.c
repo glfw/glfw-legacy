@@ -48,10 +48,11 @@ static void _glfwEnableMouseCursor( void )
 
     // Show mouse cursor
     _glfwPlatformShowMouseCursor();
-    _glfwPlatformSetMouseCursorPos( _glfwWin.Width>>1, 
-                                    _glfwWin.Height>>1 );
-    _glfwInput.MousePosX = _glfwWin.Width>>1;
-    _glfwInput.MousePosY = _glfwWin.Height>>1;
+    _glfwPlatformSetMouseCursorPos( _glfwWin.Width / 2, _glfwWin.Height / 2 );
+
+    _glfwInput.MousePosX = _glfwWin.Width / 2;
+    _glfwInput.MousePosY = _glfwWin.Height / 2;
+
     if( _glfwWin.MousePosCallback )
     {
         _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
