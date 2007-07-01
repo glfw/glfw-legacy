@@ -977,8 +977,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     wc.hbrBackground = NULL;                          // No background
     wc.lpszMenuName  = NULL;                          // No menu
     wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
-    wc.hIcon         = LoadIcon( wc.hInstance, "GLFW_ICON" ); // Load user provided icon
 
+    wc.hIcon = LoadIcon( _glfwLibrary.hInstance, "GLFW_ICON" ); // Load user provided icon
     if( !wc.hIcon )
     {
         wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); // Load default icon
