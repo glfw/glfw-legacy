@@ -220,7 +220,7 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
 //========================================================================
 
 #define _glfwSetWGLAttribute( _glfwName, _glfwValue ) \
-if ( _glfwValue != 0 ) \
+if( (_glfwValue) != 0 ) \
 { \
     attribs[ count++ ] = _glfwName; \
     attribs[ count++ ] = _glfwValue; \
@@ -230,7 +230,7 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
                                       int alphabits, int depthbits, int stencilbits,
                                       int mode, _GLFWhints* hints )
 {
-    int PixelFormat, count = 0;
+    int PixelFormat, dummy, count = 0;
     int attribs[128];
     PIXELFORMATDESCRIPTOR pfd;
     
@@ -252,7 +252,7 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
     int accumbluebits = hints->AccumBlueBits;
     int accumalphabits = hints->AccumAlphaBits;
 
-    if( accumredbits + accumgreenbits + accumbluebits + accumalphabits > 0 )
+    if( accumredbits || accumgreenbits || accumbluebits || accumalphabits )
     {
         _glfwSetWGLAttribute( WGL_ACCUM_BITS_ARB, accumredbits +
                                                   accumgreenbits +
@@ -276,12 +276,14 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
         _glfwSetWGLAttribute( WGL_SAMPLES_ARB, hints->Samples );
     }
 
-    if( !_glfwWin.ChoosePixelFormat( _glfwWin.DC, attribs, NULL, 1, &PixelFormat, &count ) )
+    _glfwSetWGLAttribute( 0, 0 );
+
+    if( !_glfwWin.ChoosePixelFormat( _glfwWin.DC, attribs, NULL, 1, &PixelFormat, &dummy ) )
     {
         return GL_FALSE;
     }
 
-    if( !DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
+    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
     {
         return GL_FALSE;
     }
@@ -934,57 +936,19 @@ static void _glfwInitWGLExtensions( void )
 
 
 //========================================================================
-// Creates a window
+// Creates the GLFW window and rendering context
 //========================================================================
 
-static int _glfwCreateWindow( _GLFWhints *hints )
+static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
+                              int alphabits, int depthbits, int stencilbits,
+                              int mode, _GLFWhints* hints )
 {
-    DWORD  dwStyle, dwExStyle;
     int    full_width, full_height;
     RECT   wa;
 
-    // Clear platform specific GLFW window state
-    _glfwWin.DC                = NULL;
-    _glfwWin.RC                = NULL;
-    _glfwWin.Wnd               = NULL;
-
-    // Set common window styles
-    dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
-    dwExStyle = WS_EX_APPWINDOW;
-
-    // Set window style, depending on fullscreen mode
-    if( _glfwWin.Fullscreen )
-    {
-        dwStyle |= WS_POPUP;
-
-        // Here's a trick for helping us getting window focus
-        // (SetForegroundWindow doesn't work properly under
-        // Win98/ME/2K/XP/.NET/+)
-        if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
-            _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
-            _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
-        {
-            dwStyle |= WS_VISIBLE;
-        }
-        else
-        {
-            dwStyle |= WS_MINIMIZE;
-        }
-    }
-    else
-    {
-        dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-
-        if( !hints->WindowNoResize )
-        {
-            dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
-            dwExStyle |= WS_EX_WINDOWEDGE;
-        }
-    }
-
-    // Remember window styles (used by _glfwGetFullWindowSize)
-    _glfwWin.dwStyle   = dwStyle;
-    _glfwWin.dwExStyle = dwExStyle;
+    _glfwWin.DC  = NULL;
+    _glfwWin.RC  = NULL;
+    _glfwWin.Wnd = NULL;
 
     // Set window size to true requested size (adjust for window borders)
     _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
@@ -1018,8 +982,11 @@ static int _glfwCreateWindow( _GLFWhints *hints )
 
     if( !_glfwWin.Wnd )
     {
+	printf("Error: %u\n", GetLastError());
         return GL_FALSE;
     }
+
+    printf("Trying with %u samples\n", hints->Samples );
 
     // Get a device context
     _glfwWin.DC = GetDC( _glfwWin.Wnd );
@@ -1028,7 +995,82 @@ static int _glfwCreateWindow( _GLFWhints *hints )
         return GL_FALSE;
     }
 
+    if( _glfwWin.ChoosePixelFormat )
+    {
+	if( !_glfwSetPixelFormatAttrib( redbits, greenbits, bluebits, alphabits,
+					depthbits, stencilbits, mode, hints ) )
+	{
+	    return GL_FALSE;
+	}
+    }
+    else
+    {
+	if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits,
+				     depthbits, stencilbits, mode, hints ) )
+	{
+	    return GL_FALSE;
+	}
+    }
+
+    // Get a rendering context
+    _glfwWin.RC = wglCreateContext( _glfwWin.DC );
+    if( !_glfwWin.RC )
+    {
+        return GL_FALSE;
+    }
+
+    // Activate the OpenGL rendering context
+    if( !wglMakeCurrent( _glfwWin.DC, _glfwWin.RC ) )
+    {
+        return GL_FALSE;
+    }
+
+    // Initialize WGL-specific OpenGL extensions
+    _glfwInitWGLExtensions();
+
     return GL_TRUE;
+}
+
+
+//========================================================================
+// Destroys the GLFW window and rendering context
+//========================================================================
+
+static void _glfwDestroyWindow( void )
+{
+    // Do we have a rendering context?
+    if( _glfwWin.RC )
+    {
+        // Release the DC and RC contexts
+        wglMakeCurrent( NULL, NULL );
+
+        // Delete the rendering context
+        wglDeleteContext( _glfwWin.RC );
+        _glfwWin.RC = NULL;
+    }
+
+    // Do we have a device context?
+    if( _glfwWin.DC )
+    {
+        // Release the device context
+        ReleaseDC( _glfwWin.Wnd, _glfwWin.DC );
+        _glfwWin.DC = NULL;
+    }
+
+    // Do we have a window?
+    if( _glfwWin.Wnd )
+    {
+        // Destroy the window
+        if( _glfwLibrary.Sys.WinVer <= _GLFW_WIN_NT4 )
+        {
+            // Note: Hiding the window first fixes an annoying W98/NT4
+            // remaining icon bug for fullscreen displays
+            ShowWindow( _glfwWin.Wnd, SW_HIDE );
+        }
+
+        DestroyWindow( _glfwWin.Wnd );
+        _glfwWin.Wnd = NULL;
+    }
 }
 
 
@@ -1048,10 +1090,13 @@ int _glfwPlatformOpenWindow( int width, int height,
                              int mode, _GLFWhints* hints )
 {
     WNDCLASS    wc;
+    DWORD  dwStyle, dwExStyle;
 
     // Clear platform specific GLFW window state
     _glfwWin.ClassAtom         = 0;
     _glfwWin.OldMouseLockValid = GL_FALSE;
+    _glfwWin.ChoosePixelFormat = NULL;
+    _glfwWin.GetPixelFormatAttribiv = NULL;
 
     // Remember desired refresh rate for this window (used only in
     // fullscreen mode)
@@ -1092,31 +1137,75 @@ int _glfwPlatformOpenWindow( int width, int height,
                            hints->RefreshRate );
     }
 
-    if( !_glfwCreateWindow( hints ) )
+    // Set common window styles
+    dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
+    dwExStyle = WS_EX_APPWINDOW;
+
+    // Set window style, depending on fullscreen mode
+    if( _glfwWin.Fullscreen )
+    {
+        dwStyle |= WS_POPUP;
+
+        // Here's a trick for helping us getting window focus
+        // (SetForegroundWindow doesn't work properly under
+        // Win98/ME/2K/XP/.NET/+)
+        if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_95 ||
+            _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 || 
+            _glfwLibrary.Sys.WinVer == _GLFW_WIN_XP )
+        {
+            dwStyle |= WS_VISIBLE;
+        }
+        else
+        {
+            dwStyle |= WS_MINIMIZE;
+        }
+    }
+    else
+    {
+        dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+
+        if( !hints->WindowNoResize )
+        {
+            dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
+            dwExStyle |= WS_EX_WINDOWEDGE;
+        }
+    }
+
+    // Remember window styles (used by _glfwGetFullWindowSize)
+    _glfwWin.dwStyle   = dwStyle;
+    _glfwWin.dwExStyle = dwExStyle;
+
+    if( !_glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
+                            depthbits, stencilbits, mode, hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits, depthbits, stencilbits, mode, hints ) )
+    if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
     {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
+        for (;;)
+	{
+	    _glfwDestroyWindow();
 
-    // Get a rendering context
-    _glfwWin.RC = wglCreateContext(_glfwWin.DC);
-    if( !_glfwWin.RC )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
+	    if( _glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
+                                   depthbits, stencilbits, mode, hints ) )
+	    {
+		break;
+	    }
 
-    // Activate the OpenGL rendering context
-    if( !wglMakeCurrent( _glfwWin.DC, _glfwWin.RC ) )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
+	    printf("Failed\n");
+
+	    if( hints->Samples > 0 )
+	    {
+		hints->Samples--;
+	    }
+	    else
+	    {
+		_glfwPlatformCloseWindow();
+		return GL_FALSE;
+	    }
+	}
     }
 
     // Make sure that our window ends up on top of things
@@ -1134,9 +1223,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     glClear( GL_COLOR_BUFFER_BIT );
     _glfw_SwapBuffers( _glfwWin.DC );
 
-    // Initialize WGL-specific OpenGL extensions
-    _glfwInitWGLExtensions();
-
     return GL_TRUE;
 }
 
@@ -1147,38 +1233,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 void _glfwPlatformCloseWindow( void )
 {
-    // Do we have a rendering context?
-    if( _glfwWin.RC )
-    {
-        // Release the DC and RC contexts
-        wglMakeCurrent( NULL, NULL );
-
-        // Delete the rendering context
-        wglDeleteContext( _glfwWin.RC );
-        _glfwWin.RC = NULL;
-    }
-
-    // Do we have a device context?
-    if( _glfwWin.DC )
-    {
-        // Release the device context
-        ReleaseDC( _glfwWin.Wnd, _glfwWin.DC );
-        _glfwWin.DC = NULL;
-    }
-
-    // Do we have a window?
-    if( _glfwWin.Wnd )
-    {
-        // Destroy the window
-        if( _glfwLibrary.Sys.WinVer <= _GLFW_WIN_NT4 )
-        {
-            // Note: Hiding the window first fixes an annoying W98/NT4
-            // remaining icon bug for fullscreen displays
-            ShowWindow( _glfwWin.Wnd, SW_HIDE );
-        }
-        DestroyWindow( _glfwWin.Wnd );
-        _glfwWin.Wnd = NULL;
-    }
+    _glfwDestroyWindow();
 
     // Do we have an instance?
     if( _glfwWin.ClassAtom )
