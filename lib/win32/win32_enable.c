@@ -141,7 +141,7 @@ void _glfwPlatformDisableSystemKeys( void )
         // Under Windows NT, install a low level keyboard hook
         _glfwWin.KeyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,
                                     _glfwLLKeyboardProc,
-                                    _glfwWin.Instance,
+                                    _glfwLibrary.Instance,
                                     0 );
     }
     else

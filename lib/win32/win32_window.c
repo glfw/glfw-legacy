@@ -129,23 +129,173 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 
 
 //========================================================================
-// Creates an OpenGL context using a PFD
+// Sets the device context pixel format using a PFD
 //========================================================================
 
-static int _glfwCreateContextPFD( void )
+static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
+                                   int alphabits, int depthbits, int stencilbits,
+                                   int mode, _GLFWhints* hints )
 {
-    return GL_FALSE;
+    int PixelFormat;
+    PIXELFORMATDESCRIPTOR pfd;
+
+    // Set required pixel format
+    pfd.nSize           = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion        = 1;
+    pfd.dwFlags         = PFD_DRAW_TO_WINDOW | // Draw to window
+                          PFD_SUPPORT_OPENGL | // Support OpenGL
+                          PFD_DOUBLEBUFFER;    // Double buffered window
+    pfd.iPixelType      = PFD_TYPE_RGBA;       // Request an RGBA format
+    pfd.cColorBits      = (BYTE) (redbits +
+                                  greenbits +
+                                  bluebits);   // Color bits (ex. alpha)
+    pfd.cRedBits        = (BYTE) redbits;      // Red bits
+    pfd.cRedShift       = 0;                   // Red shift ignored
+    pfd.cGreenBits      = (BYTE) greenbits;    // Green bits
+    pfd.cGreenShift     = 0;                   // Green shift ignored
+    pfd.cBlueBits       = (BYTE) bluebits;     // Blue bits
+    pfd.cBlueShift      = 0;                   // Blue shift ignored
+    pfd.cAlphaBits      = (BYTE) alphabits;    // Alpha bits
+    pfd.cAlphaShift     = 0;                   // Alpha shift ignored
+    pfd.cAccumBits      = (BYTE) (hints->AccumRedBits +
+                                  hints->AccumGreenBits +
+                                  hints->AccumBlueBits +
+                                  hints->AccumAlphaBits); // Accum. bits
+    pfd.cAccumRedBits   = (BYTE) hints->AccumRedBits;   // Accum. red bits
+    pfd.cAccumGreenBits = (BYTE) hints->AccumGreenBits; // Accum. green bits
+    pfd.cAccumBlueBits  = (BYTE) hints->AccumBlueBits;  // Accum. blue bits
+    pfd.cAccumAlphaBits = (BYTE) hints->AccumAlphaBits; // Accum. alpha bits
+    pfd.cDepthBits      = (BYTE) depthbits;    // Depth buffer bits
+    pfd.cStencilBits    = (BYTE) stencilbits;  // Stencil buffer bits
+    pfd.cAuxBuffers     = (BYTE) hints->AuxBuffers;   // No. of aux buffers
+    pfd.iLayerType      = PFD_MAIN_PLANE;      // Drawing layer: main
+    pfd.bReserved       = 0;                   // (reserved)
+    pfd.dwLayerMask     = 0;                   // Ignored
+    pfd.dwVisibleMask   = 0;                   // "
+    pfd.dwDamageMask    = 0;                   // "
+
+    if( depthbits <= 0 )
+    {
+        // We do not need a depth buffer
+        pfd.dwFlags |= PFD_DEPTH_DONTCARE;
+    }
+
+    if( hints->Stereo )
+    {
+        // Request a stereo mode
+        pfd.dwFlags |= PFD_STEREO;
+    }
+
+    // Find a matching pixel format
+    PixelFormat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd );
+    if( !PixelFormat )
+    {
+        return GL_FALSE;
+    }
+
+    // Get actual pixel format description
+    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd) )
+    {
+        return GL_FALSE;
+    }
+
+    // "stereo" is a strict requirement
+    if( hints->Stereo && !(pfd.dwFlags & PFD_STEREO) )
+    {
+        return GL_FALSE;
+    }
+
+    // Set the pixel-format
+    if( !_glfw_SetPixelFormat( _glfwWin.DC, PixelFormat, &pfd ) )
+    {
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
 }
 
 
 //========================================================================
-// Creates an OpenGL context using attributes
+// Sets the device context pixel format using attributes
 //========================================================================
 
-static int _glfwCreateContextAttrib( void )
-{
-    return GL_FALSE;
+#define _glfwSetWGLAttribute( _glfwName, _glfwValue ) \
+if ( _glfwValue != 0 ) \
+{ \
+    attribs[ count++ ] = _glfwName; \
+    attribs[ count++ ] = _glfwValue; \
 }
+
+static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
+                                      int alphabits, int depthbits, int stencilbits,
+                                      int mode, _GLFWhints* hints )
+{
+    int PixelFormat, count = 0;
+    int attribs[128];
+    PIXELFORMATDESCRIPTOR pfd;
+    
+    _glfwSetWGLAttribute( WGL_DRAW_TO_WINDOW_ARB, GL_TRUE );
+    _glfwSetWGLAttribute( WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB );
+    _glfwSetWGLAttribute( WGL_SUPPORT_OPENGL_ARB, GL_TRUE );
+    _glfwSetWGLAttribute( WGL_DOUBLE_BUFFER_ARB,  GL_TRUE );
+    _glfwSetWGLAttribute( WGL_COLOR_BITS_ARB,     redbits + greenbits + bluebits );
+    _glfwSetWGLAttribute( WGL_RED_BITS_ARB,       redbits );
+    _glfwSetWGLAttribute( WGL_GREEN_BITS_ARB,     greenbits );
+    _glfwSetWGLAttribute( WGL_BLUE_BITS_ARB,      bluebits );
+    _glfwSetWGLAttribute( WGL_ALPHA_BITS_ARB,     alphabits );
+    _glfwSetWGLAttribute( WGL_DEPTH_BITS_ARB,     depthbits );
+    _glfwSetWGLAttribute( WGL_STENCIL_BITS_ARB,   stencilbits );
+    _glfwSetWGLAttribute( WGL_AUX_BUFFERS_ARB,    hints->AuxBuffers );
+    
+    int accumredbits = hints->AccumRedBits;
+    int accumgreenbits = hints->AccumGreenBits;
+    int accumbluebits = hints->AccumBlueBits;
+    int accumalphabits = hints->AccumAlphaBits;
+
+    if( accumredbits + accumgreenbits + accumbluebits + accumalphabits > 0 )
+    {
+        _glfwSetWGLAttribute( WGL_ACCUM_BITS_ARB, accumredbits +
+                                                  accumgreenbits +
+                                                  accumbluebits +
+                                                  accumalphabits );
+
+        _glfwSetWGLAttribute( WGL_ACCUM_RED_BITS_ARB, accumredbits );
+        _glfwSetWGLAttribute( WGL_ACCUM_GREEN_BITS_ARB, accumgreenbits );
+        _glfwSetWGLAttribute( WGL_ACCUM_BLUE_BITS_ARB, accumbluebits );
+        _glfwSetWGLAttribute( WGL_ACCUM_ALPHA_BITS_ARB, accumalphabits );
+    }
+
+    if( hints->Stereo )
+    {
+        _glfwSetWGLAttribute( WGL_STEREO_ARB, GL_TRUE );
+    }
+
+    if( hints->Samples > 0 )
+    {
+        _glfwSetWGLAttribute( WGL_SAMPLE_BUFFERS_ARB, 1 );
+        _glfwSetWGLAttribute( WGL_SAMPLES_ARB, hints->Samples );
+    }
+
+    if( !_glfwWin.ChoosePixelFormat( _glfwWin.DC, attribs, NULL, 1, &PixelFormat, &count ) )
+    {
+        return GL_FALSE;
+    }
+
+    if( !DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
+    {
+        return GL_FALSE;
+    }
+
+    // Set the pixel-format
+    if( !_glfw_SetPixelFormat( _glfwWin.DC, PixelFormat, &pfd ) )
+    {
+        return GL_FALSE;
+    }
+
+    return GL_TRUE; 
+}
+
+#undef _glfwSetWGLAttribute
 
 
 //========================================================================
@@ -795,8 +945,8 @@ static void _glfwInitWGLExtensions( void )
 
 int _glfwPlatformOpenWindow( int width, int height,
                              int redbits, int greenbits, int bluebits,
-                 int alphabits, int depthbits, int stencilbits,
-                 int mode, _GLFWhints* hints )
+                             int alphabits, int depthbits, int stencilbits,
+                             int mode, _GLFWhints* hints )
 {
     GLuint      PixelFormat;
     WNDCLASS    wc;
@@ -806,35 +956,38 @@ int _glfwPlatformOpenWindow( int width, int height,
     RECT        wa;
 
     // Clear platform specific GLFW window state
+    _glfwWin.ClassAtom         = 0;
     _glfwWin.DC                = NULL;
     _glfwWin.RC                = NULL;
     _glfwWin.Wnd               = NULL;
-    _glfwWin.Instance          = NULL;
     _glfwWin.OldMouseLockValid = GL_FALSE;
 
     // Remember desired refresh rate for this window (used only in
     // fullscreen mode)
     _glfwWin.DesiredRefreshRate = hints->RefreshRate;
 
-    // Grab an instance for our window
-    _glfwWin.Instance = GetModuleHandle( NULL );
-
     // Set window class parameters
     wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; // Redraw on...
     wc.lpfnWndProc   = (WNDPROC)_glfwWindowCallback;  // Message handler
     wc.cbClsExtra    = 0;                             // No extra class data
     wc.cbWndExtra    = 0;                             // No extra window data
-    wc.hInstance     = _glfwWin.Instance;             // Set instance
-    wc.hIcon         = LoadIcon( NULL, IDI_WINLOGO ); // Load default icon
+    wc.hInstance     = _glfwLibrary.Instance;         // Set instance
+    //        modifying this to load a user-specified Icon, if available
     wc.hCursor       = LoadCursor( NULL, IDC_ARROW ); // Load arrow pointer
     wc.hbrBackground = NULL;                          // No background
     wc.lpszMenuName  = NULL;                          // No menu
     wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
+    wc.hIcon         = LoadIcon( wc.hInstance, "GLFW_ICON" ); // Load user provided icon
+
+    if( !wc.hIcon )
+    {
+        wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); // Load default icon
+    }
 
     // Register the window class
-    if( !RegisterClass( &wc ) )
+    _glfwWin.ClassAtom = RegisterClass( &wc );
+    if( !_glfwWin.ClassAtom )
     {
-        _glfwWin.Instance = NULL;
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
@@ -854,7 +1007,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Set window style, depending on fullscreen mode
     if( _glfwWin.Fullscreen )
     {
-        dwStyle   |= WS_POPUP;
+        dwStyle |= WS_POPUP;
 
         // Here's a trick for helping us getting window focus
         // (SetForegroundWindow doesn't work properly under
@@ -873,11 +1026,12 @@ int _glfwPlatformOpenWindow( int width, int height,
     else
     {
         dwStyle   |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-    if( !hints->WindowNoResize )
-    {
+
+        if( !hints->WindowNoResize )
+        {
             dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
-        dwExStyle |= WS_EX_WINDOWEDGE;
-    }
+            dwExStyle |= WS_EX_WINDOWEDGE;
+        }
     }
 
     // Remember window styles (used by _glfwGetFullWindowSize)
@@ -911,7 +1065,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                full_height,               // Decorated window height
                NULL,                      // No parent window
                NULL,                      // No menu
-               _glfwWin.Instance,         // Instance
+               _glfwLibrary.Instance,     // Instance
                NULL );                    // Nothing to WM_CREATE
     if( !_glfwWin.Wnd )
     {
@@ -1078,11 +1232,11 @@ void _glfwPlatformCloseWindow( void )
     }
 
     // Do we have an instance?
-    if( _glfwWin.Instance )
+    if( _glfwWin.ClassAtom )
     {
         // Unregister class
-        UnregisterClass( _GLFW_WNDCLASSNAME, _glfwWin.Instance );
-        _glfwWin.Instance = NULL;
+        UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.Instance );
+	_glfwWin.ClassAtom = 0;
     }
 
     // Are we in fullscreen mode?
@@ -1290,16 +1444,14 @@ void _glfwPlatformRefreshWindowParams( void )
 {
     PIXELFORMATDESCRIPTOR pfd;
     DEVMODE dm;
-    int     iPixelFormat, success, mode;
+    int     PixelFormat, success, mode;
 
     // Obtain a detailed description of current pixel format
-    iPixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
+    PixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
 
     if( !_glfwWin.GetPixelFormatAttribiv )
     {
-        PIXELFORMATDESCRIPTOR pfd;
-
-        _glfw_DescribePixelFormat( _glfwWin.DC, iPixelFormat,
+        _glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat,
                                    sizeof(PIXELFORMATDESCRIPTOR), &pfd );
 
         // Is current OpenGL context accelerated?
@@ -1338,12 +1490,12 @@ void _glfwPlatformRefreshWindowParams( void )
             WGL_AUX_BUFFERS_ARB,
             WGL_STEREO_ARB,
             WGL_SAMPLES_ARB
-    };
+        };
 
-        int values[sizeof(attribs)/sizeof(attribs[0])];
+        int values[sizeof(attribs) / sizeof(attribs[0])];
 
-        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, iPixelFormat, 0, 
-                                         sizeof(attribs)/sizeof(attribs[0]), 
+        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, PixelFormat, 0, 
+                                         sizeof(attribs) / sizeof(attribs[0]), 
                                          attribs, values);
 
         // Is current OpenGL context accelerated?

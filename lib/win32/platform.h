@@ -273,7 +273,7 @@ struct _GLFWwin_struct {
     HDC       DC;              // Private GDI device context
     HGLRC     RC;              // Permanent rendering context
     HWND      Wnd;             // Window handle
-    HINSTANCE Instance;        // Instance of the application
+    ATOM      ClassAtom;       // Window class atom
     int       ModeID;          // Mode ID for fullscreen mode
     HHOOK     KeyboardHook;    // Keyboard hook handle
     DWORD     dwStyle;         // Window styles used for window creation
@@ -331,6 +331,8 @@ GLFWGLOBAL struct {
 GLFWGLOBAL struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
+
+  HINSTANCE Instance;        // Instance of the application
 
   // Timer data
   struct {

@@ -306,6 +306,9 @@ int _glfwPlatformInit( void )
     _control87( MCW_EM, MCW_EM );
 #endif
 
+    // Retrieve GLFW instance handle
+    _glfwLibrary.Instance = GetModuleHandle( NULL );
+
     // System keys are not disabled
     _glfwWin.KeyboardHook = NULL;
 
