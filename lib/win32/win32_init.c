@@ -291,9 +291,6 @@ int _glfwPlatformInit( void )
         _glfwLibrary.Sys.HasUnicode = GL_FALSE;
     }
 
-    _glfwWin.ChoosePixelFormat = NULL;
-    _glfwWin.GetPixelFormatAttribiv = NULL;
-
     // Load libraries (DLLs)
     if( !_glfwInitLibraries() )
     {

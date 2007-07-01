@@ -531,8 +531,8 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         // Window activate message? (iconification?)
         case WM_ACTIVATE:
         {
-            _glfwWin.Active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE :
-                                                              GL_FALSE;
+            _glfwWin.Active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE : GL_FALSE;
+
             Iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
 
             // Were we deactivated/iconified?
@@ -541,7 +541,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
                 _glfwInputDeactivation();
 
                 // If we are in fullscreen mode we need to iconify
-                if( _glfwWin.Fullscreen )
+                if( _glfwWin.Opened && _glfwWin.Fullscreen )
                 {
                     // Do we need to manually iconify?
                     if( !Iconified )
@@ -568,7 +568,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             else if( _glfwWin.Active || !Iconified )
             {
                 // If we are in fullscreen mode we need to maximize
-                if( _glfwWin.Fullscreen && _glfwWin.Iconified )
+                if( _glfwWin.Opened && _glfwWin.Fullscreen && _glfwWin.Iconified )
                 {
                     // Change display settings to the user selected mode
                     _glfwSetVideoModeMODE( _glfwWin.ModeID );
@@ -1271,12 +1271,10 @@ void _glfwPlatformSetWindowSize( int width, int height )
     if( _glfwWin.Fullscreen )
     {
         DEVMODE dm;
-        int success;
 
         // Get current BPP settings
         dm.dmSize = sizeof( DEVMODE );
-        success = EnumDisplaySettings( NULL, _glfwWin.ModeID, &dm );
-        if( success )
+        if( EnumDisplaySettings( NULL, _glfwWin.ModeID, &dm ) )
         {
             // Get bpp
             bpp = dm.dmBitsPerPel;
