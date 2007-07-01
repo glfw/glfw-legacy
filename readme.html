@@ -440,8 +440,10 @@ version of GLFW.</p>
   <li>D bindings updated and all examples ported to modern D</li>
   <li>Delphi bindings updated to reflect API additions</li>
   <li>Bugfix: The interaction between key repeat and window focus code caused duplicate presses</li>
+  <li>Bugfix: The mouse position was not properly updated when re-enabling the mouse cursor</li>
   <li>[Win32] Added pkgconfig file generation for Cygwin</li>
-  <li>[Win32] Added version number to WNDCLASS name</li>
+  <li>[Win32] Added version number to window class name</li>
+  <li>[Win32] Added optional loading of user provided window icon resource</li>
   <li>[Win32] Bugfix: Very small sleep periods were forced to higher value</li>
   <li>[Win32] Bugfix: The nmake makefile did not handle paths with spaces correctly</li>
   <li>[Win32] Bugfix: Removed assembly RDTSC timing code</li>
@@ -457,10 +459,12 @@ version of GLFW.</p>
   <li>[X11] Bugfix: Potential crash bug in video mode matching code</li>
   <li>[X11] Bugfix: Static buffers imposed an invisible limit on reported video mode count</li>
   <li>[X11] Bugfix: Interaction with certain window managers when setting input focus would cause termination with a BadMatch error</li>
+  <li>[X11] Bugfix: Keypad keys did not trigger the character callback</li>
   <li>[MacOSX] Added pkgconfig file generation</li>
   <li>[MacOSX] Added building of shared library</li>
-  <li>[MacOSX] Added building of Universal libraries</li>
+  <li>[MacOSX] Added building of Universal Binary libraries</li>
   <li>[MacOSX] Replaced fullscreen code path with CGL version</li>
+  <li>[MacOSX] Bugfix: Binaries without bundles or resource forks now interact properly with the WM</li>
   <li>[MacOSX] Bugfix: Replaced Carbon event time source with <code>gettimeofday</code></li>
   <li>[MacOSX] Bugfix: Added code to minimize the dreaded OpenGL application startup jump</li>
   <li>[MacOSX] Bugfix: Fixed broken implementation of <code>glfwSetMousePos</code> for windowed mode</li>
