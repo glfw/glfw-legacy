@@ -972,12 +972,12 @@ int _glfwPlatformOpenWindow( int width, int height,
     wc.cbClsExtra    = 0;                             // No extra class data
     wc.cbWndExtra    = 0;                             // No extra window data
     wc.hInstance     = _glfwLibrary.Instance;         // Set instance
-    //        modifying this to load a user-specified Icon, if available
     wc.hCursor       = LoadCursor( NULL, IDC_ARROW ); // Load arrow pointer
     wc.hbrBackground = NULL;                          // No background
     wc.lpszMenuName  = NULL;                          // No menu
     wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
 
+    // Load user-provided icon if available
     wc.hIcon = LoadIcon( _glfwLibrary.hInstance, "GLFW_ICON" ); // Load user provided icon
     if( !wc.hIcon )
     {
