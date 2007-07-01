@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2007-03-15 03:20:18 $
-# $Revision: 1.14 $
+# $Date: 2007-07-01 09:46:46 $
+# $Revision: 1.15 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -85,7 +85,7 @@ echo "Checking what kind of system this is... " 1>&6
 case "x`uname 2> /dev/null`" in
 xLinux)
   CFLAGS="$CFLAGS -Dlinux"
-  LDFLAGS="-shared -soname libglfw.so"
+  LDFLAGS="-shared"
   echo " Linux" 1>&6
   ;;
 xDarwin)
@@ -253,9 +253,12 @@ cat > conftest.c <<EOF
 int main() {pthread_t posixID; posixID=pthread_self(); return 0;}
 EOF
 
-# Try -lpthread (most systems)
+# Try -pthread (most systems)
+CFLAGS_THREAD="-pthread"
+CFLAGS_OLD="$CFLAGS"
+CFLAGS="$CFLAGS $CFLAGS_THREAD"
 LIBS_OLD="$LIBS"
-LIBS="$LIBS -lpthread"
+LIBS="$LIBS -pthread"
 if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_pthread=yes
@@ -264,9 +267,11 @@ else
   cat conftest.c >&5
 fi
 
-# Try -pthread (e.g. FreeBSD)
+# Try -lpthread 
 if [ "x$has_pthread" = xno ]; then
-  LIBS="$LIBS_OLD -pthread"
+  CFLAGS_THREAD="-D_REENTRANT"
+  CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
+  LIBS="$LIBS_OLD -lpthread"
   if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_pthread=yes
@@ -278,6 +283,7 @@ fi
 
 # Try -lsocket (e.g. QNX)
 if [ "x$has_pthread" = xno ]; then
+  CFLAGS="$CFLAGS_OLD" 
   LIBS="$LIBS_OLD -lsocket"
   if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
@@ -556,6 +562,8 @@ echo "CC           = $CC" >>$MKNAME
 echo "CFLAGS       = $CFLAGS" >>$MKNAME
 echo "CFLAGS_SPEED = $CFLAGS_SPEED" >>$MKNAME
 echo "LDFLAGS      = $LDFLAGS" >>$MKNAME
+echo "LFLAGS       = $LFLAGS" >>$MKNAME
+echo "LIBS         = $LIBS" >>$MKNAME
 echo " " >>$MKNAME
 cat './lib/x11/Makefile.x11.in' >>$MKNAME
 
@@ -594,6 +602,6 @@ Description: A portable framework for OpenGL development
 Version: 2.6.0
 URL: http://glfw.sourceforge.net/
 Libs: -L\${libdir} -lglfw $LFLAGS $LIBS -lm
-Cflags: -I\${includedir}
+Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF
 
