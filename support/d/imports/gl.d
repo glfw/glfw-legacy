@@ -888,7 +888,7 @@ void glClearColor( GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha )
 void glClear( GLbitfield mask );
 void glIndexMask( GLuint mask );
 void glColorMask( GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha );
-void glAlphaFunc( GLenum func, GLclampf ref );
+void glAlphaFunc( GLenum func, GLclampf reference );
 void glBlendFunc( GLenum sfactor, GLenum dfactor );
 void glLogicOp( GLenum opcode );
 void glCullFace( GLenum mode );
@@ -1148,7 +1148,7 @@ void glDrawPixels( GLsizei width, GLsizei height, GLenum format, GLenum type, GL
 void glCopyPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum type );
 
 /* Stenciling */
-void glStencilFunc( GLenum func, GLint ref, GLuint mask );
+void glStencilFunc( GLenum func, GLint reference, GLuint mask );
 void glStencilMask( GLuint mask );
 void glStencilOp( GLenum fail, GLenum zfail, GLenum zpass );
 void glClearStencil( GLint s );
@@ -3860,7 +3860,7 @@ typedef void (* PFNGLGETCOLORTABLEPARAMETERFVEXTPROC) (GLenum target, GLenum pna
 typedef void (* PFNGLINDEXMATERIALEXTPROC) (GLenum face, GLenum mode);
 
 /* GL_EXT_index_func */
-typedef void (* PFNGLINDEXFUNCEXTPROC) (GLenum func, GLclampf ref);
+typedef void (* PFNGLINDEXFUNCEXTPROC) (GLenum func, GLclampf reference);
 
 /* GL_EXT_compiled_vertex_array */
 typedef void (* PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
