@@ -21,10 +21,10 @@ default: libglfw.a libglfw.dylib
 # Compiler settings
 ##########################################################################
 CC           = gcc
-CFLAGS       = -c -I. -I.. -Wall -Os -fno-common
+CFLAGS       = -c -I. -I.. -Wall -O2 -fno-common -g
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common
+CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common -g
 
 
 ##########################################################################

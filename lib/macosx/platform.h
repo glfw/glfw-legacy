@@ -276,9 +276,12 @@ GLFWGLOBAL struct {
     } Timer;
 
     struct {
-	// Bundle for dynamically-loading extension function pointers
-	CFBundleRef OpenGLFramework;
+	    // Bundle for dynamically-loading extension function pointers
+    	CFBundleRef OpenGLFramework;
     } Libs;
+    
+    int Unbundled;
+    
 } _glfwLibrary;
 
 
@@ -315,7 +318,7 @@ pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 // Prototypes for platform specific internal functions
 //========================================================================
 
-int  _glfwChangeToResourcesDirectory( void );
+void  _glfwChangeToResourcesDirectory( void );
 
 int  _glfwInstallEventHandlers( void );
 

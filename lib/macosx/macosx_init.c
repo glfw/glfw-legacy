@@ -60,11 +60,31 @@ static void _glfwInitThreads( void )
     _glfwThrd.First.Next     = NULL;
 }
 
-int _glfwChangeToResourcesDirectory( void )
+#define NO_BUNDLE_MESSAGE \
+    "Working in unbundled mode.  " \
+    "You should build a .app wrapper for your Mac OS X applications.\n"
+
+#define UNBUNDLED \
+    fprintf(stderr, NO_BUNDLE_MESSAGE); \
+    _glfwLibrary.Unbundled = 1; \
+    return
+
+void _glfwChangeToResourcesDirectory( void )
 {
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
     char resourcesPath[ _GLFW_MAX_PATH_LENGTH ];
+    
+    CFStringRef lastComponent = CFURLCopyLastPathComponent( resourcesURL );
+    if ( kCFCompareEqualTo != CFStringCompare(
+            CFSTR( "Resources" ),
+            lastComponent,
+            0 ) )
+    {
+        UNBUNDLED;
+    }
+    
+    CFRelease( lastComponent );
 
     if( !CFURLGetFileSystemRepresentation( resourcesURL,
                                            TRUE,
@@ -72,17 +92,15 @@ int _glfwChangeToResourcesDirectory( void )
                                            _GLFW_MAX_PATH_LENGTH ) )
     {
         CFRelease( resourcesURL );
-        return GL_FALSE;
+        UNBUNDLED;
     }
 
     CFRelease( resourcesURL );
 
     if( chdir( resourcesPath ) != 0 )
     {
-        return GL_FALSE;
+        UNBUNDLED;
     }
-
-    return GL_TRUE;
 }
 
 int _glfwPlatformInit( void )
@@ -101,29 +119,37 @@ int _glfwPlatformInit( void )
     
     _glfwInput.Modifiers = 0;
     
+    _glfwLibrary.Unbundled = 0;
+    
     _glfwLibrary.Libs.OpenGLFramework
         = CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
     if( _glfwLibrary.Libs.OpenGLFramework == NULL )
     {
+        fprintf(
+            stderr,
+            "glfwInit failing because you aren't linked to OpenGL\n" );
         return GL_FALSE;
     }
 
     _glfwDesktopVideoMode = CGDisplayCurrentMode( kCGDirectMainDisplay );
     if( _glfwDesktopVideoMode == NULL )
     {
+        fprintf(
+            stderr,
+            "glfwInit failing because it kind find the desktop display mode\n" );
         return GL_FALSE;
     }
 
     _glfwInitThreads();
 
-    if( !_glfwChangeToResourcesDirectory() )
-    {
-        return GL_FALSE;
-    }
+    _glfwChangeToResourcesDirectory();
 
     if( !_glfwInstallEventHandlers() )
     {
-    	_glfwPlatformTerminate();
+    	fprintf(
+            stderr,
+            "glfwInit failing because it can't install event handlers\n" );
+        _glfwPlatformTerminate();
         return GL_FALSE;
     }
 

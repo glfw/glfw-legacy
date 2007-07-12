@@ -544,6 +544,7 @@ int _glfwInstallEventHandlers( void )
                                  NULL );
     if( error != noErr )
     {
+        fprintf( stderr, "glfwOpenWindow failing because it can't install mouse event handler\n" );
         return GL_FALSE;
     }
 
@@ -557,6 +558,7 @@ int _glfwInstallEventHandlers( void )
                                  NULL );
     if( error != noErr )
     {
+        fprintf( stderr, "glfwOpenWindow failing because it can't install command event handler\n" );
         return GL_FALSE;
     }
 
@@ -570,6 +572,7 @@ int _glfwInstallEventHandlers( void )
                                  NULL );
     if( error != noErr )
     {
+        fprintf( stderr, "glfwOpenWindow failing because it can't install key event handler\n" );
         return GL_FALSE;
     }
 
@@ -671,6 +674,7 @@ int  _glfwPlatformOpenWindow( int width,
                                                            AGLpixelFormatAttributes );
         if( pixelFormat == NULL )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't create a pixel format\n" );
             return GL_FALSE;
         }
 
@@ -698,28 +702,37 @@ int  _glfwPlatformOpenWindow( int width,
 
         if( _glfwWin.AGLContext == NULL )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't create an OpenGL context\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
-	if( GetCurrentProcess( &psn ) != noErr )
+        if (_glfwLibrary.Unbundled)
         {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
+            if( GetCurrentProcess( &psn ) != noErr )
+            {
+                fprintf( stderr, "glfwOpenWindow failing because it can't get its PSN\n" );
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
 
-	if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
-        {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
+    	    if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
+            {
+                fprintf( stderr, "glfwOpenWindow failing because it can't become a foreground application\n" );
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
+            
+            /* Keith Bauer 2007-07-12 - I don't believe this is desirable
+    	    if( SetFrontProcess( &psn ) != noErr )
+            {
+                fprintf( stderr, "glfwOpenWindow failing because it can't become the front process\n" );
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
+            */
         }
-
-	if( SetFrontProcess( &psn ) != noErr )
-        {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-
+	    
         // create window
         Rect windowContentBounds;
         windowContentBounds.left = 0;
@@ -746,6 +759,7 @@ int  _glfwPlatformOpenWindow( int width,
                                  &( _glfwWin.MacWindow ) );
         if( ( error != noErr ) || ( _glfwWin.MacWindow == NULL ) )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't create a window\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -760,6 +774,7 @@ int  _glfwPlatformOpenWindow( int width,
                                            NULL );
         if( error != noErr )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't install window event handlers\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -773,6 +788,7 @@ int  _glfwPlatformOpenWindow( int width,
         if( !aglSetDrawable( _glfwWin.AGLContext,
                              GetWindowPort( _glfwWin.MacWindow ) ) )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't draw to the window\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -780,6 +796,7 @@ int  _glfwPlatformOpenWindow( int width,
         // Make OpenGL context current
         if( !aglSetCurrentContext( _glfwWin.AGLContext ) )
         {
+            fprintf( stderr, "glfwOpenWindow failing because it can't make the OpenGL context current\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
