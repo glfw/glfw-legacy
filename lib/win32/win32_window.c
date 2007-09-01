@@ -231,6 +231,11 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
     int attribs[128];
     PIXELFORMATDESCRIPTOR pfd;
     
+    int accumredbits = hints->AccumRedBits;
+    int accumgreenbits = hints->AccumGreenBits;
+    int accumbluebits = hints->AccumBlueBits;
+    int accumalphabits = hints->AccumAlphaBits;
+
     _glfwSetWGLAttribute( WGL_DRAW_TO_WINDOW_ARB, GL_TRUE );
     _glfwSetWGLAttribute( WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB );
     _glfwSetWGLAttribute( WGL_SUPPORT_OPENGL_ARB, GL_TRUE );
@@ -244,11 +249,6 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
     _glfwSetWGLAttribute( WGL_STENCIL_BITS_ARB,   stencilbits );
     _glfwSetWGLAttribute( WGL_AUX_BUFFERS_ARB,    hints->AuxBuffers );
     
-    int accumredbits = hints->AccumRedBits;
-    int accumgreenbits = hints->AccumGreenBits;
-    int accumbluebits = hints->AccumBlueBits;
-    int accumalphabits = hints->AccumAlphaBits;
-
     if( accumredbits || accumgreenbits || accumbluebits || accumalphabits )
     {
         _glfwSetWGLAttribute( WGL_ACCUM_BITS_ARB, accumredbits +
