@@ -359,6 +359,10 @@ To request auxiliary buffers, set the GLFW\_AUX\_BUFFERS target to a value
 greater than zero. To request a stereo rendering capable window, set the
 GLFW\_STEREO target to GL\_TRUE.
 
+If you want to enable fullscreen antialiasing, set the GLFW\_FSAA\_SAMPLES
+target to a value greater than zero. If the windowing system is unable to
+fulfil the request, \GLFW\ will degrade gracefully and disable FSAA if necessary.
+
 The GLFW\_REFRESH\_RATE target should be used with caution, since it may
 result in suboptimal operation, or even a blank or damaged screen.
 
