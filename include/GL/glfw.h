@@ -170,7 +170,7 @@ extern "C" {
 
 #define GLFW_VERSION_MAJOR    2
 #define GLFW_VERSION_MINOR    6
-#define GLFW_VERSION_REVISION 0
+#define GLFW_VERSION_REVISION 1
 
 
 //========================================================================

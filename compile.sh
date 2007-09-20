@@ -2,8 +2,8 @@
 
 ##########################################################################
 # compile.sh - Unix/X11 configuration script
-# $Date: 2007-07-01 09:46:46 $
-# $Revision: 1.15 $
+# $Date: 2007-09-20 23:16:57 $
+# $Revision: 1.16 $
 #
 # This is a minimalist configuration script for GLFW, which is used to
 # determine the availability of certain features.
@@ -599,7 +599,7 @@ includedir=@PREFIX@/include
 
 Name: GLFW
 Description: A portable framework for OpenGL development
-Version: 2.6.0
+Version: 2.6.1
 URL: http://glfw.sourceforge.net/
 Libs: -L\${libdir} -lglfw $LFLAGS $LIBS -lm
 Cflags: -I\${includedir} $CFLAGS_THREAD 
