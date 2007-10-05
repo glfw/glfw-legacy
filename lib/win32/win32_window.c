@@ -604,7 +604,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         // Intercept system commands (forbid certain actions/events)
         case WM_SYSCOMMAND:
         {
-            switch( wParam )
+            switch( wParam & 0xfff0 )
             {
                 // Screensaver trying to start or monitor trying to enter
                 // powersave?
