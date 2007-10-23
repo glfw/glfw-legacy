@@ -888,13 +888,13 @@ static void _glfwInitWGLExtensions( void )
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
     {
-	// Try wglGetExtensionsStringARB
-	_glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
-	    wglGetProcAddress( "wglGetExtensionsStringARB" );
-	if( !_glfwWin.GetExtensionsStringARB )
-	{
-	    return;
-	}
+	    // Try wglGetExtensionsStringARB
+	    _glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
+	        wglGetProcAddress( "wglGetExtensionsStringARB" );
+	    if( !_glfwWin.GetExtensionsStringARB )
+	    {
+	        return;
+	    }
     }
 
     // Initialize OpenGL extension: WGL_EXT_swap_control
