@@ -883,7 +883,7 @@ static void _glfwInitWGLExtensions( void )
 {
     GLubyte *extensions;
     int     has_swap_control, has_pixel_format;
-
+    _glfwWin.GetExtensionsStringARB = NULL;
     _glfwWin.GetExtensionsStringEXT = (WGLGETEXTENSIONSSTRINGEXT_T)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
