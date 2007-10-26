@@ -707,6 +707,8 @@ int  _glfwPlatformOpenWindow( int width,
             return GL_FALSE;
         }
 
+#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
+
         if (_glfwLibrary.Unbundled)
         {
             if( GetCurrentProcess( &psn ) != noErr )
@@ -722,16 +724,9 @@ int  _glfwPlatformOpenWindow( int width,
                 _glfwPlatformCloseWindow();
                 return GL_FALSE;
             }
-            
-            /* Keith Bauer 2007-07-12 - I don't believe this is desirable
-    	    if( SetFrontProcess( &psn ) != noErr )
-            {
-                fprintf( stderr, "glfwOpenWindow failing because it can't become the front process\n" );
-                _glfwPlatformCloseWindow();
-                return GL_FALSE;
-            }
-            */
         }
+
+#endif /* higher than Jagwire */
 	    
         // create window
         Rect windowContentBounds;

@@ -43,7 +43,16 @@
 #include <sched.h>
 #include <pthread.h>
 #include <sys/sysctl.h>
+
 #include "../../include/GL/glfw.h"
+
+#if MACOSX_DEPLOYMENT_TARGET < MAC_OS_X_VERSION_10_3
+
+#ifndef kCGLNoError
+#define kCGLNoError 0
+#endif
+
+#endif
 
 
 //========================================================================
