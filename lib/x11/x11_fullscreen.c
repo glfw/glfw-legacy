@@ -166,7 +166,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 	{
 	    // Report width & height of best matching mode
 	    *width = modelist[ bestmode ]->hdisplay;
-	    *h = modelist[ bestmode ]->vdisplay;
+	    *height = modelist[ bestmode ]->vdisplay;
 	}
 
         // Free modelist
