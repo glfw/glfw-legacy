@@ -2,8 +2,8 @@
 
 REM **********************************************************************
 REM * compile.bat - MS Windows compilation batch file
-REM * $Date: 2007-03-15 03:20:18 $
-REM * $Revision: 1.3 $
+REM * $Date: 2007-10-26 14:34:42 $
+REM * $Revision: 1.4 $
 REM *
 REM * This is a "helper" script for the top-level Makefile for GLFW.
 REM * It was introduced to eliminate incompability issues between
@@ -88,6 +88,7 @@ IF EXIST .\lib\win32\image.o              del .\lib\win32\image.o
 IF EXIST .\lib\win32\init.o               del .\lib\win32\init.o
 IF EXIST .\lib\win32\input.o              del .\lib\win32\input.o
 IF EXIST .\lib\win32\joystick.o           del .\lib\win32\joystick.o
+IF EXIST .\lib\win32\stream.o             del .\lib\win32\stream.o
 IF EXIST .\lib\win32\tga.o                del .\lib\win32\tga.o
 IF EXIST .\lib\win32\thread.o             del .\lib\win32\thread.o
 IF EXIST .\lib\win32\time.o               del .\lib\win32\time.o
@@ -108,6 +109,7 @@ IF EXIST .\lib\win32\image_dll.o          del .\lib\win32\image_dll.o
 IF EXIST .\lib\win32\init_dll.o           del .\lib\win32\init_dll.o
 IF EXIST .\lib\win32\input_dll.o          del .\lib\win32\input_dll.o
 IF EXIST .\lib\win32\joystick_dll.o       del .\lib\win32\joystick_dll.o
+IF EXIST .\lib\win32\stream_dll.o         del .\lib\win32\stream_dll.o
 IF EXIST .\lib\win32\tga_dll.o            del .\lib\win32\tga_dll.o
 IF EXIST .\lib\win32\thread_dll.o         del .\lib\win32\thread_dll.o
 IF EXIST .\lib\win32\time_dll.o           del .\lib\win32\time_dll.o
@@ -129,6 +131,7 @@ IF EXIST .\lib\win32\image.obj            del .\lib\win32\image.obj
 IF EXIST .\lib\win32\init.obj             del .\lib\win32\init.obj
 IF EXIST .\lib\win32\input.obj            del .\lib\win32\input.obj
 IF EXIST .\lib\win32\joystick.obj         del .\lib\win32\joystick.obj
+IF EXIST .\lib\win32\stream.obj           del .\lib\win32\stream.obj
 IF EXIST .\lib\win32\tga.obj              del .\lib\win32\tga.obj
 IF EXIST .\lib\win32\thread.obj           del .\lib\win32\thread.obj
 IF EXIST .\lib\win32\time.obj             del .\lib\win32\time.obj
@@ -149,6 +152,7 @@ IF EXIST .\lib\win32\image_dll.obj        del .\lib\win32\image_dll.obj
 IF EXIST .\lib\win32\init_dll.obj         del .\lib\win32\init_dll.obj
 IF EXIST .\lib\win32\input_dll.obj        del .\lib\win32\input_dll.obj
 IF EXIST .\lib\win32\joystick_dll.obj     del .\lib\win32\joystick_dll.obj
+IF EXIST .\lib\win32\stream_dll.obj       del .\lib\win32\stream_dll.obj
 IF EXIST .\lib\win32\tga_dll.obj          del .\lib\win32\tga_dll.obj
 IF EXIST .\lib\win32\thread_dll.obj       del .\lib\win32\thread_dll.obj
 IF EXIST .\lib\win32\time_dll.obj         del .\lib\win32\time_dll.obj
