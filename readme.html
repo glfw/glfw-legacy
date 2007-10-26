@@ -228,7 +228,7 @@ etc. are located).</p>
 link library and the GLFW shared library, respectively.</p>
 
 <p>To install GLFW onto your system, run make as root with the
-<b>x11-install</b> build target. This will install the pkgconfig file, the
+<b>x11-install</b> make target. This will install the pkgconfig file, the
 static library and the header. By default, the files will be installed under
 <b>/usr/local</b>. If you wish to install to a different location, set the
 environment variable <b>PREFIX</b> appropriately when running make.</p>
@@ -238,6 +238,10 @@ should think twice before using it. GLFW is very small and shared library
 distribution on Unix outside of packaging systems is quite tricky. The GLFW
 license also allows static linking without requiring your to share your
 code.</p>
+
+<p>However, if you're a *nix distribution packager, use a language binding or
+for some other reason wish to install the shared library along with the rest,
+use the <b>x11-distro-install</b> make target.</p>
 
 
 <h3>3.4 Mac OS X</h3>
@@ -373,10 +377,12 @@ such as <b>opengl32</b> and <b>glu32</b>):</p>
 
 <p><br><h4>4.2.3 Unix static library</h4>
 
-<p>GLFW now supports <a href="http://pkgconfig.freedesktop.org/wiki/">pkgconfig</a>, and a libglfw.pc file is generated and
-installed when you install the library. For systems that do not provide
-pkgconfig, you should look in this file for the proper compile and link
-flags for your system, as determined by compile.sh at compile time.</p>
+<p>GLFW now supports
+<a href="http://pkgconfig.freedesktop.org/wiki/">pkgconfig</a>,
+and a libglfw.pc file is generated and installed when you install the library.
+For systems that do not provide pkgconfig, you should look in this file for the
+proper compile and link flags for your system, as determined by compile.sh at
+compile time.</p>
 
 <p>A typical compile and link command line may look like this (using GCC):</p>
 
@@ -431,6 +437,12 @@ version of GLFW.</p>
 <p><h3>v2.6.1</h3>
 <ul>
   <li>Added the proper DEF file to the Visual C++ DLL project file</li>
+  <li>Changed all comments in public header file to plain C style</li>
+  <li>[X11] Added <code>x11-distro-install</code> install target, inteded for packagers</li>
+  <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code</li>
+  <li>[Win32] Bugfix: Improper use of wParam for WM_SYSCOMMAND</li>
+  <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
+  <li>[Win32] Bugfix: Pointer for GetExtensionsStringARB was not initalised</li>
 </ul>
 
 <p><h3>v2.6</h3>

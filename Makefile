@@ -1,7 +1,7 @@
 ###########################################################################
 # GLFW top level Makefile
-# $Date: 2007-03-30 20:17:42 $
-# $Revision: 1.10 $
+# $Date: 2007-10-26 14:33:43 $
+# $Revision: 1.11 $
 #
 # This file works as a top level makefile for all supported systems and
 # compilers. It builds both the GLFW link library and the supplied example
@@ -40,6 +40,7 @@ default:
 	@echo "  $(MAKE) x11               for Unix/X11 (auto-configuring)"
 	@echo "  $(MAKE) x11-clean         to remove any compiled files for Unix/X11"
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
+	@echo "  $(MAKE) x11-distro-install for a distro to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) macosx-gcc        for GCC for Mac OS X (free Apple SDK)"
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
@@ -161,6 +162,10 @@ x11: $(MAKEFILES_X11)
 # X11 install
 x11-install: x11
 	cd lib/x11;  $(MAKE) -f Makefile.x11 install
+
+# X11 distro install
+x11-distro-install: x11
+	cd lib/x11;  $(MAKE) -f Makefile.x11 distro-install
 
 
 ###########################################################################
