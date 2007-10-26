@@ -287,7 +287,7 @@ it's a good introduction to the GLFW API.</p>
 A few rules for successfully designing GLFW-based programs are presented
 in the following sections.</p>
 
-<p><br><h3>4.1 Include &lt;GL/glfw.h&gt;</h3>
+<h3>4.1 Include &lt;GL/glfw.h&gt;</h3>
 
 <p>In your program, you should include &lt;GL/glfw.h&gt;. This include
 file defines all the necessary constants, types and prototypes that are
@@ -318,7 +318,7 @@ declarations).</p>
 <i>before</i> including &lt;GL/glfw.h&gt;.</p>
 
 
-<p><br><h3>4.2 Link with the right libraries</h3>
+<h3>4.2 Link with the right libraries</h3>
 
 <p><h4>4.2.1 Windows static library</h4>
 
@@ -344,7 +344,7 @@ want to add other libraries as well, such as <b>glu32</b>):</p>
 </table>
 
 
-<p><br><h4>4.2.2 Windows DLL</h4>
+<h4>4.2.2 Windows DLL</h4>
 
 <p>To compile a program that uses the DLL version of GLFW, you need to
 define the <b>GLFW_DLL</b> constant. This can either be done with a
@@ -375,7 +375,7 @@ such as <b>opengl32</b> and <b>glu32</b>):</p>
 
 
 
-<p><br><h4>4.2.3 Unix static library</h4>
+<h4>4.2.3 Unix static library</h4>
 
 <p>GLFW now supports
 <a href="http://pkgconfig.freedesktop.org/wiki/">pkgconfig</a>,
@@ -393,7 +393,7 @@ compile time.</p>
 
 
 
-<p><br><h4>4.2.5 Mac OS X static library</h4>
+<h4>4.2.5 Mac OS X static library</h4>
 
 <p>When compiling and linking a program under Mac OS X that uses GLFW, you
 must also link with the following frameworks: <b>Carbon.framework</b>,
@@ -439,10 +439,10 @@ version of GLFW.</p>
   <li>Added the proper DEF file to the Visual C++ DLL project file</li>
   <li>Changed all comments in public header file to plain C style</li>
   <li>[X11] Added <code>x11-distro-install</code> install target, inteded for packagers</li>
-  <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code</li>
-  <li>[Win32] Bugfix: Improper use of wParam for WM_SYSCOMMAND</li>
+  <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
+  <li>[Win32] Bugfix: Improper use of wParam for <code>WM_SYSCOMMAND</code></li>
   <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
-  <li>[Win32] Bugfix: Pointer for GetExtensionsStringARB was not initalised</li>
+  <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initalised</li>
   <li>[Win32] Bugfix: Updated API version in makefiles</li>
 </ul>
 
