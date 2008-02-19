@@ -266,6 +266,7 @@ should think twice before using it. GLFW is very small and very sutable for
 static linking. The GLFW license also allows static linking without requiring
 your to share your code.</p>
 
+<hr>
 
 <a name="sec4">
 <h2>4. Using GLFW</h2>
@@ -430,6 +431,7 @@ that even though your machine may have Unix-style GL libraries, they are for
 use with the X Window System, and will <i>not</i> work with the Mac OS X native
 version of GLFW.</p>
 
+<hr>
 
 <a name="sec5">
 <h2>5. Version history</h2>
@@ -440,6 +442,7 @@ version of GLFW.</p>
   <li>Changed all comments in public header file to plain C style</li>
   <li>[X11] Added <code>x11-distro-install</code> install target, inteded for packagers</li>
   <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
+  <li>[MacOSX] Bugfix: Key repeat events were ignored on 10.5 Leopard</li>
   <li>[Win32] Bugfix: Improper use of wParam for <code>WM_SYSCOMMAND</code></li>
   <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
   <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initalised</li>
@@ -829,7 +832,6 @@ version of GLFW.</p>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;masm</b></td><td>&nbsp;</td><td>MASM32 support</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;visualbasic</b></td><td>&nbsp;</td><td>Visual Basic support</td></tr>
 </table>
-<br><br>
 
 
 <p><hr>

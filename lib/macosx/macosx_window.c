@@ -143,6 +143,7 @@ EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
 {
     { kEventClassKeyboard, kEventRawKeyDown },
     { kEventClassKeyboard, kEventRawKeyUp },
+    { kEventClassKeyboard, kEventRawKeyRepeat },
     { kEventClassKeyboard, kEventRawKeyModifiersChanged }
 };
 
@@ -156,6 +157,7 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
 
     switch( GetEventKind( event ) )
     {
+        case kEventRawKeyRepeat:
         case kEventRawKeyDown:
         {
             if( GetEventParameter( event,
