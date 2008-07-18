@@ -711,11 +711,11 @@ int  _glfwPlatformOpenWindow( int width,
 
 #if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
 
-        if (_glfwLibrary.Unbundled)
+        if( _glfwLibrary.Unbundled )
         {
             if( GetCurrentProcess( &psn ) != noErr )
             {
-                fprintf( stderr, "glfwOpenWindow failing because it can't get its PSN\n" );
+                fprintf( stderr, "glfwOpenWindow failing because it can't get the PSN\n" );
                 _glfwPlatformCloseWindow();
                 return GL_FALSE;
             }

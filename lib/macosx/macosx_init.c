@@ -72,11 +72,16 @@ static void _glfwInitThreads( void )
 void _glfwChangeToResourcesDirectory( void )
 {
     CFBundleRef mainBundle = CFBundleGetMainBundle();
+    if( mainBundle == NULL )
+    {
+	UNBUNDLED;
+    }
+
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
     char resourcesPath[ _GLFW_MAX_PATH_LENGTH ];
     
     CFStringRef lastComponent = CFURLCopyLastPathComponent( resourcesURL );
-    if ( kCFCompareEqualTo != CFStringCompare(
+    if( kCFCompareEqualTo != CFStringCompare(
             CFSTR( "Resources" ),
             lastComponent,
             0 ) )
