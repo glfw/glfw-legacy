@@ -1119,6 +1119,13 @@ void _glfwPlatformCloseWindow( void )
         _glfwWin.CX = NULL;
     }
 
+    // Do we have a visual?
+    if( _glfwWin.VI )
+    {
+	XFree( _glfwWin.VI );
+	_glfwWin.VI = NULL;
+    }
+
     // Ungrab pointer and/or keyboard?
     if( _glfwWin.KeyboardGrabbed )
     {
@@ -1186,7 +1193,7 @@ void _glfwPlatformCloseWindow( void )
         _glfwWin.Saver.Changed = GL_FALSE;
     }
 
-    XSync( _glfwLibrary.Dpy, True );
+    //XSync( _glfwLibrary.Dpy, True );
 }
 
 
@@ -1290,7 +1297,9 @@ void _glfwPlatformIconifyWindow( void )
     // In fullscreen mode, we need to restore the desktop video mode
     if( _glfwWin.Fullscreen )
     {
-#if defined( _GLFW_HAS_XF86VIDMODE )
+#if defined( _GLFW_HAS_XRANDR )
+	// TODO: The code.
+#elif defined( _GLFW_HAS_XF86VIDMODE )
         if( _glfwLibrary.XF86VidMode.Available )
         {
             // Unlock mode switch
@@ -1521,7 +1530,7 @@ void _glfwPlatformPollEvents( void )
     // or without XSync, but when the GL window is rendered over a slow
     // network I have noticed bad event syncronisation problems when XSync
     // is not used, so I decided to use it.
-    XSync( _glfwLibrary.Dpy, False );
+    //XSync( _glfwLibrary.Dpy, False );
 
     // Empty the window event queue
     while( XPending( _glfwLibrary.Dpy ) )
@@ -1551,7 +1560,7 @@ void _glfwPlatformPollEvents( void )
             // does not wander off...
             _glfwPlatformSetMouseCursorPos( _glfwWin.Width/2,
                                             _glfwWin.Height/2 );
-            XSync( _glfwLibrary.Dpy, False );
+            //XSync( _glfwLibrary.Dpy, False );
         }
     }
 

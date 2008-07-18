@@ -154,7 +154,7 @@ void _glfwInitJoysticks( void )
                     continue;
                 }
                 _glfwJoy[ joy_count ].Button =
-                    (char *) malloc( sizeof(char) *
+                    (unsigned char *) malloc( sizeof(char) *
                                      _glfwJoy[ joy_count ].NumButtons );
                 if( _glfwJoy[ joy_count ].Button == NULL )
                 {
