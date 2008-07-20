@@ -98,17 +98,6 @@ typedef struct {
 GLFWGLOBAL _GLFWhints _glfwWinHints;
 
 
-//------------------------------------------------------------------------
-// Abstracted data stream (for image I/O)
-//------------------------------------------------------------------------
-typedef struct {
-    FILE*     File;
-    void*     Data;
-    long      Position;
-    long      Size;
-} _GLFWstream;
-
-
 //========================================================================
 // Prototypes for platform specific implementation functions
 //========================================================================
@@ -133,22 +122,6 @@ void * _glfwPlatformGetProcAddress( const char *procname );
 int _glfwPlatformGetJoystickParam( int joy, int param );
 int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes );
 int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons, int numbuttons );
-
-// Threads
-GLFWthread _glfwPlatformCreateThread( GLFWthreadfun fun, void *arg );
-void       _glfwPlatformDestroyThread( GLFWthread ID );
-int        _glfwPlatformWaitThread( GLFWthread ID, int waitmode );
-GLFWthread _glfwPlatformGetThreadID( void );
-GLFWmutex  _glfwPlatformCreateMutex( void );
-void       _glfwPlatformDestroyMutex( GLFWmutex mutex );
-void       _glfwPlatformLockMutex( GLFWmutex mutex );
-void       _glfwPlatformUnlockMutex( GLFWmutex mutex );
-GLFWcond   _glfwPlatformCreateCond( void );
-void       _glfwPlatformDestroyCond( GLFWcond cond );
-void       _glfwPlatformWaitCond( GLFWcond cond, GLFWmutex mutex, double timeout );
-void       _glfwPlatformSignalCond( GLFWcond cond );
-void       _glfwPlatformBroadcastCond( GLFWcond cond );
-int        _glfwPlatformGetNumberOfProcessors( void );
 
 // Time
 double _glfwPlatformGetTime( void );
@@ -187,24 +160,8 @@ void _glfwInputKey( int key, int action );
 void _glfwInputChar( int character, int action );
 void _glfwInputMouseClick( int button, int action );
 
-// Threads (thread.c)
-_GLFWthread * _glfwGetThreadPointer( int ID );
-void _glfwAppendThread( _GLFWthread * t );
-void _glfwRemoveThread( _GLFWthread * t );
-
 // OpenGL extensions (glext.c)
 int _glfwStringInExtensionString( const char *string, const GLubyte *extensions );
-
-// Abstracted data streams (stream.c)
-int  _glfwOpenFileStream( _GLFWstream *stream, const char *name, const char *mode );
-int  _glfwOpenBufferStream( _GLFWstream *stream, void *data, long size );
-long _glfwReadStream( _GLFWstream *stream, void *data, long size );
-long _glfwTellStream( _GLFWstream *stream );
-int  _glfwSeekStream( _GLFWstream *stream, long offset, int whence );
-void _glfwCloseStream( _GLFWstream *stream );
-
-// Targa image I/O (tga.c)
-int  _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags );
 
 
 #endif // _internal_h_

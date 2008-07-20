@@ -1,6 +1,6 @@
 
 # Default: Build all tests
-all: triangle listmodes mthello pong3d mtbench particles splitview \
+all: triangle listmodes pong3d particles splitview \
      mipmaps keytest gears boing wave
 
 
@@ -12,17 +12,9 @@ triangle: triangle.c
 listmodes: listmodes.c
 	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o $@
 
-# Rule for mthello
-mthello: mthello.c
-	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o $@
-
 # Rule for pong3d
 pong3d: pong3d.c
 	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o $@
-
-# Rule for mtbench
-mtbench: mtbench.c
-	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o $@
 
 # Rule for particles
 particles: particles.c

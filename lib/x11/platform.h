@@ -46,12 +46,6 @@
 #include <GL/glx.h>
 #include "../../include/GL/glfw.h"
 
-// Do we have pthread support?
-#ifdef _GLFW_HAS_PTHREAD
- #include <pthread.h>
- #include <sched.h>
-#endif
-
 // With XFree86, we can use the XF86VidMode extension
 #if defined( _GLFW_HAS_XF86VIDMODE )
  #include <X11/extensions/xf86vmode.h>
@@ -59,58 +53,6 @@
 
 #if defined( _GLFW_HAS_XRANDR )
  #include <X11/extensions/Xrandr.h>
-#endif
-
-// Do we have support for dlopen/dlsym?
-#if defined( _GLFW_HAS_DLOPEN )
- #include <dlfcn.h>
-#endif
-
-// We support two different ways for getting the number of processors in
-// the system: sysconf (POSIX) and sysctl (BSD?)
-#if defined( _GLFW_HAS_SYSCONF )
-
- // Use a single constant for querying number of online processors using
- // the sysconf function (e.g. SGI defines _SC_NPROC_ONLN instead of
- // _SC_NPROCESSORS_ONLN)
- #ifndef _SC_NPROCESSORS_ONLN
-  #ifdef  _SC_NPROC_ONLN
-   #define _SC_NPROCESSORS_ONLN _SC_NPROC_ONLN
-  #else
-   #error POSIX constant _SC_NPROCESSORS_ONLN not defined!
-  #endif
- #endif
-
- // Macro for querying the number of processors
- #define _glfw_numprocessors(n) n=(int)sysconf(_SC_NPROCESSORS_ONLN)
-
-#elif defined( _GLFW_HAS_SYSCTL )
-
- #include <sys/types.h>
- #include <sys/sysctl.h>
-
- // Macro for querying the number of processors
- #define _glfw_numprocessors(n) { \
-    int mib[2], ncpu; \
-    size_t len = 1; \
-    mib[0] = CTL_HW; \
-    mib[1] = HW_NCPU; \
-    n      = 1; \
-    if( sysctl( mib, 2, &ncpu, &len, NULL, 0 ) != -1 ) \
-    { \
-        if( len > 0 ) \
-        { \
-            n = ncpu; \
-        } \
-    } \
- }
-
-#else
-
- // If neither sysconf nor sysctl is supported, assume single processor
- // system
- #define _glfw_numprocessors(n) n=1
-
 #endif
 
 void (*glXGetProcAddress(const GLubyte *procName))();
@@ -302,61 +244,7 @@ GLFWGLOBAL struct {
 	long long    t0;
     } Timer;
 
-#if defined(_GLFW_DLOPEN_LIBGL)
-    struct {
-	void        *libGL;          // dlopen handle for libGL.so
-    } Libs;
-#endif
 } _glfwLibrary;
-
-
-//------------------------------------------------------------------------
-// Thread record (one for each thread)
-//------------------------------------------------------------------------
-typedef struct _GLFWthread_struct _GLFWthread;
-
-struct _GLFWthread_struct {
-
-// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
-    // Pointer to previous and next threads in linked list
-    _GLFWthread   *Previous, *Next;
-
-    // GLFW user side thread information
-    GLFWthread    ID;
-    GLFWthreadfun Function;
-
-// ========= PLATFORM SPECIFIC PART ======================================
-
-    // System side thread information
-#ifdef _GLFW_HAS_PTHREAD
-    pthread_t     PosixID;
-#endif
-
-};
-
-
-//------------------------------------------------------------------------
-// General thread information
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-
-// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
-    // Next thread ID to use (increments for every created thread)
-    GLFWthread       NextID;
-
-    // First thread in linked list (always the main thread)
-    _GLFWthread      First;
-
-// ========= PLATFORM SPECIFIC PART ======================================
-
-    // Critical section lock
-#ifdef _GLFW_HAS_PTHREAD
-    pthread_mutex_t  CriticalSection;
-#endif
-
-} _glfwThrd;
 
 
 //------------------------------------------------------------------------
@@ -370,23 +258,6 @@ GLFWGLOBAL struct {
     float         *Axis;
     unsigned char *Button;
 } _glfwJoy[ GLFW_JOYSTICK_LAST + 1 ];
-
-
-//========================================================================
-// Macros for encapsulating critical code sections (i.e. making parts
-// of GLFW thread safe)
-//========================================================================
-
-// Thread list management
-#ifdef _GLFW_HAS_PTHREAD
- #define ENTER_THREAD_CRITICAL_SECTION \
-         pthread_mutex_lock( &_glfwThrd.CriticalSection );
- #define LEAVE_THREAD_CRITICAL_SECTION \
-         pthread_mutex_unlock( &_glfwThrd.CriticalSection );
-#else
- #define ENTER_THREAD_CRITICAL_SECTION
- #define LEAVE_THREAD_CRITICAL_SECTION
-#endif
 
 
 //========================================================================

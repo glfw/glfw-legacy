@@ -334,23 +334,10 @@ extern "C" {
 #define GLFW_KEY_REPEAT           0x00030005
 #define GLFW_AUTO_POLL_EVENTS     0x00030006
 
-/* glfwWaitThread wait modes */
-#define GLFW_WAIT                 0x00040001
-#define GLFW_NOWAIT               0x00040002
-
 /* glfwGetJoystickParam tokens */
 #define GLFW_PRESENT              0x00050001
 #define GLFW_AXES                 0x00050002
 #define GLFW_BUTTONS              0x00050003
-
-/* glfwReadImage/glfwLoadTexture2D flags */
-#define GLFW_NO_RESCALE_BIT       0x00000001 /* Only for glfwReadImage */
-#define GLFW_ORIGIN_UL_BIT        0x00000002
-#define GLFW_BUILD_MIPMAPS_BIT    0x00000004 /* Only for glfwLoadTexture2D */
-#define GLFW_ALPHA_MAP_BIT        0x00000008
-
-/* Time spans longer than this (seconds) are considered to be infinity */
-#define GLFW_INFINITY 100000.0
 
 
 /*************************************************************************
@@ -363,23 +350,6 @@ typedef struct {
     int RedBits, BlueBits, GreenBits;
 } GLFWvidmode;
 
-/* Image/texture information */
-typedef struct {
-    int Width, Height;
-    int Format;
-    int BytesPerPixel;
-    unsigned char *Data;
-} GLFWimage;
-
-/* Thread ID */
-typedef int GLFWthread;
-
-/* Mutex object */
-typedef void * GLFWmutex;
-
-/* Condition variable object */
-typedef void * GLFWcond;
-
 /* Function pointer types */
 typedef void (GLFWCALL * GLFWwindowsizefun)(int,int);
 typedef int  (GLFWCALL * GLFWwindowclosefun)(void);
@@ -389,7 +359,6 @@ typedef void (GLFWCALL * GLFWmouseposfun)(int,int);
 typedef void (GLFWCALL * GLFWmousewheelfun)(int);
 typedef void (GLFWCALL * GLFWkeyfun)(int,int);
 typedef void (GLFWCALL * GLFWcharfun)(int,int);
-typedef void (GLFWCALL * GLFWthreadfun)(void *);
 
 
 /*************************************************************************
@@ -445,40 +414,15 @@ GLFWAPI int GLFWAPIENTRY glfwGetJoystickButtons( int joy, unsigned char *buttons
 /* Time */
 GLFWAPI double GLFWAPIENTRY glfwGetTime( void );
 GLFWAPI void   GLFWAPIENTRY glfwSetTime( double time );
-GLFWAPI void   GLFWAPIENTRY glfwSleep( double time );
 
 /* Extension support */
 GLFWAPI int   GLFWAPIENTRY glfwExtensionSupported( const char *extension );
 GLFWAPI void* GLFWAPIENTRY glfwGetProcAddress( const char *procname );
 GLFWAPI void  GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor, int *rev );
 
-/* Threading support */
-GLFWAPI GLFWthread GLFWAPIENTRY glfwCreateThread( GLFWthreadfun fun, void *arg );
-GLFWAPI void GLFWAPIENTRY glfwDestroyThread( GLFWthread ID );
-GLFWAPI int  GLFWAPIENTRY glfwWaitThread( GLFWthread ID, int waitmode );
-GLFWAPI GLFWthread GLFWAPIENTRY glfwGetThreadID( void );
-GLFWAPI GLFWmutex GLFWAPIENTRY glfwCreateMutex( void );
-GLFWAPI void GLFWAPIENTRY glfwDestroyMutex( GLFWmutex mutex );
-GLFWAPI void GLFWAPIENTRY glfwLockMutex( GLFWmutex mutex );
-GLFWAPI void GLFWAPIENTRY glfwUnlockMutex( GLFWmutex mutex );
-GLFWAPI GLFWcond GLFWAPIENTRY glfwCreateCond( void );
-GLFWAPI void GLFWAPIENTRY glfwDestroyCond( GLFWcond cond );
-GLFWAPI void GLFWAPIENTRY glfwWaitCond( GLFWcond cond, GLFWmutex mutex, double timeout );
-GLFWAPI void GLFWAPIENTRY glfwSignalCond( GLFWcond cond );
-GLFWAPI void GLFWAPIENTRY glfwBroadcastCond( GLFWcond cond );
-GLFWAPI int  GLFWAPIENTRY glfwGetNumberOfProcessors( void );
-
 /* Enable/disable functions */
 GLFWAPI void GLFWAPIENTRY glfwEnable( int token );
 GLFWAPI void GLFWAPIENTRY glfwDisable( int token );
-
-/* Image/texture I/O support */
-GLFWAPI int  GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img, int flags );
-GLFWAPI int  GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags );
-GLFWAPI void GLFWAPIENTRY glfwFreeImage( GLFWimage *img );
-GLFWAPI int  GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags );
-GLFWAPI int  GLFWAPIENTRY glfwLoadMemoryTexture2D( const void *data, long size, int flags );
-GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags );
 
 
 #ifdef __cplusplus
