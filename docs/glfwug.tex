@@ -1033,30 +1033,6 @@ be set to.
 
 
 %-------------------------------------------------------------------------
-\section{Sleep}
-Sometimes it can be useful to put a program to sleep for a short time. It
-can be used to reduce the CPU load in various situations. For this
-purpose, there is a function called \textbf{glfwSleep}, which has the
-following C syntax:
-
-\begin{lstlisting}
-void glfwSleep( double time )
-\end{lstlisting}
-
-The function will put the calling thread to sleep for the time specified
-with the argument \textit{time}, which has the unit seconds. When
-\textbf{glfwSleep} is called, the calling thread will be put in waiting
-state, and thus will not consume any CPU time.
-
-Note that there is generally a minimum sleep time that will be recognized
-by the operating system, which is usually coupled to the task-switching
-interval. This minimum time is often in the range $5~-~20 ms$, and it is
-not possible to make a thread sleep for less than that time. Specifying a
-very small sleep time may result in \textbf{glfwSleep} returning
-immediately, without putting the thread to sleep.
-
-
-%-------------------------------------------------------------------------
 % OpenGL Extension Support
 %-------------------------------------------------------------------------
 \chapter{OpenGL Extension Support}
