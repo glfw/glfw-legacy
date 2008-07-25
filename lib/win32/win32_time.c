@@ -50,7 +50,7 @@ void _glfwInitTimer(void)
         _glfwLibrary.Timer.HasPerformanceCounter = GL_TRUE;
 
         // Counter resolution is 1 / counter frequency
-        _glfwLibrary.Timer.Resolution = 1.0 / (double)freq;
+        _glfwLibrary.Timer.Resolution = 1.0 / (double) freq;
 
         // Set start time for timer
         QueryPerformanceCounter((LARGE_INTEGER*) &_glfwLibrary.Timer.t0_64);
@@ -108,9 +108,9 @@ void _glfwPlatformSetTime(double t)
     if (_glfwLibrary.Timer.HasPerformanceCounter)
     {
         QueryPerformanceCounter((LARGE_INTEGER*) &t_64);
-        _glfwLibrary.Timer.t0_64 = t_64 - (__int64)(t/_glfwLibrary.Timer.Resolution);
+        _glfwLibrary.Timer.t0_64 = t_64 - (__int64) (t/_glfwLibrary.Timer.Resolution);
     }
     else
-        _glfwLibrary.Timer.t0_32 = _glfw_timeGetTime() - (int)(t*1000.0);
+        _glfwLibrary.Timer.t0_32 = _glfw_timeGetTime() - (int) (t*1000.0);
 }
 
