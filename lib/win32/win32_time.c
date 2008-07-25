@@ -116,31 +116,3 @@ void _glfwPlatformSetTime( double t )
     }
 }
 
-
-//========================================================================
-// Put a thread to sleep for a specified amount of time
-//========================================================================
-
-void _glfwPlatformSleep( double time )
-{
-    DWORD t;
-
-    if( time == 0.0 )
-    {
-	t = 0;
-    }
-    else if( time < 0.001 )
-    {
-        t = 1;
-    }
-    else if( time > 2147483647.0 )
-    {
-        t = 2147483647;
-    }
-    else
-    {
-        t = (DWORD)(time*1000.0 + 0.5);
-    }
-    Sleep( t );
-}
-

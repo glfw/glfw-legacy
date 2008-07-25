@@ -66,18 +66,3 @@ GLFWAPI void GLFWAPIENTRY glfwSetTime( double time )
     _glfwPlatformSetTime( time );
 }
 
-
-//========================================================================
-// glfwSleep() - Put a thread to sleep for a specified amount of time
-//========================================================================
-
-GLFWAPI void GLFWAPIENTRY glfwSleep( double time )
-{
-    // Is GLFW initialized?
-    if( !_glfwInitialized )
-    {
-        return;
-    }
-
-    _glfwPlatformSleep( time );
-}
