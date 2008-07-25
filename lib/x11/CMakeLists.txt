@@ -16,7 +16,6 @@ set(libglfw_SOURCES
     x11_init.c 
     x11_joystick.c
     x11_keysym2unicode.c
-    x11_thread.c 
     x11_time.c 
     x11_window.c)
 
@@ -29,3 +28,4 @@ set_target_properties(libglfwStatic libglfwShared PROPERTIES
 )
 
 install(TARGETS libglfwStatic libglfwShared DESTINATION lib)
+

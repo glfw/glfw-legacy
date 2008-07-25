@@ -66,6 +66,8 @@ if (UNIX AND NOT APPLE)
     CHECK_FUNCTION_EXISTS(glXGetProcAddress    _GLFW_HAS_GLXGETPROCADDRESS)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressARB _GLFW_HAS_GLXGETPROCADDRESSARB)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressEXT _GLFW_HAS_GLXGETPROCADDRESSEXT)
+
+    add_subdirectory(lib/x11)
 endif(UNIX AND NOT APPLE)
 
 # Deal with MacOSX Specifics 
@@ -80,8 +82,8 @@ if (UNIX AND APPLE)
 endif(UNIX AND APPLE)
 
 add_subdirectory(examples)
-add_subdirectory(docs/doxygen)
-add_subdirectory(docs/manuals)
+#add_subdirectory(docs/doxygen)
+#add_subdirectory(docs/manuals)
 
 
 #add_subdirectory(contrib) # modules is the best than contrib
