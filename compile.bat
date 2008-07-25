@@ -84,13 +84,9 @@ REM Library object files
 IF EXIST .\lib\win32\enable.o             del .\lib\win32\enable.o
 IF EXIST .\lib\win32\fullscreen.o         del .\lib\win32\fullscreen.o
 IF EXIST .\lib\win32\glext.o              del .\lib\win32\glext.o
-IF EXIST .\lib\win32\image.o              del .\lib\win32\image.o
 IF EXIST .\lib\win32\init.o               del .\lib\win32\init.o
 IF EXIST .\lib\win32\input.o              del .\lib\win32\input.o
 IF EXIST .\lib\win32\joystick.o           del .\lib\win32\joystick.o
-IF EXIST .\lib\win32\stream.o             del .\lib\win32\stream.o
-IF EXIST .\lib\win32\tga.o                del .\lib\win32\tga.o
-IF EXIST .\lib\win32\thread.o             del .\lib\win32\thread.o
 IF EXIST .\lib\win32\time.o               del .\lib\win32\time.o
 IF EXIST .\lib\win32\window.o             del .\lib\win32\window.o
 IF EXIST .\lib\win32\win32_enable.o       del .\lib\win32\win32_enable.o
@@ -98,20 +94,15 @@ IF EXIST .\lib\win32\win32_fullscreen.o   del .\lib\win32\win32_fullscreen.o
 IF EXIST .\lib\win32\win32_glext.o        del .\lib\win32\win32_glext.o
 IF EXIST .\lib\win32\win32_init.o         del .\lib\win32\win32_init.o
 IF EXIST .\lib\win32\win32_joystick.o     del .\lib\win32\win32_joystick.o
-IF EXIST .\lib\win32\win32_thread.o       del .\lib\win32\win32_thread.o
 IF EXIST .\lib\win32\win32_time.o         del .\lib\win32\win32_time.o
 IF EXIST .\lib\win32\win32_window.o       del .\lib\win32\win32_window.o
 
 IF EXIST .\lib\win32\enable_dll.o         del .\lib\win32\enable_dll.o
 IF EXIST .\lib\win32\fullscreen_dll.o     del .\lib\win32\fullscreen_dll.o
 IF EXIST .\lib\win32\glext_dll.o          del .\lib\win32\glext_dll.o
-IF EXIST .\lib\win32\image_dll.o          del .\lib\win32\image_dll.o
 IF EXIST .\lib\win32\init_dll.o           del .\lib\win32\init_dll.o
 IF EXIST .\lib\win32\input_dll.o          del .\lib\win32\input_dll.o
 IF EXIST .\lib\win32\joystick_dll.o       del .\lib\win32\joystick_dll.o
-IF EXIST .\lib\win32\stream_dll.o         del .\lib\win32\stream_dll.o
-IF EXIST .\lib\win32\tga_dll.o            del .\lib\win32\tga_dll.o
-IF EXIST .\lib\win32\thread_dll.o         del .\lib\win32\thread_dll.o
 IF EXIST .\lib\win32\time_dll.o           del .\lib\win32\time_dll.o
 IF EXIST .\lib\win32\window_dll.o         del .\lib\win32\window_dll.o
 IF EXIST .\lib\win32\win32_dllmain_dll.o    del .\lib\win32\win32_dllmain_dll.o
@@ -120,20 +111,15 @@ IF EXIST .\lib\win32\win32_fullscreen_dll.o del .\lib\win32\win32_fullscreen_dll
 IF EXIST .\lib\win32\win32_glext_dll.o      del .\lib\win32\win32_glext_dll.o
 IF EXIST .\lib\win32\win32_init_dll.o       del .\lib\win32\win32_init_dll.o
 IF EXIST .\lib\win32\win32_joystick_dll.o   del .\lib\win32\win32_joystick_dll.o
-IF EXIST .\lib\win32\win32_thread_dll.o     del .\lib\win32\win32_thread_dll.o
 IF EXIST .\lib\win32\win32_time_dll.o       del .\lib\win32\win32_time_dll.o
 IF EXIST .\lib\win32\win32_window_dll.o     del .\lib\win32\win32_window_dll.o
 
 IF EXIST .\lib\win32\enable.obj           del .\lib\win32\enable.obj
 IF EXIST .\lib\win32\fullscreen.obj       del .\lib\win32\fullscreen.obj
 IF EXIST .\lib\win32\glext.obj            del .\lib\win32\glext.obj
-IF EXIST .\lib\win32\image.obj            del .\lib\win32\image.obj
 IF EXIST .\lib\win32\init.obj             del .\lib\win32\init.obj
 IF EXIST .\lib\win32\input.obj            del .\lib\win32\input.obj
 IF EXIST .\lib\win32\joystick.obj         del .\lib\win32\joystick.obj
-IF EXIST .\lib\win32\stream.obj           del .\lib\win32\stream.obj
-IF EXIST .\lib\win32\tga.obj              del .\lib\win32\tga.obj
-IF EXIST .\lib\win32\thread.obj           del .\lib\win32\thread.obj
 IF EXIST .\lib\win32\time.obj             del .\lib\win32\time.obj
 IF EXIST .\lib\win32\window.obj           del .\lib\win32\window.obj
 IF EXIST .\lib\win32\win32_enable.obj     del .\lib\win32\win32_enable.obj
@@ -141,20 +127,15 @@ IF EXIST .\lib\win32\win32_fullscreen.obj del .\lib\win32\win32_fullscreen.obj
 IF EXIST .\lib\win32\win32_glext.obj      del .\lib\win32\win32_glext.obj
 IF EXIST .\lib\win32\win32_init.obj       del .\lib\win32\win32_init.obj
 IF EXIST .\lib\win32\win32_joystick.obj   del .\lib\win32\win32_joystick.obj
-IF EXIST .\lib\win32\win32_thread.obj     del .\lib\win32\win32_thread.obj
 IF EXIST .\lib\win32\win32_time.obj       del .\lib\win32\win32_time.obj
 IF EXIST .\lib\win32\win32_window.obj     del .\lib\win32\win32_window.obj
 
 IF EXIST .\lib\win32\enable_dll.obj       del .\lib\win32\enable_dll.obj
 IF EXIST .\lib\win32\fullscreen_dll.obj   del .\lib\win32\fullscreen_dll.obj
 IF EXIST .\lib\win32\glext_dll.obj        del .\lib\win32\glext_dll.obj
-IF EXIST .\lib\win32\image_dll.obj        del .\lib\win32\image_dll.obj
 IF EXIST .\lib\win32\init_dll.obj         del .\lib\win32\init_dll.obj
 IF EXIST .\lib\win32\input_dll.obj        del .\lib\win32\input_dll.obj
 IF EXIST .\lib\win32\joystick_dll.obj     del .\lib\win32\joystick_dll.obj
-IF EXIST .\lib\win32\stream_dll.obj       del .\lib\win32\stream_dll.obj
-IF EXIST .\lib\win32\tga_dll.obj          del .\lib\win32\tga_dll.obj
-IF EXIST .\lib\win32\thread_dll.obj       del .\lib\win32\thread_dll.obj
 IF EXIST .\lib\win32\time_dll.obj         del .\lib\win32\time_dll.obj
 IF EXIST .\lib\win32\window_dll.obj       del .\lib\win32\window_dll.obj
 IF EXIST .\lib\win32\win32_dllmain_dll.obj    del .\lib\win32\win32_dllmain_dll.obj
@@ -163,7 +144,6 @@ IF EXIST .\lib\win32\win32_fullscreen_dll.obj del .\lib\win32\win32_fullscreen_d
 IF EXIST .\lib\win32\win32_glext_dll.obj      del .\lib\win32\win32_glext_dll.obj
 IF EXIST .\lib\win32\win32_init_dll.obj       del .\lib\win32\win32_init_dll.obj
 IF EXIST .\lib\win32\win32_joystick_dll.obj   del .\lib\win32\win32_joystick_dll.obj
-IF EXIST .\lib\win32\win32_thread_dll.obj     del .\lib\win32\win32_thread_dll.obj
 IF EXIST .\lib\win32\win32_time_dll.obj       del .\lib\win32\win32_time_dll.obj
 IF EXIST .\lib\win32\win32_window_dll.obj     del .\lib\win32\win32_window_dll.obj
 
@@ -197,8 +177,6 @@ IF EXIST .\examples\gears.obj             del .\examples\gears.obj
 IF EXIST .\examples\keytest.obj           del .\examples\keytest.obj
 IF EXIST .\examples\listmodes.obj         del .\examples\listmodes.obj
 IF EXIST .\examples\mipmaps.obj           del .\examples\mipmaps.obj
-IF EXIST .\examples\mtbench.obj           del .\examples\mtbench.obj
-IF EXIST .\examples\mthello.obj           del .\examples\mthello.obj
 IF EXIST .\examples\particles.obj         del .\examples\particles.obj
 IF EXIST .\examples\pong3d.obj            del .\examples\pong3d.obj
 IF EXIST .\examples\splitview.obj         del .\examples\splitview.obj
@@ -210,8 +188,6 @@ IF EXIST .\examples\gears.tds             del .\examples\gears.tds
 IF EXIST .\examples\keytest.tds           del .\examples\keytest.tds
 IF EXIST .\examples\listmodes.tds         del .\examples\listmodes.tds
 IF EXIST .\examples\mipmaps.tds           del .\examples\mipmaps.tds
-IF EXIST .\examples\mtbench.tds           del .\examples\mtbench.tds
-IF EXIST .\examples\mthello.tds           del .\examples\mthello.tds
 IF EXIST .\examples\particles.tds         del .\examples\particles.tds
 IF EXIST .\examples\pong3d.tds            del .\examples\pong3d.tds
 IF EXIST .\examples\splitview.tds         del .\examples\splitview.tds
