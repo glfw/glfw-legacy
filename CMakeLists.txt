@@ -15,7 +15,6 @@ include(CheckSymbolExists)
 
 # -- Stuff common to all platform 
 find_package(OpenGL REQUIRED)
-find_package(Threads REQUIRED)
 
 set(common_SOURCES 
     ${CMAKE_SOURCE_DIR}/lib/enable.c 
@@ -24,7 +23,6 @@ set(common_SOURCES
     ${CMAKE_SOURCE_DIR}/lib/init.c 
     ${CMAKE_SOURCE_DIR}/lib/input.c 
     ${CMAKE_SOURCE_DIR}/lib/joystick.c 
-    ${CMAKE_SOURCE_DIR}/lib/thread.c
     ${CMAKE_SOURCE_DIR}/lib/time.c
     ${CMAKE_SOURCE_DIR}/lib/window.c
 )
@@ -32,8 +30,6 @@ set(common_SOURCES
 #  Deal with Win32 Specific stuffs 
 if (WIN32)
     message(STATUS "Building GLFW for Win32 systems") 
-    set(THREAD_CFLAGS "")
-    set(THREAD_LIBS "${CMAKE_THREAD_LIBS_INIT}")
     add_subdirectory(lib/win32)
 endif (WIN32)
 
@@ -70,51 +66,6 @@ if (UNIX AND NOT APPLE)
     CHECK_FUNCTION_EXISTS(glXGetProcAddress    _GLFW_HAS_GLXGETPROCADDRESS)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressARB _GLFW_HAS_GLXGETPROCADDRESSARB)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressEXT _GLFW_HAS_GLXGETPROCADDRESSEXT)
-
-    # Thread related stuff 
-    if (CMAKE_USE_PTHREADS_INIT)
-        set(_GLFW_HAS_PTHREAD 1)
-        set(_REENTRANT 1) 
-        list(APPEND GLFW_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
-    endif (CMAKE_USE_PTHREADS_INIT)
-
-    # Check for Sched Yield 
-    CHECK_FUNCTION_EXISTS(sched_yield _GLFW_HAS_SCHED_YIELD)
-    # DL Open 
-    CHECK_FUNCTION_EXISTS(dlopen DLOPEN_NO_LIB)
-    if (NOT DLOPEN_NO_LIB)
-        find_library(DL_LIBRARIES NAMES "dl") 
-        if (DL_LIBRARIES)
-           set(sav_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-           set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${DL_LIBRARY})
-           CHECK_FUNCTION_EXISTS(dlopen _GLFW_HAS_DLOPEN) 
-           set(CMAKE_REQUIRED_LIBRARIES ${sav_CMAKE_REQUIRED_LIBRARIES})
-           list(APPEND GLFW_LIBRARIES ${DL_LIBRARIES})
-        endif(DL_LIBRARIES)
-    else (NOT DLOPEN_NO_LIB)
-        message("Hurray")
-        set(_GLFW_HAS_DLOPEN "YES")
-    endif (NOT DLOPEN_NO_LIB)
-
-    # Check for sysctl 
-    CHECK_FUNCTION_EXISTS(sysctl SYSCTL_FOUND)
-    if (SYSCTL_FOUND)
-        CHECK_SYMBOL_EXISTS(CTL_HW "sys/types.h sys/sysctl.h" CTL_HW_FOUND)
-        CHECK_SYMBOL_EXISTS(HW_NCPU "sys/types.h sys/sysctl.h" HW_NCPU_FOUND)
-        if (CTL_HW_FOUND AND HW_NCPU_FOUND)
-            set(_GFLW_HAS_SYSCTL "YES")
-        endif(CTL_HW_FOUND AND HW_NCPU_FOUND)
-    endif(SYSCTL_FOUND)
-    # Check for sysconf 
-    CHECK_FUNCTION_EXISTS(sysconf SYSCONF_FOUND)
-    if (SYSCONF_FOUND)
-        CHECK_SYMBOL_EXISTS(_SC_NPROCESSORS_ONLN "unistd.h" _SC_NPROCESSORS_ONLN_FOUND)
-        CHECK_SYMBOL_EXISTS(_SC_NPROC_ONLN "unistd.h" _SC_PROC_ONLN_FOUND)
-        if (_SC_NPROCESSORS_ONLN_FOUND OR _SC_PROC_ONLN_FOUND)
-            set(_GLFW_HAS_SYSCONF "YES")
-        endif(_SC_NPROCESSORS_ONLN_FOUND OR _SC_PROC_ONLN_FOUND)
-    endif(SYSCONF_FOUND)
-    add_subdirectory(lib/x11)
 endif(UNIX AND NOT APPLE)
 
 # Deal with MacOSX Specifics 
