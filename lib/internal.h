@@ -81,7 +81,7 @@ GLFWGLOBAL int _glfwInitialized;
 
 
 //------------------------------------------------------------------------
-// Window hints (set by glfwOpenWindowHint - will go into _GLFWthread)
+// Window hints (set by glfwOpenWindowHint)
 //------------------------------------------------------------------------
 typedef struct {
     int          RefreshRate;
@@ -126,7 +126,6 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons, int numbut
 // Time
 double _glfwPlatformGetTime( void );
 void   _glfwPlatformSetTime( double time );
-void   _glfwPlatformSleep( double time );
 
 // Window management
 int  _glfwPlatformOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode, _GLFWhints* hints );
