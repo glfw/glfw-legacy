@@ -39,33 +39,29 @@
 // Enable (show) mouse cursor
 //========================================================================
 
-static void _glfwEnableMouseCursor( void )
+static void _glfwEnableMouseCursor(void)
 {
-    int CenterPosX, CenterPosY;
+    int centerPosX, centerPosY;
 
-    if( !_glfwWin.Opened || !_glfwWin.MouseLock )
-    {
+    if (!_glfwWin.Opened || !_glfwWin.MouseLock)
         return;
-    }
 
     // Show mouse cursor
     _glfwPlatformShowMouseCursor();
 
-    CenterPosX = _glfwWin.Width / 2;
-    CenterPosY = _glfwWin.Height / 2;
+    centerPosX = _glfwWin.Width / 2;
+    centerPosY = _glfwWin.Height / 2;
 
-    if( CenterPosX != _glfwInput.MousePosX || CenterPosY != _glfwInput.MousePosY )
+    if (centerPosX != _glfwInput.MousePosX || centerPosY != _glfwInput.MousePosY)
     {
-	_glfwPlatformSetMouseCursorPos( CenterPosX, CenterPosY );
+	_glfwPlatformSetMouseCursorPos(centerPosX, centerPosY);
 
-	_glfwInput.MousePosX = CenterPosX;
-	_glfwInput.MousePosY = CenterPosY;
+	_glfwInput.MousePosX = centerPosX;
+	_glfwInput.MousePosY = centerPosY;
 
-	if( _glfwWin.MousePosCallback )
-	{
-	    _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
-				       _glfwInput.MousePosY );
-	}
+	if (_glfwWin.MousePosCallback)
+	    _glfwWin.MousePosCallback(_glfwInput.MousePosX, 
+				      _glfwInput.MousePosY);
     }
 
     // From now on the mouse is unlocked
@@ -76,19 +72,17 @@ static void _glfwEnableMouseCursor( void )
 // Disable (hide) mouse cursor
 //========================================================================
 
-static void _glfwDisableMouseCursor( void )
+static void _glfwDisableMouseCursor(void)
 {
-    if( !_glfwWin.Opened || _glfwWin.MouseLock )
-    {
+    if (!_glfwWin.Opened || _glfwWin.MouseLock)
         return;
-    }
 
     // Hide mouse cursor
     _glfwPlatformHideMouseCursor();
 
     // Move cursor to the middle of the window
-    _glfwPlatformSetMouseCursorPos( _glfwWin.Width>>1,
-                                    _glfwWin.Height>>1 );
+    _glfwPlatformSetMouseCursorPos(_glfwWin.Width >> 1,
+                                   _glfwWin.Height >> 1);
 
     // From now on the mouse is locked
     _glfwWin.MouseLock = GL_TRUE;
@@ -96,70 +90,69 @@ static void _glfwDisableMouseCursor( void )
 
 
 //========================================================================
-// _glfwEnableStickyKeys() - Enable sticky keys
-// _glfwDisableStickyKeys() - Disable sticky keys
+// Enable sticky keys
 //========================================================================
 
-static void _glfwEnableStickyKeys( void )
+static void _glfwEnableStickyKeys(void)
 {
     _glfwInput.StickyKeys = 1;
 }
 
-static void _glfwDisableStickyKeys( void )
+//========================================================================
+// Disable sticky keys
+//========================================================================
+
+static void _glfwDisableStickyKeys(void)
 {
     int i;
 
     _glfwInput.StickyKeys = 0;
 
     // Release all sticky keys
-    for( i = 0; i <= GLFW_KEY_LAST; i ++ )
+    for (i = 0;  i <= GLFW_KEY_LAST;  i++)
     {
-        if( _glfwInput.Key[ i ] == 2 )
-        {
-            _glfwInput.Key[ i ] = 0;
-        }
+        if (_glfwInput.Key[i] == 2)
+            _glfwInput.Key[i] = 0;
     }
 }
 
 
 //========================================================================
-// _glfwEnableStickyMouseButtons() - Enable sticky mouse buttons
-// _glfwDisableStickyMouseButtons() - Disable sticky mouse buttons
+// Enable sticky mouse buttons
 //========================================================================
 
-static void _glfwEnableStickyMouseButtons( void )
+static void _glfwEnableStickyMouseButtons(void)
 {
     _glfwInput.StickyMouseButtons = 1;
 }
 
-static void _glfwDisableStickyMouseButtons( void )
+//========================================================================
+// Disable sticky mouse buttons
+//========================================================================
+
+static void _glfwDisableStickyMouseButtons(void)
 {
     int i;
 
     _glfwInput.StickyMouseButtons = 0;
 
     // Release all sticky mouse buttons
-    for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i ++ )
+    for (i = 0;  i <= GLFW_MOUSE_BUTTON_LAST;  i++)
     {
-        if( _glfwInput.MouseButton[ i ] == 2 )
-        {
-            _glfwInput.MouseButton[ i ] = 0;
-        }
+        if (_glfwInput.MouseButton[i] == 2)
+            _glfwInput.MouseButton[i] = 0;
     }
 }
 
 
 //========================================================================
-// _glfwEnableSystemKeys() - Enable system keys
-// _glfwDisableSystemKeys() - Disable system keys
+// Enable and disable system keys
 //========================================================================
 
-static void _glfwEnableSystemKeys( void )
+static void _glfwEnableSystemKeys(void)
 {
-    if( !_glfwWin.SysKeysDisabled )
-    {
+    if (!_glfwWin.SysKeysDisabled)
         return;
-    }
 
     _glfwPlatformEnableSystemKeys();
 
@@ -167,12 +160,10 @@ static void _glfwEnableSystemKeys( void )
     _glfwWin.SysKeysDisabled = GL_FALSE;
 }
 
-static void _glfwDisableSystemKeys( void )
+static void _glfwDisableSystemKeys(void)
 {
-    if( _glfwWin.SysKeysDisabled )
-    {
+    if (_glfwWin.SysKeysDisabled)
         return;
-    }
 
     _glfwPlatformDisableSystemKeys();
 
@@ -182,8 +173,7 @@ static void _glfwDisableSystemKeys( void )
 
 
 //========================================================================
-// _glfwEnableKeyRepeat() - Enable key repeat
-// _glfwDisableKeyRepeat() - Disable key repeat
+// Enable and disable key repeat
 //========================================================================
 
 static void _glfwEnableKeyRepeat( void )
@@ -191,23 +181,26 @@ static void _glfwEnableKeyRepeat( void )
     _glfwInput.KeyRepeat = 1;
 }
 
-static void _glfwDisableKeyRepeat( void )
+static void _glfwDisableKeyRepeat(void)
 {
     _glfwInput.KeyRepeat = 0;
 }
 
 
 //========================================================================
-// _glfwEnableAutoPollEvents() - Enable automatic event polling
-// _glfwDisableAutoPollEvents() - Disable automatic event polling
+// Enable automatic event polling
 //========================================================================
 
-static void _glfwEnableAutoPollEvents( void )
+static void _glfwEnableAutoPollEvents(void)
 {
     _glfwWin.AutoPollEvents = 1;
 }
 
-static void _glfwDisableAutoPollEvents( void )
+//========================================================================
+// Disable automatic event polling
+//========================================================================
+
+static void _glfwDisableAutoPollEvents(void)
 {
     _glfwWin.AutoPollEvents = 0;
 }
@@ -219,18 +212,16 @@ static void _glfwDisableAutoPollEvents( void )
 //************************************************************************
 
 //========================================================================
-// glfwEnable() - Enable certain GLFW/window/system functions.
+// Enable certain GLFW/window/system functions.
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
+GLFWAPI void GLFWAPIENTRY glfwEnable(int token)
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized )
-    {
+    if (!_glfwInitialized)
         return;
-    }
 
-    switch( token )
+    switch (token)
     {
     case GLFW_MOUSE_CURSOR:
         _glfwEnableMouseCursor();
@@ -255,20 +246,17 @@ GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
     }
 }
 
-
 //========================================================================
-// glfwDisable() - Disable certain GLFW/window/system functions.
+// Disable certain GLFW/window/system functions.
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwDisable( int token )
+GLFWAPI void GLFWAPIENTRY glfwDisable(int token)
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized )
-    {
+    if (!_glfwInitialized)
         return;
-    }
 
-    switch( token )
+    switch (token)
     {
     case GLFW_MOUSE_CURSOR:
         _glfwDisableMouseCursor();

@@ -37,16 +37,14 @@
 //************************************************************************
 
 //========================================================================
-// glfwInit() - Initialize various GLFW state
+// Initialize the GLFW library
 //========================================================================
 
-GLFWAPI int GLFWAPIENTRY glfwInit( void )
+GLFWAPI int GLFWAPIENTRY glfwInit(void)
 {
     // Is GLFW already initialized?
-    if( _glfwInitialized )
-    {
+    if (_glfwInitialized)
         return GL_TRUE;
-    }
 
     // Window is not yet opened
     _glfwWin.Opened = GL_FALSE;
@@ -58,10 +56,8 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
     _glfwClearWindowHints();
 
     // Platform specific initialization
-    if( !_glfwPlatformInit() )
-    {
+    if (!_glfwPlatformInit())
         return GL_FALSE;
-    }
 
     // Form now on, GLFW state is valid
     _glfwInitialized = GL_TRUE;
@@ -70,24 +66,19 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
 }
 
 
-
 //========================================================================
-// glfwTerminate() - Close window and kill all threads.
+// Close window and de-initialize library
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwTerminate( void )
+GLFWAPI void GLFWAPIENTRY glfwTerminate(void)
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized )
-    {
+    if (!_glfwInitialized)
         return;
-    }
 
     // Platform specific termination
-    if( !_glfwPlatformTerminate() )
-    {
+    if (!_glfwPlatformTerminate())
         return;
-    }
 
     // GLFW is no longer initialized
     _glfwInitialized = GL_FALSE;
@@ -95,14 +86,13 @@ GLFWAPI void GLFWAPIENTRY glfwTerminate( void )
 
 
 //========================================================================
-// glfwGetVersion() - Get GLFW version
+// Get GLFW version
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwGetVersion( int *major, int *minor,
-    int *rev )
+GLFWAPI void GLFWAPIENTRY glfwGetVersion(int *major, int *minor, int *rev)
 {
-    if( major != NULL ) *major = GLFW_VERSION_MAJOR;
-    if( minor != NULL ) *minor = GLFW_VERSION_MINOR;
-    if( rev   != NULL ) *rev   = GLFW_VERSION_REVISION;
+    if (major != NULL) *major = GLFW_VERSION_MAJOR;
+    if (minor != NULL) *minor = GLFW_VERSION_MINOR;
+    if (rev   != NULL) *rev   = GLFW_VERSION_REVISION;
 }
 
