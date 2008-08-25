@@ -99,14 +99,14 @@ install(DIRECTORY include/ DESTINATION include
 # install docs 
 install(
     FILES 
-        license.txt 
+        COPYING.txt 
         readme.html 
     DESTINATION 
         share/doc/glfw-${GLFW_VERSION_FULL}/
 )
 install(
     DIRECTORY 
-        images 
+        docs/images 
     DESTINATION 
         share/doc/glfw-${GLFW_VERSION_FULL}/
         PATTERN ".svn" EXCLUDE
