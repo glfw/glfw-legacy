@@ -335,7 +335,7 @@ int glfwOpenWindow( int width, int height, int redbits,
   calculated as ${width=\frac{4}{3}height}$, if \textit{height} is not
   zero. If both \textit{width} and \textit{height} are zero, then
   \textit{width} will be set to 640.
-\item [\textit{hieght}]\ \\
+\item [\textit{height}]\ \\
   The height of the window. If \textit{height} is zero, it will be
   calculated as ${height=\frac{3}{4}width}$, if \textit{width} is not
   zero. If both \textit{width} and \textit{height} are zero, then
@@ -1114,7 +1114,7 @@ It is guaranteed that \textbf{glfwWaitEvents} will wake up on any event
 that can be processed by \textbf{glfwPollEvents}. However,
 \textbf{glfwWaitEvents} may wake up on events that are \emph{not}
 processed or reported by \textbf{glfwPollEvents} too, and the function
-may behave differently on different systems. Do no make any assumptions
+may behave differently on different systems. Do not make any assumptions
 about when or why \textbf{glfwWaitEvents} will return.
 \end{refnotes}
 
