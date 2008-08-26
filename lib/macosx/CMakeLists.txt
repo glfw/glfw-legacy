@@ -1,4 +1,8 @@
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/libglfw.pc.cmake 
+    ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc @ONLY)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR} 
     ${CMAKE_SOURCE_DIR}/lib 
@@ -24,4 +28,5 @@ set_target_properties(libglfwStatic libglfwShared PROPERTIES
 )
 
 install(TARGETS libglfwStatic libglfwShared DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc DESTINATION lib/pkgconfig)
 
