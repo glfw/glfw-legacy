@@ -186,6 +186,8 @@ const
   GLFW_STEREO               = $00020011;
   GLFW_WINDOW_NO_RESIZE     = $00020012;
   GLFW_FSAA_SAMPLES         = $00020013;
+  GLFW_OPENGL_VERSION_MAJOR = $00020014;
+  GLFW_OPENGL_VERSION_MINOR = $00020015;
 
   // glfwEnable/glfwDisable tokens
   GLFW_MOUSE_CURSOR         = $00030001;
@@ -195,23 +197,10 @@ const
   GLFW_KEY_REPEAT           = $00030005;
   GLFW_AUTO_POLL_EVENTS     = $00030006;
 
-  // glfwWaitThread wait modes
-  GLFW_WAIT                 = $00040001;
-  GLFW_NOWAIT               = $00040002;
-
   // glfwGetJoystickParam tokens
   GLFW_PRESENT              = $00050001;
   GLFW_AXES                 = $00050002;
   GLFW_BUTTONS              = $00050003;
-
-  // glfwReadImage/glfwLoadTexture2D flags
-  GLFW_NO_RESCALE_BIT       = $00000001; // Only for glfwReadImage
-  GLFW_ORIGIN_UL_BIT        = $00000002;
-  GLFW_BUILD_MIPMAPS_BIT    = $00000004; // Only for glfwLoadTexture2D
-  GLFW_ALPHA_MAP_BIT        = $00000008;
-
-  // Time spans longer than this (seconds) are considered to be infinity
-  GLFW_INFINITY             = 100000.0;
 
 
   //========================================================================
@@ -236,15 +225,6 @@ type
   end;
   PGLFWimage = ^GLFWimage;
 
-  // Thread ID
-  GLFWthread = Integer;
-
-  // Mutex object
-  GLFWmutex = Pointer;
-
-  // Condition variable object
-  GLFWcond = Pointer;
-
   // Function pointer types
   GLFWwindowsizefun    = procedure(Width, Height: Integer); stdcall;
   GLFWwindowclosefun   = function: Integer; stdcall;
@@ -254,7 +234,6 @@ type
   GLFWmousewheelfun    = procedure(Pos: Integer); stdcall;
   GLFWkeyfun           = procedure(Key, Action: Integer); stdcall;
   GLFWcharfun          = procedure(Character, Action: Integer); stdcall;
-  GLFWthreadfun        = procedure(Arg: Pointer); stdcall;
 
 
 //========================================================================
@@ -310,40 +289,15 @@ function  glfwGetJoystickButtons(joy: Integer; buttons: PChar; numbuttons: Integ
 // Time
 function  glfwGetTime: Double; stdcall;
 procedure glfwSetTime(time: Double); stdcall;
-procedure glfwSleep(time: Double); stdcall;
 
 // Extension support
 function  glfwExtensionSupported(extension: PChar): Integer; stdcall;
 function  glfwGetProcAddress(procname: PChar): Pointer; stdcall;
 procedure glfwGetGLVersion(var major: Integer; var minor: Integer; var Rev: Integer); stdcall;
 
-// Threading support
-function  glfwCreateThread(fun: GLFWthreadfun; arg: Pointer): GLFWthread; stdcall;
-procedure glfwDestroyThread(Id: GLFWthread); stdcall;
-function  glfwWaitThread(Id: GLFWthread; waitmode: Integer): Integer; stdcall;
-function  glfwGetThreadID: GLFWthread; stdcall;
-function  glfwCreateMutex: GLFWmutex; stdcall;
-procedure glfwDestroyMutex( mutex: GLFWmutex); stdcall;
-procedure glfwLockMutex(mutex: GLFWmutex); stdcall;
-procedure glfwUnlockMutex(mutex: GLFWmutex); stdcall;
-function  glfwCreateCond: GLFWcond; stdcall;
-procedure glfwDestroyCond(cond: GLFWcond); stdcall;
-procedure glfwWaitCond(cond: GLFWcond; mutex: GLFWmutex; timeout: Double); stdcall;
-procedure glfwSignalCond(cond: GLFWcond); stdcall;
-procedure glfwBroadcastCond(cond: GLFWcond); stdcall;
-function  glfwGetNumberOfProcessors: Integer; stdcall;
-
 // Enable/disable functions
 procedure glfwEnable(token: Integer); stdcall;
 procedure glfwDisable(token: Integer); stdcall;
-
-// Image/texture I/O support
-function  glfwReadImage(name: PChar; image: PGLFWimage; flags: Integer): Integer; stdcall;
-function  glfwReadMemoryImage(data: PChar; size: LongInt; img: PGLFWimage; flags: Integer): Integer; stdcall;
-procedure glfwFreeImage(img: PGLFWimage);
-function  glfwLoadTexture2D(name: PChar; flags: Integer): Integer; stdcall;
-function  glfwLoadMemoryTexture2D(data: PChar; size: LongInt; flags: Integer): Integer; stdcall;
-function  glfwLoadTextureImage2D(img: PGLFWimage; flags: Integer): Integer; stdcall;
 
 implementation
 
@@ -399,39 +353,14 @@ function  glfwGetJoystickButtons; external DLLNAME;
 // Time
 function  glfwGetTime: Double; external DLLNAME;
 procedure glfwSetTime; external DLLNAME;
-procedure glfwSleep; external DLLNAME;
 
 // Extension support
 function  glfwExtensionSupported; external DLLNAME;
 function  glfwGetProcAddress; external DLLNAME;
 procedure glfwGetGLVersion; external DLLNAME;
 
-// Threading support
-function  glfwCreateThread; external DLLNAME;
-procedure glfwDestroyThread; external DLLNAME;
-function  glfwWaitThread; external DLLNAME;
-function  glfwGetThreadID; external DLLNAME;
-function  glfwCreateMutex; external DLLNAME;
-procedure glfwDestroyMutex; external DLLNAME;
-procedure glfwLockMutex; external DLLNAME;
-procedure glfwUnlockMutex; external DLLNAME;
-function  glfwCreateCond; external DLLNAME;
-procedure glfwDestroyCond; external DLLNAME;
-procedure glfwWaitCond; external DLLNAME;
-procedure glfwSignalCond; external DLLNAME;
-procedure glfwBroadcastCond; external DLLNAME;
-function  glfwGetNumberOfProcessors; external DLLNAME;
-
 // Enable/disable functions
 procedure glfwEnable; external DLLNAME;
 procedure glfwDisable; external DLLNAME;
-
-// Image/texture I/O support
-function  glfwReadImage; external DLLNAME;
-function  glfwReadMemoryImage; external DLLNAME;
-procedure glfwFreeImage; external DLLNAME;
-function  glfwLoadTexture2D; external DLLNAME;
-function  glfwLoadMemoryTexture2D; external DLLNAME;
-function  glfwLoadTextureImage2D; external DLLNAME;
 
 end.

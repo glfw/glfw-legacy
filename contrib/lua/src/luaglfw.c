@@ -628,108 +628,6 @@ static int glfw_SetTime( lua_State *L )
     return 0;
 }
 
-static int glfw_Sleep( lua_State *L )
-{
-    lua_Number t;
-    if ( badArgs( L, 1, "Sleep" ) ) return 0;
-    t = lua_tonumber( L, 1 );
-    lua_settop( L, 0 );
-    glfwSleep( (double)t );
-    return 0;
-}
-
-
-//========================================================================
-// Threading support (not possible in Lua)
-//========================================================================
-
-static int glfw_CreateThread( lua_State *L )
-{
-    unsupportedFunction( L, "CreateThread" );
-    return 0;
-}
-
-static int glfw_DestroyThread( lua_State *L )
-{
-    unsupportedFunction( L, "DestroyThread" );
-    return 0;
-}
-
-static int glfw_WaitThread( lua_State *L )
-{
-    unsupportedFunction( L, "WaitThread" );
-    return 0;
-}
-
-static int glfw_GetThreadID( lua_State *L )
-{
-    unsupportedFunction( L, "GetThreadID" );
-    return 0;
-}
-
-static int glfw_CreateMutex( lua_State *L )
-{
-    unsupportedFunction( L, "CreateMutex" );
-    return 0;
-}
-
-static int glfw_DestroyMutex( lua_State *L )
-{
-    unsupportedFunction( L, "DestroyMutex" );
-    return 0;
-}
-
-static int glfw_LockMutex( lua_State *L )
-{
-    unsupportedFunction( L, "LockMutex" );
-    return 0;
-}
-
-static int glfw_UnlockMutex( lua_State *L )
-{
-    unsupportedFunction( L, "UnlockMutex" );
-    return 0;
-}
-
-static int glfw_CreateCond( lua_State *L )
-{
-    unsupportedFunction( L, "CreateCond" );
-    return 0;
-}
-
-static int glfw_DestroyCond( lua_State *L )
-{
-    unsupportedFunction( L, "DestroyCond" );
-    return 0;
-}
-
-static int glfw_WaitCond( lua_State *L )
-{
-    unsupportedFunction( L, "WaitCond" );
-    return 0;
-}
-
-static int glfw_SignalCond( lua_State *L )
-{
-    unsupportedFunction( L, "SignalCond" );
-    return 0;
-}
-
-static int glfw_BroadcastCond( lua_State *L )
-{
-    unsupportedFunction( L, "BroadcastCond" );
-    return 0;
-}
-
-static int glfw_GetNumberOfProcessors( lua_State *L )
-{
-    int n;
-    n = glfwGetNumberOfProcessors();
-    lua_settop( L,0 );
-    lua_pushnumber( L, (lua_Number)n );
-    return 1;
-}
-
 
 //========================================================================
 // Extension handling
@@ -781,37 +679,6 @@ static int glfw_Disable( lua_State *L )
     lua_settop( L, 0 );
     glfwDisable( (int)param );
     return 0;
-}
-
-
-//========================================================================
-// Image/texture I/O support
-//========================================================================
-
-static int glfw_ReadImage( lua_State *L )
-{
-    unsupportedFunction( L, "ReadImage" );
-    return 0;
-}
-
-static int glfw_FreeImage( lua_State *L )
-{
-    unsupportedFunction( L, "FreeImage" );
-    return 0;
-}
-
-static int glfw_LoadTexture2D( lua_State *L )
-{
-    const char *name;
-    lua_Number flags;
-    int        res;
-    if( badArgs( L, 2, "LoadTexture2D" ) ) return 0;
-    name  = lua_tostring( L, 1 );
-    flags = lua_tonumber( L, 2 );
-    lua_settop( L, 0 );
-    res = glfwLoadTexture2D( name, (int)flags );
-    lua_pushnumber( L, (lua_Number)res );
-    return 1;
 }
 
 
@@ -1063,6 +930,10 @@ static struct lua_constant glfw_constants[] =
     { "ACCUM_ALPHA_BITS", GLFW_ACCUM_ALPHA_BITS },
     { "AUX_BUFFERS", GLFW_AUX_BUFFERS },
     { "STEREO", GLFW_STEREO },
+    { "WINDOW_NO_RESIZE", GLFW_WINDOW_NO_RESIZE },
+    { "FSAA_SAMPLES", GLFW_FSAA_SAMPLES },
+    { "OPENGL_VERSION_MAJOR", GLFW_OPENGL_VERSION_MAJOR },
+    { "OPENGL_VERSION_MINOR", GLFW_OPENGL_VERSION_MINOR },
 
     // glfwEnable/glfwDisable tokens
     { "MOUSE_CURSOR", GLFW_MOUSE_CURSOR },
@@ -1072,23 +943,10 @@ static struct lua_constant glfw_constants[] =
     { "KEY_REPEAT", GLFW_KEY_REPEAT },
     { "AUTO_POLL_EVENTS", GLFW_AUTO_POLL_EVENTS },
 
-    // glfwWaitThread wait modes
-    { "WAIT", GLFW_WAIT },
-    { "NOWAIT", GLFW_NOWAIT },
-
     // glfwGetJoystickParam tokens
     { "PRESENT", GLFW_PRESENT },
     { "AXES", GLFW_AXES },
     { "BUTTONS", GLFW_BUTTONS },
-
-    // glfwReadImage/glfwLoadTexture2D flags
-    { "NO_RESCALE_BIT", GLFW_NO_RESCALE_BIT },
-    { "ORIGIN_UL_BIT", GLFW_ORIGIN_UL_BIT },
-    { "BUILD_MIPMAPS_BIT", GLFW_BUILD_MIPMAPS_BIT },
-    { "ALPHA_MAP_BIT", GLFW_ALPHA_MAP_BIT },
-
-    // Time spans longer than this (seconds) are considered to be infinity
-    { "INFINITY", GLFW_INFINITY },
 
     { NULL, 0 }
 };
@@ -1126,28 +984,10 @@ static const luaL_reg glfwlib[] = {
     { "GetJoystickButtons", glfw_GetJoystickButtons },
     { "GetTime", glfw_GetTime },
     { "SetTime", glfw_SetTime },
-    { "Sleep", glfw_Sleep },
     { "GetGLVersion", glfw_GetGLVersion },
     { "ExtensionSupported", glfw_ExtensionSupported },
-    { "CreateThread", glfw_CreateThread },
-    { "DestroyThread", glfw_DestroyThread },
-    { "WaitThread", glfw_WaitThread },
-    { "GetThreadID", glfw_GetThreadID },
-    { "CreateMutex", glfw_CreateMutex },
-    { "DestroyMutex", glfw_DestroyMutex },
-    { "LockMutex", glfw_LockMutex },
-    { "UnlockMutex", glfw_UnlockMutex },
-    { "CreateCond", glfw_CreateCond },
-    { "DestroyCond", glfw_DestroyCond },
-    { "WaitCond", glfw_WaitCond },
-    { "SignalCond", glfw_SignalCond },
-    { "BroadcastCond", glfw_BroadcastCond },
-    { "GetNumberOfProcessors", glfw_GetNumberOfProcessors },
     { "Enable", glfw_Enable },
     { "Disable", glfw_Disable },
-    { "ReadImage", glfw_ReadImage },
-    { "FreeImage", glfw_FreeImage },
-    { "LoadTexture2D", glfw_LoadTexture2D },
     { "SetWindowSizeCallback", glfw_SetWindowSizeCallback },
     { "SetWindowCloseCallback", glfw_SetWindowCloseCallback },
     { "SetWindowRefreshCallback", glfw_SetWindowRefreshCallback },
@@ -1158,7 +998,6 @@ static const luaL_reg glfwlib[] = {
     { "SetCharCallback", glfw_SetCharCallback },
     { NULL, NULL }
 };
-
 
 
 int luaopen_glfw( lua_State *L )
@@ -1177,3 +1016,4 @@ int luaopen_glfw( lua_State *L )
 
     return 0;
 }
+
