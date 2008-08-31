@@ -325,6 +325,8 @@ extern "C" {
 #define GLFW_STEREO               0x00020011
 #define GLFW_WINDOW_NO_RESIZE     0x00020012
 #define GLFW_FSAA_SAMPLES         0x00020013
+#define GLFW_OPENGL_VERSION_MAJOR 0x00020014
+#define GLFW_OPENGL_VERSION_MINOR 0x00020015
 
 /* glfwEnable/glfwDisable tokens */
 #define GLFW_MOUSE_CURSOR         0x00030001
