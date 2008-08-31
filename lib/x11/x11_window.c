@@ -898,6 +898,13 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.Saver.Changed    = GL_FALSE;
     _glfwWin.RefreshRate      = hints->RefreshRate;
 
+    // GLX currently provides no mechanism for creating versioned or forward-
+    // compatible contexts.  Fail if such a context was requested.
+    if( hints->OpenGLMajor > 2 || hints->OpenGLForward )
+    {
+	return GL_FALSE;
+    }
+
     // Fullscreen & screen saver settings
     // Check if GLX is supported on this display
     if( !glXQueryExtension( _glfwLibrary.Dpy, NULL, NULL ) )

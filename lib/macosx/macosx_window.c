@@ -625,6 +625,13 @@ int  _glfwPlatformOpenWindow( int width,
 
     unsigned int windowAttributes;
 
+    // Neither AGL nor CGL currently provide a mechanism for creating versioned
+    // or forward-compatible contexts.  Fail if such a context was requested.
+    if( hints->OpenGLMajor > 2 || hints->OpenGLForward )
+    {
+	return GL_FALSE;
+    }
+
     // TO DO: Refactor this function!
     _glfwWin.WindowFunctions = ( _glfwWin.Fullscreen ?
                                &_glfwMacFSWindowFunctions :

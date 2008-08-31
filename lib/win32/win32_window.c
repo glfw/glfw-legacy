@@ -129,6 +129,35 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 
 
 //========================================================================
+// Checks whether the specified hints require WGL functions that can only
+// be retrieved after an initial context creation
+//========================================================================
+
+static int _glfwExtendedCreationRequired( _GLFWhints* hints )
+{
+    // Check if FSAA is requested
+    if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
+    {
+	return GL_TRUE;
+    }
+    
+    // Check if a versioned context is requested
+    if( hints->OpenGLMajor != 1 || hints->OpenGLMinor != 1 )
+    {
+	return GL_TRUE;
+    }
+
+    // Check if a forward-compatible context is requested
+    if( hints->OpenGLForward )
+    {
+	return GL_TRUE;
+    }
+
+    return GL_FALSE;
+}
+
+
+//========================================================================
 // Sets the device context pixel format using a PFD
 //========================================================================
 
@@ -295,6 +324,46 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
 }
 
 #undef _glfwSetWGLAttribute
+
+
+//========================================================================
+// Creates an OpenGL context on the specified device context
+//========================================================================
+
+static HGLRC _glfwCreateContext( HDC dc, _GLFWhints* hints )
+{
+    // Static array sizes are bad; don't use them
+    int i = 0, attribs[7];
+
+    if( _glfwWin.CreateContextAttribsARB )
+    {
+	// Use the newer wglCreateContextAttribsARB
+
+	if( hints->OpenGLMajor != 1 || hints->OpenGLMinor != 1 )
+	{
+	    // Request an explicitly versioned context
+
+	    attribs[i++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+	    attribs[i++] = hints->OpenGLMajor;
+	    attribs[i++] = WGL_CONTEXT_MINOR_VERSION_ARB;
+	    attribs[i++] = hints->OpenGLMinor;
+	}
+
+	if( hints->OpenGLForward )
+	{
+	    // Request a forward-compatible context
+
+	    attribs[i++] = WGL_CONTEXT_FLAGS_ARB;
+	    attribs[i++] = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+	}
+
+	attribs[i++] = 0;
+
+	return _glfwWin.CreateContextAttribsARB( dc, attribs );
+    }
+
+    return wglCreateContext( dc );
+}
 
 
 //========================================================================
@@ -882,7 +951,7 @@ static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
 static void _glfwInitWGLExtensions( void )
 {
     GLubyte *extensions;
-    int     has_swap_control, has_pixel_format;
+    int     has_create_context, has_swap_control, has_pixel_format;
 
     _glfwWin.GetExtensionsStringEXT = (WGLGETEXTENSIONSSTRINGEXT_T)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
@@ -898,12 +967,17 @@ static void _glfwInitWGLExtensions( void )
     }
 
     // Initialize OpenGL extension: WGL_EXT_swap_control
+    has_create_context = GL_FALSE;
     has_swap_control = GL_FALSE;
     has_pixel_format = GL_FALSE;
     extensions = (GLubyte *) glGetString( GL_EXTENSIONS );
 
     if( extensions != NULL )
     {
+        has_create_context = _glfwStringInExtensionString(
+			         "WGL_ARB_create_context",
+                                 extensions
+                           );
         has_swap_control = _glfwStringInExtensionString(
                                "WGL_EXT_swap_control",
                                extensions
@@ -912,6 +986,16 @@ static void _glfwInitWGLExtensions( void )
                                "WGL_ARB_pixel_format",
                                extensions
                            );
+    }
+
+    if( has_create_context )
+    {
+	_glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
+	    wglGetProcAddress( "wglCreateContextAttribsARB" );
+    }
+    else
+    {
+	_glfwWin.CreateContextAttribsARB = NULL;
     }
 
     if( !has_swap_control )
@@ -1029,7 +1113,7 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
     }
 
     // Get a rendering context
-    _glfwWin.RC = wglCreateContext( _glfwWin.DC );
+    _glfwWin.RC = _glfwCreateContext( _glfwWin.DC, hints );
     if( !_glfwWin.RC )
     {
         return GL_FALSE;
@@ -1204,7 +1288,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
+    if( _glfwExtendedCreationRequired( hints ) )
     {
 	// Iteratively try to create a context with a decreasing number of
 	// FSAA samples (requires window recreation).
@@ -1496,6 +1580,7 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.AuxBuffers     = pfd.cAuxBuffers;
         _glfwWin.Stereo         = pfd.dwFlags & PFD_STEREO ? 1 : 0;
         _glfwWin.Samples        = 0;
+	// TODO: Add new window parameters
     }
     else
     {
@@ -1539,6 +1624,7 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.AuxBuffers     = values[11];
         _glfwWin.Stereo         = values[12];
         _glfwWin.Samples        = values[13];
+	// TODO: Add new window parameters
     }
 
     // Get refresh rate

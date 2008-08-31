@@ -93,6 +93,9 @@ typedef struct {
     int          Stereo;
     int          WindowNoResize;
     int		 Samples;
+    int          OpenGLMajor;
+    int          OpenGLMinor;
+    int          OpenGLForward;
 } _GLFWhints;
 
 GLFWGLOBAL _GLFWhints _glfwWinHints;

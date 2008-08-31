@@ -51,6 +51,9 @@ void _glfwClearWindowHints( void )
     _glfwWinHints.Stereo         = 0;
     _glfwWinHints.WindowNoResize = 0;
     _glfwWinHints.Samples        = 0;
+    _glfwWinHints.OpenGLMajor    = 0;
+    _glfwWinHints.OpenGLMinor    = 0;
+    _glfwWinHints.OpenGLForward  = 0;
 }
 
 
@@ -374,6 +377,15 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
 	case GLFW_FSAA_SAMPLES:
             _glfwWinHints.Samples = hint;
             break;
+	case GLFW_OPENGL_VERSION_MAJOR:
+	    _glfwWinHints.OpenGLMajor = hint;
+	    break;
+	case GLFW_OPENGL_VERSION_MINOR:
+	    _glfwWinHints.OpenGLMinor = hint;
+	    break;
+	case GLFW_OPENGL_FORWARD_COMPATIBLE:
+	    _glfwWinHints.OpenGLForward = hint;
+	    break;
         default:
             break;
     }
@@ -539,10 +551,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
     }
 
     // Update display-buffer
-    if( _glfwWin.Opened )
-    {
-        _glfwPlatformSwapBuffers();
-    }
+    _glfwPlatformSwapBuffers();
 }
 
 
@@ -626,6 +635,12 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
             return _glfwWin.WindowNoResize;
 	case GLFW_FSAA_SAMPLES:
 	    return _glfwWin.Samples;
+	case GLFW_OPENGL_VERSION_MAJOR:
+	    return _glfwWin.GLVerMajor;
+	case GLFW_OPENGL_VERSION_MINOR:
+	    return _glfwWin.GLVerMinor;
+	case GLFW_OPENGL_FORWARD_COMPATIBLE:
+	    return _glfwWin.GLForward;
         default:
             return 0;
     }
