@@ -9,12 +9,9 @@ SET(libglfw_SOURCES
     win32_time.c 
     win32_window.c
     win32_dllmain.c)
-ADD_DEFINITIONS(-DGLFW_BUILD_DLL -DGLFW_DLL) 
 ADD_LIBRARY(libglfwStatic STATIC ${libglfw_SOURCES})
 ADD_LIBRARY(libglfwShared SHARED ${libglfw_SOURCES}) 
-TARGET_LINK_LIBRARIES(libglfwShared 
-    ${OPENGL_gl_LIBRARY}
-    ${X11_X11_LIB})
+TARGET_LINK_LIBRARIES(libglfwShared ${OPENGL_gl_LIBRARY})
 SET_TARGET_PROPERTIES(libglfwStatic libglfwShared PROPERTIES 
     CLEAN_DIRECT_OUTPUT 1
     OUTPUT_NAME glfw
@@ -22,3 +19,4 @@ SET_TARGET_PROPERTIES(libglfwStatic libglfwShared PROPERTIES
 )
 
 INSTALL(TARGETS libglfwStatic libglfwShared DESTINATION lib)
+

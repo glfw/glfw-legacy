@@ -30,6 +30,9 @@ set(common_SOURCES
 #  Deal with Win32 Specific stuffs 
 if (WIN32)
     message(STATUS "Building GLFW for Win32 systems") 
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENGL_gl_LIBRARY})
+    list(APPEND GLFW_INCLUDE_DIR ${OPENGL_INCLUDE_DIR})
+    list(APPEND GLFW_LIBRARIES ${OPENGL_gl_LIBRARY})
     add_subdirectory(lib/win32)
 endif (WIN32)
 
