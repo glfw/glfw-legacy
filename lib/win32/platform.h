@@ -394,65 +394,6 @@ GLFWGLOBAL struct {
 } _glfwLibrary;
 
 
-//------------------------------------------------------------------------
-// Thread record (one for each thread)
-//------------------------------------------------------------------------
-typedef struct _GLFWthread_struct _GLFWthread;
-
-struct _GLFWthread_struct {
-
-// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
-    // Pointer to previous and next threads in linked list
-    _GLFWthread   *Previous, *Next;
-
-    // GLFW user side thread information
-    GLFWthread    ID;
-    GLFWthreadfun Function;
-
-// ========= PLATFORM SPECIFIC PART ======================================
-
-    // System side thread information
-    HANDLE        Handle;
-    DWORD         WinID;
-
-};
-
-
-//------------------------------------------------------------------------
-// General thread information
-//------------------------------------------------------------------------
-GLFWGLOBAL struct {
-
-// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
-    // Next thread ID to use (increments for every created thread)
-    GLFWthread       NextID;
-
-    // First thread in linked list (always the main thread)
-    _GLFWthread      First;
-
-// ========= PLATFORM SPECIFIC PART ======================================
-
-    // Critical section lock
-    CRITICAL_SECTION CriticalSection;
-
-} _glfwThrd;
-
-
-
-//========================================================================
-// Macros for encapsulating critical code sections (i.e. making parts
-// of GLFW thread safe)
-//========================================================================
-
-// Thread list management
-#define ENTER_THREAD_CRITICAL_SECTION \
-        EnterCriticalSection( &_glfwThrd.CriticalSection );
-#define LEAVE_THREAD_CRITICAL_SECTION \
-        LeaveCriticalSection( &_glfwThrd.CriticalSection );
-
-
 //========================================================================
 // Various Windows version constants
 //========================================================================

@@ -359,7 +359,7 @@ static HGLRC _glfwCreateContext( HDC dc, _GLFWhints* hints )
 
 	attribs[i++] = 0;
 
-	return _glfwWin.CreateContextAttribsARB( dc, attribs );
+	return _glfwWin.CreateContextAttribsARB( dc, NULL, attribs );
     }
 
     return wglCreateContext( dc );

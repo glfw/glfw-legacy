@@ -6,7 +6,6 @@ SET(libglfw_SOURCES
     win32_glext.c
     win32_init.c 
     win32_joystick.c
-    win32_thread.c 
     win32_time.c 
     win32_window.c
     win32_dllmain.c)
