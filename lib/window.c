@@ -383,7 +383,7 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
 	case GLFW_OPENGL_VERSION_MINOR:
 	    _glfwWinHints.OpenGLMinor = hint;
 	    break;
-	case GLFW_OPENGL_FORWARD_COMPATIBLE:
+	case GLFW_OPENGL_FORWARD_COMPAT:
 	    _glfwWinHints.OpenGLForward = hint;
 	    break;
         default:
@@ -639,7 +639,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 	    return _glfwWin.GLVerMajor;
 	case GLFW_OPENGL_VERSION_MINOR:
 	    return _glfwWin.GLVerMinor;
-	case GLFW_OPENGL_FORWARD_COMPATIBLE:
+	case GLFW_OPENGL_FORWARD_COMPAT:
 	    return _glfwWin.GLForward;
         default:
             return 0;
