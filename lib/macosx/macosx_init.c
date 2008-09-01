@@ -41,24 +41,8 @@ void *KCHRPtr;
 
 
 //========================================================================
-// _glfwInitThreads() - Initialize GLFW thread package
+// Initialize GLFW
 //========================================================================
-
-static void _glfwInitThreads( void )
-{
-    // Initialize critical section handle
-    (void) pthread_mutex_init( &_glfwThrd.CriticalSection, NULL );
-
-    // The first thread (the main thread) has ID 0
-    _glfwThrd.NextID = 0;
-
-    // Fill out information about the main thread (this thread)
-    _glfwThrd.First.ID       = _glfwThrd.NextID ++;
-    _glfwThrd.First.Function = NULL;
-    _glfwThrd.First.PosixID  = pthread_self();
-    _glfwThrd.First.Previous = NULL;
-    _glfwThrd.First.Next     = NULL;
-}
 
 #define NO_BUNDLE_MESSAGE \
     "Working in unbundled mode.  " \
@@ -144,8 +128,6 @@ int _glfwPlatformInit( void )
             "glfwInit failing because it kind find the desktop display mode\n" );
         return GL_FALSE;
     }
-
-    _glfwInitThreads();
 
     _glfwChangeToResourcesDirectory();
 
