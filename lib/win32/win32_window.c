@@ -116,7 +116,7 @@ static void _glfwSetForegroundWindow( HWND hWnd )
         // how many times we tried
         try_count ++;
     }
-    while( hWnd != GetForegroundWindow() && try_count <= 3 );
+    while( hWnd != GetForegroundWindow() && try_count < 4 );
 
     // Restore the system minimize/restore animation setting
     (void) _glfwMinMaxAnimations( old_animate );
@@ -153,6 +153,7 @@ static int _glfwExtendedCreationRequired( _GLFWhints* hints )
 	return GL_TRUE;
     }
 
+    // No extended creation required
     return GL_FALSE;
 }
 
