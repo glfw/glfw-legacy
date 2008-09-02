@@ -1,0 +1,46 @@
+LIBRARY glfw
+EXETYPE NT
+SUBSYSTEM WINDOWS
+EXPORTS
+_glfwCloseWindow@0 = glfwCloseWindow
+_glfwDisable@4 = glfwDisable
+_glfwEnable@4 = glfwEnable
+_glfwExtensionSupported@4 = glfwExtensionSupported
+_glfwGetDesktopMode@4 = glfwGetDesktopMode
+_glfwGetJoystickButtons@12 = glfwGetJoystickButtons
+_glfwGetJoystickParam@8 = glfwGetJoystickParam
+_glfwGetJoystickPos@12 = glfwGetJoystickPos
+_glfwGetKey@4 = glfwGetKey
+_glfwGetMouseButton@4 = glfwGetMouseButton
+_glfwGetMousePos@8 = glfwGetMousePos
+_glfwGetMouseWheel@0 = glfwGetMouseWheel
+_glfwGetProcAddress@4 = glfwGetProcAddress
+_glfwGetTime@0 = glfwGetTime
+_glfwGetVersion@12 = glfwGetVersion
+_glfwGetVideoModes@8 = glfwGetVideoModes
+_glfwGetWindowParam@4 = glfwGetWindowParam
+_glfwGetWindowSize@8 = glfwGetWindowSize
+_glfwIconifyWindow@0 = glfwIconifyWindow
+_glfwInit@0 = glfwInit
+_glfwOpenWindow@36 = glfwOpenWindow
+_glfwOpenWindowHint@8 = glfwOpenWindowHint
+_glfwPollEvents@0 = glfwPollEvents
+_glfwRestoreWindow@0 = glfwRestoreWindow
+_glfwSetCharCallback@4 = glfwSetCharCallback
+_glfwSetKeyCallback@4 = glfwSetKeyCallback
+_glfwSetMouseButtonCallback@4 = glfwSetMouseButtonCallback
+_glfwSetMousePos@8 = glfwSetMousePos
+_glfwSetMousePosCallback@4 = glfwSetMousePosCallback
+_glfwSetMouseWheel@4 = glfwSetMouseWheel
+_glfwSetMouseWheelCallback@4 = glfwSetMouseWheelCallback
+_glfwSetTime@8 = glfwSetTime
+_glfwSetWindowCloseCallback@4 = glfwSetWindowCloseCallback
+_glfwSetWindowRefreshCallback@4 = glfwSetWindowRefreshCallback
+_glfwSetWindowPos@8 = glfwSetWindowPos
+_glfwSetWindowSize@8 = glfwSetWindowSize
+_glfwSetWindowSizeCallback@4 = glfwSetWindowSizeCallback
+_glfwSetWindowTitle@4 = glfwSetWindowTitle
+_glfwSwapBuffers@0 = glfwSwapBuffers
+_glfwSwapInterval@4 = glfwSwapInterval
+_glfwTerminate@0 = glfwTerminate
+_glfwWaitEvents@0 = glfwWaitEvents
