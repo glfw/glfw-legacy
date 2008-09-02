@@ -15,7 +15,6 @@ set(libglfw_SOURCES
     macosx_glext.c
     macosx_init.c
     macosx_joystick.c
-    macosx_thread.c
     macosx_time.c
     macosx_window.c)
 
