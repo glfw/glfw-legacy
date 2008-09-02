@@ -1202,10 +1202,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Clear platform specific GLFW window state
     _glfwWin.ClassAtom         = 0;
     _glfwWin.OldMouseLockValid = GL_FALSE;
-    _glfwWin.ChoosePixelFormat = NULL;
-    _glfwWin.GetPixelFormatAttribiv = NULL;
-    _glfwWin.GetExtensionsStringARB = NULL;
-    _glfwWin.GetExtensionsStringEXT = NULL;
+    _glfwWin.ChoosePixelFormat       = NULL;
+    _glfwWin.GetPixelFormatAttribiv  = NULL;
+    _glfwWin.GetExtensionsStringARB  = NULL;
+    _glfwWin.GetExtensionsStringEXT  = NULL;
+    _glfwWin.CreateContextAttribsARB = NULL;
 
     // Remember desired refresh rate for this window (used only in
     // fullscreen mode)
