@@ -190,6 +190,9 @@ const int GLFW_AUX_BUFFERS          = 0x00020010;
 const int GLFW_STEREO               = 0x00020011;
 const int GLFW_WINDOW_NO_RESIZE     = 0x00020012;
 const int GLFW_FSAA_SAMPLES         = 0x00020013;
+const int GLFW_OPENGL_VERSION_MAJOR = 0x00020014;
+const int GLFW_OPENGL_VERSION_MINOR = 0x00020015;
+const int GLFW_OPENGL_FORWARD_COMPAT = 0x00020016;
 
 // glfwEnable/glfwDisable tokens
 const int GLFW_MOUSE_CURSOR         = 0x00030001;
@@ -199,23 +202,10 @@ const int GLFW_SYSTEM_KEYS          = 0x00030004;
 const int GLFW_KEY_REPEAT           = 0x00030005;
 const int GLFW_AUTO_POLL_EVENTS     = 0x00030006;
 
-// glfwWaitThread wait modes
-const int GLFW_WAIT                 = 0x00040001;
-const int GLFW_NOWAIT               = 0x00040002;
-
 // glfwGetJoystickParam tokens
 const int GLFW_PRESENT              = 0x00050001;
 const int GLFW_AXES                 = 0x00050002;
 const int GLFW_BUTTONS              = 0x00050003;
-
-// glfwReadImage/glfwLoadTexture2D flags
-const int GLFW_NO_RESCALE_BIT       = 0x00000001; // Only for glfwReadImage
-const int GLFW_ORIGIN_UL_BIT        = 0x00000002;
-const int GLFW_BUILD_MIPMAPS_BIT    = 0x00000004; // Only for glfwLoadTexture2D
-const int GLFW_ALPHA_MAP_BIT        = 0x00000008;
-
-// Time spans longer than this (seconds) are considered to be infinity
-const double GLFW_INFINITY          = 100000.0;
 
 
 //========================================================================
@@ -238,15 +228,6 @@ struct GLFWimage
     char *Data;
 }
 
-// Thread ID
-alias int GLFWthread;
-
-// Mutex object
-alias void* GLFWmutex;
-
-// Condition variable object
-alias void* GLFWcond;
-
 // Function pointer types
 typedef void (* GLFWwindowsizefun)(int, int);
 typedef int  (* GLFWwindowclosefun)();
@@ -256,7 +237,6 @@ typedef void (* GLFWmouseposfun)(int, int);
 typedef void (* GLFWmousewheelfun)(int);
 typedef void (* GLFWkeyfun)(int, int);
 typedef void (* GLFWcharfun)(int, int);
-typedef void (* GLFWthreadfun)(void *);
 
 
 //========================================================================
@@ -319,31 +299,7 @@ int    glfwExtensionSupported( char *extension );
 void*  glfwGetProcAddress(  char *procname );
 void   glfwGetGLVersion( int *major, int *minor, int *rev );
 
-// Threading support
-GLFWthread  glfwCreateThread( GLFWthreadfun fun, void *arg );
-void  glfwDestroyThread( GLFWthread ID );
-int   glfwWaitThread( GLFWthread ID, int waitmode );
-GLFWthread  glfwGetThreadID();
-GLFWmutex  glfwCreateMutex();
-void  glfwDestroyMutex( GLFWmutex mutex );
-void  glfwLockMutex( GLFWmutex mutex );
-void  glfwUnlockMutex( GLFWmutex mutex );
-GLFWcond  glfwCreateCond();
-void  glfwDestroyCond( GLFWcond cond );
-void  glfwWaitCond( GLFWcond cond, GLFWmutex mutex, double timeout );
-void  glfwSignalCond( GLFWcond cond );
-void  glfwBroadcastCond( GLFWcond cond );
-int   glfwGetNumberOfProcessors();
-
 // Enable/disable functions
 void  glfwEnable( int token );
 void  glfwDisable( int token );
-
-// Image/texture I/O support
-int   glfwReadImage( char *name, GLFWimage *img, int flags );
-int   glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags );
-void  glfwFreeImage( GLFWimage *img );
-int   glfwLoadTexture2D( char *name, int flags );
-int   glfwLoadMemoryTexture2D( const void *data, long size, int flags );
-int   glfwLoadTextureImage2D( GLFWimage *img, int flags );
 

@@ -1,18 +1,10 @@
 LIBRARY GLFW.DLL
 
 EXPORTS
-glfwBroadcastCond
 glfwCloseWindow
-glfwCreateCond
-glfwCreateMutex
-glfwCreateThread
-glfwDestroyCond
-glfwDestroyMutex
-glfwDestroyThread
 glfwDisable
 glfwEnable
 glfwExtensionSupported
-glfwFreeImage
 glfwGetDesktopMode
 glfwGetGLVersion
 glfwGetJoystickButtons
@@ -22,9 +14,7 @@ glfwGetKey
 glfwGetMouseButton
 glfwGetMousePos
 glfwGetMouseWheel
-glfwGetNumberOfProcessors
 glfwGetProcAddress
-glfwGetThreadID
 glfwGetTime
 glfwGetVersion
 glfwGetVideoModes
@@ -32,15 +22,9 @@ glfwGetWindowParam
 glfwGetWindowSize
 glfwIconifyWindow
 glfwInit
-glfwLoadMemoryTexture2D
-glfwLoadTexture2D
-glfwLoadTextureImage2D
-glfwLockMutex
 glfwOpenWindow
 glfwOpenWindowHint
 glfwPollEvents
-glfwReadImage
-glfwReadMemoryImage
 glfwRestoreWindow
 glfwSetCharCallback
 glfwSetKeyCallback
@@ -56,12 +40,7 @@ glfwSetWindowPos
 glfwSetWindowSize
 glfwSetWindowSizeCallback
 glfwSetWindowTitle
-glfwSignalCond
-glfwSleep
 glfwSwapBuffers
 glfwSwapInterval
 glfwTerminate
-glfwUnlockMutex
-glfwWaitCond
 glfwWaitEvents
-glfwWaitThread
