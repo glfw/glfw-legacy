@@ -1306,7 +1306,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
             if( hints->Samples > 0 )
             {
-                hints->Samples--;
+                hints->Samples /= 2;
             }
             else
             {
