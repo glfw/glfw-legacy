@@ -9,10 +9,10 @@ link_libraries(libglfwStatic
 #link_libraries(libglfwShared
 #    ${OPENGL_glu_LIBRARY})
 #add_definitions(-DGLFW_DLL)
-include_directories(${CMAKE_SOURCE_DIR}/include ${OPENGL_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include ${OPENGL_INCLUDE_DIR})
 
-add_executable(boing WIN32 MACOSX_BUNDLE boing.c)
-add_executable(gears WIN32 MACOSX_BUNDLE gears.c)
+add_executable(boing MACOSX_BUNDLE boing.c)
+add_executable(gears MACOSX_BUNDLE gears.c)
 add_executable(keytest keytest.c)
 add_executable(listmodes listmodes.c)
 #add_executable(mimaps WIN32 mimaps.c)

@@ -17,14 +17,14 @@ include(CheckSymbolExists)
 find_package(OpenGL REQUIRED)
 
 set(common_SOURCES 
-    ${CMAKE_SOURCE_DIR}/lib/enable.c 
-    ${CMAKE_SOURCE_DIR}/lib/fullscreen.c
-    ${CMAKE_SOURCE_DIR}/lib/glext.c 
-    ${CMAKE_SOURCE_DIR}/lib/init.c 
-    ${CMAKE_SOURCE_DIR}/lib/input.c 
-    ${CMAKE_SOURCE_DIR}/lib/joystick.c 
-    ${CMAKE_SOURCE_DIR}/lib/time.c
-    ${CMAKE_SOURCE_DIR}/lib/window.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/enable.c 
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/fullscreen.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/glext.c 
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/init.c 
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/input.c 
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/joystick.c 
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/time.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/window.c
 )
 
 #  Deal with Win32 Specific stuffs 
