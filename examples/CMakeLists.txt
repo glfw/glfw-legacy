@@ -24,3 +24,7 @@ add_executable(splitview WIN32 MACOSX_BUNDLE splitview.c)
 add_executable(triangle WIN32 MACOSX_BUNDLE triangle.c)
 add_executable(wave WIN32 MACOSX_BUNDLE wave.c)
 
+if(MSVC)
+  set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif(MSVC)
+
