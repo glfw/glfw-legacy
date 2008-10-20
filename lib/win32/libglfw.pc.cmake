@@ -1,11 +1,11 @@
-prefix=@PREFIX@
-exec_prefix=@PREFIX@
-libdir=@PREFIX@/lib
-includedir=@PREFIX@/include
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
 
 Name: GLFW
 Description: A portable framework for OpenGL development
 Version: 2.6.1
 URL: http://glfw.sourceforge.net/
-Libs: -L${libdir} -lglfw -lglu32 -lopengl32 -lm
+Libs: -L${libdir} -lglfw @GLFW_LIBRARIES@
 Cflags: -I${includedir} -mwin32
