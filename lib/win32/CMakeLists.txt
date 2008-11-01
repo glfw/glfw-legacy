@@ -28,6 +28,11 @@ set_target_properties(libglfwStatic libglfwShared PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
     OUTPUT_NAME glfw)
 
+if(CYGWIN)
+    set_target_properties(libglfwStatic libglfwShared PROPERTIES COMPILE_FLAGS "-mno-cygwin")
+    set_target_properties(libglfwStatic libglfwShared PROPERTIES LINK_FLAGS "-mno-cygwin")
+endif(CYGWIN)
+
 install(TARGETS libglfwStatic libglfwShared DESTINATION lib)
 
 if(CYGWIN)
