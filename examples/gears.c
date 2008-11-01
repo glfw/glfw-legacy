@@ -231,7 +231,7 @@ static void animate(void)
 
 
 /* change view angle, exit upon ESC */
-void GLFWCALL key( int k, int action )
+void key( int k, int action )
 {
   if( action != GLFW_PRESS ) return;
 
@@ -264,7 +264,7 @@ void GLFWCALL key( int k, int action )
 
 
 /* new window size */
-void GLFWCALL reshape( int width, int height )
+void reshape( int width, int height )
 {
   GLfloat h = (GLfloat) height / (GLfloat) width;
   GLfloat xmax, znear, zfar;

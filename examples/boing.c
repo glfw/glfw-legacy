@@ -39,7 +39,7 @@
 /* Prototypes */
 void init( void );
 void display( void );
-void GLFWCALL reshape( int w, int h );
+void reshape( int w, int h );
 void DrawBoingBall( void );
 void BounceBall( double dt );
 void DrawBoingBallBand( GLfloat long_lo, GLfloat long_hi );
@@ -221,7 +221,7 @@ void display(void)
 /*****************************************************************************
  * reshape()
  *****************************************************************************/
-void GLFWCALL reshape( int w, int h )
+void reshape( int w, int h )
 {
    glViewport( 0, 0, (GLsizei)w, (GLsizei)h );
 

@@ -16,7 +16,7 @@ int systemkeys = 1;
 // keyfun()
 //========================================================================
 
-void GLFWCALL keyfun( int key, int action )
+void keyfun( int key, int action )
 {
     if( action != GLFW_PRESS )
     {

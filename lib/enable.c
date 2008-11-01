@@ -215,7 +215,7 @@ static void _glfwDisableAutoPollEvents(void)
 // Enable certain GLFW/window/system functions.
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwEnable(int token)
+GLFWAPI void glfwEnable(int token)
 {
     // Is GLFW initialized?
     if (!_glfwInitialized)
@@ -250,7 +250,7 @@ GLFWAPI void GLFWAPIENTRY glfwEnable(int token)
 // Disable certain GLFW/window/system functions.
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwDisable(int token)
+GLFWAPI void glfwDisable(int token)
 {
     // Is GLFW initialized?
     if (!_glfwInitialized)

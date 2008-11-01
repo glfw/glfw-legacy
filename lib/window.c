@@ -238,7 +238,7 @@ void _glfwInputMouseClick( int button, int action )
 // rendering context is created
 //========================================================================
 
-GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
+GLFWAPI int glfwOpenWindow( int width, int height,
     int redbits, int greenbits, int bluebits, int alphabits,
     int depthbits, int stencilbits, int mode )
 {
@@ -340,7 +340,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 // glfwOpenWindowHint() - Set hints for opening the window
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
+GLFWAPI void glfwOpenWindowHint( int target, int hint )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized )
@@ -396,7 +396,7 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
 // glfwCloseWindow() - Properly kill the window / video display
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
+GLFWAPI void glfwCloseWindow( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized )
@@ -419,7 +419,7 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
 // glfwSetWindowTitle() - Set the window title
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title )
+GLFWAPI void glfwSetWindowTitle( const char *title )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -436,7 +436,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title )
 // glfwGetWindowSize() - Get the window size
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
+GLFWAPI void glfwGetWindowSize( int *width, int *height )
 {
     if( width != NULL )
     {
@@ -453,7 +453,7 @@ GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 // glfwSetWindowSize() - Set the window size
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
+GLFWAPI void glfwSetWindowSize( int width, int height )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Iconified )
@@ -480,7 +480,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 // glfwSetWindowPos() - Set the window position
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
+GLFWAPI void glfwSetWindowPos( int x, int y )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Fullscreen ||
@@ -498,7 +498,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 // glfwIconfyWindow() - Window iconification
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
+GLFWAPI void glfwIconifyWindow( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Iconified )
@@ -515,7 +515,7 @@ GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 // glfwRestoreWindow() - Window un-iconification
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
+GLFWAPI void glfwRestoreWindow( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened || !_glfwWin.Iconified )
@@ -536,7 +536,7 @@ GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 // events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
+GLFWAPI void glfwSwapBuffers( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -559,7 +559,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 // glfwSwapInterval() - Set double buffering swap interval (0 = vsync off)
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
+GLFWAPI void glfwSwapInterval( int interval )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -576,7 +576,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
 // glfwGetWindowParam() - Get window parameter
 //========================================================================
 
-GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
+GLFWAPI int glfwGetWindowParam( int param )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized )
@@ -652,7 +652,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 // changes
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
+GLFWAPI void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -676,7 +676,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 // events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
+GLFWAPI void glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -694,7 +694,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 // refresh events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
+GLFWAPI void glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -711,7 +711,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbf
 // glfwPollEvents() - Poll for new window and input events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
+GLFWAPI void glfwPollEvents( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -728,7 +728,7 @@ GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 // glfwWaitEvents() - Wait for new window and input events
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
+GLFWAPI void glfwWaitEvents( void )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )

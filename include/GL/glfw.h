@@ -128,8 +128,6 @@ extern "C" {
 
  /* We are building a Win32 DLL */
  #define GLFWAPI      __declspec(dllexport)
- #define GLFWAPIENTRY __stdcall
- #define GLFWCALL     __stdcall
 
 #elif defined(_WIN32) && defined(GLFW_DLL)
 
@@ -139,15 +137,11 @@ extern "C" {
  #else
   #define GLFWAPI      __declspec(dllimport)
  #endif
- #define GLFWAPIENTRY __stdcall
- #define GLFWCALL     __stdcall
 
 #else
 
  /* We are either building/calling a static lib or we are non-win32 */
- #define GLFWAPIENTRY
  #define GLFWAPI
- #define GLFWCALL
 
 #endif
 
@@ -354,14 +348,14 @@ typedef struct {
 } GLFWvidmode;
 
 /* Function pointer types */
-typedef void (GLFWCALL * GLFWwindowsizefun)(int,int);
-typedef int  (GLFWCALL * GLFWwindowclosefun)(void);
-typedef void (GLFWCALL * GLFWwindowrefreshfun)(void);
-typedef void (GLFWCALL * GLFWmousebuttonfun)(int,int);
-typedef void (GLFWCALL * GLFWmouseposfun)(int,int);
-typedef void (GLFWCALL * GLFWmousewheelfun)(int);
-typedef void (GLFWCALL * GLFWkeyfun)(int,int);
-typedef void (GLFWCALL * GLFWcharfun)(int,int);
+typedef void (* GLFWwindowsizefun)(int,int);
+typedef int  (* GLFWwindowclosefun)(void);
+typedef void (* GLFWwindowrefreshfun)(void);
+typedef void (* GLFWmousebuttonfun)(int,int);
+typedef void (* GLFWmouseposfun)(int,int);
+typedef void (* GLFWmousewheelfun)(int);
+typedef void (* GLFWkeyfun)(int,int);
+typedef void (* GLFWcharfun)(int,int);
 
 
 /*************************************************************************
@@ -369,63 +363,63 @@ typedef void (GLFWCALL * GLFWcharfun)(int,int);
  *************************************************************************/
 
 /* GLFW initialization, termination and version querying */
-GLFWAPI int  GLFWAPIENTRY glfwInit( void );
-GLFWAPI void GLFWAPIENTRY glfwTerminate( void );
-GLFWAPI void GLFWAPIENTRY glfwGetVersion( int *major, int *minor, int *rev );
+GLFWAPI int  glfwInit( void );
+GLFWAPI void glfwTerminate( void );
+GLFWAPI void glfwGetVersion( int *major, int *minor, int *rev );
 
 /* Window handling */
-GLFWAPI int  GLFWAPIENTRY glfwOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode );
-GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint );
-GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title );
-GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y );
-GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void );
-GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void );
-GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void );
-GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval );
-GLFWAPI int  GLFWAPIENTRY glfwGetWindowParam( int param );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun );
+GLFWAPI int  glfwOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode );
+GLFWAPI void glfwOpenWindowHint( int target, int hint );
+GLFWAPI void glfwCloseWindow( void );
+GLFWAPI void glfwSetWindowTitle( const char *title );
+GLFWAPI void glfwGetWindowSize( int *width, int *height );
+GLFWAPI void glfwSetWindowSize( int width, int height );
+GLFWAPI void glfwSetWindowPos( int x, int y );
+GLFWAPI void glfwIconifyWindow( void );
+GLFWAPI void glfwRestoreWindow( void );
+GLFWAPI void glfwSwapBuffers( void );
+GLFWAPI void glfwSwapInterval( int interval );
+GLFWAPI int  glfwGetWindowParam( int param );
+GLFWAPI void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun );
+GLFWAPI void glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun );
+GLFWAPI void glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun );
 
 /* Video mode functions */
-GLFWAPI int  GLFWAPIENTRY glfwGetVideoModes( GLFWvidmode *list, int maxcount );
-GLFWAPI void GLFWAPIENTRY glfwGetDesktopMode( GLFWvidmode *mode );
+GLFWAPI int  glfwGetVideoModes( GLFWvidmode *list, int maxcount );
+GLFWAPI void glfwGetDesktopMode( GLFWvidmode *mode );
 
 /* Input handling */
-GLFWAPI void GLFWAPIENTRY glfwPollEvents( void );
-GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void );
-GLFWAPI int  GLFWAPIENTRY glfwGetKey( int key );
-GLFWAPI int  GLFWAPIENTRY glfwGetMouseButton( int button );
-GLFWAPI void GLFWAPIENTRY glfwGetMousePos( int *xpos, int *ypos );
-GLFWAPI void GLFWAPIENTRY glfwSetMousePos( int xpos, int ypos );
-GLFWAPI int  GLFWAPIENTRY glfwGetMouseWheel( void );
-GLFWAPI void GLFWAPIENTRY glfwSetMouseWheel( int pos );
-GLFWAPI void GLFWAPIENTRY glfwSetKeyCallback( GLFWkeyfun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetCharCallback( GLFWcharfun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetMousePosCallback( GLFWmouseposfun cbfun );
-GLFWAPI void GLFWAPIENTRY glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun );
+GLFWAPI void glfwPollEvents( void );
+GLFWAPI void glfwWaitEvents( void );
+GLFWAPI int  glfwGetKey( int key );
+GLFWAPI int  glfwGetMouseButton( int button );
+GLFWAPI void glfwGetMousePos( int *xpos, int *ypos );
+GLFWAPI void glfwSetMousePos( int xpos, int ypos );
+GLFWAPI int  glfwGetMouseWheel( void );
+GLFWAPI void glfwSetMouseWheel( int pos );
+GLFWAPI void glfwSetKeyCallback( GLFWkeyfun cbfun );
+GLFWAPI void glfwSetCharCallback( GLFWcharfun cbfun );
+GLFWAPI void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun );
+GLFWAPI void glfwSetMousePosCallback( GLFWmouseposfun cbfun );
+GLFWAPI void glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun );
 
 /* Joystick input */
-GLFWAPI int GLFWAPIENTRY glfwGetJoystickParam( int joy, int param );
-GLFWAPI int GLFWAPIENTRY glfwGetJoystickPos( int joy, float *pos, int numaxes );
-GLFWAPI int GLFWAPIENTRY glfwGetJoystickButtons( int joy, unsigned char *buttons, int numbuttons );
+GLFWAPI int glfwGetJoystickParam( int joy, int param );
+GLFWAPI int glfwGetJoystickPos( int joy, float *pos, int numaxes );
+GLFWAPI int glfwGetJoystickButtons( int joy, unsigned char *buttons, int numbuttons );
 
 /* Time */
-GLFWAPI double GLFWAPIENTRY glfwGetTime( void );
-GLFWAPI void   GLFWAPIENTRY glfwSetTime( double time );
+GLFWAPI double glfwGetTime( void );
+GLFWAPI void   glfwSetTime( double time );
 
 /* Extension support */
-GLFWAPI int   GLFWAPIENTRY glfwExtensionSupported( const char *extension );
-GLFWAPI void* GLFWAPIENTRY glfwGetProcAddress( const char *procname );
-GLFWAPI void  GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor, int *rev );
+GLFWAPI int   glfwExtensionSupported( const char *extension );
+GLFWAPI void* glfwGetProcAddress( const char *procname );
+GLFWAPI void  glfwGetGLVersion( int *major, int *minor, int *rev );
 
 /* Enable/disable functions */
-GLFWAPI void GLFWAPIENTRY glfwEnable( int token );
-GLFWAPI void GLFWAPIENTRY glfwDisable( int token );
+GLFWAPI void glfwEnable( int token );
+GLFWAPI void glfwDisable( int token );
 
 
 #ifdef __cplusplus

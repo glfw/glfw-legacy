@@ -47,7 +47,7 @@ if (UNIX AND NOT APPLE AND NOT CYGWIN)
     message(STATUS "Building GLFW for a Unix flavor (not Mac OS X)")
     
     # Detect X11 extension 
-    include(${CMAKE_SOURCE_DIR}/CMake/CHECK_X11_EXTENSIONS.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CHECK_X11_EXTENSIONS.cmake)
     
     # XRandR
     CHECK_X11_XRANDR()

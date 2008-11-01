@@ -39,7 +39,7 @@
 // Get a list of available video modes
 //========================================================================
 
-GLFWAPI int GLFWAPIENTRY glfwGetVideoModes(GLFWvidmode *list, int maxcount)
+GLFWAPI int glfwGetVideoModes(GLFWvidmode *list, int maxcount)
 {
     int count, i, swap, res1, res2, depth1, depth2;
     GLFWvidmode vm;
@@ -79,7 +79,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetVideoModes(GLFWvidmode *list, int maxcount)
 // Get the desktop video mode
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwGetDesktopMode(GLFWvidmode *mode)
+GLFWAPI void glfwGetDesktopMode(GLFWvidmode *mode)
 {
     if (!_glfwInitialized || mode == (GLFWvidmode*) 0)
         return;

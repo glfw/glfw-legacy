@@ -250,7 +250,7 @@ void calc( void )
 
 
 /* Handle key strokes */
-void GLFWCALL handle_key_down(int key, int action)
+void handle_key_down(int key, int action)
 {
   if( action != GLFW_PRESS )
   {
@@ -289,7 +289,7 @@ void GLFWCALL handle_key_down(int key, int action)
 
 
 /* Callback function for window resize events */
-void GLFWCALL handle_resize( int width, int height )
+void handle_resize( int width, int height )
 {
   float ratio = 1.0f;
 

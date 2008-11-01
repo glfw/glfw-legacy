@@ -82,7 +82,7 @@ int _glfwStringInExtensionString( const char *string,
 // at runtime
 //========================================================================
 
-GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
+GLFWAPI int glfwExtensionSupported( const char *extension )
 {
     const GLubyte *extensions;
     GLubyte       *where;
@@ -125,7 +125,7 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
 // This function can be used to get access to extended OpenGL functions.
 //========================================================================
 
-GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )
+GLFWAPI void * glfwGetProcAddress( const char *procname )
 {
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -141,7 +141,7 @@ GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )
 // glfwGetGLVersion() - Get OpenGL version
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor,
+GLFWAPI void glfwGetGLVersion( int *major, int *minor,
     int *rev )
 {
     GLuint _major, _minor = 0, _rev = 0;
