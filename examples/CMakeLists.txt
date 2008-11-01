@@ -28,3 +28,9 @@ if(MSVC)
   set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif(MSVC)
 
+if(CYGWIN)
+  set_target_properties(boing gears keytest listmodes splitview triangle wave PROPERTIES COMPILE_FLAGS "-mno-cygwin")
+  set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "-mno-cygwin -mwindows")
+  set_target_properties(keytest listmodes PROPERTIES LINK_FLAGS "-mno-cygwin -mconsole")
+endif(CYGWIN)
+
