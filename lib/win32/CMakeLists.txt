@@ -23,7 +23,8 @@ add_library(libglfwShared SHARED ${libglfw_SOURCES})
 
 target_link_libraries(libglfwShared ${OPENGL_gl_LIBRARY})
 set_target_properties(libglfwShared PROPERTIES 
-    DEFINE_SYMBOL GLFW_BUILD_DLL)
+    DEFINE_SYMBOL GLFW_BUILD_DLL
+    IMPORT_SUFFIX "dll.lib")
 set_target_properties(libglfwStatic libglfwShared PROPERTIES 
     CLEAN_DIRECT_OUTPUT 1
     OUTPUT_NAME glfw)
