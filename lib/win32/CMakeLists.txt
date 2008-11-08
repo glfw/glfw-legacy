@@ -19,12 +19,13 @@ set(libglfw_SOURCES
     win32_dllmain.c)
 
 add_library(libglfwStatic STATIC ${libglfw_SOURCES})
-add_library(libglfwShared SHARED ${libglfw_SOURCES}) 
+add_library(libglfwShared SHARED ${libglfw_SOURCES} glfwdll.def) 
 
 target_link_libraries(libglfwShared ${OPENGL_gl_LIBRARY})
 set_target_properties(libglfwShared PROPERTIES 
     DEFINE_SYMBOL GLFW_BUILD_DLL
     PREFIX ""
+    IMPORT_PREFIX ""
     IMPORT_SUFFIX "dll.lib")
 set_target_properties(libglfwStatic libglfwShared PROPERTIES 
     CLEAN_DIRECT_OUTPUT 1
