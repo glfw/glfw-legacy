@@ -1,8 +1,12 @@
 
 if(CYGWIN)
-    configure_file(
-	${CMAKE_CURRENT_SOURCE_DIR}/libglfw.pc.cmake 
-	${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc @ONLY)
+  configure_file(
+      ${CMAKE_CURRENT_SOURCE_DIR}/libglfw.pc.cmake 
+      ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc @ONLY)
+# Remove Cygwin-specific link flags set by CYGWIN.cmake
+# (we're building for native Win32, not Cygwin)
+  set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-shared")
+  set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS ${CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS})
 endif(CYGWIN)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/lib)
@@ -19,7 +23,7 @@ set(libglfw_SOURCES
     win32_dllmain.c)
 
 add_library(libglfwStatic STATIC ${libglfw_SOURCES})
-add_library(libglfwShared SHARED ${libglfw_SOURCES} glfwdll.def) 
+add_library(libglfwShared SHARED glfwdll.def ${libglfw_SOURCES}) 
 
 target_link_libraries(libglfwShared ${OPENGL_gl_LIBRARY})
 set_target_properties(libglfwShared PROPERTIES 
@@ -32,8 +36,8 @@ set_target_properties(libglfwStatic libglfwShared PROPERTIES
     OUTPUT_NAME glfw)
 
 if(CYGWIN)
-    set_target_properties(libglfwStatic libglfwShared PROPERTIES COMPILE_FLAGS "-mno-cygwin")
-    set_target_properties(libglfwStatic libglfwShared PROPERTIES LINK_FLAGS "-mno-cygwin")
+    set_target_properties(libglfwStatic libglfwShared PROPERTIES COMPILE_FLAGS "-mwin32 -mno-cygwin")
+    set_target_properties(libglfwStatic libglfwShared PROPERTIES LINK_FLAGS "-mwin32 -mno-cygwin")
 endif(CYGWIN)
 
 install(TARGETS libglfwStatic libglfwShared DESTINATION lib)
