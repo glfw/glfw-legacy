@@ -5,6 +5,8 @@ if(CYGWIN)
       ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc @ONLY)
 # Remove Cygwin-specific link flags set by CYGWIN.cmake
 # (we're building for native Win32, not Cygwin)
+# This is a HACK.  If you have trouble _linking_ the GLFW
+# _shared_ library on Cygwin, try disabling this.
   set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-shared")
   set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS ${CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS})
 endif(CYGWIN)
