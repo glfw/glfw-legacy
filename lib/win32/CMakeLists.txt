@@ -3,12 +3,15 @@ if(CYGWIN)
   configure_file(
       ${CMAKE_CURRENT_SOURCE_DIR}/libglfw.pc.cmake 
       ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc @ONLY)
-# Remove Cygwin-specific link flags set by CYGWIN.cmake
-# (we're building for native Win32, not Cygwin)
+
+# These lines are intended to remove the --export-all-symbols
+# flag added in the Modules/Platform/CYGWIN.cmake file of the
+# CMake distribution.
 # This is a HACK.  If you have trouble _linking_ the GLFW
 # _shared_ library on Cygwin, try disabling this.
   set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-shared")
   set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS ${CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS})
+
 endif(CYGWIN)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/lib)
