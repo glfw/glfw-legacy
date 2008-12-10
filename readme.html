@@ -6,6 +6,7 @@
   <title>GLFW Readme File</title>
   <style type="text/css">
     table { margin-left: 2em; border-style: solid; border-width: thin; }
+    tr.header { font-weight: bold; }
     td { padding: 0.2em; border-style: solid; border-width: thin; }
     pre { margin-left: 2em; }
   </style>
@@ -127,18 +128,40 @@ linked with by default by your compiler. In the table below you can see the
 minimum required link options for each supported Windows compiler (you may want
 to add other libraries as well, such as <code>glu32</code>):</p>
 
-<p>
 <table>
-<tr><td><b>Compiler</b></td><td><b>Link options</b></td></tr>
-<tr><td>Borland C++ Builder</td><td>glfw.lib opengl32.lib</td></tr>
-<tr><td>Cygwin</td><td><i>See Unix static library below</i></td></tr>
-<tr><td>LCC-Win32</td><td>glfw.lib opengl32.lib</td></tr>
-<tr><td>Microsoft Visual C++</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
-<tr><td>MinGW32</td><td>-lglfw -lopengl32</td></tr>
-<tr><td>OpenWatcom</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
-<tr><td>Pelles C</td><td>glfw.lib opengl32.lib user32.lib kernel32.lib</td></tr>
+  <tr class="header">
+    <td>Compiler</td>
+    <td>Link options</td>
+  </tr>
+  <tr>
+    <td>Borland C++ Builder</td>
+    <td><code>glfw.lib opengl32.lib</code></td>
+  </tr>
+  <tr>
+    <td>Cygwin</td>
+    <td><i>See Unix static library below</i></td>
+  </tr>
+  <tr>
+    <td>LCC-Win32</td>
+    <td><code>glfw.lib opengl32.lib</code></td>
+  </tr>
+  <tr>
+    <td>Microsoft Visual C++</td>
+    <td><code>glfw.lib opengl32.lib user32.lib</code></td>
+  </tr>
+  <tr>
+    <td>MinGW32</td>
+    <td><code>-lglfw -lopengl32</code></td>
+  </tr>
+  <tr>
+    <td>OpenWatcom</td>
+    <td><code>glfw.lib opengl32.lib user32.lib</code></td>
+  </tr>
+  <tr>
+    <td>Pelles C</td>
+    <td><code>glfw.lib opengl32.lib user32.lib kernel32.lib</code></td>
+  </tr>
 </table>
-</p>
 
 
 <h4>4.2.2 Windows DLL</h4>
@@ -157,15 +180,39 @@ In the table below you can see the minimum required link options for each
 supported Windows compiler (you may want to add other libraries as well,
 such as <code>opengl32</code> and <code>glu32</code>):</p>
 
-<p><table>
-<tr><td><b>Compiler</b></td><td><b>Link options</b></td></tr>
-<tr><td>Borland C++ Builder</td><td>glfwdll.lib</td></tr>
-<tr><td>Cygwin</td><td>-lglfwdll</td></tr>
-<tr><td>LCC-Win32</td><td>glfwdll.lib</td></tr>
-<tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
-<tr><td>MinGW32</td><td>-lglfwdll</td></tr>
-<tr><td>OpenWatcom</td><td>glfwdll.lib</td></tr>
-<tr><td>Pelles C</td><td>glfwdll.lib</td></tr>
+<table>
+  <tr class="header">
+    <td>Compiler</td>
+    <td>Link options</td>
+  </tr>
+  <tr>
+    <td>Borland C++ Builder</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>Cygwin</td>
+    <td><code>-lglfwdll</code></td>
+  </tr>
+  <tr>
+    <td>LCC-Win32</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>Microsoft Visual C++</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>MinGW32</td>
+    <td><code>-lglfwdll</code></td>
+  </tr>
+  <tr>
+    <td>OpenWatcom</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>Pelles C</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
 </table>
 
 <h4>4.2.3 Unix static library</h4>
@@ -619,10 +666,13 @@ native version of GLFW.</p>
 
 <p>Here is an overview of the directory structure of the GLFW distribution:
 
-<p>
 <table>
+  <tr class="header">
+    <td>Directory</td>
+    <td>Contents</td>
+  </tr>
   <tr>
-    <td width=100><code>docs</code></td>
+    <td><code>docs</code></td>
     <td>GLFW manuals in PDF format</td>
   </tr>
   <tr>
@@ -650,7 +700,6 @@ native version of GLFW.</p>
     <td>Unix/X11-specific code</td>
   </tr>
 </table>
-</p>
 
 
 <a name="sec7">
