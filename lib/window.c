@@ -551,7 +551,10 @@ GLFWAPI void glfwSwapBuffers( void )
     }
 
     // Update display-buffer
-    _glfwPlatformSwapBuffers();
+    if( _glfwWin.Opened )
+    {
+	_glfwPlatformSwapBuffers();
+    }
 }
 
 
