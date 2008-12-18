@@ -46,6 +46,10 @@
 #include <GL/glx.h>
 #include "../../include/GL/glfw.h"
 
+#if !defined( GLX_VERSION_1_3 )
+ #error "GLFW requires GLX version 1.3 or above"
+#endif
+
 // With XFree86, we can use the XF86VidMode extension
 #if defined( _GLFW_HAS_XF86VIDMODE )
  #include <X11/extensions/xf86vmode.h>
