@@ -45,6 +45,7 @@
 #include <X11/Xatom.h>
 #include <GL/glx.h>
 #include "../../include/GL/glfw.h"
+#include "x11_config.h"
 
 #if !defined( GLX_VERSION_1_3 )
  #error "GLFW requires GLX version 1.3 or above"
