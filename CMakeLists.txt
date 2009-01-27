@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 2.4)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
 
-# -- Stuff common to all platform 
+# Stuff common to all platform 
 find_package(OpenGL REQUIRED)
 
 set(common_SOURCES 
@@ -27,29 +27,34 @@ set(common_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/window.c
 )
 
-#  Deal with Win32 Specific stuffs 
+# Stuff specific to WGL on Win32
 if (WIN32)
-    message(STATUS "Building GLFW for Win32 systems") 
+    message(STATUS "Building GLFW for WGL on a Win32 system") 
+
+    # Set up library and include paths
     set(CMAKE_REQUIRED_LIBRARIES ${OPENGL_gl_LIBRARY})
     list(APPEND GLFW_INCLUDE_DIR ${OPENGL_INCLUDE_DIR})
     list(APPEND GLFW_LIBRARIES ${OPENGL_gl_LIBRARY})
+
+    # Select platform specific code
     add_subdirectory(lib/win32)
 endif (WIN32)
 
-
-# Deal with Unix Specifics (Not MacOS/X) 
+# Stuff specific to GLX on Unix-like platforms
 if (UNIX AND NOT APPLE AND NOT CYGWIN)
+    message(STATUS "Building GLFW for GLX on a Unix-like system")
+    
+    # Set up library and include paths
     set(CMAKE_REQUIRED_LIBRARIES ${X11_X11_LIB} ${OPENGL_gl_LIBRARY})
     list(APPEND GLFW_INCLUDE_DIR ${X11_X11_INCLUDE_PATH})
     list(APPEND GLFW_LIBRARIES ${X11_X11_LIB})
     list(APPEND GLFW_INCLUDE_DIR ${OPENGL_INCLUDE_DIR})
     list(APPEND GLFW_LIBRARIES ${OPENGL_gl_LIBRARY})
-    message(STATUS "Building GLFW for a Unix flavor (not Mac OS X)")
-    
+
     # Detect X11 extension 
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CHECK_X11_EXTENSIONS.cmake)
     
-    # XRandR
+    # Check for XRandR (modern resolution switching extension)
     CHECK_X11_XRANDR()
     if (X11_XRANDR_FOUND)
         set(_GLFW_HAS_XRANDR 1) 
@@ -57,30 +62,36 @@ if (UNIX AND NOT APPLE AND NOT CYGWIN)
         list(APPEND GLFW_LIBRARIES ${X11_XRANDR_LIBRARIES})
     endif(X11_XRANDR_FOUND)
 
-    # xf86vidmode 
-    CHECK_X11_XF86VIDMODE()
-    if (X11_XF86VIDMODE_FOUND)
-        set(_GLFW_HAS_XF86VIDMODE 1)
-        list(APPEND GLFW_INCLUDE_DIR ${X11_XF86VIDMODE_INCLUDE_DIR})
-        list(APPEND GLFW_LIBRARIES ${X11_XF86VIDMODE_LIBRARIES})
-    endif(X11_XF86VIDMODE_FOUND) 
+    # Check for xf86vidmode (fallback legacy resolution switching extension)
+    if (NOT X11_XRANDR_FOUND)
+	CHECK_X11_XF86VIDMODE()
+	if (X11_XF86VIDMODE_FOUND)
+	    set(_GLFW_HAS_XF86VIDMODE 1)
+	    list(APPEND GLFW_INCLUDE_DIR ${X11_XF86VIDMODE_INCLUDE_DIR})
+	    list(APPEND GLFW_LIBRARIES ${X11_XF86VIDMODE_LIBRARIES})
+	endif(X11_XF86VIDMODE_FOUND) 
+    endif (NOT X11_XRANDR_FOUND)
 
-    # GLX Related check 
+    # Check for various variants of glXGetProcAddress
     CHECK_FUNCTION_EXISTS(glXGetProcAddress    _GLFW_HAS_GLXGETPROCADDRESS)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressARB _GLFW_HAS_GLXGETPROCADDRESSARB)
     CHECK_FUNCTION_EXISTS(glXGetProcAddressEXT _GLFW_HAS_GLXGETPROCADDRESSEXT)
 
+    # Select platform specific code
     add_subdirectory(lib/x11)
 endif(UNIX AND NOT APPLE AND NOT CYGWIN)
 
-# Deal with MacOSX Specifics 
+# Stuff specific to AGL and CGL on Mac OS X
 if (UNIX AND APPLE)
-    message(STATUS "Building GLFW for Mac OS X")
-    # Mac OS X AGL 
+    message(STATUS "Building GLFW for AGL and CGL on Mac OS X")
+
+    # Set up library and include paths
     find_library(AGL_FRAMEWORK AGL)
     list(APPEND GLFW_LIBRARIES ${AGL_FRAMEWORK})
     find_library(CARBON_FRAMEWORK CARBON)
     list(APPEND GLFW_LIBRARIES ${CARBON_FRAMEWORK})
+
+    # Select platform specific code
     add_subdirectory(lib/macosx)
 endif(UNIX AND APPLE)
 
@@ -89,17 +100,17 @@ add_subdirectory(examples)
 #add_subdirectory(docs/manuals)
 
 
-#add_subdirectory(contrib) # modules is the best than contrib
-
 #--------------------------------------------------------------------
 # -- Install standard files 
 #--------------------------------------------------------------------
-# install headers 
+
+# Install the GLFW header file
 install(DIRECTORY include/ DESTINATION include 
     PATTERN ".svn" EXCLUDE 
     PATTERN "include/*"
 )
-# install docs 
+
+# Install documentation
 install(
     FILES 
         COPYING.txt 
@@ -107,15 +118,6 @@ install(
     DESTINATION 
         share/doc/glfw-${GLFW_VERSION_FULL}/
 )
-install(
-    DIRECTORY 
-        docs/images 
-    DESTINATION 
-        share/doc/glfw-${GLFW_VERSION_FULL}/
-        PATTERN ".svn" EXCLUDE
-        PATTERN "images/*" 
-)
-
 
 #--------------------------------------------------------------------
 # -- Additional stuff 
