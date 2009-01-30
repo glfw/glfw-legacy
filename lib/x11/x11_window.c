@@ -31,15 +31,6 @@
 #include "internal.h"
 
 
-/* Defines some GLX FSAA tokens if not yet defined */
-#ifndef GLX_SAMPLE_BUFFERS
-# define GLX_SAMPLE_BUFFERS  100000
-#endif 
-#ifndef GLX_SAMPLES 
-# define GLX_SAMPLES         100001
-#endif 
-
-
 /* KDE decoration values */
 enum {
   KDE_noDecoration = 0,
@@ -858,7 +849,7 @@ static void _glfwInitGLXExtensions( void )
     if( has_swap_control )
     {
         _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
+            glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
     }
     else
     {

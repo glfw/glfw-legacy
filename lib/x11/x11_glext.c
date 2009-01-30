@@ -64,6 +64,6 @@ int _glfwPlatformExtensionSupported( const char *extension )
 
 void * _glfwPlatformGetProcAddress( const char *procname )
 {
-    return (void *) _glfw_glXGetProcAddress( (const GLubyte *) procname );
+    return (void *) glXGetProcAddress( (const GLubyte *) procname );
 }
 

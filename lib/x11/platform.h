@@ -47,8 +47,8 @@
 #include "../../include/GL/glfw.h"
 #include "x11_config.h"
 
-#if !defined( GLX_VERSION_1_3 )
- #error "GLFW requires GLX version 1.3 or above"
+#if !defined( GLX_VERSION_1_4 )
+ #error "GLFW requires GLX version 1.4 or above"
 #endif
 
 // With XFree86, we can use the XF86VidMode extension
@@ -58,26 +58,6 @@
 
 #if defined( _GLFW_HAS_XRANDR )
  #include <X11/extensions/Xrandr.h>
-#endif
-
-void (*glXGetProcAddress(const GLubyte *procName))();
-void (*glXGetProcAddressARB(const GLubyte *procName))();
-void (*glXGetProcAddressEXT(const GLubyte *procName))();
-
-// We support four different ways for getting addresses for GL/GLX
-// extension functions: glXGetProcAddress, glXGetProcAddressARB,
-// glXGetProcAddressEXT, and dlsym
-#if   defined( _GLFW_HAS_GLXGETPROCADDRESSARB )
- #define _glfw_glXGetProcAddress(x) glXGetProcAddressARB(x)
-#elif defined( _GLFW_HAS_GLXGETPROCADDRESS )
- #define _glfw_glXGetProcAddress(x) glXGetProcAddress(x)
-#elif defined( _GLFW_HAS_GLXGETPROCADDRESSEXT )
- #define _glfw_glXGetProcAddress(x) glXGetProcAddressEXT(x)
-#elif defined( _GLFW_HAS_DLOPEN )
- #define _glfw_glXGetProcAddress(x) dlsym(_glfwLibs.libGL,x)
- #define _GLFW_DLOPEN_LIBGL
-#else
-#define _glfw_glXGetProcAddress(x) NULL
 #endif
 
 // glXSwapIntervalSGI typedef (X11 buffer-swap interval control)

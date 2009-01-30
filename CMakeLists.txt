@@ -72,11 +72,6 @@ if (UNIX AND NOT APPLE AND NOT CYGWIN)
 	endif(X11_XF86VIDMODE_FOUND) 
     endif (NOT X11_XRANDR_FOUND)
 
-    # Check for various variants of glXGetProcAddress
-    CHECK_FUNCTION_EXISTS(glXGetProcAddress    _GLFW_HAS_GLXGETPROCADDRESS)
-    CHECK_FUNCTION_EXISTS(glXGetProcAddressARB _GLFW_HAS_GLXGETPROCADDRESSARB)
-    CHECK_FUNCTION_EXISTS(glXGetProcAddressEXT _GLFW_HAS_GLXGETPROCADDRESSEXT)
-
     # Select platform specific code
     add_subdirectory(lib/x11)
 endif(UNIX AND NOT APPLE AND NOT CYGWIN)
