@@ -239,195 +239,6 @@ static void _glfwEnableDecorations( void )
 
 
 //========================================================================
-// _glfwChooseVisual() - We do our own function here, since
-// glXChooseVisual does not behave as we want it to (not according to the
-// GLFW specs)
-//========================================================================
-
-XVisualInfo * _glfwChooseVisual( Display *Dpy, int Screen, int r, int g,
-    int b, int a, int d, int s, int ar, int ag, int ab, int aa, int aux,
-				 int fsaa, int stereo)
-{
-    XVisualInfo *VI, *VI_list, VI_tmp;
-    int  nitems_return, i;
-    int  vi_gl, vi_rgba, vi_double, vi_stereo;
-    int  vi_r, vi_g, vi_b, vi_a, vi_d, vi_s, vi_ar, vi_ag, vi_ab, vi_aa;
-    int  vi_aux;
-    int  color, accum, vi_accum;
-    int  missing, color_diff, extra_diff;
-    int  best_vis, best_missing, best_color_diff, best_extra_diff;
-    int  samples, samplebuffers, vi_samples, vi_samplebuffers;
-
-    // Get list of visuals for this screen & display
-    VI_tmp.screen = Screen;
-    VI_list = XGetVisualInfo( Dpy, VisualScreenMask, &VI_tmp,
-                              &nitems_return );
-    if( VI_list == NULL )
-    {
-        return NULL;
-    }
-
-    // Pick some prefered color depth if the user did not request a
-    // specific depth (note: if the user did not request a specific color
-    // depth, this will not be a driving demand, it's only here to avoid
-    // selection randomness)
-    color = (r > 0 || g > 0 || b > 0);
-    if( !color )
-    {
-        r = g = b = 8;
-    }
-
-    // Make sure that stereo is 1 or 0
-    stereo = stereo ? 1 : 0;
-
-    // Convenience pre-calculation
-    accum = (ar > 0 || ag > 0 || ab > 0 || aa > 0);
-    
-    samples = fsaa;
-    samplebuffers = (fsaa > 0) ? 1 : 0;
-    
-    
-
-    // Loop through list of visuals to find best match
-    best_vis        = -1;
-    best_missing    = 0x7fffffff;
-    best_color_diff = 0x7fffffff;
-    best_extra_diff = 0x7fffffff;
-    for( i = 0; i < nitems_return; i ++ )
-    {
-        // We want GL, RGBA & DOUBLEBUFFER, and NOT STEREO / STEREO
-        glXGetConfig( Dpy, &VI_list[i], GLX_USE_GL, &vi_gl );
-        glXGetConfig( Dpy, &VI_list[i], GLX_RGBA, &vi_rgba );
-        glXGetConfig( Dpy, &VI_list[i], GLX_DOUBLEBUFFER, &vi_double );
-        glXGetConfig( Dpy, &VI_list[i], GLX_STEREO, &vi_stereo );
-        vi_stereo = vi_stereo ? 1 : 0;
-        if( vi_gl && vi_rgba && vi_double && (vi_stereo == stereo) )
-        {
-            // Get visual color parameters
-            glXGetConfig( Dpy, &VI_list[i], GLX_RED_SIZE, &vi_r );
-            glXGetConfig( Dpy, &VI_list[i], GLX_GREEN_SIZE, &vi_g );
-            glXGetConfig( Dpy, &VI_list[i], GLX_BLUE_SIZE, &vi_b );
-
-            // Get visual "extra" parameters
-            glXGetConfig( Dpy, &VI_list[i], GLX_ALPHA_SIZE, &vi_a );
-            glXGetConfig( Dpy, &VI_list[i], GLX_DEPTH_SIZE, &vi_d );
-            glXGetConfig( Dpy, &VI_list[i], GLX_STENCIL_SIZE, &vi_s );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_RED_SIZE, &vi_ar );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_GREEN_SIZE, &vi_ag );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_BLUE_SIZE, &vi_ab );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_ALPHA_SIZE, &vi_aa );
-            glXGetConfig( Dpy, &VI_list[i], GLX_AUX_BUFFERS, &vi_aux );
-	    glXGetConfig( Dpy, &VI_list[i], GLX_SAMPLE_BUFFERS, &vi_samplebuffers );
-	    glXGetConfig( Dpy, &VI_list[i], GLX_SAMPLES, &vi_samples );
-	    
-            vi_accum = (vi_ar > 0 || vi_ag > 0 || vi_ab > 0 || vi_aa > 0);
-
-            // Check how many buffers are missing
-            missing = 0;
-            if( a > 0 && vi_a == 0 ) missing ++;
-            if( d > 0 && vi_d == 0 ) missing ++;
-            if( s > 0 && vi_s == 0 ) missing ++;
-            if( accum && !vi_accum ) missing ++;
-            if( aux > 0 && vi_aux == 0 ) missing ++;
-	    if( samplebuffers > 0 && vi_samplebuffers == 0 ) missing ++;
-	    
-
-            // Calculate color diff
-            color_diff = (r - vi_r) * (r - vi_r) +
-                         (g - vi_g) * (g - vi_g) +
-                         (b - vi_b) * (b - vi_b);
-
-            // Calculate "extra" diff
-            extra_diff = 0;
-            if( a > 0 )
-            {
-                extra_diff += (a - vi_a) * (a - vi_a);
-            }
-            if( d > 0 )
-            {
-                extra_diff += (d - vi_d) * (d - vi_d);
-            }
-            if( s > 0 )
-            {
-                extra_diff += (s - vi_s) * (s - vi_s);
-            }
-            if( accum )
-            {
-                extra_diff += (ar - vi_ar) * (ar - vi_ar) +
-                              (ag - vi_ag) * (ag - vi_ag) +
-                              (ab - vi_ab) * (ab - vi_ab) +
-                              (aa - vi_aa) * (aa - vi_aa);
-            }
-            if( aux > 0 )
-            {
-                extra_diff += (aux - vi_aux) * (aux - vi_aux);
-            }
-	    if( samples > 0 )
-	    {
-	      extra_diff += (samples - vi_samples) * (samples - vi_samples);
-	      
-	    }
-            // Check if this is a better match. We implement some
-            // complicated rules, by prioritizing in this order:
-            //  1) Visuals with the least number of missing buffers always
-            //     have priority
-            //  2a) If (r,g,b)!=(0,0,0), color depth has priority over
-            //      other buffers
-            //  2b) If (r,g,b)==(0,0,0), other buffers have priority over
-            //      color depth
-            if( missing < best_missing )
-            {
-                best_vis = i;
-            }
-            else if( missing == best_missing )
-            {
-                if( color )
-                {
-                    if( (color_diff < best_color_diff) ||
-                        (color_diff == best_color_diff &&
-                         extra_diff < best_extra_diff) )
-                    {
-                        best_vis = i;
-                    }
-                }
-                else
-                {
-                    if( (extra_diff < best_extra_diff) ||
-                        (extra_diff == best_extra_diff &&
-                         color_diff < best_color_diff) )
-                    {
-                        best_vis = i;
-                    }
-                }
-            }
-            if( best_vis == i )
-            {
-                best_missing    = missing;
-                best_color_diff = color_diff;
-                best_extra_diff = extra_diff;
-            }
-        }
-    }
-
-    // Copy best visual to a visual to return
-    if( best_vis >= 0 )
-    {
-        VI = XGetVisualInfo( Dpy, VisualIDMask, &VI_list[ best_vis ],
-                             &nitems_return );
-    }
-    else
-    {
-        VI = NULL;
-    }
-
-    // Free visuals list
-    XFree( VI_list );
-
-    return VI;
-}
-
-
-//========================================================================
 // _glfwTranslateKey() - Translates an X Window key to internal coding
 //========================================================================
 
@@ -863,9 +674,12 @@ static void _glfwInitGLXExtensions( void )
 //****               Platform implementation functions                ****
 //************************************************************************
 
+#define _glfwSetGLXattrib( attribs, index, attribName, attribValue ) \
+    attribs[index++] = attribName; \
+    attribs[index++] = attribValue;
+
 //========================================================================
-// _glfwPlatformOpenWindow() - Here is where the window is created, and
-// the OpenGL rendering context is created
+// Create the window and the OpenGL rendering context
 //========================================================================
 
 int _glfwPlatformOpenWindow( int width, int height, int redbits,
@@ -876,6 +690,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     XSetWindowAttributes wa;
     XEvent      event;
     Atom protocols[2];
+    int attribs[30];
+    int index = 0;
 
     // Clear platform specific GLFW window state
     _glfwWin.VI               = NULL;
@@ -889,13 +705,6 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.Saver.Changed    = GL_FALSE;
     _glfwWin.RefreshRate      = hints->RefreshRate;
 
-    // GLX currently provides no mechanism for creating versioned or forward-
-    // compatible contexts.  Fail if such a context was requested.
-    if( hints->OpenGLMajor > 2 || hints->OpenGLForward )
-    {
-	return GL_FALSE;
-    }
-
     // Fullscreen & screen saver settings
     // Check if GLX is supported on this display
     if( !glXQueryExtension( _glfwLibrary.Dpy, NULL, NULL ) )
@@ -907,14 +716,51 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Get screen ID for this window
     _glfwWin.Scrn = _glfwLibrary.DefaultScreen;
 
+    attribs[index++] = GLX_USE_GL;
+
+    _glfwSetGLXattrib( attribs, index, GLX_RED_SIZE, redbits );
+    _glfwSetGLXattrib( attribs, index, GLX_GREEN_SIZE, greenbits );
+    _glfwSetGLXattrib( attribs, index, GLX_BLUE_SIZE, bluebits );
+    _glfwSetGLXattrib( attribs, index, GLX_ALPHA_SIZE, alphabits );
+
+    if( depthbits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_DEPTH_SIZE, depthbits );
+    }
+
+    if( stencilbits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_STENCIL_SIZE, stencilbits );
+    }
+
+    if( hints->AccumRedBits > 0 || hints->AccumGreenBits > 0 ||
+        hints->AccumBlueBits > 0 || hints->AccumAlphaBits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_RED_SIZE, hints->AccumRedBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_GREEN_SIZE, hints->AccumGreenBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_BLUE_SIZE, hints->AccumBlueBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_ALPHA_SIZE, hints->AccumAlphaBits );
+    }
+
+    if( hints->Stereo )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_STEREO, hints->Stereo ? 1 : 0 );
+    }
+
+    if( hints->Samples > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
+    }
+
+    if( hints->AuxBuffers > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
+    }
+
+    _glfwSetGLXattrib( attribs, index, 0, 0 );
+
     // Get an appropriate visual
-    _glfwWin.VI = _glfwChooseVisual( _glfwLibrary.Dpy,
-                                     _glfwWin.Scrn,
-                                     redbits, greenbits, bluebits,
-                                     alphabits, depthbits, stencilbits,
-                                     hints->AccumRedBits, hints->AccumGreenBits,
-                                     hints->AccumBlueBits, hints->AccumAlphaBits,
-                                     hints->AuxBuffers, hints->Samples, hints->Stereo );
+    _glfwWin.VI = glXChooseVisual( _glfwLibrary.Dpy, _glfwWin.Scrn, attribs );
     if( _glfwWin.VI == NULL )
     {
         _glfwPlatformCloseWindow();
