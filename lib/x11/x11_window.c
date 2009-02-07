@@ -553,7 +553,7 @@ static int _glfwGetNextEvent( void )
 	    if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
 	    {
 		XSendEvent( _glfwLibrary.Dpy,
-			    RootWindow( _glfwLibrary.Dpy, _glfwWin.VI->screen ),
+			    RootWindow( _glfwLibrary.Dpy, _glfwWin.Scrn ),
 			    False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
 	    }
             break;
@@ -689,12 +689,13 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     Colormap    cmap;
     XSetWindowAttributes wa;
     XEvent      event;
+    GLXFBConfig *fbconfigs;
     Atom protocols[2];
-    int attribs[30];
-    int index = 0;
+    int attribs[40];
+    int fbcount, index = 0;
 
     // Clear platform specific GLFW window state
-    _glfwWin.VI               = NULL;
+    _glfwWin.FBC              = (GLXFBConfig)NULL;
     _glfwWin.CX               = (GLXContext)0;
     _glfwWin.Win              = (Window)0;
     _glfwWin.Hints            = NULL;
@@ -716,7 +717,9 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Get screen ID for this window
     _glfwWin.Scrn = _glfwLibrary.DefaultScreen;
 
-    attribs[index++] = GLX_USE_GL;
+    _glfwSetGLXattrib( attribs, index, GLX_RENDER_TYPE, GLX_RGBA_BIT );
+    _glfwSetGLXattrib( attribs, index, GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT );
+    _glfwSetGLXattrib( attribs, index, GLX_DOUBLEBUFFER, True );
 
     _glfwSetGLXattrib( attribs, index, GLX_RED_SIZE, redbits );
     _glfwSetGLXattrib( attribs, index, GLX_GREEN_SIZE, greenbits );
@@ -749,6 +752,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     if( hints->Samples > 0 )
     {
+	_glfwSetGLXattrib( attribs, index, GLX_SAMPLE_BUFFERS, 1 );
 	_glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
     }
 
@@ -757,18 +761,20 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 	_glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
     }
 
-    _glfwSetGLXattrib( attribs, index, 0, 0 );
+    _glfwSetGLXattrib( attribs, index, None, None );
 
-    // Get an appropriate visual
-    _glfwWin.VI = glXChooseVisual( _glfwLibrary.Dpy, _glfwWin.Scrn, attribs );
-    if( _glfwWin.VI == NULL )
+    // Get an appropriate FB config
+    fbconfigs = glXChooseFBConfig( _glfwLibrary.Dpy, _glfwWin.Scrn, attribs, &fbcount );
+    if( fbconfigs == NULL )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
+    _glfwWin.FBC = fbconfigs[0];
+
     // Create a GLX context
-    _glfwWin.CX = glXCreateContext( _glfwLibrary.Dpy, _glfwWin.VI, 0, GL_TRUE );
+    _glfwWin.CX = glXCreateNewContext( _glfwLibrary.Dpy, _glfwWin.FBC, 0, NULL, True );
     if( _glfwWin.CX == NULL )
     {
         _glfwPlatformCloseWindow();
@@ -777,7 +783,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     // Create a colormap
     cmap = XCreateColormap( _glfwLibrary.Dpy, RootWindow( _glfwLibrary.Dpy,
-               _glfwWin.VI->screen), _glfwWin.VI->visual, AllocNone );
+               _glfwWin.Scrn), _glfwWin.VI->visual, AllocNone );
 
     // Do we want fullscreen?
     if( mode == GLFW_FULLSCREEN )
@@ -806,7 +812,7 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Create a window
     _glfwWin.Win = XCreateWindow(
         _glfwLibrary.Dpy,
-        RootWindow( _glfwLibrary.Dpy, _glfwWin.VI->screen ),
+        RootWindow( _glfwLibrary.Dpy, _glfwWin.Scrn ),
         0, 0,                            // Upper left corner
         _glfwWin.Width, _glfwWin.Height, // Width, height
         0,                               // Borderwidth
