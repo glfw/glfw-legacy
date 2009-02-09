@@ -145,7 +145,7 @@ static void _glfwDisableDecorations( void )
         Atom NET_WMHints[2];
 
         NET_WMHints[0] = XInternAtom( _glfwLibrary.Dpy, "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE", True );
-        /* define a fallback... */
+        // define a fallback...
         NET_WMHints[1] = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_WINDOW_TYPE_NORMAL", True );
 
         XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, XA_ATOM,
