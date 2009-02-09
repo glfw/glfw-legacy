@@ -42,6 +42,20 @@ enum {
   KDE_staysOnTop = 2048
 };
 
+/* Function signature for GLX_ARB_create_context glXCreateContextAttribs */
+typedef GLXContext (*GLXCREATECONTEXTATTRIBS_T)( Display *dpy,
+			                         GLXFBConfig config,
+			                         GLXContext share_context,
+			                         Bool direct,
+			                         const int *attrib_list);
+
+/* Constants for GLX_ARB_create_context glXCreateContextAttribs */
+#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
+#define GLX_CONTEXT_FLAGS_ARB 0x2094
+#define GLX_CONTEXT_DEBUG_BIT_ARB 0x0001
+#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002 
+
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
@@ -645,77 +659,80 @@ Cursor _glfwCreateNULLCursor( Display *display, Window root )
 
 
 //========================================================================
-// _glfwInitGLXExtensions() - Initialize GLX-specific extensions
+// Initialize GLX
 //========================================================================
 
-static void _glfwInitGLXExtensions( void )
+static int _glfwInitGLX( void )
 {
-    int has_swap_control;
-
-    // Initialize OpenGL extension: GLX_SGI_swap_control
-    has_swap_control = _glfwPlatformExtensionSupported(
-                           "GLX_SGI_swap_control"
-                       );
-
-    if( has_swap_control )
-    {
-        _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
-            glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
-    }
-    else
-    {
-        _glfwWin.SwapInterval = NULL;
-    }
-}
-
-
-
-//************************************************************************
-//****               Platform implementation functions                ****
-//************************************************************************
-
-#define _glfwSetGLXattrib( attribs, index, attribName, attribValue ) \
-    attribs[index++] = attribName; \
-    attribs[index++] = attribValue;
-
-//========================================================================
-// Create the window and the OpenGL rendering context
-//========================================================================
-
-int _glfwPlatformOpenWindow( int width, int height, int redbits,
-    int greenbits, int bluebits, int alphabits, int depthbits,
-    int stencilbits, int mode, _GLFWhints* hints )
-{
-    Colormap    cmap;
-    XSetWindowAttributes wa;
-    XEvent      event;
-    GLXFBConfig *fbconfigs;
-    Atom protocols[2];
-    int attribs[40];
-    int fbcount, index = 0;
-
-    // Clear platform specific GLFW window state
-    _glfwWin.FBC              = (GLXFBConfig)NULL;
-    _glfwWin.CX               = (GLXContext)0;
-    _glfwWin.Win              = (Window)0;
-    _glfwWin.Hints            = NULL;
-    _glfwWin.PointerGrabbed   = GL_FALSE;
-    _glfwWin.KeyboardGrabbed  = GL_FALSE;
-    _glfwWin.OverrideRedirect = GL_FALSE;
-    _glfwWin.FS.ModeChanged   = GL_FALSE;
-    _glfwWin.Saver.Changed    = GL_FALSE;
-    _glfwWin.RefreshRate      = hints->RefreshRate;
+    /*
+    int major, minor;
+    */
 
     // Fullscreen & screen saver settings
     // Check if GLX is supported on this display
     if( !glXQueryExtension( _glfwLibrary.Dpy, NULL, NULL ) )
     {
-        _glfwPlatformCloseWindow();
+	fprintf(stderr, "GLX not supported\n");
         return GL_FALSE;
     }
 
-    // Get screen ID for this window
-    _glfwWin.Scrn = _glfwLibrary.DefaultScreen;
+    /*
+    // Retrieve GLX version
+    if( !glXQueryVersion( _glfwLibrary.Dpy, &major, &minor ) )
+    {
+	fprintf(stderr, "Unable to query GLX version\n");
+        return GL_FALSE;
+    }
+
+    // We need at least GLX 1.4 server side (because we're using GLXFBConfigs)
+    if( minor < 4 )
+    {
+	fprintf(stderr, "GLX version 1.4 or above required\n");
+        return GL_FALSE;
+    }
+    */
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
+// Create the OpenGL context
+//========================================================================
+
+#define _glfwSetGLXattrib( attribs, index, attribName, attribValue ) \
+    attribs[index++] = attribName; \
+    attribs[index++] = attribValue;
+
+static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
+                               int alphabits, int depthbits, int stencilbits,
+			       _GLFWhints* hints )
+{
+    GLXFBConfig *fbconfigs;
+    const char *extensions;
+    int attribs[40];
+    int fbcount, index;
+    GLXCREATECONTEXTATTRIBS_T glXCreateContextAttribsARB = NULL; 
+
+    if( hints->OpenGLMajor > 2 )
+    {
+	extensions = glXQueryExtensionsString( _glfwLibrary.Dpy, _glfwWin.Scrn );
+
+	if( !_glfwStringInExtensionString( extensions, "GLX_ARB_create_context" ) )
+	{
+	    fprintf(stderr, "GLX_ARB_create_context extension not found\n");
+	    return GL_FALSE;
+	}
+
+	glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress( "glXCreateContextAttribsARB" );
+	if( glXCreateContextAttribsARB == NULL )
+	{
+	    fprintf(stderr, "glXCreateContextAttribsARB entry point not found\n");
+	    return GL_FALSE;
+	}
+    }
+
+    index = 0;
 
     _glfwSetGLXattrib( attribs, index, GLX_RENDER_TYPE, GLX_RGBA_BIT );
     _glfwSetGLXattrib( attribs, index, GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT );
@@ -761,21 +778,134 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 	_glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
     }
 
-    _glfwSetGLXattrib( attribs, index, None, None );
+    attribs[index] = None;
 
     // Get an appropriate FB config
     fbconfigs = glXChooseFBConfig( _glfwLibrary.Dpy, _glfwWin.Scrn, attribs, &fbcount );
     if( fbconfigs == NULL )
     {
+	fprintf(stderr, "Unable to find any suitable GLXFBConfigs\n");
+        return GL_FALSE;
+    }
+
+    // Pick the first (best) candidate
+    _glfwWin.FBConfig = fbconfigs[0];
+
+    XFree( fbconfigs );
+    fbconfigs = NULL;
+
+    if( glXCreateContextAttribsARB )
+    {
+	index = 0;
+
+	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
+	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
+
+	if( hints->OpenGLForward )
+	{
+	    _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB );
+	}
+
+	attribs[index] = None;
+
+	_glfwWin.CX = glXCreateContextAttribsARB( _glfwLibrary.Dpy, _glfwWin.FBConfig, NULL, True, attribs );
+	if( _glfwWin.CX == NULL )
+	{
+	    fprintf(stderr, "Unable to create OpenGL context\n");
+	    return GL_FALSE;
+	}
+    }
+    else
+    {
+	_glfwWin.CX = glXCreateNewContext( _glfwLibrary.Dpy, _glfwWin.FBConfig, 0, NULL, True );
+	if( _glfwWin.CX == NULL )
+	{
+	    fprintf(stderr, "Unable to create OpenGL context\n");
+	    return GL_FALSE;
+	}
+    }
+
+    // Retrieve the corresponding visual
+    _glfwWin.VI = glXGetVisualFromFBConfig( _glfwLibrary.Dpy, _glfwWin.FBConfig );
+    if( _glfwWin.VI == NULL )
+    {
+	fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
+// _glfwInitGLXExtensions() - Initialize GLX-specific extensions
+//========================================================================
+
+static void _glfwInitGLXExtensions( void )
+{
+    int has_swap_control;
+
+    // Initialize OpenGL extension: GLX_SGI_swap_control
+    has_swap_control = _glfwPlatformExtensionSupported(
+                           "GLX_SGI_swap_control"
+                       );
+
+    if( has_swap_control )
+    {
+        _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
+            glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
+    }
+    else
+    {
+        _glfwWin.SwapInterval = NULL;
+    }
+}
+
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
+// Create the window and the OpenGL rendering context
+//========================================================================
+
+int _glfwPlatformOpenWindow( int width, int height, int redbits,
+    int greenbits, int bluebits, int alphabits, int depthbits,
+    int stencilbits, int mode, _GLFWhints* hints )
+{
+    Colormap    cmap;
+    XSetWindowAttributes wa;
+    XEvent      event;
+    Atom protocols[2];
+
+    // Clear platform specific GLFW window state
+    _glfwWin.FBConfig         = (GLXFBConfig)NULL;
+    _glfwWin.VI               = (XVisualInfo*)NULL;
+    _glfwWin.CX               = (GLXContext)NULL;
+    _glfwWin.Win              = (Window)NULL;
+    _glfwWin.Hints            = NULL;
+    _glfwWin.PointerGrabbed   = GL_FALSE;
+    _glfwWin.KeyboardGrabbed  = GL_FALSE;
+    _glfwWin.OverrideRedirect = GL_FALSE;
+    _glfwWin.FS.ModeChanged   = GL_FALSE;
+    _glfwWin.Saver.Changed    = GL_FALSE;
+    _glfwWin.RefreshRate      = hints->RefreshRate;
+
+    // Get screen ID for this window
+    _glfwWin.Scrn = _glfwLibrary.DefaultScreen;
+
+    // Do basic GLX setup
+    if( !_glfwInitGLX() )
+    {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    _glfwWin.FBC = fbconfigs[0];
-
-    // Create a GLX context
-    _glfwWin.CX = glXCreateNewContext( _glfwLibrary.Dpy, _glfwWin.FBC, 0, NULL, True );
-    if( _glfwWin.CX == NULL )
+    // Create the OpenGL context
+    if( !_glfwCreateContext( redbits, greenbits, bluebits,
+                             alphabits, depthbits, stencilbits,
+			     hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;

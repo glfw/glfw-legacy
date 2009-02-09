@@ -126,7 +126,8 @@ struct _GLFWwin_struct {
     // Platform specific window resources
     Window      Win;             // Window
     int         Scrn;            // Screen ID
-    GLXFBConfig *FBC;            // GLX FB config
+    GLXFBConfig FBConfig;        // GLX FB config
+    XVisualInfo *VI;             // Visual
     GLXContext  CX;              // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
     Atom        WMPing;          // For WM ping response
