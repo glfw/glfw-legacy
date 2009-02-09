@@ -77,8 +77,8 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 
     if( _glfwLibrary.XRandR.Available )
     {
-	sc = XRRGetScreenInfo( _glfwLibrary.Dpy,
-			       RootWindow( _glfwLibrary.Dpy, screen ) );
+	sc = XRRGetScreenInfo( _glfwLibrary.display,
+			       RootWindow( _glfwLibrary.display, screen ) );
 
 	sizelist = XRRConfigSizes( sc, &sizecount );
 
@@ -143,7 +143,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Get a list of all available display modes
-        XF86VidModeGetAllModeLines( _glfwLibrary.Dpy, screen,
+        XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
                                     &modecount, &modelist );
 
         // Find the best matching mode
@@ -180,8 +180,8 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 #endif
 
     // Default: Simply use the screen resolution
-    *width = DisplayWidth( _glfwLibrary.Dpy, screen );
-    *height = DisplayHeight( _glfwLibrary.Dpy, screen );
+    *width = DisplayWidth( _glfwLibrary.display, screen );
+    *height = DisplayHeight( _glfwLibrary.display, screen );
 
     return 0;
 }
@@ -199,15 +199,15 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 
     if( _glfwLibrary.XRandR.Available )
     {
-	root = RootWindow( _glfwLibrary.Dpy, screen );
-	sc   = XRRGetScreenInfo( _glfwLibrary.Dpy, root );
+	root = RootWindow( _glfwLibrary.display, screen );
+	sc   = XRRGetScreenInfo( _glfwLibrary.display, root );
 
         // Remember old size and flag that we have changed the mode
         if( !_glfwWin.FS.ModeChanged )
         {
 	    _glfwWin.FS.OldSizeID = XRRConfigCurrentConfiguration( sc, &_glfwWin.FS.OldRotation );
-	    _glfwWin.FS.OldWidth  = DisplayWidth( _glfwLibrary.Dpy, screen );
-	    _glfwWin.FS.OldHeight = DisplayHeight( _glfwLibrary.Dpy, screen );
+	    _glfwWin.FS.OldWidth  = DisplayWidth( _glfwLibrary.display, screen );
+	    _glfwWin.FS.OldHeight = DisplayHeight( _glfwLibrary.display, screen );
 
             _glfwWin.FS.ModeChanged = GL_TRUE;
         }
@@ -215,7 +215,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 	if( rate > 0 )
 	{
 	    // Set desired configuration
-	    XRRSetScreenConfigAndRate( _glfwLibrary.Dpy,
+	    XRRSetScreenConfigAndRate( _glfwLibrary.display,
 				       sc,
 				       root,
 				       mode,
@@ -226,7 +226,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 	else
 	{
 	    // Set desired configuration
-	    XRRSetScreenConfig( _glfwLibrary.Dpy,
+	    XRRSetScreenConfig( _glfwLibrary.display,
 				sc,
 				root,
 				mode,
@@ -244,24 +244,24 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Get a list of all available display modes
-        XF86VidModeGetAllModeLines( _glfwLibrary.Dpy, screen,
+        XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
                                     &modecount, &modelist );
 
         // Unlock mode switch if necessary
         if( _glfwWin.FS.ModeChanged )
         {
-            XF86VidModeLockModeSwitch( _glfwLibrary.Dpy, screen, 0 );
+            XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 0 );
         }
 
         // Change the video mode to the desired mode
-        XF86VidModeSwitchToMode(  _glfwLibrary.Dpy, screen,
+        XF86VidModeSwitchToMode(  _glfwLibrary.display, screen,
                                   modelist[ mode ] );
 
         // Set viewport to upper left corner (where our window will be)
-        XF86VidModeSetViewPort( _glfwLibrary.Dpy, screen, 0, 0 );
+        XF86VidModeSetViewPort( _glfwLibrary.display, screen, 0, 0 );
 
         // Lock mode switch
-        XF86VidModeLockModeSwitch( _glfwLibrary.Dpy, screen, 1 );
+        XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 1 );
 
         // Remember old mode and flag that we have changed the mode
         if( !_glfwWin.FS.ModeChanged )
@@ -311,7 +311,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 {
     int     count, k, l, r, g, b, rgba, gl;
     int     depth, screen;
-    Display *dpy;
+    Display *display;
     XVisualInfo *vislist, dummy;
     int     viscount, rgbcount, rescount;
     int     *rgbarray;
@@ -326,11 +326,11 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #endif
 
     // Get display and screen
-    dpy = _glfwLibrary.Dpy;
-    screen = DefaultScreen( dpy );
+    display = _glfwLibrary.display;
+    screen = DefaultScreen( display );
 
     // Get list of visuals
-    vislist = XGetVisualInfo( dpy, 0, &dummy, &viscount );
+    vislist = XGetVisualInfo( display, 0, &dummy, &viscount );
     if( vislist == NULL )
     {
 	return 0;
@@ -343,8 +343,8 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
     for( k = 0; k < viscount; k++ )
     {
         // Does the visual support OpenGL & true color?
-        glXGetConfig( dpy, &vislist[k], GLX_USE_GL, &gl );
-        glXGetConfig( dpy, &vislist[k], GLX_RGBA, &rgba );
+        glXGetConfig( display, &vislist[k], GLX_USE_GL, &gl );
+        glXGetConfig( display, &vislist[k], GLX_RGBA, &rgba );
         if( gl && rgba )
         {
             // Get color depth for this visual
@@ -377,7 +377,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
     {
-	sc = XRRGetScreenInfo( dpy, RootWindow( dpy, screen ) );
+	sc = XRRGetScreenInfo( display, RootWindow( display, screen ) );
 	sizelist = XRRConfigSizes( sc, &sizecount );
 
 	resarray = (struct _glfwResolution*) malloc( sizeof(struct _glfwResolution) * sizecount );
@@ -394,7 +394,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #elif defined( _GLFW_HAS_XF86VIDMODE )
     if( _glfwLibrary.XF86VidMode.Available )
     {
-        XF86VidModeGetAllModeLines( dpy, screen, &modecount, &modelist );
+        XF86VidModeGetAllModeLines( display, screen, &modecount, &modelist );
 
 	resarray = (struct _glfwResolution*) malloc( sizeof(struct _glfwResolution) * modecount );
 
@@ -428,8 +428,8 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 	rescount = 1;
 	resarray = (struct _glfwResolution*) malloc( sizeof(struct _glfwResolution) * rescount );
 
-	resarray[ 0 ].width = DisplayWidth( dpy, screen );
-	resarray[ 0 ].height = DisplayHeight( dpy, screen );
+	resarray[ 0 ].width = DisplayWidth( display, screen );
+	resarray[ 0 ].height = DisplayHeight( display, screen );
     }
 
     // Build permutations of colors and resolutions
@@ -463,7 +463,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
-    Display *dpy;
+    Display *display;
     int     bpp, screen;
 #if defined( _GLFW_HAS_XF86VIDMODE )
     XF86VidModeModeInfo **modelist;
@@ -471,11 +471,11 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 #endif
 
     // Get display and screen
-    dpy = _glfwLibrary.Dpy;
-    screen = DefaultScreen( dpy );
+    display = _glfwLibrary.display;
+    screen = DefaultScreen( display );
 
     // Get display depth
-    bpp = DefaultDepth( dpy, screen );
+    bpp = DefaultDepth( display, screen );
 
     // Convert BPP to RGB bits
     _glfwBPP2RGB( bpp, &mode->RedBits, &mode->GreenBits, &mode->BlueBits );
@@ -502,7 +502,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
         else
         {
             // Use the XF86VidMode extension to get list of video modes
-            XF86VidModeGetAllModeLines( dpy, screen, &modecount,
+            XF86VidModeGetAllModeLines( display, screen, &modecount,
                                         &modelist );
 
             // The first mode in the list is the current (desktio) mode
@@ -518,7 +518,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 #endif
 
     // Get current display width and height
-    mode->Width  = DisplayWidth( dpy, screen );
-    mode->Height = DisplayHeight( dpy, screen );
+    mode->Width  = DisplayWidth( display, screen );
+    mode->Height = DisplayHeight( display, screen );
 }
 

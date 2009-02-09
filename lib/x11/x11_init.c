@@ -53,20 +53,16 @@ void _glfwTerminate_atexit( void )
 static int _glfwInitDisplay( void )
 {
     // Open display
-    _glfwLibrary.Dpy = XOpenDisplay( 0 );
-    if( !_glfwLibrary.Dpy )
+    _glfwLibrary.display = XOpenDisplay( 0 );
+    if( !_glfwLibrary.display )
     {
         return GL_FALSE;
     }
 
-    // Check screens
-    _glfwLibrary.NumScreens = ScreenCount( _glfwLibrary.Dpy );
-    _glfwLibrary.DefaultScreen = DefaultScreen( _glfwLibrary.Dpy );
-
     // Check for XF86VidMode extension
 #ifdef _GLFW_HAS_XF86VIDMODE
     _glfwLibrary.XF86VidMode.Available =
-        XF86VidModeQueryExtension( _glfwLibrary.Dpy,
+        XF86VidModeQueryExtension( _glfwLibrary.display,
 	                           &_glfwLibrary.XF86VidMode.EventBase,
 	                           &_glfwLibrary.XF86VidMode.ErrorBase);
 #else
@@ -76,7 +72,7 @@ static int _glfwInitDisplay( void )
     // Check for XRandR extension
 #ifdef _GLFW_HAS_XRANDR
     _glfwLibrary.XRandR.Available =
-        XRRQueryExtension( _glfwLibrary.Dpy,
+        XRRQueryExtension( _glfwLibrary.display,
 	                   &_glfwLibrary.XRandR.EventBase,
 			   &_glfwLibrary.XRandR.ErrorBase );
 #else
@@ -94,10 +90,10 @@ static int _glfwInitDisplay( void )
 static void _glfwTerminateDisplay( void )
 {
     // Open display
-    if( _glfwLibrary.Dpy )
+    if( _glfwLibrary.display )
     {
-        XCloseDisplay( _glfwLibrary.Dpy );
-        _glfwLibrary.Dpy = NULL;
+        XCloseDisplay( _glfwLibrary.display );
+        _glfwLibrary.display = NULL;
     }
 }
 

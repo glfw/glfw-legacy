@@ -208,9 +208,8 @@ GLFWGLOBAL struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
-    Display     *Dpy;
-    int         NumScreens;
-    int         DefaultScreen;
+    Display     *display;
+    int         defaultScreen;
 
     struct {
 	int	Available;
