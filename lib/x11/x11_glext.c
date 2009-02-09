@@ -45,7 +45,7 @@ int _glfwPlatformExtensionSupported( const char *extension )
 
     // Get list of GLX extensions
     extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.Dpy,
-                                                            _glfwWin.Scrn );
+                                                            _glfwWin.screen );
     if( extensions != NULL )
     {
         if( _glfwStringInExtensionString( extension, extensions ) )

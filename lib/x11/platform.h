@@ -124,14 +124,14 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
-    Window      Win;             // Window
-    int         Scrn;            // Screen ID
-    GLXFBConfig FBConfig;        // GLX FB config
-    XVisualInfo *VI;             // Visual
-    GLXContext  CX;              // OpenGL rendering context
+    Window      window;          // Window
+    int         screen;          // Screen ID
+    GLXFBConfig fbconfig;        // GLX FB config
+    XVisualInfo *visual;         // Visual
+    GLXContext  context;         // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
     Atom        WMPing;          // For WM ping response
-    XSizeHints  *Hints;          // WM size hints
+    XSizeHints  *hints;          // WM size hints
 
     // Platform specific extensions
     GLXSWAPINTERVALSGI_T SwapInterval;
