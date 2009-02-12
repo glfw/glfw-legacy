@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    Mac OS X
-// API Version: 2.6
+// API Version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -183,7 +183,7 @@ struct _GLFWwin_struct {
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor;
+    int       GLVerMajor,GLVerMinor,GLForward;
 
 
     // ========= PLATFORM SPECIFIC PART ======================================

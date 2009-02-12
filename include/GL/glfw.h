@@ -1,7 +1,7 @@
 /************************************************************************
  * GLFW - An OpenGL framework
  * File:        glfw.h
- * API version: 2.6
+ * API version: 2.7
  * WWW:         http://glfw.sourceforge.net
  *------------------------------------------------------------------------
  * Copyright (c) 2002-2006 Camilla Berglund
@@ -173,8 +173,8 @@ extern "C" {
  *************************************************************************/
 
 #define GLFW_VERSION_MAJOR    2
-#define GLFW_VERSION_MINOR    6
-#define GLFW_VERSION_REVISION 1
+#define GLFW_VERSION_MINOR    7
+#define GLFW_VERSION_REVISION 0
 
 
 /*************************************************************************
@@ -325,6 +325,9 @@ extern "C" {
 #define GLFW_STEREO               0x00020011
 #define GLFW_WINDOW_NO_RESIZE     0x00020012
 #define GLFW_FSAA_SAMPLES         0x00020013
+#define GLFW_OPENGL_VERSION_MAJOR 0x00020014
+#define GLFW_OPENGL_VERSION_MINOR 0x00020015
+#define GLFW_OPENGL_FORWARD_COMPAT 0x00020016
 
 /* glfwEnable/glfwDisable tokens */
 #define GLFW_MOUSE_CURSOR         0x00030001

@@ -14,7 +14,7 @@
    <a href="http://www.opensource.org/docs/definition.php" target="_top"><img src="images/osicert.gif" border="0" width="72" height="60"></a>
   </td>
   <td align=center>
-   <font face="bookman old style,arial" size=+4><b>GLFW v2.6.1</b></font><br>
+   <font face="bookman old style,arial" size=+4><b>GLFW v2.7</b></font><br>
    <font face="bookman old style,arial" size=+3>source distribution</font>
   </td>
   <td width=90 valign=top align=right>
@@ -47,7 +47,7 @@
 <a name="sec1">
 <h2>1. Introduction</h2>
 
-<p>Welcome to version 2.6.1 of the GLFW OpenGL framework. GLFW is a free, open
+<p>Welcome to version 2.7 of the GLFW OpenGL framework. GLFW is a free, open
 source, portable framework for OpenGL application development. In short, it is
 a library that constitutes a powerful API for handling operating system
 specific tasks, such as opening an OpenGL window, reading keyboard and mouse
@@ -436,13 +436,17 @@ version of GLFW.</p>
 <a name="sec5">
 <h2>5. Version history</h2>
 
-<h3>v2.6.1</h3>
+<h3>v2.7</h3>
 <ul>
+  <li>Added <code>GLFW_OPENGL_VERSION_MAJOR</code>,
+      <code>GLFW_OPENGL_VERSION_MINOR</code> and
+      <code>GLFW_OPENGL_FORWARD_COMPAT</code> hints for versioned context
+      creation support</li>
   <li>Added the proper DEF file to the Visual C++ DLL project file</li>
   <li>Changed all comments in public header file to plain C style</li>
-  <li>[X11] Added <code>x11-distro-install</code> install target, inteded for packagers</li>
+  <li>[X11] Added <code>x11-distro-install</code> install target, intended for packagers</li>
   <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
-  <li>[MacOSX] Bugfix: Key repeat events were ignored on 10.5 Leopard</li>
+  <li>[MacOSX] Bugfix: Key repeat events were not caught on 10.5 Leopard</li>
   <li>[Win32] Bugfix: Improper use of wParam for <code>WM_SYSCOMMAND</code></li>
   <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
   <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initalised</li>
@@ -451,8 +455,8 @@ version of GLFW.</p>
 
 <h3>v2.6</h3>
 <ul>
-  <li>Added <code>GLFW_FSAA_SAMPLES</code> multisampling hint (implemented on all platforms)</li>
-  <li>Added <code>GLFW_WINDOW_NO_RESIZE</code> hint for non-resizable windows (implemented on all platforms)</li>
+  <li>Added <code>GLFW_FSAA_SAMPLES</code> multisampling hint</li>
+  <li>Added <code>GLFW_WINDOW_NO_RESIZE</code> hint for non-resizable windows</li>
   <li>Added install targets for all Unix-like build targets</li>
   <li>Added <code>glfwReadMemoryImage</code> function for creating a <code>GLFWImage</code> object from an image file in a memory buffer</li>
   <li>Added <code>glfwLoadMemoryTexture2D</code> function for decoding an image file in a memory buffer into a texture</li>

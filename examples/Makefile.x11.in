@@ -52,3 +52,7 @@ boing: boing.c
 wave: wave.c
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o $@
 
+clean:
+	rm -f triangle listmodes mthello pong3d mtbench particles splitview \
+	      mipmaps keytest gears boing wave
+

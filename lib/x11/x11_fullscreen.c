@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        x11_fullscreen.c
 // Platform:    X11 (Unix)
-// API version: 2.6
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -77,8 +77,8 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 
     if( _glfwLibrary.XRandR.Available )
     {
-	sc = XRRGetScreenInfo( _glfwLibrary.Dpy,
-			       RootWindow( _glfwLibrary.Dpy, screen ) );
+	sc = XRRGetScreenInfo( _glfwLibrary.display,
+			       RootWindow( _glfwLibrary.display, screen ) );
 
 	sizelist = XRRConfigSizes( sc, &sizecount );
 
@@ -143,7 +143,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Get a list of all available display modes
-        XF86VidModeGetAllModeLines( _glfwLibrary.Dpy, screen,
+        XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
                                     &modecount, &modelist );
 
         // Find the best matching mode
@@ -180,8 +180,8 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 #endif
 
     // Default: Simply use the screen resolution
-    *width = DisplayWidth( _glfwLibrary.Dpy, screen );
-    *height = DisplayHeight( _glfwLibrary.Dpy, screen );
+    *width = DisplayWidth( _glfwLibrary.display, screen );
+    *height = DisplayHeight( _glfwLibrary.display, screen );
 
     return 0;
 }
@@ -199,15 +199,15 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 
     if( _glfwLibrary.XRandR.Available )
     {
-	root = RootWindow( _glfwLibrary.Dpy, screen );
-	sc   = XRRGetScreenInfo( _glfwLibrary.Dpy, root );
+	root = RootWindow( _glfwLibrary.display, screen );
+	sc   = XRRGetScreenInfo( _glfwLibrary.display, root );
 
         // Remember old size and flag that we have changed the mode
         if( !_glfwWin.FS.ModeChanged )
         {
 	    _glfwWin.FS.OldSizeID = XRRConfigCurrentConfiguration( sc, &_glfwWin.FS.OldRotation );
-	    _glfwWin.FS.OldWidth  = DisplayWidth( _glfwLibrary.Dpy, screen );
-	    _glfwWin.FS.OldHeight = DisplayHeight( _glfwLibrary.Dpy, screen );
+	    _glfwWin.FS.OldWidth  = DisplayWidth( _glfwLibrary.display, screen );
+	    _glfwWin.FS.OldHeight = DisplayHeight( _glfwLibrary.display, screen );
 
             _glfwWin.FS.ModeChanged = GL_TRUE;
         }
@@ -215,7 +215,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 	if( rate > 0 )
 	{
 	    // Set desired configuration
-	    XRRSetScreenConfigAndRate( _glfwLibrary.Dpy,
+	    XRRSetScreenConfigAndRate( _glfwLibrary.display,
 				       sc,
 				       root,
 				       mode,
@@ -226,7 +226,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
 	else
 	{
 	    // Set desired configuration
-	    XRRSetScreenConfig( _glfwLibrary.Dpy,
+	    XRRSetScreenConfig( _glfwLibrary.display,
 				sc,
 				root,
 				mode,
@@ -244,24 +244,24 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Get a list of all available display modes
-        XF86VidModeGetAllModeLines( _glfwLibrary.Dpy, screen,
+        XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
                                     &modecount, &modelist );
 
         // Unlock mode switch if necessary
         if( _glfwWin.FS.ModeChanged )
         {
-            XF86VidModeLockModeSwitch( _glfwLibrary.Dpy, screen, 0 );
+            XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 0 );
         }
 
         // Change the video mode to the desired mode
-        XF86VidModeSwitchToMode(  _glfwLibrary.Dpy, screen,
+        XF86VidModeSwitchToMode(  _glfwLibrary.display, screen,
                                   modelist[ mode ] );
 
         // Set viewport to upper left corner (where our window will be)
-        XF86VidModeSetViewPort( _glfwLibrary.Dpy, screen, 0, 0 );
+        XF86VidModeSetViewPort( _glfwLibrary.display, screen, 0, 0 );
 
         // Lock mode switch
-        XF86VidModeLockModeSwitch( _glfwLibrary.Dpy, screen, 1 );
+        XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 1 );
 
         // Remember old mode and flag that we have changed the mode
         if( !_glfwWin.FS.ModeChanged )
@@ -326,7 +326,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 #endif
 
     // Get display and screen
-    dpy = _glfwLibrary.Dpy;
+    dpy = _glfwLibrary.display;
     screen = DefaultScreen( dpy );
 
     // Get list of visuals
@@ -471,7 +471,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 #endif
 
     // Get display and screen
-    dpy = _glfwLibrary.Dpy;
+    dpy = _glfwLibrary.display;
     screen = DefaultScreen( dpy );
 
     // Get display depth

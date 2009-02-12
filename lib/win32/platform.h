@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    Windows
-// API version: 2.6
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -139,7 +139,10 @@ typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, con
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
 // wglGetExtensionStringARB typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
+// wglCreateContextAttribsARB typedef
+typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*);
 
+/* Constants for wglGetPixelFormatAttribivARB */
 #define WGL_DRAW_TO_WINDOW_ARB    0x2001
 #define WGL_SUPPORT_OPENGL_ARB    0x2010
 #define WGL_ACCELERATION_ARB      0x2003
@@ -161,6 +164,15 @@ typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
 #define WGL_AUX_BUFFERS_ARB       0x2024 
 #define WGL_SAMPLE_BUFFERS_ARB    0x2041
 #define WGL_SAMPLES_ARB           0x2042
+
+/* Constants for wglCreateContextAttribsARB */
+#define WGL_CONTEXT_MAJOR_VERSION_ARB          0x2091
+#define WGL_CONTEXT_MINOR_VERSION_ARB          0x2092
+#define WGL_CONTEXT_LAYER_PLANE_ARB            0x2093
+#define WGL_CONTEXT_FLAGS_ARB                  0x2094
+#define WGL_CONTEXT_DEBUG_BIT_ARB              0x0001
+#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
+#define GL_ERROR_INVALID_VERSION_ARB           0x2095
 
 
 //========================================================================
@@ -268,7 +280,7 @@ struct _GLFWwin_struct {
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor;
+    int       GLVerMajor,GLVerMinor,GLForward;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
@@ -289,6 +301,7 @@ struct _GLFWwin_struct {
     WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;
+    WGLCREATECONTEXTATTRIBSARB_T   CreateContextAttribsARB;
 
     // Various platform specific internal variables
     int       OldMouseLock;    // Old mouse-lock flag (used for remembering

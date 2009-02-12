@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        internal.h
 // Platform:    Any
-// API version: 2.6
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -93,6 +93,9 @@ typedef struct {
     int          Stereo;
     int          WindowNoResize;
     int		 Samples;
+    int          OpenGLMajor;
+    int          OpenGLMinor;
+    int          OpenGLForward;
 } _GLFWhints;
 
 GLFWGLOBAL _GLFWhints _glfwWinHints;

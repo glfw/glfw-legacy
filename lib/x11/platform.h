@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        platform.h
 // Platform:    X11 (Unix)
-// API version: 2.6
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -191,19 +191,20 @@ struct _GLFWwin_struct {
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor;
+    int       GLVerMajor,GLVerMinor,GLForward;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
-    Window      Win;             // Window
-    int         Scrn;            // Screen ID
-    XVisualInfo *VI;             // Visual
-    GLXContext  CX;              // OpenGL rendering context
+    Window      window;          // Window
+    int         screen;          // Screen ID
+    GLXFBConfig fbconfig;        // GLX FB config
+    XVisualInfo *visual;         // Visual
+    GLXContext  context;         // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
     Atom        WMPing;          // For WM ping response
-    XSizeHints  *Hints;          // WM size hints
+    XSizeHints  *hints;          // WM size hints
 
     // Platform specific extensions
     GLXSWAPINTERVALSGI_T SwapInterval;
@@ -280,9 +281,7 @@ GLFWGLOBAL struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
-    Display     *Dpy;
-    int         NumScreens;
-    int         DefaultScreen;
+    Display     *display;
 
     struct {
 	int	Available;

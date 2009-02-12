@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        x11_window.c
 // Platform:    X11 (Unix)
-// API version: 2.6
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -51,6 +51,20 @@ enum {
   KDE_staysOnTop = 2048
 };
 
+/* Function signature for GLX_ARB_create_context glXCreateContextAttribs */
+typedef GLXContext (*GLXCREATECONTEXTATTRIBS_T)( Display *display,
+			                         GLXFBConfig config,
+			                         GLXContext share_context,
+			                         Bool direct,
+			                         const int *attrib_list);
+
+/* Constants for GLX_ARB_create_context glXCreateContextAttribs */
+#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
+#define GLX_CONTEXT_FLAGS_ARB 0x2094
+#define GLX_CONTEXT_DEBUG_BIT_ARB 0x0001
+#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002 
+
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
@@ -92,7 +106,7 @@ static void _glfwDisableDecorations( void )
     RemovedDecorations = 0;
 
     // First try to set MWM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_MOTIF_WM_HINTS", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
     if ( HintAtom != None )
     {
         struct {
@@ -103,61 +117,61 @@ static void _glfwDisableDecorations( void )
             unsigned long status;
         } MWMHints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
 
-        XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
                          32, PropModeReplace, (unsigned char *)&MWMHints,
                          sizeof(MWMHints)/4 );
         RemovedDecorations = 1;
     }
 
     // Now try to set KWM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "KWM_WIN_DECORATION", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
     if ( HintAtom != None )
     {
         long KWMHints = KDE_tinyDecoration;
 
-        XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
                          32, PropModeReplace, (unsigned char *)&KWMHints,
                          sizeof(KWMHints)/4 );
         RemovedDecorations = 1;
     }
 
     // Now try to set GNOME hints
-    HintAtom = XInternAtom(_glfwLibrary.Dpy, "_WIN_HINTS", True );
+    HintAtom = XInternAtom(_glfwLibrary.display, "_WIN_HINTS", True );
     if ( HintAtom != None )
     {
         long GNOMEHints = 0;
 
-        XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
                          32, PropModeReplace, (unsigned char *)&GNOMEHints,
                          sizeof(GNOMEHints)/4 );
         RemovedDecorations = 1;
     }
 
     // Now try to set KDE NET_WM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_WINDOW_TYPE", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
     if ( HintAtom != None )
     {
         Atom NET_WMHints[2];
 
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.Dpy, "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE", True );
+        NET_WMHints[0] = XInternAtom( _glfwLibrary.display, "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE", True );
         /* define a fallback... */
-        NET_WMHints[1] = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_WINDOW_TYPE_NORMAL", True );
+        NET_WMHints[1] = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE_NORMAL", True );
 
-        XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, XA_ATOM,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, XA_ATOM,
                          32, PropModeReplace, (unsigned char *)&NET_WMHints,
                          2 );
         RemovedDecorations = 1;
     }
 
     // Set ICCCM fullscreen WM hint
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_STATE", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE", True );
     if ( HintAtom != None )
     {
         Atom NET_WMHints[1];
 
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_STATE_FULLSCREEN", True );
+        NET_WMHints[0] = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE_FULLSCREEN", True );
 
-        XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom, XA_ATOM,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, XA_ATOM,
                          32, PropModeReplace, (unsigned char *)&NET_WMHints, 1 );
     }
 
@@ -166,15 +180,15 @@ static void _glfwDisableDecorations( void )
     if( RemovedDecorations )
     {
         // Finally set the transient hints
-        XSetTransientForHint( _glfwLibrary.Dpy, _glfwWin.Win, RootWindow(_glfwLibrary.Dpy, _glfwWin.Scrn) );
-        XUnmapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
-        XMapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, RootWindow(_glfwLibrary.display, _glfwWin.screen) );
+        XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
+        XMapWindow( _glfwLibrary.display, _glfwWin.window );
     }
     else
     {
         // The Butcher way of removing window decorations
         attributes.override_redirect = True;
-        XChangeWindowAttributes( _glfwLibrary.Dpy, _glfwWin.Win,
+        XChangeWindowAttributes( _glfwLibrary.display, _glfwWin.window,
                                  CWOverrideRedirect, &attributes );
         _glfwWin.OverrideRedirect = GL_TRUE;
     }
@@ -199,37 +213,37 @@ static void _glfwEnableDecorations( void )
     ActivatedDecorations = 0;
 
     // First try to unset MWM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_MOTIF_WM_HINTS", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
     if ( HintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom );
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
         ActivatedDecorations = 1;
     }
 
     // Now try to unset KWM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "KWM_WIN_DECORATION", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
     if ( HintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom );
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
         ActivatedDecorations = 1;
     }
 
     // Now try to unset GNOME hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_WIN_HINTS", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
     if ( HintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.Dpy, _glfwWin.Win, HintAtom );
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
         ActivatedDecorations = 1;
     }
 
     // Now try to unset NET_WM hints
-    HintAtom = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_WINDOW_TYPE", True );
+    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
     if ( HintAtom != None )
     {
-        Atom NET_WMHints = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_WINDOW_TYPE_NORMAL", True);
+        Atom NET_WMHints = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE_NORMAL", True);
         if( NET_WMHints != None )
         {
-            XChangeProperty( _glfwLibrary.Dpy, _glfwWin.Win,
+            XChangeProperty( _glfwLibrary.display, _glfwWin.window,
                             HintAtom, XA_ATOM, 32, PropModeReplace,
                             (unsigned char *)&NET_WMHints, 1 );
             ActivatedDecorations = 1;
@@ -240,199 +254,10 @@ static void _glfwEnableDecorations( void )
     if( ActivatedDecorations )
     {
         // NOTE: Does this work?
-        XSetTransientForHint( _glfwLibrary.Dpy, _glfwWin.Win, None);
-        XUnmapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
-        XMapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, None);
+        XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
+        XMapWindow( _glfwLibrary.display, _glfwWin.window );
     }
-}
-
-
-//========================================================================
-// _glfwChooseVisual() - We do our own function here, since
-// glXChooseVisual does not behave as we want it to (not according to the
-// GLFW specs)
-//========================================================================
-
-XVisualInfo * _glfwChooseVisual( Display *Dpy, int Screen, int r, int g,
-    int b, int a, int d, int s, int ar, int ag, int ab, int aa, int aux,
-				 int fsaa, int stereo)
-{
-    XVisualInfo *VI, *VI_list, VI_tmp;
-    int  nitems_return, i;
-    int  vi_gl, vi_rgba, vi_double, vi_stereo;
-    int  vi_r, vi_g, vi_b, vi_a, vi_d, vi_s, vi_ar, vi_ag, vi_ab, vi_aa;
-    int  vi_aux;
-    int  color, accum, vi_accum;
-    int  missing, color_diff, extra_diff;
-    int  best_vis, best_missing, best_color_diff, best_extra_diff;
-    int  samples, samplebuffers, vi_samples, vi_samplebuffers;
-
-    // Get list of visuals for this screen & display
-    VI_tmp.screen = Screen;
-    VI_list = XGetVisualInfo( Dpy, VisualScreenMask, &VI_tmp,
-                              &nitems_return );
-    if( VI_list == NULL )
-    {
-        return NULL;
-    }
-
-    // Pick some prefered color depth if the user did not request a
-    // specific depth (note: if the user did not request a specific color
-    // depth, this will not be a driving demand, it's only here to avoid
-    // selection randomness)
-    color = (r > 0 || g > 0 || b > 0);
-    if( !color )
-    {
-        r = g = b = 8;
-    }
-
-    // Make sure that stereo is 1 or 0
-    stereo = stereo ? 1 : 0;
-
-    // Convenience pre-calculation
-    accum = (ar > 0 || ag > 0 || ab > 0 || aa > 0);
-    
-    samples = fsaa;
-    samplebuffers = (fsaa > 0) ? 1 : 0;
-    
-    
-
-    // Loop through list of visuals to find best match
-    best_vis        = -1;
-    best_missing    = 0x7fffffff;
-    best_color_diff = 0x7fffffff;
-    best_extra_diff = 0x7fffffff;
-    for( i = 0; i < nitems_return; i ++ )
-    {
-        // We want GL, RGBA & DOUBLEBUFFER, and NOT STEREO / STEREO
-        glXGetConfig( Dpy, &VI_list[i], GLX_USE_GL, &vi_gl );
-        glXGetConfig( Dpy, &VI_list[i], GLX_RGBA, &vi_rgba );
-        glXGetConfig( Dpy, &VI_list[i], GLX_DOUBLEBUFFER, &vi_double );
-        glXGetConfig( Dpy, &VI_list[i], GLX_STEREO, &vi_stereo );
-        vi_stereo = vi_stereo ? 1 : 0;
-        if( vi_gl && vi_rgba && vi_double && (vi_stereo == stereo) )
-        {
-            // Get visual color parameters
-            glXGetConfig( Dpy, &VI_list[i], GLX_RED_SIZE, &vi_r );
-            glXGetConfig( Dpy, &VI_list[i], GLX_GREEN_SIZE, &vi_g );
-            glXGetConfig( Dpy, &VI_list[i], GLX_BLUE_SIZE, &vi_b );
-
-            // Get visual "extra" parameters
-            glXGetConfig( Dpy, &VI_list[i], GLX_ALPHA_SIZE, &vi_a );
-            glXGetConfig( Dpy, &VI_list[i], GLX_DEPTH_SIZE, &vi_d );
-            glXGetConfig( Dpy, &VI_list[i], GLX_STENCIL_SIZE, &vi_s );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_RED_SIZE, &vi_ar );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_GREEN_SIZE, &vi_ag );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_BLUE_SIZE, &vi_ab );
-            glXGetConfig( Dpy, &VI_list[i], GLX_ACCUM_ALPHA_SIZE, &vi_aa );
-            glXGetConfig( Dpy, &VI_list[i], GLX_AUX_BUFFERS, &vi_aux );
-	    glXGetConfig( Dpy, &VI_list[i], GLX_SAMPLE_BUFFERS, &vi_samplebuffers );
-	    glXGetConfig( Dpy, &VI_list[i], GLX_SAMPLES, &vi_samples );
-	    
-            vi_accum = (vi_ar > 0 || vi_ag > 0 || vi_ab > 0 || vi_aa > 0);
-
-            // Check how many buffers are missing
-            missing = 0;
-            if( a > 0 && vi_a == 0 ) missing ++;
-            if( d > 0 && vi_d == 0 ) missing ++;
-            if( s > 0 && vi_s == 0 ) missing ++;
-            if( accum && !vi_accum ) missing ++;
-            if( aux > 0 && vi_aux == 0 ) missing ++;
-	    if( samplebuffers > 0 && vi_samplebuffers == 0 ) missing ++;
-	    
-
-            // Calculate color diff
-            color_diff = (r - vi_r) * (r - vi_r) +
-                         (g - vi_g) * (g - vi_g) +
-                         (b - vi_b) * (b - vi_b);
-
-            // Calculate "extra" diff
-            extra_diff = 0;
-            if( a > 0 )
-            {
-                extra_diff += (a - vi_a) * (a - vi_a);
-            }
-            if( d > 0 )
-            {
-                extra_diff += (d - vi_d) * (d - vi_d);
-            }
-            if( s > 0 )
-            {
-                extra_diff += (s - vi_s) * (s - vi_s);
-            }
-            if( accum )
-            {
-                extra_diff += (ar - vi_ar) * (ar - vi_ar) +
-                              (ag - vi_ag) * (ag - vi_ag) +
-                              (ab - vi_ab) * (ab - vi_ab) +
-                              (aa - vi_aa) * (aa - vi_aa);
-            }
-            if( aux > 0 )
-            {
-                extra_diff += (aux - vi_aux) * (aux - vi_aux);
-            }
-	    if( samples > 0 )
-	    {
-	      extra_diff += (samples - vi_samples) * (samples - vi_samples);
-	      
-	    }
-            // Check if this is a better match. We implement some
-            // complicated rules, by prioritizing in this order:
-            //  1) Visuals with the least number of missing buffers always
-            //     have priority
-            //  2a) If (r,g,b)!=(0,0,0), color depth has priority over
-            //      other buffers
-            //  2b) If (r,g,b)==(0,0,0), other buffers have priority over
-            //      color depth
-            if( missing < best_missing )
-            {
-                best_vis = i;
-            }
-            else if( missing == best_missing )
-            {
-                if( color )
-                {
-                    if( (color_diff < best_color_diff) ||
-                        (color_diff == best_color_diff &&
-                         extra_diff < best_extra_diff) )
-                    {
-                        best_vis = i;
-                    }
-                }
-                else
-                {
-                    if( (extra_diff < best_extra_diff) ||
-                        (extra_diff == best_extra_diff &&
-                         color_diff < best_color_diff) )
-                    {
-                        best_vis = i;
-                    }
-                }
-            }
-            if( best_vis == i )
-            {
-                best_missing    = missing;
-                best_color_diff = color_diff;
-                best_extra_diff = extra_diff;
-            }
-        }
-    }
-
-    // Copy best visual to a visual to return
-    if( best_vis >= 0 )
-    {
-        VI = XGetVisualInfo( Dpy, VisualIDMask, &VI_list[ best_vis ],
-                             &nitems_return );
-    }
-    else
-    {
-        VI = NULL;
-    }
-
-    // Free visuals list
-    XFree( VI_list );
-
-    return VI;
 }
 
 
@@ -447,7 +272,7 @@ static int _glfwTranslateKey( int keycode )
     // Try secondary keysym, for numeric keypad keys
     // Note: This way we always force "NumLock = ON", which at least
     // enables GLFW users to detect numeric keypad keys
-    key = XKeycodeToKeysym( _glfwLibrary.Dpy, keycode, 1 );
+    key = XKeycodeToKeysym( _glfwLibrary.display, keycode, 1 );
     switch( key )
     {
         // Numeric keypad
@@ -469,7 +294,7 @@ static int _glfwTranslateKey( int keycode )
     }
 
     // Now try pimary keysym
-    key = XKeycodeToKeysym( _glfwLibrary.Dpy, keycode, 0 );
+    key = XKeycodeToKeysym( _glfwLibrary.display, keycode, 0 );
     switch( key )
     {
         // Special keys (non character keys)
@@ -583,7 +408,7 @@ static int _glfwGetNextEvent( void )
     XEvent event, next_event;
 
     // Pull next event from event queue
-    XNextEvent( _glfwLibrary.Dpy, &event );
+    XNextEvent( _glfwLibrary.display, &event );
 
     // Handle certain window messages
     switch( event.type )
@@ -609,9 +434,9 @@ static int _glfwGetNextEvent( void )
             // we will get KeyRelease/KeyPress pairs with identical time
             // stamps. User selected key repeat filtering is handled in
             // _glfwInputKey()/_glfwInputChar().
-            if( XEventsQueued( _glfwLibrary.Dpy, QueuedAfterReading ) )
+            if( XEventsQueued( _glfwLibrary.display, QueuedAfterReading ) )
             {
-                XPeekEvent( _glfwLibrary.Dpy, &next_event );
+                XPeekEvent( _glfwLibrary.display, &next_event );
                 if( next_event.type == KeyPress &&
                     next_event.xkey.window == event.xkey.window &&
                     next_event.xkey.keycode == event.xkey.keycode &&
@@ -750,8 +575,8 @@ static int _glfwGetNextEvent( void )
 
 	    if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
 	    {
-		XSendEvent( _glfwLibrary.Dpy,
-			    RootWindow( _glfwLibrary.Dpy, _glfwWin.VI->screen ),
+		XSendEvent( _glfwLibrary.display,
+			    RootWindow( _glfwLibrary.display, _glfwWin.screen ),
 			    False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
 	    }
             break;
@@ -843,6 +668,185 @@ Cursor _glfwCreateNULLCursor( Display *display, Window root )
 
 
 //========================================================================
+// Initialize GLX
+//========================================================================
+
+static int _glfwInitGLX( void )
+{
+    /*
+    int major, minor;
+    */
+
+    // Fullscreen & screen saver settings
+    // Check if GLX is supported on this display
+    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
+    {
+	fprintf(stderr, "GLX not supported\n");
+        return GL_FALSE;
+    }
+
+    /*
+    // Retrieve GLX version
+    if( !glXQueryVersion( _glfwLibrary.display, &major, &minor ) )
+    {
+	fprintf(stderr, "Unable to query GLX version\n");
+        return GL_FALSE;
+    }
+
+    // We need at least GLX 1.4 server side (because we're using GLXFBConfigs)
+    if( minor < 4 )
+    {
+	fprintf(stderr, "GLX version 1.4 or above required\n");
+        return GL_FALSE;
+    }
+    */
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
+// Create the OpenGL context
+//========================================================================
+
+#define _glfwSetGLXattrib( attribs, index, attribName, attribValue ) \
+    attribs[index++] = attribName; \
+    attribs[index++] = attribValue;
+
+static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
+                               int alphabits, int depthbits, int stencilbits,
+			       _GLFWhints* hints )
+{
+    GLXFBConfig *fbconfigs;
+    const char *extensions;
+    int attribs[40];
+    int fbcount, index;
+    GLXCREATECONTEXTATTRIBS_T glXCreateContextAttribsARB = NULL; 
+
+    if( hints->OpenGLMajor > 2 )
+    {
+	extensions = glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
+
+	if( !_glfwStringInExtensionString( extensions, "GLX_ARB_create_context" ) )
+	{
+	    fprintf(stderr, "GLX_ARB_create_context extension not found\n");
+	    return GL_FALSE;
+	}
+
+	glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress( "glXCreateContextAttribsARB" );
+	if( glXCreateContextAttribsARB == NULL )
+	{
+	    fprintf(stderr, "glXCreateContextAttribsARB entry point not found\n");
+	    return GL_FALSE;
+	}
+    }
+
+    index = 0;
+
+    _glfwSetGLXattrib( attribs, index, GLX_RENDER_TYPE, GLX_RGBA_BIT );
+    _glfwSetGLXattrib( attribs, index, GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT );
+    _glfwSetGLXattrib( attribs, index, GLX_DOUBLEBUFFER, True );
+
+    _glfwSetGLXattrib( attribs, index, GLX_RED_SIZE, redbits );
+    _glfwSetGLXattrib( attribs, index, GLX_GREEN_SIZE, greenbits );
+    _glfwSetGLXattrib( attribs, index, GLX_BLUE_SIZE, bluebits );
+    _glfwSetGLXattrib( attribs, index, GLX_ALPHA_SIZE, alphabits );
+
+    if( depthbits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_DEPTH_SIZE, depthbits );
+    }
+
+    if( stencilbits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_STENCIL_SIZE, stencilbits );
+    }
+
+    if( hints->AccumRedBits > 0 || hints->AccumGreenBits > 0 ||
+        hints->AccumBlueBits > 0 || hints->AccumAlphaBits > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_RED_SIZE, hints->AccumRedBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_GREEN_SIZE, hints->AccumGreenBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_BLUE_SIZE, hints->AccumBlueBits );
+	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_ALPHA_SIZE, hints->AccumAlphaBits );
+    }
+
+    if( hints->Stereo )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_STEREO, hints->Stereo ? 1 : 0 );
+    }
+
+    if( hints->Samples > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_SAMPLE_BUFFERS, 1 );
+	_glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
+    }
+
+    if( hints->AuxBuffers > 0 )
+    {
+	_glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
+    }
+
+    attribs[index] = None;
+
+    // Get an appropriate FB config
+    fbconfigs = glXChooseFBConfig( _glfwLibrary.display, _glfwWin.screen, attribs, &fbcount );
+    if( fbconfigs == NULL )
+    {
+	fprintf(stderr, "Unable to find any suitable GLXFBConfigs\n");
+        return GL_FALSE;
+    }
+
+    // Pick the first (best) candidate
+    _glfwWin.fbconfig = fbconfigs[0];
+
+    XFree( fbconfigs );
+    fbconfigs = NULL;
+
+    if( glXCreateContextAttribsARB )
+    {
+	index = 0;
+
+	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
+	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
+
+	if( hints->OpenGLForward )
+	{
+	    _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB );
+	}
+
+	attribs[index] = None;
+
+	_glfwWin.context = glXCreateContextAttribsARB( _glfwLibrary.display, _glfwWin.fbconfig, NULL, True, attribs );
+	if( _glfwWin.context == NULL )
+	{
+	    fprintf(stderr, "Unable to create OpenGL context\n");
+	    return GL_FALSE;
+	}
+    }
+    else
+    {
+	_glfwWin.context = glXCreateNewContext( _glfwLibrary.display, _glfwWin.fbconfig, 0, NULL, True );
+	if( _glfwWin.context == NULL )
+	{
+	    fprintf(stderr, "Unable to create OpenGL context\n");
+	    return GL_FALSE;
+	}
+    }
+
+    // Retrieve the corresponding visual
+    _glfwWin.visual = glXGetVisualFromFBConfig( _glfwLibrary.display, _glfwWin.fbconfig );
+    if( _glfwWin.visual == NULL )
+    {
+	fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
+}
+
+
+//========================================================================
 // _glfwInitGLXExtensions() - Initialize GLX-specific extensions
 //========================================================================
 
@@ -887,10 +891,11 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     Atom protocols[2];
 
     // Clear platform specific GLFW window state
-    _glfwWin.VI               = NULL;
-    _glfwWin.CX               = (GLXContext)0;
-    _glfwWin.Win              = (Window)0;
-    _glfwWin.Hints            = NULL;
+    _glfwWin.fbconfig         = (GLXFBConfig)NULL;
+    _glfwWin.visual           = (XVisualInfo*)NULL;
+    _glfwWin.context          = (GLXContext)NULL;
+    _glfwWin.window           = (Window)NULL;
+    _glfwWin.hints            = NULL;
     _glfwWin.PointerGrabbed   = GL_FALSE;
     _glfwWin.KeyboardGrabbed  = GL_FALSE;
     _glfwWin.OverrideRedirect = GL_FALSE;
@@ -900,55 +905,49 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     // Fullscreen & screen saver settings
     // Check if GLX is supported on this display
-    if( !glXQueryExtension( _glfwLibrary.Dpy, NULL, NULL ) )
+    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     // Get screen ID for this window
-    _glfwWin.Scrn = _glfwLibrary.DefaultScreen;
+    _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
 
-    // Get an appropriate visual
-    _glfwWin.VI = _glfwChooseVisual( _glfwLibrary.Dpy,
-                                     _glfwWin.Scrn,
-                                     redbits, greenbits, bluebits,
-                                     alphabits, depthbits, stencilbits,
-                                     hints->AccumRedBits, hints->AccumGreenBits,
-                                     hints->AccumBlueBits, hints->AccumAlphaBits,
-                                     hints->AuxBuffers, hints->Samples, hints->Stereo );
-    if( _glfwWin.VI == NULL )
+    // Do basic GLX setup
+    if( !_glfwInitGLX() )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    // Create a GLX context
-    _glfwWin.CX = glXCreateContext( _glfwLibrary.Dpy, _glfwWin.VI, 0, GL_TRUE );
-    if( _glfwWin.CX == NULL )
+    // Create the OpenGL context
+    if( !_glfwCreateContext( redbits, greenbits, bluebits,
+                             alphabits, depthbits, stencilbits,
+			     hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     // Create a colormap
-    cmap = XCreateColormap( _glfwLibrary.Dpy, RootWindow( _glfwLibrary.Dpy,
-               _glfwWin.VI->screen), _glfwWin.VI->visual, AllocNone );
+    cmap = XCreateColormap( _glfwLibrary.display, RootWindow( _glfwLibrary.display,
+               _glfwWin.screen), _glfwWin.visual->visual, AllocNone );
 
     // Do we want fullscreen?
     if( mode == GLFW_FULLSCREEN )
     {
         // Change video mode
-        _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
+        _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
                            &_glfwWin.Height, &_glfwWin.RefreshRate );
 
         // Remember old screen saver settings
-        XGetScreenSaver( _glfwLibrary.Dpy, &_glfwWin.Saver.Timeout,
+        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.Timeout,
                          &_glfwWin.Saver.Interval, &_glfwWin.Saver.Blanking,
                          &_glfwWin.Saver.Exposure );
 
         // Disable screen saver
-        XSetScreenSaver( _glfwLibrary.Dpy, 0, 0, DontPreferBlanking,
+        XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
                          DefaultExposures );
     }
 
@@ -960,37 +959,37 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         ExposureMask | FocusChangeMask | VisibilityChangeMask;
 
     // Create a window
-    _glfwWin.Win = XCreateWindow(
-        _glfwLibrary.Dpy,
-        RootWindow( _glfwLibrary.Dpy, _glfwWin.VI->screen ),
+    _glfwWin.window = XCreateWindow(
+        _glfwLibrary.display,
+        RootWindow( _glfwLibrary.display, _glfwWin.screen ),
         0, 0,                            // Upper left corner
         _glfwWin.Width, _glfwWin.Height, // Width, height
         0,                               // Borderwidth
-        _glfwWin.VI->depth,              // Depth
+        _glfwWin.visual->depth,              // Depth
         InputOutput,
-        _glfwWin.VI->visual,
+        _glfwWin.visual->visual,
         CWBorderPixel | CWColormap | CWEventMask,
         &wa
     );
-    if( !_glfwWin.Win )
+    if( !_glfwWin.window )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     // Get the delete window WM protocol atom
-    _glfwWin.WMDeleteWindow = XInternAtom( _glfwLibrary.Dpy,
+    _glfwWin.WMDeleteWindow = XInternAtom( _glfwLibrary.display,
                                            "WM_DELETE_WINDOW",
                                            False );
 
     // Get the ping WM protocol atom
-    _glfwWin.WMPing = XInternAtom( _glfwLibrary.Dpy, "_NET_WM_PING", False );
+    _glfwWin.WMPing = XInternAtom( _glfwLibrary.display, "_NET_WM_PING", False );
 
     protocols[0] = _glfwWin.WMDeleteWindow;
     protocols[1] = _glfwWin.WMPing;
 
     // Allow us to trap the Window Close protocol
-    XSetWMProtocols( _glfwLibrary.Dpy, _glfwWin.Win, protocols,
+    XSetWMProtocols( _glfwLibrary.display, _glfwWin.window, protocols,
                      sizeof(protocols) / sizeof(Atom) );
 
     // Remove window decorations for fullscreen windows
@@ -999,33 +998,33 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         _glfwDisableDecorations();
     }
 
-    _glfwWin.Hints = XAllocSizeHints();
+    _glfwWin.hints = XAllocSizeHints();
 
     if( hints->WindowNoResize )
     {
-	_glfwWin.Hints->flags |= (PMinSize | PMaxSize);
-        _glfwWin.Hints->min_width = _glfwWin.Hints->max_width = _glfwWin.Width;
-        _glfwWin.Hints->min_height = _glfwWin.Hints->max_height = _glfwWin.Height;
+	_glfwWin.hints->flags |= (PMinSize | PMaxSize);
+        _glfwWin.hints->min_width = _glfwWin.hints->max_width = _glfwWin.Width;
+        _glfwWin.hints->min_height = _glfwWin.hints->max_height = _glfwWin.Height;
     }
 
     if( mode == GLFW_FULLSCREEN )
     {
-	_glfwWin.Hints->flags |= PPosition;
-	_glfwWin.Hints->x = 0;
-	_glfwWin.Hints->y = 0;
+	_glfwWin.hints->flags |= PPosition;
+	_glfwWin.hints->x = 0;
+	_glfwWin.hints->y = 0;
     }
 
-    XSetWMNormalHints( _glfwLibrary.Dpy, _glfwWin.Win, _glfwWin.Hints );
+    XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, _glfwWin.hints );
 
     // Map window
-    XMapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+    XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // Wait for map notification
-    XIfEvent( _glfwLibrary.Dpy, &event, _glfwWaitForMapNotify,
-              (char*)_glfwWin.Win );
+    XIfEvent( _glfwLibrary.display, &event, _glfwWaitForMapNotify,
+              (char*)_glfwWin.window );
 
     // Make sure that our window ends up on top of things
-    XRaiseWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+    XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
 
     // Fullscreen mode "post processing"
     if( mode == GLFW_FULLSCREEN )
@@ -1034,20 +1033,20 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 	// Request screen change notifications
 	if( _glfwLibrary.XRandR.Available )
 	{
-	    XRRSelectInput( _glfwLibrary.Dpy,
-	                    _glfwWin.Win,
+	    XRRSelectInput( _glfwLibrary.display,
+	                    _glfwWin.window,
 			    RRScreenChangeNotifyMask );
 	}
 #endif
 
         // Force window position/size (some WMs do their own window
         // geometry, which we want to override)
-        XMoveWindow( _glfwLibrary.Dpy, _glfwWin.Win, 0, 0 );
-        XResizeWindow( _glfwLibrary.Dpy, _glfwWin.Win, _glfwWin.Width,
+        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window, _glfwWin.Width,
                        _glfwWin.Height );
 
         // Grab keyboard
-        if( XGrabKeyboard( _glfwLibrary.Dpy, _glfwWin.Win, True,
+        if( XGrabKeyboard( _glfwLibrary.display, _glfwWin.window, True,
                            GrabModeAsync, GrabModeAsync, CurrentTime ) ==
             GrabSuccess )
         {
@@ -1055,10 +1054,10 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         }
 
         // Grab mouse cursor
-        if( XGrabPointer( _glfwLibrary.Dpy, _glfwWin.Win, True,
+        if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                           ButtonPressMask | ButtonReleaseMask |
                           PointerMotionMask, GrabModeAsync, GrabModeAsync,
-                          _glfwWin.Win, None, CurrentTime ) ==
+                          _glfwWin.window, None, CurrentTime ) ==
             GrabSuccess )
         {
             _glfwWin.PointerGrabbed = GL_TRUE;
@@ -1067,8 +1066,8 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
         // Try to get window inside viewport (for virtual displays) by
         // moving the mouse cursor to the upper left corner (and then to
         // the center) - this works for XFree86
-        XWarpPointer( _glfwLibrary.Dpy, None, _glfwWin.Win, 0,0,0,0, 0,0 );
-        XWarpPointer( _glfwLibrary.Dpy, None, _glfwWin.Win, 0,0,0,0,
+        XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
+        XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
                       _glfwWin.Width/2, _glfwWin.Height/2 );
     }
 
@@ -1076,12 +1075,12 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwPlatformSetWindowTitle( "GLFW Window" );
 
     // Connect the context to the window
-    glXMakeCurrent( _glfwLibrary.Dpy, _glfwWin.Win, _glfwWin.CX );
+    glXMakeCurrent( _glfwLibrary.display, _glfwWin.window, _glfwWin.context );
 
     // Start by clearing the front buffer to black (avoid ugly desktop
     // remains in our OpenGL window)
     glClear( GL_COLOR_BUFFER_BIT );
-    glXSwapBuffers( _glfwLibrary.Dpy, _glfwWin.Win );
+    glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
 
     // Initialize GLX-specific OpenGL extensions
     _glfwInitGLXExtensions();
@@ -1102,51 +1101,51 @@ void _glfwPlatformCloseWindow( void )
 #endif
 
     // Free WM size hints
-    if( _glfwWin.Hints )
+    if( _glfwWin.hints )
     {
-	XFree( _glfwWin.Hints );
-	_glfwWin.Hints = NULL;
+	XFree( _glfwWin.hints );
+	_glfwWin.hints = NULL;
     }
 
     // Do we have a rendering context?
-    if( _glfwWin.CX )
+    if( _glfwWin.context )
     {
         // Release the context
-        glXMakeCurrent( _glfwLibrary.Dpy, None, NULL );
+        glXMakeCurrent( _glfwLibrary.display, None, NULL );
 
         // Delete the context
-        glXDestroyContext( _glfwLibrary.Dpy, _glfwWin.CX );
-        _glfwWin.CX = NULL;
+        glXDestroyContext( _glfwLibrary.display, _glfwWin.context );
+        _glfwWin.context = NULL;
     }
 
     // Do we have a visual?
-    if( _glfwWin.VI )
+    if( _glfwWin.visual )
     {
-	XFree( _glfwWin.VI );
-	_glfwWin.VI = NULL;
+	XFree( _glfwWin.visual );
+	_glfwWin.visual = NULL;
     }
 
     // Ungrab pointer and/or keyboard?
     if( _glfwWin.KeyboardGrabbed )
     {
-        XUngrabKeyboard( _glfwLibrary.Dpy, CurrentTime );
+        XUngrabKeyboard( _glfwLibrary.display, CurrentTime );
         _glfwWin.KeyboardGrabbed = GL_FALSE;
     }
     if( _glfwWin.PointerGrabbed )
     {
-        XUngrabPointer( _glfwLibrary.Dpy, CurrentTime );
+        XUngrabPointer( _glfwLibrary.display, CurrentTime );
         _glfwWin.PointerGrabbed = GL_FALSE;
     }
 
     // Do we have a window?
-    if( _glfwWin.Win )
+    if( _glfwWin.window )
     {
         // Unmap the window
-        XUnmapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+        XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
 
         // Destroy the window
-        XDestroyWindow( _glfwLibrary.Dpy, _glfwWin.Win );
-        _glfwWin.Win = (Window) 0;
+        XDestroyWindow( _glfwLibrary.display, _glfwWin.window );
+        _glfwWin.window = (Window) 0;
     }
 
     // Did we change the fullscreen resolution?
@@ -1155,10 +1154,10 @@ void _glfwPlatformCloseWindow( void )
 #if defined( _GLFW_HAS_XRANDR )
 	if( _glfwLibrary.XRandR.Available )
 	{
-	    root = RootWindow( _glfwLibrary.Dpy, _glfwWin.Scrn );
-	    sc = XRRGetScreenInfo( _glfwLibrary.Dpy, root );
+	    root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
+	    sc = XRRGetScreenInfo( _glfwLibrary.display, root );
 
-	    XRRSetScreenConfig( _glfwLibrary.Dpy,
+	    XRRSetScreenConfig( _glfwLibrary.display,
 	                        sc,
 				root,
 			        _glfwWin.FS.OldSizeID,
@@ -1171,13 +1170,13 @@ void _glfwPlatformCloseWindow( void )
         if( _glfwLibrary.XF86VidMode.Available )
         {
             // Unlock mode switch
-            XF86VidModeLockModeSwitch( _glfwLibrary.Dpy,
-                                       _glfwWin.Scrn,
+            XF86VidModeLockModeSwitch( _glfwLibrary.display,
+                                       _glfwWin.screen,
                                        0 );
 
             // Change the video mode back to the old mode
-            XF86VidModeSwitchToMode( _glfwLibrary.Dpy,
-                _glfwWin.Scrn, &_glfwWin.FS.OldMode );
+            XF86VidModeSwitchToMode( _glfwLibrary.display,
+                _glfwWin.screen, &_glfwWin.FS.OldMode );
         }
 #endif
         _glfwWin.FS.ModeChanged = GL_FALSE;
@@ -1187,13 +1186,13 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.Saver.Changed )
     {
         // Restore old screen saver settings
-        XSetScreenSaver( _glfwLibrary.Dpy, _glfwWin.Saver.Timeout,
+        XSetScreenSaver( _glfwLibrary.display, _glfwWin.Saver.Timeout,
                          _glfwWin.Saver.Interval, _glfwWin.Saver.Blanking,
                          _glfwWin.Saver.Exposure );
         _glfwWin.Saver.Changed = GL_FALSE;
     }
 
-    //XSync( _glfwLibrary.Dpy, True );
+    //XSync( _glfwLibrary.display, True );
 }
 
 
@@ -1204,8 +1203,8 @@ void _glfwPlatformCloseWindow( void )
 void _glfwPlatformSetWindowTitle( const char *title )
 {
     // Set window & icon title
-    XStoreName( _glfwLibrary.Dpy, _glfwWin.Win, title );
-    XSetIconName( _glfwLibrary.Dpy, _glfwWin.Win, title );
+    XStoreName( _glfwLibrary.display, _glfwWin.window, title );
+    XSetIconName( _glfwLibrary.display, _glfwWin.window, title );
 }
 
 
@@ -1225,21 +1224,21 @@ void _glfwPlatformSetWindowSize( int width, int height )
     if( _glfwWin.Fullscreen )
     {
         // Get closest match for target video mode
-        mode = _glfwGetClosestVideoMode( _glfwWin.Scrn, &width, &height, &rate );
+        mode = _glfwGetClosestVideoMode( _glfwWin.screen, &width, &height, &rate );
     }
 
     if( _glfwWin.WindowNoResize )
     {
-        _glfwWin.Hints->min_width = _glfwWin.Hints->max_width = width;
-        _glfwWin.Hints->min_height = _glfwWin.Hints->max_height = height;
+        _glfwWin.hints->min_width = _glfwWin.hints->max_width = width;
+        _glfwWin.hints->min_height = _glfwWin.hints->max_height = height;
     }
 
-    XSetWMNormalHints( _glfwLibrary.Dpy, _glfwWin.Win, _glfwWin.Hints );
+    XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, _glfwWin.hints );
 
     // Change window size before changing fullscreen mode?
     if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
     {
-        XResizeWindow( _glfwLibrary.Dpy, _glfwWin.Win, width, height );
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window, width, height );
         sizechanged = GL_TRUE;
     }
 
@@ -1247,7 +1246,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     if( _glfwWin.Fullscreen )
     {
         // Change video mode (keeping current rate)
-        _glfwSetVideoModeMODE( _glfwWin.Scrn, mode, _glfwWin.RefreshRate );
+        _glfwSetVideoModeMODE( _glfwWin.screen, mode, _glfwWin.RefreshRate );
 
         // Clear the front buffer to black (avoid ugly desktop remains in
         // our OpenGL window)
@@ -1257,7 +1256,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
         glClear( GL_COLOR_BUFFER_BIT );
         if( drawbuffer == GL_BACK )
         {
-            glXSwapBuffers( _glfwLibrary.Dpy, _glfwWin.Win );
+            glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
         }
         glClearColor( clearcolor[0], clearcolor[1], clearcolor[2],
                       clearcolor[3] );
@@ -1266,7 +1265,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     // Set window size (if not already changed)
     if( !sizechanged )
     {
-        XResizeWindow( _glfwLibrary.Dpy, _glfwWin.Win, width, height );
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window, width, height );
     }
 }
 
@@ -1278,7 +1277,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 void _glfwPlatformSetWindowPos( int x, int y )
 {
     // Set window position
-    XMoveWindow( _glfwLibrary.Dpy, _glfwWin.Win, x, y );
+    XMoveWindow( _glfwLibrary.display, _glfwWin.window, x, y );
 }
 
 
@@ -1303,13 +1302,13 @@ void _glfwPlatformIconifyWindow( void )
         if( _glfwLibrary.XF86VidMode.Available )
         {
             // Unlock mode switch
-            XF86VidModeLockModeSwitch( _glfwLibrary.Dpy,
-                                       _glfwWin.Scrn,
+            XF86VidModeLockModeSwitch( _glfwLibrary.display,
+                                       _glfwWin.screen,
                                        0 );
 
             // Change the video mode back to the old mode
-            XF86VidModeSwitchToMode( _glfwLibrary.Dpy,
-                _glfwWin.Scrn, &_glfwWin.FS.OldMode );
+            XF86VidModeSwitchToMode( _glfwLibrary.display,
+                _glfwWin.screen, &_glfwWin.FS.OldMode );
         }
 #endif
         _glfwWin.FS.ModeChanged = GL_FALSE;
@@ -1318,20 +1317,20 @@ void _glfwPlatformIconifyWindow( void )
     // Show mouse pointer
     if( _glfwWin.PointerHidden )
     {
-        XUndefineCursor( _glfwLibrary.Dpy, _glfwWin.Win );
+        XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
         _glfwWin.PointerHidden = GL_FALSE;
     }
 
     // Un-grab mouse pointer
     if( _glfwWin.PointerGrabbed )
     {
-        XUngrabPointer( _glfwLibrary.Dpy, CurrentTime );
+        XUngrabPointer( _glfwLibrary.display, CurrentTime );
         _glfwWin.PointerGrabbed = GL_FALSE;
     }
 
     // Iconify window
-    XIconifyWindow( _glfwLibrary.Dpy, _glfwWin.Win,
-                    _glfwWin.Scrn );
+    XIconifyWindow( _glfwLibrary.display, _glfwWin.window,
+                    _glfwWin.screen );
 
     // Window is now iconified
     _glfwWin.Iconified = GL_TRUE;
@@ -1353,21 +1352,21 @@ void _glfwPlatformRestoreWindow( void )
     // In fullscreen mode, change back video mode to user selected mode
     if( _glfwWin.Fullscreen )
     {
-        _glfwSetVideoMode( _glfwWin.Scrn,
+        _glfwSetVideoMode( _glfwWin.screen,
 	                   &_glfwWin.Width, &_glfwWin.Height, &_glfwWin.RefreshRate );
     }
 
     // Un-iconify window
-    XMapWindow( _glfwLibrary.Dpy, _glfwWin.Win );
+    XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // In fullscreen mode...
     if( _glfwWin.Fullscreen )
     {
         // Make sure window is in upper left corner
-        XMoveWindow( _glfwLibrary.Dpy, _glfwWin.Win, 0, 0 );
+        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
 
         // Get input focus
-        XSetInputFocus( _glfwLibrary.Dpy, _glfwWin.Win, RevertToParent,
+        XSetInputFocus( _glfwLibrary.display, _glfwWin.window, RevertToParent,
                         CurrentTime );
     }
 
@@ -1377,19 +1376,19 @@ void _glfwPlatformRestoreWindow( void )
         // Hide cursor
         if( !_glfwWin.PointerHidden )
         {
-            XDefineCursor( _glfwLibrary.Dpy, _glfwWin.Win,
-                           _glfwCreateNULLCursor( _glfwLibrary.Dpy,
-                                                  _glfwWin.Win ) );
+            XDefineCursor( _glfwLibrary.display, _glfwWin.window,
+                           _glfwCreateNULLCursor( _glfwLibrary.display,
+                                                  _glfwWin.window ) );
             _glfwWin.PointerHidden = GL_TRUE;
         }
 
         // Grab cursor
         if( !_glfwWin.PointerGrabbed )
         {
-            if( XGrabPointer( _glfwLibrary.Dpy, _glfwWin.Win, True,
+            if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                               ButtonPressMask | ButtonReleaseMask |
                               PointerMotionMask, GrabModeAsync,
-                              GrabModeAsync, _glfwWin.Win, None,
+                              GrabModeAsync, _glfwWin.window, None,
                               CurrentTime ) == GrabSuccess )
             {
                 _glfwWin.PointerGrabbed = GL_TRUE;
@@ -1410,7 +1409,7 @@ void _glfwPlatformRestoreWindow( void )
 void _glfwPlatformSwapBuffers( void )
 {
     // Update display-buffer
-    glXSwapBuffers( _glfwLibrary.Dpy, _glfwWin.Win );
+    glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
 }
 
 
@@ -1447,38 +1446,38 @@ void _glfwPlatformRefreshWindowParams( void )
     _glfwWin.Accelerated = GL_TRUE;
 
     // "Standard" window parameters
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_RED_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_RED_SIZE,
                   &_glfwWin.RedBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_GREEN_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_GREEN_SIZE,
                   &_glfwWin.GreenBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_BLUE_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_BLUE_SIZE,
                   &_glfwWin.BlueBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_ALPHA_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ALPHA_SIZE,
                   &_glfwWin.AlphaBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_DEPTH_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_DEPTH_SIZE,
                   &_glfwWin.DepthBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_STENCIL_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_STENCIL_SIZE,
                   &_glfwWin.StencilBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_ACCUM_RED_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_RED_SIZE,
                   &_glfwWin.AccumRedBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_ACCUM_GREEN_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_GREEN_SIZE,
                   &_glfwWin.AccumGreenBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_ACCUM_BLUE_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_BLUE_SIZE,
                   &_glfwWin.AccumBlueBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_ACCUM_ALPHA_SIZE,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_ALPHA_SIZE,
                   &_glfwWin.AccumAlphaBits );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_AUX_BUFFERS,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_AUX_BUFFERS,
                   &_glfwWin.AuxBuffers );
 
     // Get stereo rendering setting
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_STEREO,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_STEREO,
                   &_glfwWin.Stereo );
     _glfwWin.Stereo = _glfwWin.Stereo ? 1 : 0;
 
     // Get multisample buffer samples
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_SAMPLES,
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLES,
 		  &_glfwWin.Samples );
-    glXGetConfig( _glfwLibrary.Dpy, _glfwWin.VI, GLX_SAMPLE_BUFFERS, 
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLE_BUFFERS, 
 		  &sample_buffers );
     if( sample_buffers == 0 )
       _glfwWin.Samples = 0;
@@ -1490,8 +1489,8 @@ void _glfwPlatformRefreshWindowParams( void )
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
     {
-	sc = XRRGetScreenInfo( _glfwLibrary.Dpy,
-	                       RootWindow( _glfwLibrary.Dpy, _glfwWin.Scrn ) );
+	sc = XRRGetScreenInfo( _glfwLibrary.display,
+	                       RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
 	_glfwWin.RefreshRate = XRRConfigCurrentRate( sc );
 	XRRFreeScreenConfigInfo( sc );
     }
@@ -1499,7 +1498,7 @@ void _glfwPlatformRefreshWindowParams( void )
     if( _glfwLibrary.XF86VidMode.Available )
     {
         // Use the XF86VidMode extension to get current video mode
-        XF86VidModeGetModeLine( _glfwLibrary.Dpy, _glfwWin.Scrn,
+        XF86VidModeGetModeLine( _glfwLibrary.display, _glfwWin.screen,
                                 &dotclock, &modeline );
         pixels_per_second = 1000.0f * (float) dotclock;
         pixels_per_frame  = (float) modeline.htotal * modeline.vtotal;
@@ -1530,10 +1529,10 @@ void _glfwPlatformPollEvents( void )
     // or without XSync, but when the GL window is rendered over a slow
     // network I have noticed bad event syncronisation problems when XSync
     // is not used, so I decided to use it.
-    //XSync( _glfwLibrary.Dpy, False );
+    //XSync( _glfwLibrary.display, False );
 
     // Empty the window event queue
-    while( XPending( _glfwLibrary.Dpy ) )
+    while( XPending( _glfwLibrary.display ) )
     {
         if( _glfwGetNextEvent() )
         {
@@ -1560,7 +1559,7 @@ void _glfwPlatformPollEvents( void )
             // does not wander off...
             _glfwPlatformSetMouseCursorPos( _glfwWin.Width/2,
                                             _glfwWin.Height/2 );
-            //XSync( _glfwLibrary.Dpy, False );
+            //XSync( _glfwLibrary.display, False );
         }
     }
 
@@ -1570,14 +1569,14 @@ void _glfwPlatformPollEvents( void )
         // Show mouse pointer
         if( _glfwWin.PointerHidden )
         {
-            XUndefineCursor( _glfwLibrary.Dpy, _glfwWin.Win );
+            XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
             _glfwWin.PointerHidden = GL_FALSE;
         }
 
         // Un-grab mouse pointer
         if( _glfwWin.PointerGrabbed )
         {
-            XUngrabPointer( _glfwLibrary.Dpy, CurrentTime );
+            XUngrabPointer( _glfwLibrary.display, CurrentTime );
             _glfwWin.PointerGrabbed = GL_FALSE;
         }
 
@@ -1589,17 +1588,17 @@ void _glfwPlatformPollEvents( void )
         if( _glfwWin.Fullscreen )
         {
             // Change back video mode to user selected mode
-            _glfwSetVideoMode( _glfwWin.Scrn, &_glfwWin.Width,
+            _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
                                &_glfwWin.Height, &_glfwWin.RefreshRate );
 
             // Disable window manager decorations
             _glfwEnableDecorations();
 
             // Make sure window is in upper left corner
-            XMoveWindow( _glfwLibrary.Dpy, _glfwWin.Win, 0, 0 );
+            XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
 
             // Get input focus
-            XSetInputFocus( _glfwLibrary.Dpy, _glfwWin.Win,
+            XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
                             RevertToParent, CurrentTime );
         }
 
@@ -1608,9 +1607,9 @@ void _glfwPlatformPollEvents( void )
         {
             if( !_glfwWin.PointerHidden )
             {
-                XDefineCursor( _glfwLibrary.Dpy, _glfwWin.Win,
-                    _glfwCreateNULLCursor( _glfwLibrary.Dpy,
-                                           _glfwWin.Win ) );
+                XDefineCursor( _glfwLibrary.display, _glfwWin.window,
+                    _glfwCreateNULLCursor( _glfwLibrary.display,
+                                           _glfwWin.window ) );
                 _glfwWin.PointerHidden = GL_TRUE;
             }
         }
@@ -1619,10 +1618,10 @@ void _glfwPlatformPollEvents( void )
         if( (_glfwWin.MouseLock || _glfwWin.Fullscreen) &&
             !_glfwWin.PointerGrabbed )
         {
-            if( XGrabPointer( _glfwLibrary.Dpy, _glfwWin.Win, True,
+            if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                     ButtonPressMask | ButtonReleaseMask |
                     PointerMotionMask, GrabModeAsync,
-                    GrabModeAsync, _glfwWin.Win, None,
+                    GrabModeAsync, _glfwWin.window, None,
                     CurrentTime ) == GrabSuccess )
             {
                 _glfwWin.PointerGrabbed = GL_TRUE;
@@ -1679,8 +1678,8 @@ void _glfwPlatformWaitEvents( void )
     XEvent event;
 
     // Wait for new events (blocking)
-    XNextEvent( _glfwLibrary.Dpy, &event );
-    XPutBackEvent( _glfwLibrary.Dpy, &event );
+    XNextEvent( _glfwLibrary.display, &event );
+    XPutBackEvent( _glfwLibrary.display, &event );
 
     // Poll events from queue
     _glfwPlatformPollEvents();
@@ -1696,19 +1695,19 @@ void _glfwPlatformHideMouseCursor( void )
     // Hide cursor
     if( !_glfwWin.PointerHidden )
     {
-        XDefineCursor( _glfwLibrary.Dpy, _glfwWin.Win,
-                       _glfwCreateNULLCursor( _glfwLibrary.Dpy,
-                                              _glfwWin.Win ) );
+        XDefineCursor( _glfwLibrary.display, _glfwWin.window,
+                       _glfwCreateNULLCursor( _glfwLibrary.display,
+                                              _glfwWin.window ) );
         _glfwWin.PointerHidden = GL_TRUE;
     }
 
     // Grab cursor to user window
     if( !_glfwWin.PointerGrabbed )
     {
-        if( XGrabPointer( _glfwLibrary.Dpy, _glfwWin.Win, True,
+        if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                           ButtonPressMask | ButtonReleaseMask |
                           PointerMotionMask, GrabModeAsync, GrabModeAsync,
-                          _glfwWin.Win, None, CurrentTime ) ==
+                          _glfwWin.window, None, CurrentTime ) ==
             GrabSuccess )
         {
             _glfwWin.PointerGrabbed = GL_TRUE;
@@ -1728,14 +1727,14 @@ void _glfwPlatformShowMouseCursor( void )
     // area)
     if( _glfwWin.PointerGrabbed && !_glfwWin.Fullscreen )
     {
-        XUngrabPointer( _glfwLibrary.Dpy, CurrentTime );
+        XUngrabPointer( _glfwLibrary.display, CurrentTime );
         _glfwWin.PointerGrabbed = GL_FALSE;
     }
 
     // Show cursor
     if( _glfwWin.PointerHidden )
     {
-        XUndefineCursor( _glfwLibrary.Dpy, _glfwWin.Win );
+        XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
         _glfwWin.PointerHidden = GL_FALSE;
     }
 }
@@ -1750,6 +1749,6 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // Change cursor position
     _glfwInput.CursorPosX = x;
     _glfwInput.CursorPosY = y;
-    XWarpPointer( _glfwLibrary.Dpy, None, _glfwWin.Win, 0,0,0,0, x, y );
+    XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, x, y );
 }
 

@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        macosx_window.c
 // Platform:    Mac OS X
-// API Version: 2.6
+// API Version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
@@ -629,6 +629,14 @@ int  _glfwPlatformOpenWindow( int width,
     _glfwWin.WindowFunctions = ( _glfwWin.Fullscreen ?
                                &_glfwMacFSWindowFunctions :
                                &_glfwMacDWWindowFunctions );
+
+    // Fail if OpenGL 3.0 or above was requested
+    if( hints->OpenGLMajor > 2 )
+    {
+	fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
+	_glfwPlatformCloseWindow();
+	return GL_FALSE;
+    }
 
     // Windowed or fullscreen; AGL or CGL? Quite the mess...
     // AGL appears to be the only choice for attaching OpenGL contexts to
