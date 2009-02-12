@@ -1,7 +1,7 @@
 /************************************************************************
  * GLFW - An OpenGL framework
  * File:        glfw.h
- * API version: 2.6
+ * API version: 2.7
  * WWW:         http://glfw.sourceforge.net
  *------------------------------------------------------------------------
  * Copyright (c) 2002-2006 Camilla Berglund
@@ -167,8 +167,8 @@ extern "C" {
  *************************************************************************/
 
 #define GLFW_VERSION_MAJOR    2
-#define GLFW_VERSION_MINOR    6
-#define GLFW_VERSION_REVISION 1
+#define GLFW_VERSION_MINOR    7
+#define GLFW_VERSION_REVISION 0
 
 
 /*************************************************************************
