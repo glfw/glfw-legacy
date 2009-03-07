@@ -150,11 +150,6 @@ struct _GLFWwin_struct {
 
     // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
-    // Window states
-    int       Opened;          // Flag telling if window is opened or not
-    int       Active;          // Application active flag
-    int       Iconified;       // Window iconified flag
-
     // User callback functions
     GLFWwindowsizefun    WindowSizeCallback;
     GLFWwindowclosefun   WindowCloseCallback;
@@ -170,16 +165,30 @@ struct _GLFWwin_struct {
     int       MouseLock;       // Mouse-lock flag
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
-    int       RefreshRate;     // Refresh rate (for fullscreen mode)
     int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
-    int	      Samples;
 
-    // Window status
+    // Window status & parameters
+    int       Opened;          // Flag telling if window is opened or not
+    int       Active;          // Application active flag
+    int       Iconified;       // Window iconified flag
     int       Width, Height;   // Window width and heigth
+    int       Accelerated;     // GL_TRUE if window is HW accelerated
+    int       RedBits;
+    int       GreenBits;
+    int       BlueBits;
+    int       AlphaBits;
+    int       DepthBits;
+    int       StencilBits;
+    int       AccumRedBits;
+    int       AccumGreenBits;
+    int       AccumBlueBits;
+    int       AccumAlphaBits;
+    int       AuxBuffers;
+    int       Stereo;
+    int       RefreshRate;     // Vertical monitor refresh rate
+    int       Samples;
 
     // Extensions & OpenGL version
-    int       Has_GL_SGIS_generate_mipmap;
-    int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor,GLForward;
 
 
@@ -195,18 +204,30 @@ struct _GLFWwin_struct {
     EventHandlerUPP         WindowUPP;
 
     _GLFWmacwindowfunctions* WindowFunctions;
-
-    // for easy access by _glfwPlatformGetWindowParam
-    int Accelerated;
-    int RedBits, GreenBits, BlueBits, AlphaBits;
-    int DepthBits;
-    int StencilBits;
-    int AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits;
-    int AuxBuffers;
-    int Stereo;
 };
 
 GLFWGLOBAL _GLFWwin _glfwWin;
+
+
+//------------------------------------------------------------------------
+// Library global data
+//------------------------------------------------------------------------
+GLFWGLOBAL struct {
+
+    // Timer data
+    struct {
+	double       t0;
+    } Timer;
+
+    struct {
+	    // Bundle for dynamically-loading extension function pointers
+    	CFBundleRef OpenGLFramework;
+    } Libs;
+    
+    int Unbundled;
+    
+} _glfwLibrary;
+
 
 
 //------------------------------------------------------------------------

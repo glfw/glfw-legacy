@@ -317,15 +317,6 @@ GLFWAPI int glfwOpenWindow( int width, int height,
     // Get OpenGL version
     glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor, &x );
 
-    // Do we have non-power-of-two textures?
-    _glfwWin.Has_GL_ARB_texture_non_power_of_two =
-        glfwExtensionSupported( "GL_ARB_texture_non_power_of_two" );
-
-    // Do we have automatic mipmap generation?
-    _glfwWin.Has_GL_SGIS_generate_mipmap =
-        (_glfwWin.GLVerMajor >= 2) || (_glfwWin.GLVerMinor >= 4) ||
-        glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
-
     // If full-screen mode was requested, disable mouse cursor
     if( mode == GLFW_FULLSCREEN )
     {
