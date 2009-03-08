@@ -113,9 +113,6 @@ void displayJoysticksState( void )
 
 int main( void )
 {
-    int     width, height;
-    int     maxbuttons, maxaxes;
-    int     joy; 
     double  start;
     double  t;
     double  update;
