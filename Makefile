@@ -46,13 +46,6 @@ default:
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) amigaos-gcc       for AmigaOS for GCC (Geek Gadgets)"
-	@echo "  $(MAKE) amigaos-vbcc      for AmigaOS for VBCC"
-	@echo "  $(MAKE) amigaos-clean     to remove any compiled files for AmigaOS"
-	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) dos-djgpp         for DOS for DJGPP"
-	@echo "  $(MAKE) dos-clean         to remove any compiled files for DOS"
-	@echo "-----------------------------------------------------------------------------"
 
 
 ###########################################################################
@@ -190,36 +183,4 @@ macosx-gcc-examples:
 macosx-install: macosx-gcc-library
 	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc install
 
-
-###########################################################################
-# AmigaOS
-###########################################################################
-
-# Cleanup for AmigaOS
-amigaos-clean:
-	@execute compile.ami CLEAN
-
-# AmigaOS, VBCC
-amigaos-vbcc:
-	@execute compile.ami $(MAKE) vbcc
-
-# AmigaOS, GCC
-amigaos-gcc:
-	@execute compile.ami $(MAKE) gcc
-
-
-###########################################################################
-# DOS
-###########################################################################
-
-# Cleanup for DOS
-dos-clean:
-	@rm -f lib/dos/*.o
-	@rm -f lib/dos/libglfw.a
-	@rm -f examples/*.exe
-
-# DOS, DJGPP (GCC)
-dos-djgpp:
-	@cd lib\dos;  $(MAKE) -f Makefile.dos.djgpp
-	@cd examples; $(MAKE) -f Makefile.dos.djgpp
 
