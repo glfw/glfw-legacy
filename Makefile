@@ -42,7 +42,8 @@ default:
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
 	@echo "  $(MAKE) x11-distro-install for a distro to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx            for GCC for Mac OS X (Apple Xcode GCC)"
+	@echo "  $(MAKE) macosx            for GCC on Mac OS X"
+	@echo "  $(MAKE) macosx-universal  for Universal Binaries with GCC on Mac OS X"
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
@@ -173,16 +174,20 @@ macosx-clean:
 
 # Mac OS X, GCC
 macosx: macosx-gcc
-macosx-gcc: macosx-gcc-library macosx-gcc-examples
+macosx-universal: macosx-universal-library macosx-examples
+macosx-gcc: macosx-library macosx-examples
 
-macosx-gcc-library:
+macosx-library:
 	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc
 
-macosx-gcc-examples:
+macosx-universal-library:
+	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc.universal
+
+macosx-examples:
 	cd examples;   $(MAKE) -f Makefile.macosx.gcc
 
 # Mac OS X, GCC install
-macosx-install: macosx-gcc-library
+macosx-install: macosx-library
 	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc install
 
 
