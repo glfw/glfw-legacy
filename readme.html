@@ -78,7 +78,7 @@ DLL will also be compiled.</p>
   <li>Cygwin (GCC) for Windows</li>
   <li>LCC-Win32 for Windows</li>
   <li>Microsoft Visual C++ 6.x for Windows</li>
-  <li>MinGW32 (GCC) for Windows</li>
+  <li>MinGW with MSYS for Windows</li>
   <li>OpenWatcom for Windows</li>
   <li>Pelles C for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
@@ -126,11 +126,9 @@ with this procedure:</p>
 </ol>
 
 
-<h3>2.2 Note for MinGW/DevC++ users</h3>
+<h3>2.2 Note for MinGW/MSYS users</h3>
 
-<p>Do not use the MSYS shell for compiling GLFW, because the supplied batch
-file "compile.bat" will only work under a Windows command prompt (or MS-DOS
-prompt).</p>
+<p>Use the MSYS shell and make for compiling GLFW.</p>
 
 <p>Under Windows 98, the MinGW make program may set the $(MAKE) variable
 incorrectly. To remedy this, uncomment the line at the beginning of the top
