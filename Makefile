@@ -42,7 +42,7 @@ default:
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
 	@echo "  $(MAKE) x11-distro-install for a distro to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx-gcc        for GCC for Mac OS X (free Apple SDK)"
+	@echo "  $(MAKE) macosx            for GCC for Mac OS X (Apple Xcode GCC)"
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
@@ -53,6 +53,7 @@ default:
 ###########################################################################
 EXAMPLES = boing \
            gears \
+	   joytest \
            keytest \
            listmodes \
            mipmaps \
@@ -171,6 +172,7 @@ macosx-clean:
 	cd examples;   $(MAKE) -f Makefile.macosx.gcc clean
 
 # Mac OS X, GCC
+macosx: macosx-gcc
 macosx-gcc: macosx-gcc-library macosx-gcc-examples
 
 macosx-gcc-library:
