@@ -169,25 +169,32 @@ x11-distro-install: x11
 
 # Cleanup for Mac OS X
 macosx-clean:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc clean
-	cd examples;   $(MAKE) -f Makefile.macosx.gcc clean
+	cd lib/macosx; $(MAKE) -f Makefile.macosx clean
+	cd examples;   $(MAKE) -f Makefile.macosx clean
+
+# Backward compatibility
+macosx-gcc: macosx
 
 # Mac OS X, GCC
-macosx: macosx-gcc
-macosx-universal: macosx-universal-library macosx-examples
-macosx-gcc: macosx-library macosx-examples
+macosx: macosx-library macosx-examples
+macosx-universal: macosx-universal-library macosx-examples-universal
 
 macosx-library:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc
+	cd lib/macosx; $(MAKE) -f Makefile.macosx
 
 macosx-universal-library:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc.universal
+	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal
 
 macosx-examples:
-	cd examples;   $(MAKE) -f Makefile.macosx.gcc
+	cd examples;   $(MAKE) -f Makefile.macosx
+
+macosx-examples-universal:
+	cd examples;   $(MAKE) -f Makefile.macosx.universal
 
 # Mac OS X, GCC install
 macosx-install: macosx-library
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.gcc install
+	cd lib/macosx; $(MAKE) -f Makefile.macosx install
 
+macosx-install-universal: macosx-library-universal
+	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal install
 
