@@ -291,11 +291,11 @@ extern "C" {
  * Other definitions
  *************************************************************************/
 
-/* glfwOpenWindow modes */
+/* Window mode tokens for glfwOpenWindow */
 #define GLFW_WINDOW               0x00010001
 #define GLFW_FULLSCREEN           0x00010002
 
-/* glfwGetWindowParam tokens */
+/* Window parameter tokens for glfwGetWindowParam */
 #define GLFW_OPENED               0x00020001
 #define GLFW_ACTIVE               0x00020002
 #define GLFW_ICONIFIED            0x00020003
@@ -307,7 +307,7 @@ extern "C" {
 #define GLFW_DEPTH_BITS           0x00020009
 #define GLFW_STENCIL_BITS         0x0002000A
 
-/* The following constants are used for both glfwGetWindowParam
+/* Window attribute tokens for both glfwGetWindowParam
  * and glfwOpenWindowHint
  */
 #define GLFW_REFRESH_RATE         0x0002000B
@@ -323,7 +323,7 @@ extern "C" {
 #define GLFW_OPENGL_VERSION_MINOR 0x00020015
 #define GLFW_OPENGL_FORWARD_COMPAT 0x00020016
 
-/* glfwEnable/glfwDisable tokens */
+/* Window enable tokens for glfwEnable/glfwDisable */
 #define GLFW_MOUSE_CURSOR         0x00030001
 #define GLFW_STICKY_KEYS          0x00030002
 #define GLFW_STICKY_MOUSE_BUTTONS 0x00030003
@@ -331,7 +331,7 @@ extern "C" {
 #define GLFW_KEY_REPEAT           0x00030005
 #define GLFW_AUTO_POLL_EVENTS     0x00030006
 
-/* glfwGetJoystickParam tokens */
+/* Joystick parameter tokens for glfwGetJoystickParam */
 #define GLFW_PRESENT              0x00050001
 #define GLFW_AXES                 0x00050002
 #define GLFW_BUTTONS              0x00050003
