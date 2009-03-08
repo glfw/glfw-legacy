@@ -22,6 +22,7 @@ all: Triangle.app/Contents/MacOS/GLFWApplication \
      SplitView.app/Contents/MacOS/GLFWApplication \
      Mipmaps.app/Contents/MacOS/GLFWApplication \
      KeyTest.app/Contents/MacOS/GLFWApplication \
+     JoyTest.app/Contents/MacOS/GLFWApplication \
      Gears.app/Contents/MacOS/GLFWApplication \
      Boing.app/Contents/MacOS/GLFWApplication \
      Wave.app/Contents/MacOS/GLFWApplication
@@ -72,6 +73,11 @@ Mipmaps.app/Contents/MacOS/GLFWApplication: mipmaps.c
 KeyTest.app/Contents/MacOS/GLFWApplication: keytest.c
 	/bin/sh bundle.sh KeyTest
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o KeyTest.app/Contents/MacOS/KeyTest
+
+# Rule for joytest
+JoyTest.app/Contents/MacOS/GLFWApplication: joytest.c
+	/bin/sh bundle.sh JoyTest
+	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o JoyTest.app/Contents/MacOS/JoyTest
 
 # Rule for gears
 Gears.app/Contents/MacOS/GLFWApplication: gears.c

@@ -23,7 +23,7 @@ CONSOLE = -tWC
 # Default: Build all tests
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
      particles.exe splitview.exe mipmaps.exe keytest.exe gears.exe \
-     boing.exe wave.exe
+     joytest.exe boing.exe wave.exe
 
 
 # Rule for triangle
@@ -61,6 +61,10 @@ mipmaps.exe: mipmaps.c
 # Rule for keytest
 keytest.exe: keytest.c
 	$(CC) $(CFLAGS) -e$@ $(CONSOLE) keytest.c $(LFLAGS)
+
+# Rule for joytest
+joytest.exe: joytest.c
+	$(CC) $(CFLAGS) -e$@ $(CONSOLE) joytest.c $(LFLAGS)
 
 # Rule for gears
 gears.exe: gears.c

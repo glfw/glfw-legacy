@@ -1,7 +1,7 @@
 
 # Default: Build all tests
 all: triangle listmodes mthello pong3d mtbench particles splitview \
-     mipmaps keytest gears boing wave
+     mipmaps keytest joytest gears boing wave
 
 
 # Rule for triangle
@@ -39,6 +39,10 @@ mipmaps: mipmaps.c
 # Rule for keytest
 keytest: keytest.c
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o $@
+
+# Rule for joytest
+joytest: joytest.c
+	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o $@
 
 # Rule for gears
 gears: gears.c

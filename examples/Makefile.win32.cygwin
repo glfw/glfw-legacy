@@ -22,7 +22,7 @@ CONSOLE =
 # Default: Build all tests
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
      particles.exe splitview.exe mipmaps.exe keytest.exe gears.exe \
-     boing.exe wave.exe
+     joytest.exe boing.exe wave.exe
 
 
 clean:
@@ -64,6 +64,10 @@ mipmaps.exe: mipmaps.c
 # Rule for keytest
 keytest.exe: keytest.c
 	$(CC) $(CFLAGS) $(CONSOLE) keytest.c $(LFLAGS) -o $@
+
+# Rule for joytest
+joytest.exe: joytest.c
+	$(CC) $(CFLAGS) $(CONSOLE) joytest.c $(LFLAGS) -o $@
 
 # Rule for gears
 gears.exe: gears.c

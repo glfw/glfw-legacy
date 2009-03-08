@@ -8,7 +8,7 @@
 # Default: Build all tests
 default: triangle listmodes mthello pong3d mtbench \
          particles splitview mipmaps keytest gears \
-         boing wave
+         joytest boing wave
 
 
 # Compiler settings
@@ -56,6 +56,10 @@ mipmaps: mipmaps.c
 # Rule for keytest
 keytest: keytest.c
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o $@
+
+# Rule for joytest
+keytest: joytest.c
+	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o $@
 
 # Rule for gears
 gears: gears.c
