@@ -98,6 +98,7 @@ Wave.app/Contents/MacOS/GLFWApplication: wave.c
 
 # Clean
 clean:
-	rm -rf Triangle.app ListModes.app MTHello.app Pong3D.app MTBench.app \
-  Particles.app SplitView.app Mipmaps.app KeyTest.app Gears.app Boing.app Wave.app
+	rm -rf JoyTest.app Triangle.app ListModes.app MTHello.app \
+	       Pong3D.app MTBench.app Particles.app SplitView.app \
+	       Mipmaps.app KeyTest.app Gears.app Boing.app Wave.app
 
