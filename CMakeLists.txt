@@ -83,8 +83,9 @@ if (UNIX AND APPLE)
     # Set up library and include paths
     find_library(AGL_FRAMEWORK AGL)
     list(APPEND GLFW_LIBRARIES ${AGL_FRAMEWORK})
-    find_library(CARBON_FRAMEWORK CARBON)
+    find_library(CARBON_FRAMEWORK Carbon)
     list(APPEND GLFW_LIBRARIES ${CARBON_FRAMEWORK})
+    list(APPEND GLFW_LIBRARIES ${OPENGL_gl_LIBRARY})
 
     # Select platform specific code
     add_subdirectory(lib/macosx)

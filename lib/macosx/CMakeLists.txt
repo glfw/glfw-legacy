@@ -26,6 +26,13 @@ set_target_properties(libglfwStatic libglfwShared PROPERTIES
     OUTPUT_NAME glfw
 )
 
+# Append -fno-common to the compile flags to work around a bug in the Apple GCC
+get_target_property(CFLAGS libglfwShared COMPILE_FLAGS)
+if(NOT CFLAGS)
+  set(CFLAGS "")
+endif(NOT CFLAGS)
+set_target_properties(libglfwShared PROPERTIES COMPILE_FLAGS "${CFLAGS} -fno-common")
+
 install(TARGETS libglfwStatic libglfwShared DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libglfw.pc DESTINATION lib/pkgconfig)
 
