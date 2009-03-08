@@ -10,13 +10,14 @@ add_executable(joytest joytest.c)
 add_executable(listmodes listmodes.c)
 
 if(APPLE)
-  # Set fancy names for the bundles
+  # Set fancy names for bundles
   add_executable(Boing MACOSX_BUNDLE boing.c)
   add_executable(Gears MACOSX_BUNDLE gears.c)
   add_executable("Split View" MACOSX_BUNDLE splitview.c)
   add_executable(Triangle MACOSX_BUNDLE triangle.c)
   add_executable(Wave MACOSX_BUNDLE wave.c)
 else(APPLE)
+  # Set boring names for executables
   add_executable(boing WIN32 boing.c)
   add_executable(gears WIN32 gears.c)
   add_executable(splitview WIN32 splitview.c)
@@ -25,10 +26,12 @@ else(APPLE)
 endif(APPLE)
 
 if(MSVC)
+  # Tell MSVC to use main instead of WinMain for Windows subsystem executables
   set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif(MSVC)
 
 if(CYGWIN)
+  # Set cross-compile and subsystem compile and link flags
   set_target_properties(boing gears keytest joytest listmodes splitview triangle wave PROPERTIES COMPILE_FLAGS "-mno-cygwin")
   set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "-mno-cygwin -mwindows")
   set_target_properties(keytest listmodes joytest PROPERTIES LINK_FLAGS "-mno-cygwin -mconsole")
