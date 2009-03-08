@@ -718,22 +718,23 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
 			       _GLFWhints* hints )
 {
     GLXFBConfig *fbconfigs;
-    const char *extensions;
+    const GLubyte *extensions;
     int attribs[40];
     int fbcount, index;
     GLXCREATECONTEXTATTRIBS_T glXCreateContextAttribsARB = NULL; 
 
     if( hints->OpenGLMajor > 2 )
     {
-	extensions = glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
+	extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
 
-	if( !_glfwStringInExtensionString( extensions, "GLX_ARB_create_context" ) )
+	if( !_glfwStringInExtensionString( "GLX_ARB_create_context", extensions ) )
 	{
 	    fprintf(stderr, "GLX_ARB_create_context extension not found\n");
 	    return GL_FALSE;
 	}
 
-	glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress( "glXCreateContextAttribsARB" );
+	glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress(
+	                                 (const GLubyte*) "glXCreateContextAttribsARB" );
 	if( glXCreateContextAttribsARB == NULL )
 	{
 	    fprintf(stderr, "glXCreateContextAttribsARB entry point not found\n");
