@@ -51,7 +51,6 @@ default:
 	@echo "  $(MAKE) macosx-universal  for Universal Binaries with GCC on Mac OS X"
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
-	@echo "  $(MAKE) macosx-universal-install  to install the Universal Binary GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
 
 
