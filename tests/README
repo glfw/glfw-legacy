@@ -1,0 +1,37 @@
+Simple GLFW test suite
+
+Actually, more like debugging tools for the devs.
+
+Descriptions
+============
+
+tearing
+-------
+
+Visual test to see whether vsync (swap interval) works.
+
+events
+------
+
+Simple event dumper, run from console/terminal to see events.
+
+reopen
+------
+
+Simple stress test for window closing and re-opening.
+
+fsaa
+----
+
+Visual test to see whether FSAA works.
+
+peter
+-----
+
+Very specific mouse event test for examining a series of bugs reported by peterpp.
+
+accuracy
+--------
+
+Visual test for mouse cursor position accuracy.
+
