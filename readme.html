@@ -53,6 +53,10 @@ a library that constitutes a powerful API for handling operating system
 specific tasks, such as opening an OpenGL window, reading keyboard and mouse
 input, creating threads, and much more.</p>
 
+<p>This is expected to be the last major release of the 2.x series, and most
+development will take place in the 3.0 branch from now on. As such, this is
+a legacy branch and requests for additional features will be denied.</p>
+
 <p><hr>
 
 <a name="sec2">
@@ -436,18 +440,26 @@ version of GLFW.</p>
 
 <h3>v2.7</h3>
 <ul>
-  <li>Added <code>GLFW_OPENGL_VERSION_MAJOR</code>,
-      <code>GLFW_OPENGL_VERSION_MINOR</code> and
-      <code>GLFW_OPENGL_FORWARD_COMPAT</code> hints for versioned context
-      creation support</li>
-  <li>Added the proper DEF file to the Visual C++ DLL project file</li>
+  <li>Added <code>GLFW_OPENGL_VERSION_MAJOR</code> and <code>GLFW_OPENGL_VERSION_MINOR</code>
+      hints for versioned context creation</li>
+  <li>Added <code>GLFW_OPENGL_FORWARD_COMPAT</code> hint for forward compatible context creation</li>
+  <li>Added <code>GLFW_DEBUG_CONTEXT</code> hint for debug context creation</li>
   <li>Added a rudimentary joystick API testing example</li>
   <li>Changed all comments in public header file to plain C style</li>
   <li>Removed all deprecated platforms</li>
+  <li>Removed all unsupported language bindings</li>
   <li>[X11] Added <code>x11-distro-install</code> install target, intended for packagers</li>
   <li>[X11] Removed support for GLX version 1.3 and below</li>
+  <li>[X11] Removed unnecessary calls to XSync</li>
+  <li>[X11] Bugfix: Close callback was called for glfwCloseWindow</li>
   <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
+  <li>[MacOSX] Added Universal Binary build targets for all examples</li>
+  <li>[MacOSX] Bugfix: Using the Dock or menu Quit command did not call the close callback</li>
   <li>[MacOSX] Bugfix: Key repeat events were not caught on 10.5 Leopard</li>
+  <li>[Win32] Added Visual C++ project files for all examples</li>
+  <li>[Win32] Added the proper DEF file to the Visual C++ DLL project file</li>
+  <li>[Win32] Replaced the MinGW build path with a MinGW/MSYS path</li>
+  <li>[Win32] Replaced the MinGW build path with a MinGW/MSYS path</li>
   <li>[Win32] Bugfix: Improper use of wParam for <code>WM_SYSCOMMAND</code></li>
   <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
   <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initalised</li>
