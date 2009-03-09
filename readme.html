@@ -57,6 +57,8 @@ input, creating threads, and much more.</p>
 development will take place in the 3.0 branch from now on. As such, this is
 a legacy branch and requests for additional features will be denied.</p>
 
+<p>The only major feature added in this release is support for OpenGL 3.0.</p>
+
 <p><hr>
 
 <a name="sec2">
@@ -87,7 +89,7 @@ DLL will also be compiled.</p>
   <li>Pelles C for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
-  <li>Apple Developer Tools (GCC) for Mac OS X</li>
+  <li>Apple GCC on Mac OS X</li>
 </ol>
 
 <p>If your compiler/system is not in the list, you will have to create new
@@ -100,7 +102,14 @@ the source and/or makefiles in order to make GLFW compile successfully, we
 would like to know what you had to do.</p>
 
 
-<h3>2.1 Note for Microsoft Visual C++ users</h3>
+<h3>2.1 Microsoft Visual C++ 9.0 and above</h3>
+
+<p>Project files for both the static and dynamic versions of the GLFW library
+are provided in the <b>support/msvc90</b> directory, as well as project files
+for all example programs.</p>
+
+
+<h3>2.2 Older versions of Microsoft Visual C++</h3>
 
 <p>When MSVC is installed, you are asked if it should be possible to access the
 compiler from the command line. For some strange reason, the default answer to
@@ -130,7 +139,7 @@ with this procedure:</p>
 </ol>
 
 
-<h3>2.2 Note for MinGW/MSYS users</h3>
+<h3>2.3 MinGW/MSYS on Windows</h3>
 
 <p>Use the MSYS shell and make for compiling GLFW.</p>
 
@@ -140,7 +149,7 @@ level Makefile that says MAKE = make (possibly replacing make with some other
 name, e.g. mingw32-make).</p>
 
 
-<h3>2.3 Note for Cygwin users</h3>
+<h3>2.4 Cygwin on Windows</h3>
 
 <p>The Cygwin makefile was designed to run from a Cygwin bash shell.  You
 can <i>not</i> use an MS-DOS prompt (or NT cmd prompt) to compile GLFW with the
@@ -148,7 +157,7 @@ win32-cygwin option. Similarly, the win32-clean option will not work from a
 Cygwin shell, which is why there is a special cygwin-clean option.</p>
 
 
-<h3>2.4 Note for OpenWatcom users</h3>
+<h3>2.5 OpenWatcom on Windows</h3>
 
 <p>In order to compile GLFW successfully with OpenWatcom (for Windows),
 execute "nmake MAKE=nmake win32-ow" in the GLFW root directory. Also make
@@ -160,7 +169,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 (e.g. C:\Watcom).</p>
 
 
-<h3>2.5 Note for Pelles C users</h3>
+<h3>2.6 Pelles C on Windows</h3>
 
 <p>To build GLFW with Pelles C, you need at lest version 2.80.3 of Pelles C
 (POCC and POLINK).</p>
@@ -168,7 +177,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 <p>Type 'pomake win32-pellesc' to build GLFW.</p>
 
 
-<h3>2.6 Note for Unix/X11 users</h3>
+<h3>2.7 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has been tested under Linux Mandrake 10.1, Mac OS
@@ -178,13 +187,13 @@ Makefiles. You do not have to run the script manually, since it is called from
 the top level Makefile.</p>
 
 
-<h3>2.8 Note for Mac OS X users</h3>
+<h3>2.8 Apple GCC on Mac OS X</h3>
 
 <p>To compile GLFW for Mac OS X, you will need to have installed the BSD
 subsystem and the Developer Tools, which can be found on your Mac OS X CD:s.
 When they are installed, simply open Terminal and go to the root GLFW
 directory. From there, you can build the library and all the examples by
-running make, i.e. <b>make macosx-gcc</b>.</p>
+running make, i.e. <b>make macosx</b>.</p>
 
 
 
