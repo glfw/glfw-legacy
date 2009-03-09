@@ -606,7 +606,7 @@ static int _glfwGetNextEvent( void )
 
         // Was the window destroyed?
         case DestroyNotify:
-            return GL_TRUE;
+            return GL_FALSE;
 
         default:
 	{
