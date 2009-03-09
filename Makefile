@@ -23,29 +23,35 @@ default:
 	@echo "This is the makefile for the GLFW link library and example programs."
 	@echo "Type one of the following:"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) win32-mgw         for MinGW32 for Windows"
-	@echo "  $(MAKE) cross-mgw         for MinGW32 for Windows on a Unix machine" 
-	@echo "  $(MAKE) cross-mgw-install to install the GLFW library and header"
-	@echo "  $(MAKE) cross-mgw-clean   fo clean the GLFW library and header"
-	@echo "  $(MAKE) win32-cygwin      for Cygwin for Windows"
+	@echo "  $(MAKE) win32-msys        for MinGW/MSYS on Windows"
+	@echo "  $(MAKE) msys-clean        to clean the GLFW library and header"
+	@echo "  $(MAKE) msys-install      to install the GLFW library and header into MinGW/MSYS"
+	@echo "-----------------------------------------------------------------------------"
+	@echo "  $(MAKE) win32-cygwin      for Windows native (no Cygwin dependency) on Cygwin"
+	@echo "  $(MAKE) cygwin-clean      to remove any compiled files for Cygwin/Windows"
+	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header into Cygwin"
+	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) win32-lcc         for LCC-Win32 for Windows"
 	@echo "  $(MAKE) win32-bcc         for Borland C++ Builder 5.x for Windows"
 	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
 	@echo "  $(MAKE) win32-ow          for OpenWatcom for Windows"
 	@echo "  $(MAKE) win32-pellesc     for Pelles C for Windows"
 	@echo "  $(MAKE) win32-clean       to remove any compiled files for Windows"
-	@echo "  $(MAKE) cygwin-clean      to remove any compiled files for Cygwin/Windows"
-	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header into Cygwin"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) x11               for Unix/X11 (auto-configuring)"
+	@echo "  $(MAKE) cross-mgw         for MinGW cross-compile to Windows from Unix" 
+	@echo "  $(MAKE) cross-mgw-clean   to clean the GLFW library and header"
+	@echo "  $(MAKE) cross-mgw-install to install the GLFW library and header"
+	@echo "-----------------------------------------------------------------------------"
+	@echo "  $(MAKE) x11               for X11 on Unix-like systems (auto-configuring)"
 	@echo "  $(MAKE) x11-clean         to remove any compiled files for Unix/X11"
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
-	@echo "  $(MAKE) x11-distro-install for a distro to install the GLFW libraries and header"
+	@echo "  $(MAKE) x11-distro-install  for a distro to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx            for GCC on Mac OS X"
+	@echo "  $(MAKE) macosx            for Apple GCC on Mac OS X"
 	@echo "  $(MAKE) macosx-universal  for Universal Binaries with GCC on Mac OS X"
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
+	@echo "  $(MAKE) macosx-universal-install  to install the Universal Binary GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
 
 
@@ -68,43 +74,40 @@ EXAMPLES = boing \
 
 
 ###########################################################################
-# Windows
+# MinGW/MSYS on Windows
 ###########################################################################
 
-# Cleanup for Windows
-win32-clean:
-	@.\\compile.bat CLEAN
+msys-install: win32-msys
+	cd lib/win32 && $(MAKE) -f Makefile.win32.msys install
 
-# Cleanup for Cygwin (Cygwin Make does not support local BAT-files)
-cygwin-clean:
-	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin clean
-	cd examples  && $(MAKE) -f Makefile.win32.cygwin clean
+win32-msys:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.msys
+	cd examples  && $(MAKE) -f Makefile.win32.msys
+
+msys-clean:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.msys clean
+	cd examples  && $(MAKE) -f Makefile.win32.msys clean
+
+
+###########################################################################
+# Cygwin on Windows
+###########################################################################
 
 cygwin-install: win32-cygwin
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin install
 
-# Cleanup for MinGW32 Cross compilation from Unix
-cross-mgw-install: cross-mgw 
-	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw install 
-
-cross-mgw-clean:
-	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw clean 
-	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw clean
-
-
-# Windows, MinGW32
-win32-mgw:
-	@./compile.bat $(MAKE) mgw
-
-# Cross compilation from unix to win32 
-cross-mgw:
-	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw
-	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw 
-
-# Windows, Cygwin (Cygwin Make does not support local BAT-files)
 win32-cygwin:
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin
 	cd examples  && $(MAKE) -f Makefile.win32.cygwin
+
+cygwin-clean:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin clean
+	cd examples  && $(MAKE) -f Makefile.win32.cygwin clean
+
+
+###########################################################################
+# Various compilers on Windows
+###########################################################################
 
 # Windows, LCC-Win32
 win32-lcc:
@@ -126,9 +129,29 @@ win32-ow:
 win32-pellesc:
 	@.\\compile.bat $(MAKE) pellesc
 
+# Cleanup for Windows
+win32-clean:
+	@.\\compile.bat CLEAN
+
 
 ###########################################################################
-# X11 (Unix and Unix-like systems)
+# MinGW cross-compile to Windows from Unix 
+###########################################################################
+
+cross-mgw-install: cross-mgw 
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw install 
+
+cross-mgw:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw
+	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw 
+
+cross-mgw-clean:
+	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw clean 
+	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw clean
+
+
+###########################################################################
+# X11 on Unix-like systems
 ###########################################################################
 
 MAKEFILES_X11_IN  = lib/x11/Makefile.x11.in  examples/Makefile.x11.in
@@ -195,6 +218,6 @@ macosx-examples-universal:
 macosx-install: macosx-library
 	cd lib/macosx; $(MAKE) -f Makefile.macosx install
 
-macosx-install-universal: macosx-library-universal
+macosx-universal-install: macosx-library-universal
 	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal install
 
