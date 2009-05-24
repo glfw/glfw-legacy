@@ -280,7 +280,7 @@ struct _GLFWwin_struct {
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor,GLForward;
+    int       GLVerMajor,GLVerMinor,GLForward,GLDebug;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
