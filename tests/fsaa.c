@@ -23,7 +23,7 @@ int main(void)
 
   glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
-  if (glfwOpenWindow(640, 480, 8, 8, 8, 0, 0, 0, GLFW_FULLSCREEN))
+  if (glfwOpenWindow(640, 480, 8, 8, 8, 0, 0, 0, GLFW_WINDOW))
   {
     glfwSetWindowTitle("Aliasing Detector");
     glfwSetWindowSizeCallback(resized);
