@@ -30,44 +30,44 @@
 
 static unsigned int counter = 0;
 
-void GLFWCALL window_size_callback(int width, int height)
+void window_size_callback(int width, int height)
 {
   printf("%08x: Window size: %i %i\n", counter++, width, height);
   glViewport(0, 0, width, height);
 }
 
-int GLFWCALL window_close_callback(void)
+int window_close_callback(void)
 {
   printf("%08x: Window close\n", counter++);
   return 1;
 }
 
-void GLFWCALL window_refresh_callback(void)
+void window_refresh_callback(void)
 {
   printf("%08x: Window refresh\n", counter++);
 }
 
-void GLFWCALL mouse_button_callback(int button, int action)
+void mouse_button_callback(int button, int action)
 {
   printf("%08x: Mouse button %i was %s\n", counter++, button, (action == GLFW_PRESS) ? "pressed" : "released");
 }
 
-void GLFWCALL mouse_position_callback(int x, int y)
+void mouse_position_callback(int x, int y)
 {
   printf("%08x: Mouse position: %i %i\n", counter++, x, y);
 }
 
-void GLFWCALL mouse_wheel_callback(int position)
+void mouse_wheel_callback(int position)
 {
   printf("%08x: Mouse wheel: %i\n", counter++, position);
 }
 
-void GLFWCALL key_callback(int key, int action)
+void key_callback(int key, int action)
 {
   printf("%08x: Key 0x%04x was %s\n", counter++, key, (action == GLFW_PRESS) ? "pressed" : "released");
 }
 
-void GLFWCALL char_callback(int character, int action)
+void char_callback(int character, int action)
 {
   if (isgraph(character))
     printf("%08x: Character 0x%04x (%c) was %s\n", counter++, character, character, (action == GLFW_PRESS) ? "pressed" : "released");
