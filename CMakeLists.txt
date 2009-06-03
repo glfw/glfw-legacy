@@ -92,6 +92,7 @@ if (UNIX AND APPLE)
 endif(UNIX AND APPLE)
 
 add_subdirectory(examples)
+add_subdirectory(tests)
 #add_subdirectory(docs/doxygen)
 #add_subdirectory(docs/manuals)
 
