@@ -839,7 +839,7 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
     }
     else
     {
-	_glfwWin.context = glXCreateNewContext( _glfwLibrary.display, _glfwWin.fbconfig, 0, NULL, True );
+	_glfwWin.context = glXCreateNewContext( _glfwLibrary.display, _glfwWin.fbconfig, GLX_RGBA_TYPE, NULL, True );
 	if( _glfwWin.context == NULL )
 	{
 	    fprintf(stderr, "Unable to create OpenGL context\n");
