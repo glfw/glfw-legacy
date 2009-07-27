@@ -119,7 +119,7 @@ typedef struct {
 	int AuxBuffers;
 	int Stereo;
 	int Samples;
-} _GLFWFBConfig;
+} _GLFWfbconfig;
 
 
 //------------------------------------------------------------------------
