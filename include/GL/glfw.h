@@ -155,10 +155,14 @@ extern "C" {
  */
 #if defined(__APPLE_CC__)
  #include <OpenGL/gl.h>
- #include <OpenGL/glu.h>
+ #ifndef GLFW_NO_GLU
+  #include <OpenGL/glu.h>
+ #endif
 #else
  #include <GL/gl.h>
- #include <GL/glu.h>
+ #ifndef GLFW_NO_GLU
+  #include <GL/glu.h>
+ #endif
 #endif
 
 
