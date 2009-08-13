@@ -697,6 +697,15 @@ static int _glfwInitGLX( void )
 
 
 //========================================================================
+// Choose appropriate GLXFBConfigs
+//========================================================================
+
+static GLXFBConfig* _glfwChooseFBConfig()
+{
+}
+
+
+//========================================================================
 // Create the OpenGL context
 //========================================================================
 
@@ -711,7 +720,7 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
     GLXFBConfig *fbconfigs;
     const GLubyte *extensions;
     int attribs[40];
-    int fbcount, index;
+    int flags, fbcount, index;
     GLXCREATECONTEXTATTRIBS_T glXCreateContextAttribsARB = NULL; 
 
     if( hints->OpenGLMajor > 2 )
@@ -802,9 +811,21 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
 	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
 	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
 
-	if( hints->OpenGLForward )
+	if( hints->OpenGLForward || hints->OpenGLDebug )
 	{
-	    _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB );
+	    flags = 0;
+
+	    if( hints->OpenGLForward )
+	    {
+		flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+	    }
+
+	    if( hints->OpenGLDebug )
+	    {
+		flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+	    }
+
+	    _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
 	}
 
 	attribs[index] = None;

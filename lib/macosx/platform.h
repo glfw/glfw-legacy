@@ -189,7 +189,7 @@ struct _GLFWwin_struct {
     int       Samples;
 
     // Extensions & OpenGL version
-    int       GLVerMajor,GLVerMinor,GLForward;
+    int       GLVerMajor,GLVerMinor,GLForward,GLDebug;
 
 
     // ========= PLATFORM SPECIFIC PART ======================================

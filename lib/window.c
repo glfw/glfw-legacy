@@ -54,6 +54,7 @@ void _glfwClearWindowHints( void )
     _glfwWinHints.OpenGLMajor    = 0;
     _glfwWinHints.OpenGLMinor    = 0;
     _glfwWinHints.OpenGLForward  = 0;
+    _glfwWinHints.OpenGLDebug    = 0;
 }
 
 
@@ -377,6 +378,9 @@ GLFWAPI void glfwOpenWindowHint( int target, int hint )
 	case GLFW_OPENGL_FORWARD_COMPAT:
 	    _glfwWinHints.OpenGLForward = hint;
 	    break;
+	case GLFW_DEBUG_CONTEXT:
+	    _glfwWinHints.OpenGLDebug = hint;
+	    break;
         default:
             break;
     }
@@ -635,6 +639,8 @@ GLFWAPI int glfwGetWindowParam( int param )
 	    return _glfwWin.GLVerMinor;
 	case GLFW_OPENGL_FORWARD_COMPAT:
 	    return _glfwWin.GLForward;
+	case GLFW_DEBUG_CONTEXT:
+	    return _glfwWin.GLDebug;
         default:
             return 0;
     }

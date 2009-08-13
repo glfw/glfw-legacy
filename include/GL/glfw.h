@@ -322,6 +322,7 @@ extern "C" {
 #define GLFW_OPENGL_VERSION_MAJOR 0x00020014
 #define GLFW_OPENGL_VERSION_MINOR 0x00020015
 #define GLFW_OPENGL_FORWARD_COMPAT 0x00020016
+#define GLFW_DEBUG_CONTEXT        0x00020017
 
 /* Window enable tokens for glfwEnable/glfwDisable */
 #define GLFW_MOUSE_CURSOR         0x00030001

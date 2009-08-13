@@ -96,6 +96,7 @@ typedef struct {
     int          OpenGLMajor;
     int          OpenGLMinor;
     int          OpenGLForward;
+    int		 OpenGLDebug;
 } _GLFWhints;
 
 GLFWGLOBAL _GLFWhints _glfwWinHints;
