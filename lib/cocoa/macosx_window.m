@@ -239,7 +239,7 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)mouseDragged:(NSEvent *)event
 {
-    [self mouseMoved:e];
+    [self mouseMoved:event];
 }
 
 - (void)mouseUp:(NSEvent *)event
@@ -299,24 +299,24 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
     {
         _glfwInputKey( code, GLFW_PRESS );
         
-        if( [e modifierFlags] & NSCommandKeyMask )
+        if( [event modifierFlags] & NSCommandKeyMask )
         {
             if( !_glfwWin.SysKeysDisabled )
             {
-                [super keyDown:e];
+                [super keyDown:event];
             }
         }
         else
         {
             // this eventually calls through to -insertText:
-            [self interpretKeyEvents:[NSArray arrayWithObject:e]];
+            [self interpretKeyEvents:[NSArray arrayWithObject:event]];
         }
     }
 }
 
 - (void)flagsChanged:(NSEvent *)event
 {
-    unsigned int newModifierFlags = [e modifierFlags];
+    unsigned int newModifierFlags = [event modifierFlags];
     int mode;
 
     if( newModifierFlags > _glfwWin.modifierFlags )
@@ -329,7 +329,7 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
     }
 
     _glfwWin.modifierFlags = newModifierFlags;
-    _glfwInputKey( MAC_TO_GLFW_KEYCODE_MAPPING[[e keyCode]], mode );
+    _glfwInputKey( MAC_TO_GLFW_KEYCODE_MAPPING[[event keyCode]], mode );
 }
 
 - (void)keyUp:(NSEvent *)event
@@ -729,11 +729,11 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     CGSetLocalEventsSuppressionInterval( 0.0 );
     
     NSPoint localPoint = NSMakePoint( x, y );
-    NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:p];
+    NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
     CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
     double mainScreenHeight = CGDisplayBounds( CGMainDisplayID() ).size.height;
     CGPoint targetPoint = CGPointMake( globalPoint.x - mainScreenOrigin.x,
-                                       mainScreenHeight - globalPoint.y - mainScreenOrigin.y )
+                                       mainScreenHeight - globalPoint.y - mainScreenOrigin.y );
     CGDisplayMoveCursorToPoint( CGMainDisplayID(), targetPoint );
 }
 
