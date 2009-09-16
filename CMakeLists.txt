@@ -78,17 +78,20 @@ endif(UNIX AND NOT APPLE AND NOT CYGWIN)
 
 # Stuff specific to AGL and CGL on Mac OS X
 if (UNIX AND APPLE)
-    message(STATUS "Building GLFW for AGL and CGL on Mac OS X")
-
+    message(STATUS "Building GLFW for NSOpenGL on Mac OS X")
+        
+    # Universal build, decent set of warning flags...
+    set(CMAKE_OSX_ARCHITECTURES ppc;i386;ppc64;x86_64)
+    set(CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.5.sdk)
+    set(CMAKE_C_FLAGS "-mmacosx-version-min=10.5 -Wall -Wextra -Wno-unused-parameter -Werror") 
+    
     # Set up library and include paths
-    find_library(AGL_FRAMEWORK AGL)
-    list(APPEND GLFW_LIBRARIES ${AGL_FRAMEWORK})
-    find_library(CARBON_FRAMEWORK Carbon)
-    list(APPEND GLFW_LIBRARIES ${CARBON_FRAMEWORK})
+    find_library(COCOA_FRAMEWORK Cocoa)
+    list(APPEND GLFW_LIBRARIES ${COCOA_FRAMEWORK})
     list(APPEND GLFW_LIBRARIES ${OPENGL_gl_LIBRARY})
 
     # Select platform specific code
-    add_subdirectory(lib/macosx)
+    add_subdirectory(lib/cocoa)
 endif(UNIX AND APPLE)
 
 add_subdirectory(examples)
