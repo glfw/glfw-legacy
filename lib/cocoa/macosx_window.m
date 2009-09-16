@@ -206,7 +206,7 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
         return -1;
     }
     
-    // this treats keycodes as *positional*; that is, we'll return 'a'
+    // This treats keycodes as *positional*; that is, we'll return 'a'
     // for the key left of 's', even on an AZERTY keyboard.  The charInput
     // function should still get 'q' though.
     return MAC_TO_GLFW_KEYCODE_MAPPING[macKeyCode];
@@ -308,7 +308,7 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
         }
         else
         {
-            // this eventually calls through to -insertText:
+            // This eventually calls through to -insertText:
             [self interpretKeyEvents:[NSArray arrayWithObject:event]];
         }
     }
@@ -348,7 +348,8 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
     for( i = 0; i < n; i++ )
     {
         _glfwInputChar( [string characterAtIndex:i], GLFW_PRESS );
-        // TODO immediately release it too?  What does the mode even mean?
+
+        // TODO: Immediately release it too?  What does the mode even mean?
     }
 }
 
@@ -447,14 +448,12 @@ int _glfwPlatformOpenWindow( int width, int height,
             CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
         }
         
-        // yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk yuk
         unsigned int attribute_count = 0;
 #define ADD_ATTR(x) attributes[attribute_count++] = x
 #define ADD_ATTR2(x, y) (void)({ ADD_ATTR(x); ADD_ATTR(y); })
 #define MAX_ATTRS 24 // urgh
         NSOpenGLPixelFormatAttribute attributes[MAX_ATTRS];
         
-        // YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK YUK
         ADD_ATTR( NSOpenGLPFADoubleBuffer );
         if( mode == GLFW_FULLSCREEN )
         {
@@ -517,7 +516,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         
         if( mode == GLFW_FULLSCREEN )
         {
-            // FIXME pre-10.5
+            // TODO: Make this work on pre-Leopard systems
             [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
                                                    withOptions:nil];
         }
@@ -546,7 +545,8 @@ void _glfwPlatformCloseWindow( void )
                                    (CFDictionaryRef)_glfwLibrary.DesktopMode );
             CGReleaseAllDisplays();
         }
-        // TODO more, presumably...
+
+        // TODO: Probably more cleanup
     })
 }
 
@@ -568,7 +568,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    // FIXME
+    // TODO: Implement this.
     abort();
 }
 
@@ -578,7 +578,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    // FIXME
+    // TODO: Implement this.
     abort();
 }
 
@@ -634,8 +634,7 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    // FIXME
-    // abort();
+    // TODO: Implement this.
 }
 
 //========================================================================
@@ -709,21 +708,18 @@ void _glfwPlatformShowMouseCursor( void )
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    // the library seems to assume that after calling this the mouse won't move,
+    // The library seems to assume that after calling this the mouse won't move,
     // but obviously it will, and escape the app's window, and activate other apps,
     // and other badness in pain.  I think the API's just silly, but maybe I'm
     // misunderstanding it...
     
-    // also, (x, y) are window coords...
+    // Also, (x, y) are window coords...
     
-    // also, this code generates a mouse move event.  Not sure whether that's
-    // desirable or not...
-    
-    // also, it doesn't seem possible to write this robustly without
+    // Also, it doesn't seem possible to write this robustly without
     // calculating the maximum y coordinate of all screens, since Cocoa's
     // "global coordinates" are upside down from CG's...
     
-    // without this (once per app run, but it's convenient to do it here)
+    // Without this (once per app run, but it's convenient to do it here)
     // events will be suppressed for a default of 0.25 seconds after we
     // move the cursor.
     CGSetLocalEventsSuppressionInterval( 0.0 );
