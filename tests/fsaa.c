@@ -60,5 +60,6 @@ int main(void)
     exit(1);
 
   glfwTerminate();
+  exit(0);
 }
 
