@@ -53,10 +53,10 @@ enum {
 
 /* Function signature for GLX_ARB_create_context glXCreateContextAttribs */
 typedef GLXContext (*GLXCREATECONTEXTATTRIBS_T)( Display *display,
-			                         GLXFBConfig config,
-			                         GLXContext share_context,
-			                         Bool direct,
-			                         const int *attrib_list);
+                                                 GLXFBConfig config,
+                                                 GLXContext share_context,
+                                                 Bool direct,
+                                                 const int *attrib_list);
 
 /* Constants for GLX_ARB_create_context glXCreateContextAttribs */
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
@@ -99,9 +99,9 @@ Bool _glfwWaitForUnmapNotify( Display *d, XEvent *e, char *arg )
 
 static void _glfwDisableDecorations( void )
 {
-    int                   RemovedDecorations;
-    Atom                  HintAtom;
-    XSetWindowAttributes  attributes;
+    int RemovedDecorations;
+    Atom HintAtom;
+    XSetWindowAttributes attributes;
 
     RemovedDecorations = 0;
 
@@ -180,7 +180,9 @@ static void _glfwDisableDecorations( void )
     if( RemovedDecorations )
     {
         // Finally set the transient hints
-        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, RootWindow(_glfwLibrary.display, _glfwWin.screen) );
+        XSetTransientForHint( _glfwLibrary.display,
+                              _glfwWin.window,
+                              RootWindow( _glfwLibrary.display, _glfwWin.screen) );
         XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
         XMapWindow( _glfwLibrary.display, _glfwWin.window );
     }
@@ -201,8 +203,8 @@ static void _glfwDisableDecorations( void )
 
 static void _glfwEnableDecorations( void )
 {
-    int                   ActivatedDecorations;
-    Atom                  HintAtom;
+    int ActivatedDecorations;
+    Atom HintAtom;
 
     // If this is an override redirect window, skip it...
     if( _glfwWin.OverrideRedirect )
@@ -415,7 +417,7 @@ static int _glfwGetNextEvent( void )
     {
         // Is a key being pressed?
         case KeyPress:
-	{
+        {
             // Translate and report key press
             _glfwInputKey( _glfwTranslateKey( event.xkey.keycode ), GLFW_PRESS );
 
@@ -425,11 +427,11 @@ static int _glfwGetNextEvent( void )
                 _glfwInputChar( _glfwTranslateChar( &event.xkey ), GLFW_PRESS );
             }
             break;
-	}
+        }
 
         // Is a key being released?
         case KeyRelease:
-	{
+        {
             // Do not report key releases for key repeats. For key repeats
             // we will get KeyRelease/KeyPress pairs with identical time
             // stamps. User selected key repeat filtering is handled in
@@ -456,11 +458,11 @@ static int _glfwGetNextEvent( void )
                 _glfwInputChar( _glfwTranslateChar( &event.xkey ), GLFW_RELEASE );
             }
             break;
-	}
+        }
 
         // Were any of the mouse-buttons pressed?
         case ButtonPress:
-	{
+        {
             if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
@@ -493,11 +495,11 @@ static int _glfwGetNextEvent( void )
                 }
             }
             break;
-	}
+        }
 
         // Were any of the mouse-buttons released?
         case ButtonRelease:
-	{
+        {
             if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
@@ -514,11 +516,11 @@ static int _glfwGetNextEvent( void )
                                       GLFW_RELEASE );
             }
             break;
-	}
+        }
 
         // Was the mouse moved?
         case MotionNotify:
-	{
+        {
             if( event.xmotion.x != _glfwInput.CursorPosX ||
                 event.xmotion.y != _glfwInput.CursorPosY )
             {
@@ -546,11 +548,11 @@ static int _glfwGetNextEvent( void )
                 }
             }
             break;
-	}
+        }
 
         // Was the window resized?
         case ConfigureNotify:
-	{
+        {
             if( event.xconfigure.width != _glfwWin.Width ||
                 event.xconfigure.height != _glfwWin.Height )
             {
@@ -563,24 +565,24 @@ static int _glfwGetNextEvent( void )
                 }
             }
             break;
-	}
+        }
 
         // Was the window closed by the window manager?
         case ClientMessage:
-	{
+        {
             if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMDeleteWindow )
             {
                 return GL_TRUE;
             }
 
-	    if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
-	    {
-		XSendEvent( _glfwLibrary.display,
-			    RootWindow( _glfwLibrary.display, _glfwWin.screen ),
-			    False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
-	    }
+            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
+            {
+                XSendEvent( _glfwLibrary.display,
+                        RootWindow( _glfwLibrary.display, _glfwWin.screen ),
+                        False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
+            }
             break;
-	}
+        }
 
         // Was the window mapped (un-iconified)?
         case MapNotify:
@@ -604,34 +606,34 @@ static int _glfwGetNextEvent( void )
 
         // Was the window contents damaged?
         case Expose:
-	{
+        {
             // Call user callback function
             if( _glfwWin.WindowRefreshCallback )
             {
                 _glfwWin.WindowRefreshCallback();
             }
             break;
-	}
+        }
 
         // Was the window destroyed?
         case DestroyNotify:
             return GL_FALSE;
 
         default:
-	{
+        {
 #if defined( _GLFW_HAS_XRANDR )
-	    switch( event.type - _glfwLibrary.XRandR.EventBase )
-	    {
-		case RRScreenChangeNotify:
-		{
-		    // Show XRandR that we really care
-		    XRRUpdateConfiguration( &event );
-		    break;
-		}
-	    }
+            switch( event.type - _glfwLibrary.XRandR.EventBase )
+            {
+                case RRScreenChangeNotify:
+                {
+                    // Show XRandR that we really care
+                    XRRUpdateConfiguration( &event );
+                    break;
+                }
+            }
 #endif
-            break;
-	}
+                break;
+        }
     }
 
     // The window was not destroyed
@@ -681,7 +683,7 @@ static int _glfwInitGLX( void )
     // Check if GLX is supported on this display
     if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
     {
-	fprintf(stderr, "GLX not supported\n");
+        fprintf(stderr, "GLX not supported\n");
         return GL_FALSE;
     }
 
@@ -689,14 +691,14 @@ static int _glfwInitGLX( void )
     // Retrieve GLX version
     if( !glXQueryVersion( _glfwLibrary.display, &major, &minor ) )
     {
-	fprintf(stderr, "Unable to query GLX version\n");
+    fprintf(stderr, "Unable to query GLX version\n");
         return GL_FALSE;
     }
 
     // We need at least GLX 1.4 server side (because we're using GLXFBConfigs)
     if( minor < 4 )
     {
-	fprintf(stderr, "GLX version 1.4 or above required\n");
+    fprintf(stderr, "GLX version 1.4 or above required\n");
         return GL_FALSE;
     }
     */
@@ -715,7 +717,7 @@ static int _glfwInitGLX( void )
 
 static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
                                int alphabits, int depthbits, int stencilbits,
-			       _GLFWhints* hints )
+                   _GLFWhints* hints )
 {
     GLXFBConfig *fbconfigs;
     const GLubyte *extensions;
@@ -725,21 +727,21 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
 
     if( hints->OpenGLMajor > 2 )
     {
-	extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
+        extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
 
-	if( !_glfwStringInExtensionString( "GLX_ARB_create_context", extensions ) )
-	{
-	    fprintf(stderr, "GLX_ARB_create_context extension not found\n");
-	    return GL_FALSE;
-	}
+        if( !_glfwStringInExtensionString( "GLX_ARB_create_context", extensions ) )
+        {
+            fprintf(stderr, "GLX_ARB_create_context extension not found\n");
+            return GL_FALSE;
+        }
 
-	glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress(
-	                                 (const GLubyte*) "glXCreateContextAttribsARB" );
-	if( glXCreateContextAttribsARB == NULL )
-	{
-	    fprintf(stderr, "glXCreateContextAttribsARB entry point not found\n");
-	    return GL_FALSE;
-	}
+        glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress(
+                                         (const GLubyte*) "glXCreateContextAttribsARB" );
+        if( glXCreateContextAttribsARB == NULL )
+        {
+            fprintf(stderr, "glXCreateContextAttribsARB entry point not found\n");
+            return GL_FALSE;
+        }
     }
 
     index = 0;
@@ -755,37 +757,37 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
 
     if( depthbits > 0 )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_DEPTH_SIZE, depthbits );
+        _glfwSetGLXattrib( attribs, index, GLX_DEPTH_SIZE, depthbits );
     }
 
     if( stencilbits > 0 )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_STENCIL_SIZE, stencilbits );
+        _glfwSetGLXattrib( attribs, index, GLX_STENCIL_SIZE, stencilbits );
     }
 
     if( hints->AccumRedBits > 0 || hints->AccumGreenBits > 0 ||
         hints->AccumBlueBits > 0 || hints->AccumAlphaBits > 0 )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_RED_SIZE, hints->AccumRedBits );
-	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_GREEN_SIZE, hints->AccumGreenBits );
-	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_BLUE_SIZE, hints->AccumBlueBits );
-	_glfwSetGLXattrib( attribs, index, GLX_ACCUM_ALPHA_SIZE, hints->AccumAlphaBits );
+        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_RED_SIZE, hints->AccumRedBits );
+        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_GREEN_SIZE, hints->AccumGreenBits );
+        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_BLUE_SIZE, hints->AccumBlueBits );
+        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_ALPHA_SIZE, hints->AccumAlphaBits );
     }
 
     if( hints->Stereo )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_STEREO, hints->Stereo ? 1 : 0 );
+        _glfwSetGLXattrib( attribs, index, GLX_STEREO, hints->Stereo ? 1 : 0 );
     }
 
     if( hints->Samples > 0 )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_SAMPLE_BUFFERS, 1 );
-	_glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
+        _glfwSetGLXattrib( attribs, index, GLX_SAMPLE_BUFFERS, 1 );
+        _glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
     }
 
     if( hints->AuxBuffers > 0 )
     {
-	_glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
+        _glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
     }
 
     attribs[index] = None;
@@ -794,7 +796,7 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
     fbconfigs = glXChooseFBConfig( _glfwLibrary.display, _glfwWin.screen, attribs, &fbcount );
     if( fbconfigs == NULL )
     {
-	fprintf(stderr, "Unable to find any suitable GLXFBConfigs\n");
+        fprintf(stderr, "Unable to find any suitable GLXFBConfigs\n");
         return GL_FALSE;
     }
 
@@ -806,52 +808,60 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
 
     if( glXCreateContextAttribsARB )
     {
-	index = 0;
+        index = 0;
 
-	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
-	_glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
+        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
+        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
 
-	if( hints->OpenGLForward || hints->OpenGLDebug )
-	{
-	    flags = 0;
+        if( hints->OpenGLForward || hints->OpenGLDebug )
+        {
+            flags = 0;
 
-	    if( hints->OpenGLForward )
-	    {
-		flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-	    }
+            if( hints->OpenGLForward )
+            {
+                flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            }
 
-	    if( hints->OpenGLDebug )
-	    {
-		flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
-	    }
+            if( hints->OpenGLDebug )
+            {
+                flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+            }
 
-	    _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
-	}
+            _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
+        }
 
-	attribs[index] = None;
+        attribs[index] = None;
 
-	_glfwWin.context = glXCreateContextAttribsARB( _glfwLibrary.display, _glfwWin.fbconfig, NULL, True, attribs );
-	if( _glfwWin.context == NULL )
-	{
-	    fprintf(stderr, "Unable to create OpenGL context\n");
-	    return GL_FALSE;
-	}
+        _glfwWin.context = glXCreateContextAttribsARB( _glfwLibrary.display,
+                                                       _glfwWin.fbconfig,
+                                                       NULL,
+                                                       True,
+                                                       attribs );
+        if( _glfwWin.context == NULL )
+        {
+            fprintf(stderr, "Unable to create OpenGL context\n");
+            return GL_FALSE;
+        }
     }
     else
     {
-	_glfwWin.context = glXCreateNewContext( _glfwLibrary.display, _glfwWin.fbconfig, GLX_RGBA_TYPE, NULL, True );
-	if( _glfwWin.context == NULL )
-	{
-	    fprintf(stderr, "Unable to create OpenGL context\n");
-	    return GL_FALSE;
-	}
+        _glfwWin.context = glXCreateNewContext( _glfwLibrary.display,
+                                                _glfwWin.fbconfig,
+                                                GLX_RGBA_TYPE,
+                                                NULL,
+                                                True );
+        if( _glfwWin.context == NULL )
+        {
+            fprintf(stderr, "Unable to create OpenGL context\n");
+            return GL_FALSE;
+        }
     }
 
     // Retrieve the corresponding visual
     _glfwWin.visual = glXGetVisualFromFBConfig( _glfwLibrary.display, _glfwWin.fbconfig );
     if( _glfwWin.visual == NULL )
     {
-	fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
+        fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
         return GL_FALSE;
     }
 
@@ -868,14 +878,12 @@ static void _glfwInitGLXExtensions( void )
     int has_swap_control;
 
     // Initialize OpenGL extension: GLX_SGI_swap_control
-    has_swap_control = _glfwPlatformExtensionSupported(
-                           "GLX_SGI_swap_control"
-                       );
+    has_swap_control = _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" );
 
     if( has_swap_control )
     {
         _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
+        _glfw_glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
     }
     else
     {
@@ -937,15 +945,17 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     // Create the OpenGL context
     if( !_glfwCreateContext( redbits, greenbits, bluebits,
                              alphabits, depthbits, stencilbits,
-			     hints ) )
+                 hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     // Create a colormap
-    cmap = XCreateColormap( _glfwLibrary.display, RootWindow( _glfwLibrary.display,
-               _glfwWin.screen), _glfwWin.visual->visual, AllocNone );
+    cmap = XCreateColormap( _glfwLibrary.display,
+                            RootWindow( _glfwLibrary.display, _glfwWin.screen ),
+                            _glfwWin.visual->visual,
+                            AllocNone );
 
     // Do we want fullscreen?
     if( mode == GLFW_FULLSCREEN )
@@ -1015,16 +1025,16 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
 
     if( hints->WindowNoResize )
     {
-	_glfwWin.hints->flags |= (PMinSize | PMaxSize);
+        _glfwWin.hints->flags |= (PMinSize | PMaxSize);
         _glfwWin.hints->min_width = _glfwWin.hints->max_width = _glfwWin.Width;
         _glfwWin.hints->min_height = _glfwWin.hints->max_height = _glfwWin.Height;
     }
 
     if( mode == GLFW_FULLSCREEN )
     {
-	_glfwWin.hints->flags |= PPosition;
-	_glfwWin.hints->x = 0;
-	_glfwWin.hints->y = 0;
+        _glfwWin.hints->flags |= PPosition;
+        _glfwWin.hints->x = 0;
+        _glfwWin.hints->y = 0;
     }
 
     XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, _glfwWin.hints );
@@ -1043,13 +1053,13 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     if( mode == GLFW_FULLSCREEN )
     {
 #if defined( _GLFW_HAS_XRANDR )
-	// Request screen change notifications
-	if( _glfwLibrary.XRandR.Available )
-	{
-	    XRRSelectInput( _glfwLibrary.display,
-	                    _glfwWin.window,
-			    RRScreenChangeNotifyMask );
-	}
+        // Request screen change notifications
+        if( _glfwLibrary.XRandR.Available )
+        {
+            XRRSelectInput( _glfwLibrary.display,
+                            _glfwWin.window,
+                    RRScreenChangeNotifyMask );
+        }
 #endif
 
         // Force window position/size (some WMs do their own window
@@ -1116,8 +1126,8 @@ void _glfwPlatformCloseWindow( void )
     // Free WM size hints
     if( _glfwWin.hints )
     {
-	XFree( _glfwWin.hints );
-	_glfwWin.hints = NULL;
+        XFree( _glfwWin.hints );
+        _glfwWin.hints = NULL;
     }
 
     // Do we have a rendering context?
@@ -1134,8 +1144,8 @@ void _glfwPlatformCloseWindow( void )
     // Do we have a visual?
     if( _glfwWin.visual )
     {
-	XFree( _glfwWin.visual );
-	_glfwWin.visual = NULL;
+        XFree( _glfwWin.visual );
+        _glfwWin.visual = NULL;
     }
 
     // Ungrab pointer and/or keyboard?
@@ -1165,20 +1175,20 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.FS.ModeChanged )
     {
 #if defined( _GLFW_HAS_XRANDR )
-	if( _glfwLibrary.XRandR.Available )
-	{
-	    root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
-	    sc = XRRGetScreenInfo( _glfwLibrary.display, root );
+        if( _glfwLibrary.XRandR.Available )
+        {
+            root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
+            sc = XRRGetScreenInfo( _glfwLibrary.display, root );
 
-	    XRRSetScreenConfig( _glfwLibrary.display,
-	                        sc,
-				root,
-			        _glfwWin.FS.OldSizeID,
-				_glfwWin.FS.OldRotation,
-				CurrentTime );
+            XRRSetScreenConfig( _glfwLibrary.display,
+                                sc,
+                                root,
+                                _glfwWin.FS.OldSizeID,
+                                _glfwWin.FS.OldRotation,
+                                CurrentTime );
 
-	    XRRFreeScreenConfigInfo( sc );
-	}
+            XRRFreeScreenConfigInfo( sc );
+        }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
         if( _glfwLibrary.XF86VidMode.Available )
         {
@@ -1189,7 +1199,8 @@ void _glfwPlatformCloseWindow( void )
 
             // Change the video mode back to the old mode
             XF86VidModeSwitchToMode( _glfwLibrary.display,
-                _glfwWin.screen, &_glfwWin.FS.OldMode );
+                                     _glfwWin.screen,
+                                     &_glfwWin.FS.OldMode );
         }
 #endif
         _glfwWin.FS.ModeChanged = GL_FALSE;
@@ -1199,8 +1210,10 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.Saver.Changed )
     {
         // Restore old screen saver settings
-        XSetScreenSaver( _glfwLibrary.display, _glfwWin.Saver.Timeout,
-                         _glfwWin.Saver.Interval, _glfwWin.Saver.Blanking,
+        XSetScreenSaver( _glfwLibrary.display,
+                         _glfwWin.Saver.Timeout,
+                         _glfwWin.Saver.Interval,
+                         _glfwWin.Saver.Blanking,
                          _glfwWin.Saver.Exposure );
         _glfwWin.Saver.Changed = GL_FALSE;
     }
@@ -1310,7 +1323,7 @@ void _glfwPlatformIconifyWindow( void )
     if( _glfwWin.Fullscreen )
     {
 #if defined( _GLFW_HAS_XRANDR )
-	// TODO: The code.
+    // TODO: The code.
 #elif defined( _GLFW_HAS_XF86VIDMODE )
         if( _glfwLibrary.XF86VidMode.Available )
         {
@@ -1366,7 +1379,7 @@ void _glfwPlatformRestoreWindow( void )
     if( _glfwWin.Fullscreen )
     {
         _glfwSetVideoMode( _glfwWin.screen,
-	                   &_glfwWin.Width, &_glfwWin.Height, &_glfwWin.RefreshRate );
+                       &_glfwWin.Width, &_glfwWin.Height, &_glfwWin.RefreshRate );
     }
 
     // Un-iconify window
@@ -1489,23 +1502,23 @@ void _glfwPlatformRefreshWindowParams( void )
 
     // Get multisample buffer samples
     glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLES,
-		  &_glfwWin.Samples );
+          &_glfwWin.Samples );
     glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLE_BUFFERS, 
-		  &sample_buffers );
+          &sample_buffers );
     if( sample_buffers == 0 )
       _glfwWin.Samples = 0;
     
     // Default to refresh rate unknown (=0 according to GLFW spec)
     _glfwWin.RefreshRate = 0;
-		  
+          
     // Retrieve refresh rate, if possible
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
     {
-	sc = XRRGetScreenInfo( _glfwLibrary.display,
-	                       RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
-	_glfwWin.RefreshRate = XRRConfigCurrentRate( sc );
-	XRRFreeScreenConfigInfo( sc );
+        sc = XRRGetScreenInfo( _glfwLibrary.display,
+                               RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
+        _glfwWin.RefreshRate = XRRConfigCurrentRate( sc );
+        XRRFreeScreenConfigInfo( sc );
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
     if( _glfwLibrary.XF86VidMode.Available )
@@ -1666,7 +1679,7 @@ void _glfwPlatformPollEvents( void )
 
         // Window is not active
         _glfwWin.Active = GL_FALSE;
-	_glfwInputDeactivation();
+        _glfwInputDeactivation();
     }
 
     // Was there a window close request?
