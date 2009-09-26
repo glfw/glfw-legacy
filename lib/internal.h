@@ -230,5 +230,8 @@ void _glfwCloseStream( _GLFWstream *stream );
 // Targa image I/O (tga.c)
 int _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags );
 
+// Framebuffer configs
+_GLFWfbconfig *_glfwChooseFramebufferConfig( _GLFWfbconfig *desired, _GLFWfbconfig *candidates, int count );
+
 
 #endif // _internal_h_
