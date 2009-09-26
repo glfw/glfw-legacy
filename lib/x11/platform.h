@@ -219,24 +219,24 @@ struct _GLFWwin_struct {
 
     // Screensaver data
     struct {
-	int     Changed;
-	int     Timeout;
-	int     Interval;
-	int     Blanking;
-	int     Exposure;
+        int     Changed;
+        int     Timeout;
+        int     Interval;
+        int     Blanking;
+        int     Exposure;
     } Saver;
 
     // Fullscreen data
     struct {
-	int     ModeChanged;
+        int     ModeChanged;
 #if defined( _GLFW_HAS_XF86VIDMODE )
-	XF86VidModeModeInfo OldMode;
+        XF86VidModeModeInfo OldMode;
 #endif
 #if defined( _GLFW_HAS_XRANDR )
         SizeID   OldSizeID;
-	int      OldWidth;
-	int      OldHeight;
-	Rotation OldRotation;
+        int      OldWidth;
+        int      OldHeight;
+        Rotation OldRotation;
 #endif
     } FS;
 };
@@ -281,29 +281,29 @@ GLFWGLOBAL struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
-    Display     *display;
+    Display        *display;
 
     struct {
-	int	Available;
-	int     EventBase;
-	int     ErrorBase;
+        int         Available;
+        int         EventBase;
+        int         ErrorBase;
     } XF86VidMode;
 
     struct {
-	int	Available;
-	int     EventBase;
-	int     ErrorBase;
+        int         Available;
+        int         EventBase;
+        int         ErrorBase;
     } XRandR;
 
     // Timer data
     struct {
-	double       Resolution;
-	long long    t0;
+        double      Resolution;
+        long long   t0;
     } Timer;
 
 #if defined(_GLFW_DLOPEN_LIBGL)
     struct {
-	void        *libGL;          // dlopen handle for libGL.so
+        void       *libGL;  // dlopen handle for libGL.so
     } Libs;
 #endif
 } _glfwLibrary;
