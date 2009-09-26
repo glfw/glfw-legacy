@@ -127,8 +127,8 @@ static void _glfwInitLibraries( void )
     {
         _glfwLibrary.Libs.libGL = dlopen( _glfw_libGL_name[ i ],
                                           RTLD_LAZY | RTLD_GLOBAL );
-	if( _glfwLibrary.Libs.libGL )
-	    break;
+        if( _glfwLibrary.Libs.libGL )
+            break;
     }
 #endif
 }
@@ -161,8 +161,8 @@ static int _glfwInitDisplay( void )
 #ifdef _GLFW_HAS_XF86VIDMODE
     _glfwLibrary.XF86VidMode.Available =
         XF86VidModeQueryExtension( _glfwLibrary.display,
-	                           &_glfwLibrary.XF86VidMode.EventBase,
-	                           &_glfwLibrary.XF86VidMode.ErrorBase);
+                                   &_glfwLibrary.XF86VidMode.EventBase,
+                                   &_glfwLibrary.XF86VidMode.ErrorBase);
 #else
     _glfwLibrary.XF86VidMode.Available = 0;
 #endif
@@ -171,8 +171,8 @@ static int _glfwInitDisplay( void )
 #ifdef _GLFW_HAS_XRANDR
     _glfwLibrary.XRandR.Available =
         XRRQueryExtension( _glfwLibrary.display,
-	                   &_glfwLibrary.XRandR.EventBase,
-			   &_glfwLibrary.XRandR.ErrorBase );
+                           &_glfwLibrary.XRandR.EventBase,
+                           &_glfwLibrary.XRandR.ErrorBase );
 #else
     _glfwLibrary.XRandR.Available = 0;
 #endif
