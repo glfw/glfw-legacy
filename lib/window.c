@@ -229,6 +229,19 @@ void _glfwInputMouseClick( int button, int action )
 }
 
 
+//========================================================================
+// Selects the best among the specified candidates, using GLFW heuristics
+//========================================================================
+
+_GLFWfbconfig *_glfwChooseFramebufferConfig( _GLFWfbconfig *desired,
+                                             _GLFWfbconfig *candidates,
+                                             int count )
+{
+    // TODO: The code.
+
+    return NULL;
+}
+
 
 //************************************************************************
 //****                    GLFW user functions                         ****
