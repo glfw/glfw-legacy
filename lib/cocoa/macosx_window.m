@@ -557,8 +557,7 @@ void _glfwPlatformCloseWindow( void )
 void _glfwPlatformSetWindowTitle( const char *title )
 {
     GLFW_IN_ARP({
-        // TODO UTF-8?
-        [_glfwWin.window setTitle:[NSString stringWithUTF8String:title]];
+        [_glfwWin.window setTitle:[NSString stringWithCString:title encoding:NSISOLatin1StringEncoding]];
     })
 }
 
