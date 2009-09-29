@@ -579,8 +579,17 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    // TODO: Implement this.
-    abort();
+    GLFW_IN_ARP({
+	NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
+
+	// We here assume that the client code wants to position the window within the
+	// screen the window currently occupies
+	NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
+	contentRect.origin = NSMakePoint(screenRect.origin.x + x,
+	                                 screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
+
+	[_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
+    })
 }
 
 //========================================================================
