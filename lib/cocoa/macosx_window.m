@@ -579,8 +579,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 void _glfwPlatformSetWindowSize( int width, int height )
 {
     GLFW_IN_ARP({
-        NSSize size = { width, height };
-        [_glfwWin.window setContentSize:size];
+        [_glfwWin.window setContentSize:NSMakeSize(width, height)];
     })
 }
 
@@ -655,7 +654,48 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    // TODO: Implement this.
+    GLFW_IN_ARP({
+      GLint value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccelerated forVirtualScreen:0];
+      _glfwWin.Accelerated = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
+      _glfwWin.AlphaBits = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
+      value -= _glfwWin.AlphaBits;
+      _glfwWin.RedBits = value / 3;
+      _glfwWin.GreenBits = value / 3;
+      _glfwWin.BlueBits = value / 3;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFADepthSize forVirtualScreen:0];
+      _glfwWin.DepthBits = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStencilSize forVirtualScreen:0];
+      _glfwWin.StencilBits = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccumSize forVirtualScreen:0];
+      _glfwWin.AccumRedBits = value / 3;
+      _glfwWin.AccumGreenBits = value / 3;
+      _glfwWin.AccumBlueBits = value / 3;
+
+      // TODO: Figure out what to set this value to
+      _glfwWin.AccumAlphaBits = 0;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAuxBuffers forVirtualScreen:0];
+      _glfwWin.AuxBuffers = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStereo forVirtualScreen:0];
+      _glfwWin.Stereo = value;
+
+      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFASamples forVirtualScreen:0];
+      _glfwWin.Samples = value;
+
+      // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
+      _glfwWin.GLForward = GL_FALSE;
+      _glfwWin.GLDebug = GL_FALSE;
+    })
 }
 
 //========================================================================
