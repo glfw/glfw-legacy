@@ -507,20 +507,20 @@ int _glfwPlatformOpenWindow( int width, int height,
         
         _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
             initWithAttributes:attributes];
-	if( _glfwWin.pixelFormat == nil )
-	{
-	    _glfwPlatformCloseWindow();
-	    return GL_FALSE;
-	}
+        if( _glfwWin.pixelFormat == nil )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
 
         _glfwWin.context = [[NSOpenGLContext alloc]
             initWithFormat:_glfwWin.pixelFormat
               shareContext:nil];
-	if( _glfwWin.context == nil )
-	{
-	    _glfwPlatformCloseWindow();
-	    return GL_FALSE;
-	}
+        if( _glfwWin.context == nil )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
         
         [_glfwWin.window makeKeyAndOrderFront:nil];
         [_glfwWin.context setView:[_glfwWin.window contentView]];
@@ -579,7 +579,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 void _glfwPlatformSetWindowSize( int width, int height )
 {
     GLFW_IN_ARP({
-	NSSize size = { width, height };
+        NSSize size = { width, height };
         [_glfwWin.window setContentSize:size];
     })
 }
@@ -591,15 +591,15 @@ void _glfwPlatformSetWindowSize( int width, int height )
 void _glfwPlatformSetWindowPos( int x, int y )
 {
     GLFW_IN_ARP({
-	NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
+        NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
 
-	// We here assume that the client code wants to position the window within the
-	// screen the window currently occupies
-	NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
-	contentRect.origin = NSMakePoint(screenRect.origin.x + x,
-	                                 screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
+        // We here assume that the client code wants to position the window within the
+        // screen the window currently occupies
+        NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
+        contentRect.origin = NSMakePoint(screenRect.origin.x + x,
+                                         screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
 
-	[_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
+        [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
     })
 }
 
