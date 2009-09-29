@@ -683,14 +683,15 @@ void _glfwPlatformRefreshWindowParams( void )
 
 void _glfwPlatformPollEvents( void )
 {
-    NSEvent *event = nil;
+    NSEvent *event;
 
     do
     {
-        NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
-                                            untilDate:[NSDate distantPast]
-                                               inMode:NSDefaultRunLoopMode
-                                              dequeue:YES];
+        event = [NSApp nextEventMatchingMask:NSAnyEventMask
+                                   untilDate:[NSDate distantPast]
+                                      inMode:NSDefaultRunLoopMode
+                                     dequeue:YES];
+
         if (event)
         {
             [NSApp sendEvent:event];
