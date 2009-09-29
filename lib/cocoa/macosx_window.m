@@ -507,6 +507,12 @@ int _glfwPlatformOpenWindow( int width, int height,
         
         _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
             initWithAttributes:attributes];
+	if( _glfwWin.pixelFormat == nil )
+	{
+	    _glfwPlatformCloseWindow();
+	    return GL_FALSE;
+	}
+
         _glfwWin.context = [[NSOpenGLContext alloc]
             initWithFormat:_glfwWin.pixelFormat
               shareContext:nil];
