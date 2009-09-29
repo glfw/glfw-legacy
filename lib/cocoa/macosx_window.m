@@ -395,149 +395,146 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Don't use accumulation buffer support; it ain't accelerated
     // I've put in support for aux buffers but I don't think they're accelerated either...
     
-    GLFW_IN_ARP({
-        CFDictionaryRef fullscreenMode = NULL;
-        if( mode == GLFW_FULLSCREEN )
+    CFDictionaryRef fullscreenMode = NULL;
+    if( mode == GLFW_FULLSCREEN )
+    {
+        fullscreenMode =
+            // I think it's safe to pass 0 to the refresh rate for this function
+            // rather than conditionalizing the code to call the version which
+            // doesn't specify refresh...
+            CGDisplayBestModeForParametersAndRefreshRateWithProperty(
+            CGMainDisplayID(),
+            redbits + greenbits + bluebits + alphabits,
+            width,
+            height,
+            hints->RefreshRate,
+            // Controversial, see macosx_fullscreen.m for discussion
+            kCGDisplayModeIsSafeForHardware,
+            NULL);
+
+        width = [[(id)fullscreenMode objectForKey:(id)kCGDisplayWidth] intValue];
+        height = [[(id)fullscreenMode objectForKey:(id)kCGDisplayHeight] intValue];
+    }
+    
+    unsigned int styleMask = 0;
+    if( mode == GLFW_WINDOW )
+    {
+        styleMask = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
+
+        if( !hints->WindowNoResize )
         {
-            fullscreenMode =
-                // I think it's safe to pass 0 to the refresh rate for this function
-                // rather than conditionalizing the code to call the version which
-                // doesn't specify refresh...
-                CGDisplayBestModeForParametersAndRefreshRateWithProperty(
-                    CGMainDisplayID(),
-                    redbits + greenbits + bluebits + alphabits,
-                    width,
-                    height,
-                    hints->RefreshRate,
-                    // Controversial, see macosx_fullscreen.m for discussion
-                    kCGDisplayModeIsSafeForHardware,
-                    NULL);
-            width = [[(id)fullscreenMode objectForKey:(id)kCGDisplayWidth] intValue];
-            height = [[(id)fullscreenMode objectForKey:(id)kCGDisplayHeight] intValue];
+            styleMask |= NSResizableWindowMask;
         }
-        
-        unsigned int styleMask = 0;
-        if( mode == GLFW_WINDOW )
-        {
-            styleMask = NSTitledWindowMask
-                      | NSClosableWindowMask
-                      | NSMiniaturizableWindowMask;
-            if( !hints->WindowNoResize )
-            {
-                styleMask |= NSResizableWindowMask;
-            }
-        }
-        else
-        {
-            styleMask = NSBorderlessWindowMask;
-        }
-        
-        _glfwWin.window = [[NSWindow alloc]
-            initWithContentRect:NSMakeRect(0, 0, width, height)
-                      styleMask:styleMask
-                        backing:NSBackingStoreBuffered
-                          defer:NO];
-        [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
-        [_glfwWin.window setDelegate:[[GLFWWindowDelegate alloc] init]];
-        [_glfwWin.window setAcceptsMouseMovedEvents:YES];
-        [_glfwWin.window center];
-        
-        if( mode == GLFW_FULLSCREEN )
-        {
-            CGCaptureAllDisplays();
-            CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
-        }
-        
-        unsigned int attribute_count = 0;
+    }
+    else
+    {
+        styleMask = NSBorderlessWindowMask;
+    }
+    
+    _glfwWin.window = [[NSWindow alloc]
+	initWithContentRect:NSMakeRect(0, 0, width, height)
+		      styleMask:styleMask
+		        backing:NSBackingStoreBuffered
+		          defer:NO];
+    [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
+    [_glfwWin.window setDelegate:[[GLFWWindowDelegate alloc] init]];
+    [_glfwWin.window setAcceptsMouseMovedEvents:YES];
+    [_glfwWin.window center];
+    
+    if( mode == GLFW_FULLSCREEN )
+    {
+        CGCaptureAllDisplays();
+        CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
+    }
+    
+    unsigned int attribute_count = 0;
 #define ADD_ATTR(x) attributes[attribute_count++] = x
 #define ADD_ATTR2(x, y) (void)({ ADD_ATTR(x); ADD_ATTR(y); })
 #define MAX_ATTRS 24 // urgh
-        NSOpenGLPixelFormatAttribute attributes[MAX_ATTRS];
-        
-        ADD_ATTR( NSOpenGLPFADoubleBuffer );
-        if( mode == GLFW_FULLSCREEN )
-        {
-            ADD_ATTR( NSOpenGLPFAFullScreen );
-            ADD_ATTR( NSOpenGLPFANoRecovery );
-            ADD_ATTR2( NSOpenGLPFAScreenMask,
-                       CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
-        }
-        ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
-
-        if( alphabits > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFAAlphaSize, alphabits );
-        }
-
-        if( depthbits > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFADepthSize, depthbits );
-        }
-
-        if( stencilbits > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFAStencilSize, stencilbits );
-        }
-
-        int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
-                        hints->AccumBlueBits + hints->AccumAlphaBits;
-
-        if( accumbits > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFAAccumSize, accumbits );
-        }
-
-        if( hints->AuxBuffers > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFAAuxBuffers, hints->AuxBuffers );
-        }
-
-        if( hints->Stereo)
-        {
-            ADD_ATTR( NSOpenGLPFAStereo );
-        }
-
-        if( hints->Samples > 0)
-        {
-            ADD_ATTR2( NSOpenGLPFASampleBuffers, 1 );
-            ADD_ATTR2( NSOpenGLPFASamples, hints->Samples );
-        }
-
-        ADD_ATTR(0);
-        
-        _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
-            initWithAttributes:attributes];
-        if( _glfwWin.pixelFormat == nil )
-        {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-
-        _glfwWin.context = [[NSOpenGLContext alloc]
-            initWithFormat:_glfwWin.pixelFormat
-              shareContext:nil];
-        if( _glfwWin.context == nil )
-        {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-        
-        [_glfwWin.window makeKeyAndOrderFront:nil];
-        [_glfwWin.context setView:[_glfwWin.window contentView]];
-        
-        if( mode == GLFW_FULLSCREEN )
-        {
-            // TODO: Make this work on pre-Leopard systems
-            [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
-                                                   withOptions:nil];
-        }
-        
-        [_glfwWin.context makeCurrentContext];
-
-        return GL_TRUE;
-    })
+    NSOpenGLPixelFormatAttribute attributes[MAX_ATTRS];
     
-    DODGE_FINALLY_BUG
+    ADD_ATTR( NSOpenGLPFADoubleBuffer );
+
+    if( mode == GLFW_FULLSCREEN )
+    {
+        ADD_ATTR( NSOpenGLPFAFullScreen );
+        ADD_ATTR( NSOpenGLPFANoRecovery );
+        ADD_ATTR2( NSOpenGLPFAScreenMask, CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
+    }
+
+    ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
+
+    if( alphabits > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFAAlphaSize, alphabits );
+    }
+
+    if( depthbits > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFADepthSize, depthbits );
+    }
+
+    if( stencilbits > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFAStencilSize, stencilbits );
+    }
+
+    int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
+		            hints->AccumBlueBits + hints->AccumAlphaBits;
+
+    if( accumbits > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFAAccumSize, accumbits );
+    }
+
+    if( hints->AuxBuffers > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFAAuxBuffers, hints->AuxBuffers );
+    }
+
+    if( hints->Stereo)
+    {
+        ADD_ATTR( NSOpenGLPFAStereo );
+    }
+
+    if( hints->Samples > 0)
+    {
+        ADD_ATTR2( NSOpenGLPFASampleBuffers, 1 );
+        ADD_ATTR2( NSOpenGLPFASamples, hints->Samples );
+    }
+
+    ADD_ATTR(0);
+    
+    _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
+	initWithAttributes:attributes];
+    if( _glfwWin.pixelFormat == nil )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    _glfwWin.context = [[NSOpenGLContext alloc]
+	initWithFormat:_glfwWin.pixelFormat
+	  shareContext:nil];
+    if( _glfwWin.context == nil )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+    
+    [_glfwWin.window makeKeyAndOrderFront:nil];
+    [_glfwWin.context setView:[_glfwWin.window contentView]];
+    
+    if( mode == GLFW_FULLSCREEN )
+    {
+        // TODO: Make this work on pre-Leopard systems
+        [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
+                                               withOptions:nil];
+    }
+    
+    [_glfwWin.context makeCurrentContext];
+
+    return GL_TRUE;
 }
 
 //========================================================================
@@ -546,19 +543,17 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 void _glfwPlatformCloseWindow( void )
 {
-    GLFW_IN_ARP({
-        [_glfwWin.window orderOut:nil];
-        
-        if( _glfwWin.Fullscreen )
-        {
-            [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
-            CGDisplaySwitchToMode( CGMainDisplayID(),
-                                   (CFDictionaryRef)_glfwLibrary.DesktopMode );
-            CGReleaseAllDisplays();
-        }
+    [_glfwWin.window orderOut:nil];
+    
+    if( _glfwWin.Fullscreen )
+    {
+        [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
+        CGDisplaySwitchToMode( CGMainDisplayID(),
+                               (CFDictionaryRef)_glfwLibrary.DesktopMode );
+        CGReleaseAllDisplays();
+    }
 
-        // TODO: Probably more cleanup
-    })
+    // TODO: Probably more cleanup
 }
 
 //========================================================================
@@ -567,9 +562,7 @@ void _glfwPlatformCloseWindow( void )
 
 void _glfwPlatformSetWindowTitle( const char *title )
 {
-    GLFW_IN_ARP({
-        [_glfwWin.window setTitle:[NSString stringWithCString:title encoding:NSISOLatin1StringEncoding]];
-    })
+    [_glfwWin.window setTitle:[NSString stringWithCString:title encoding:NSISOLatin1StringEncoding]];
 }
 
 //========================================================================
@@ -578,9 +571,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    GLFW_IN_ARP({
-        [_glfwWin.window setContentSize:NSMakeSize(width, height)];
-    })
+    [_glfwWin.window setContentSize:NSMakeSize(width, height)];
 }
 
 //========================================================================
@@ -589,17 +580,15 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    GLFW_IN_ARP({
-        NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
+    NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
 
-        // We here assume that the client code wants to position the window within the
-        // screen the window currently occupies
-        NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
-        contentRect.origin = NSMakePoint(screenRect.origin.x + x,
-                                         screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
+    // We here assume that the client code wants to position the window within the
+    // screen the window currently occupies
+    NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
+    contentRect.origin = NSMakePoint(screenRect.origin.x + x,
+                                     screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
 
-        [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
-    })
+    [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
 }
 
 //========================================================================
@@ -608,9 +597,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 
 void _glfwPlatformIconifyWindow( void )
 {
-    GLFW_IN_ARP({
-        [_glfwWin.window miniaturize:nil];
-    })
+    [_glfwWin.window miniaturize:nil];
 }
 
 //========================================================================
@@ -619,9 +606,7 @@ void _glfwPlatformIconifyWindow( void )
 
 void _glfwPlatformRestoreWindow( void )
 {
-    GLFW_IN_ARP({
-        [_glfwWin.window deminiaturize:nil];
-    })
+    [_glfwWin.window deminiaturize:nil];
 }
 
 //========================================================================
@@ -631,9 +616,7 @@ void _glfwPlatformRestoreWindow( void )
 void _glfwPlatformSwapBuffers( void )
 {
     // ARP appears to be unnecessary, but this is future-proof
-    GLFW_IN_ARP({
-        [_glfwWin.context flushBuffer];
-    })
+    [_glfwWin.context flushBuffer];
 }
 
 //========================================================================
@@ -642,10 +625,8 @@ void _glfwPlatformSwapBuffers( void )
 
 void _glfwPlatformSwapInterval( int interval )
 {
-    GLFW_IN_ARP({
-        GLint sync = interval;
-        [_glfwWin.context setValues:&sync forParameter:NSOpenGLCPSwapInterval];
-    })
+    GLint sync = interval;
+    [_glfwWin.context setValues:&sync forParameter:NSOpenGLCPSwapInterval];
 }
 
 //========================================================================
@@ -654,48 +635,46 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    GLFW_IN_ARP({
-      GLint value;
+    GLint value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccelerated forVirtualScreen:0];
-      _glfwWin.Accelerated = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccelerated forVirtualScreen:0];
+    _glfwWin.Accelerated = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
-      _glfwWin.AlphaBits = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
+    _glfwWin.AlphaBits = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
-      value -= _glfwWin.AlphaBits;
-      _glfwWin.RedBits = value / 3;
-      _glfwWin.GreenBits = value / 3;
-      _glfwWin.BlueBits = value / 3;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
+    value -= _glfwWin.AlphaBits;
+    _glfwWin.RedBits = value / 3;
+    _glfwWin.GreenBits = value / 3;
+    _glfwWin.BlueBits = value / 3;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFADepthSize forVirtualScreen:0];
-      _glfwWin.DepthBits = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFADepthSize forVirtualScreen:0];
+    _glfwWin.DepthBits = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStencilSize forVirtualScreen:0];
-      _glfwWin.StencilBits = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStencilSize forVirtualScreen:0];
+    _glfwWin.StencilBits = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccumSize forVirtualScreen:0];
-      _glfwWin.AccumRedBits = value / 3;
-      _glfwWin.AccumGreenBits = value / 3;
-      _glfwWin.AccumBlueBits = value / 3;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccumSize forVirtualScreen:0];
+    _glfwWin.AccumRedBits = value / 3;
+    _glfwWin.AccumGreenBits = value / 3;
+    _glfwWin.AccumBlueBits = value / 3;
 
-      // TODO: Figure out what to set this value to
-      _glfwWin.AccumAlphaBits = 0;
+    // TODO: Figure out what to set this value to
+    _glfwWin.AccumAlphaBits = 0;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAuxBuffers forVirtualScreen:0];
-      _glfwWin.AuxBuffers = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAuxBuffers forVirtualScreen:0];
+    _glfwWin.AuxBuffers = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStereo forVirtualScreen:0];
-      _glfwWin.Stereo = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStereo forVirtualScreen:0];
+    _glfwWin.Stereo = value;
 
-      [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFASamples forVirtualScreen:0];
-      _glfwWin.Samples = value;
+    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFASamples forVirtualScreen:0];
+    _glfwWin.Samples = value;
 
-      // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
-      _glfwWin.GLForward = GL_FALSE;
-      _glfwWin.GLDebug = GL_FALSE;
-    })
+    // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
+    _glfwWin.GLForward = GL_FALSE;
+    _glfwWin.GLDebug = GL_FALSE;
 }
 
 //========================================================================
@@ -708,18 +687,19 @@ void _glfwPlatformPollEvents( void )
 
     do
     {
-        GLFW_IN_ARP({
-            NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
-                                                untilDate:[NSDate distantPast]
-                                                   inMode:NSDefaultRunLoopMode
-                                                  dequeue:YES];
-            if (event)
-            {
-                [NSApp sendEvent:event];
-            }
-        })
+        NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
+                                            untilDate:[NSDate distantPast]
+                                               inMode:NSDefaultRunLoopMode
+                                              dequeue:YES];
+        if (event)
+        {
+            [NSApp sendEvent:event];
+        }
     }
     while (event);
+
+    [_glfwLibrary.AutoreleasePool drain];
+    _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 }
 
 //========================================================================
@@ -728,16 +708,15 @@ void _glfwPlatformPollEvents( void )
 
 void _glfwPlatformWaitEvents( void )
 {
-    GLFW_IN_ARP({
-        // I wanted to pass NO to dequeue:, and rely on PollEvents to
-        // dequeue and send.  For reasons not at all clear to me, passing
-        // NO to dequeue: causes this method never to return.
-        NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
-                                            untilDate:[NSDate distantFuture]
-                                               inMode:NSDefaultRunLoopMode
-                                              dequeue:YES];
-        [NSApp sendEvent:event];
-    })
+    // I wanted to pass NO to dequeue:, and rely on PollEvents to
+    // dequeue and send.  For reasons not at all clear to me, passing
+    // NO to dequeue: causes this method never to return.
+    NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
+                                        untilDate:[NSDate distantFuture]
+                                           inMode:NSDefaultRunLoopMode
+                                          dequeue:YES];
+    [NSApp sendEvent:event];
+
     _glfwPlatformPollEvents();
 }
 
@@ -747,9 +726,7 @@ void _glfwPlatformWaitEvents( void )
 
 void _glfwPlatformHideMouseCursor( void )
 {
-    GLFW_IN_ARP({
-        [NSCursor hide];
-    });
+    [NSCursor hide];
 }
 
 //========================================================================
@@ -758,9 +735,7 @@ void _glfwPlatformHideMouseCursor( void )
 
 void _glfwPlatformShowMouseCursor( void )
 {
-    GLFW_IN_ARP({
-        [NSCursor unhide];
-    });
+    [NSCursor unhide];
 }
 
 //========================================================================

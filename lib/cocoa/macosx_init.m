@@ -169,22 +169,20 @@ static void _glfwSetUpMenuBar( void )
 
 int _glfwPlatformInit( void )
 {
-    GLFW_IN_ARP({
-        [NSApplication sharedApplication];
-        // Setting up menu bar must go exactly here else weirdness ensues
-        _glfwSetUpMenuBar();
+    _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 
-        [NSApp finishLaunching];
-        
-        _glfwPlatformSetTime( 0.0 );
-        
-        _glfwLibrary.DesktopMode =
-            (NSDictionary *)CGDisplayCurrentMode( CGMainDisplayID() );
-        
-        return GL_TRUE;
-    })
+    [NSApplication sharedApplication];
+    // Setting up menu bar must go exactly here else weirdness ensues
+    _glfwSetUpMenuBar();
+
+    [NSApp finishLaunching];
     
-    DODGE_FINALLY_BUG
+    _glfwPlatformSetTime( 0.0 );
+    
+    _glfwLibrary.DesktopMode =
+	(NSDictionary *)CGDisplayCurrentMode( CGMainDisplayID() );
+    
+    return GL_TRUE;
 }
 
 //========================================================================
@@ -196,6 +194,9 @@ int _glfwPlatformTerminate( void )
     glfwCloseWindow();
 
     // TODO: Probably other cleanup
+
+    [_glfwLibrary.AutoreleasePool release];
+    _glfwLibrary.AutoreleasePool = nil;
 
     return GL_TRUE;
 }

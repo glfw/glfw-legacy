@@ -38,19 +38,6 @@
 #if defined(__OBJC__)
 #import <Cocoa/Cocoa.h>
 
-// post-10.6 we could do this more nicely (if less efficiently) with blocks,
-// though that wouldn't allow the embedded code to "return"...
-#define GLFW_IN_ARP(...)                                         \
-    NSAutoreleasePool *_pool = [[NSAutoreleasePool alloc] init]; \
-    @try                                                         \
-    {                                                            \
-        __VA_ARGS__;                                             \
-    }                                                            \
-    @finally                                                     \
-    {                                                            \
-        [_pool release];                                         \
-    }
-
 // gcc (currently) misdiangoses flow control in @catch-less @try clauses,
 // claiming that the function doesn't always return a value if the @finally
 // clause doesn't contain a return.
@@ -193,6 +180,8 @@ GLFWGLOBAL struct {
     int Unbundled;
     
     id DesktopMode;
+
+    id AutoreleasePool;
     
 } _glfwLibrary;
 
