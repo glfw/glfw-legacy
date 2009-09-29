@@ -643,6 +643,7 @@ void _glfwPlatformRefreshWindowParams( void )
     [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
     _glfwWin.AlphaBits = value;
 
+    // It seems that the color size includes the size of the alpha channel
     [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
     value -= _glfwWin.AlphaBits;
     _glfwWin.RedBits = value / 3;
