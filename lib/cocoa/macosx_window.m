@@ -567,8 +567,10 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    // TODO: Implement this.
-    abort();
+    GLFW_IN_ARP({
+	NSSize size = { width, height };
+        [_glfwWin.window setContentSize:size];
+    })
 }
 
 //========================================================================
