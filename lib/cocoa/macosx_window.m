@@ -637,6 +637,8 @@ void _glfwPlatformRefreshWindowParams( void )
 {
     GLint value;
 
+    // Since GLFW 2.x doesn't understand screens, we use virtual screen zero
+
     [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccelerated forVirtualScreen:0];
     _glfwWin.Accelerated = value;
 
