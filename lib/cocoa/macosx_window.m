@@ -516,6 +516,11 @@ int _glfwPlatformOpenWindow( int width, int height,
         _glfwWin.context = [[NSOpenGLContext alloc]
             initWithFormat:_glfwWin.pixelFormat
               shareContext:nil];
+	if( _glfwWin.context == nil )
+	{
+	    _glfwPlatformCloseWindow();
+	    return GL_FALSE;
+	}
         
         [_glfwWin.window makeKeyAndOrderFront:nil];
         [_glfwWin.context setView:[_glfwWin.window contentView]];
