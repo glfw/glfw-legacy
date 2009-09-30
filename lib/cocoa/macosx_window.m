@@ -402,8 +402,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.delegate = [[GLFWWindowDelegate alloc] init];
     if( _glfwWin.delegate == nil )
     {
-	_glfwPlatformCloseWindow();
-	return GL_FALSE;
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
     }
 
     [NSApp setDelegate:_glfwWin.delegate];
@@ -460,10 +460,10 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     _glfwWin.window = [[NSWindow alloc]
-	initWithContentRect:NSMakeRect(0, 0, width, height)
-		      styleMask:styleMask
-		        backing:NSBackingStoreBuffered
-		          defer:NO];
+        initWithContentRect:NSMakeRect(0, 0, width, height)
+                      styleMask:styleMask
+                        backing:NSBackingStoreBuffered
+                          defer:NO];
     [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
     [_glfwWin.window setDelegate:_glfwWin.delegate];
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
@@ -488,7 +488,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         ADD_ATTR( NSOpenGLPFAFullScreen );
         ADD_ATTR( NSOpenGLPFANoRecovery );
         ADD_ATTR2( NSOpenGLPFAScreenMask,
-	           CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
+                   CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
     }
 
     ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
@@ -509,7 +509,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
-		            hints->AccumBlueBits + hints->AccumAlphaBits;
+                            hints->AccumBlueBits + hints->AccumAlphaBits;
 
     if( accumbits > 0)
     {
@@ -535,7 +535,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     ADD_ATTR(0);
     
     _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
-	initWithAttributes:attributes];
+        initWithAttributes:attributes];
     if( _glfwWin.pixelFormat == nil )
     {
         _glfwPlatformCloseWindow();
@@ -543,8 +543,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     _glfwWin.context = [[NSOpenGLContext alloc]
-	initWithFormat:_glfwWin.pixelFormat
-	  shareContext:nil];
+        initWithFormat:_glfwWin.pixelFormat
+          shareContext:nil];
     if( _glfwWin.context == nil )
     {
         _glfwPlatformCloseWindow();
@@ -631,7 +631,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
     NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
     contentRect.origin = NSMakePoint(screenRect.origin.x + x,
                                      screenRect.origin.y + screenRect.size.height -
-				         y - contentRect.size.height);
+                                         y - contentRect.size.height);
 
     [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect]
                       display:YES];
@@ -687,18 +687,18 @@ void _glfwPlatformRefreshWindowParams( void )
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccelerated
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.Accelerated = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAlphaSize
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.AlphaBits = value;
 
     // It seems that the color size includes the size of the alpha channel
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAColorSize
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     value -= _glfwWin.AlphaBits;
     _glfwWin.RedBits = value / 3;
     _glfwWin.GreenBits = value / 3;
@@ -706,17 +706,17 @@ void _glfwPlatformRefreshWindowParams( void )
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFADepthSize
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.DepthBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStencilSize
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.StencilBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccumSize
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.AccumRedBits = value / 3;
     _glfwWin.AccumGreenBits = value / 3;
     _glfwWin.AccumBlueBits = value / 3;
@@ -726,17 +726,17 @@ void _glfwPlatformRefreshWindowParams( void )
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAuxBuffers
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.AuxBuffers = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStereo
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.Stereo = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFASamples
-		   forVirtualScreen:0];
+                   forVirtualScreen:0];
     _glfwWin.Samples = value;
 
     // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
