@@ -487,7 +487,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         ADD_ATTR( NSOpenGLPFAFullScreen );
         ADD_ATTR( NSOpenGLPFANoRecovery );
-        ADD_ATTR2( NSOpenGLPFAScreenMask, CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
+        ADD_ATTR2( NSOpenGLPFAScreenMask,
+	           CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
     }
 
     ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
@@ -604,7 +605,8 @@ void _glfwPlatformCloseWindow( void )
 
 void _glfwPlatformSetWindowTitle( const char *title )
 {
-    [_glfwWin.window setTitle:[NSString stringWithCString:title encoding:NSISOLatin1StringEncoding]];
+    [_glfwWin.window setTitle:[NSString stringWithCString:title
+                     encoding:NSISOLatin1StringEncoding]];
 }
 
 //========================================================================
@@ -628,9 +630,11 @@ void _glfwPlatformSetWindowPos( int x, int y )
     // screen the window currently occupies
     NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
     contentRect.origin = NSMakePoint(screenRect.origin.x + x,
-                                     screenRect.origin.y + screenRect.size.height - y - contentRect.size.height);
+                                     screenRect.origin.y + screenRect.size.height -
+				         y - contentRect.size.height);
 
-    [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect] display:YES];
+    [_glfwWin.window setFrame:[_glfwWin.window frameRectForContentRect:contentRect]
+                      display:YES];
 }
 
 //========================================================================
@@ -681,26 +685,38 @@ void _glfwPlatformRefreshWindowParams( void )
 
     // Since GLFW 2.x doesn't understand screens, we use virtual screen zero
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccelerated forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAAccelerated
+		   forVirtualScreen:0];
     _glfwWin.Accelerated = value;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAAlphaSize
+		   forVirtualScreen:0];
     _glfwWin.AlphaBits = value;
 
     // It seems that the color size includes the size of the alpha channel
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAColorSize
+		   forVirtualScreen:0];
     value -= _glfwWin.AlphaBits;
     _glfwWin.RedBits = value / 3;
     _glfwWin.GreenBits = value / 3;
     _glfwWin.BlueBits = value / 3;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFADepthSize forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFADepthSize
+		   forVirtualScreen:0];
     _glfwWin.DepthBits = value;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStencilSize forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAStencilSize
+		   forVirtualScreen:0];
     _glfwWin.StencilBits = value;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAccumSize forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAAccumSize
+		   forVirtualScreen:0];
     _glfwWin.AccumRedBits = value / 3;
     _glfwWin.AccumGreenBits = value / 3;
     _glfwWin.AccumBlueBits = value / 3;
@@ -708,13 +724,19 @@ void _glfwPlatformRefreshWindowParams( void )
     // TODO: Figure out what to set this value to
     _glfwWin.AccumAlphaBits = 0;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAAuxBuffers forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAAuxBuffers
+		   forVirtualScreen:0];
     _glfwWin.AuxBuffers = value;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFAStereo forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFAStereo
+		   forVirtualScreen:0];
     _glfwWin.Stereo = value;
 
-    [_glfwWin.pixelFormat getValues:&value forAttribute:NSOpenGLPFASamples forVirtualScreen:0];
+    [_glfwWin.pixelFormat getValues:&value
+                       forAttribute:NSOpenGLPFASamples
+		   forVirtualScreen:0];
     _glfwWin.Samples = value;
 
     // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
