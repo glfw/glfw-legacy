@@ -157,7 +157,10 @@ struct _GLFWwin_struct {
 
     // ========= PLATFORM SPECIFIC PART ======================================
     
-    id window, pixelFormat, context;
+    id        window;
+    id        pixelFormat;
+    id	      context;
+    id	      delegate;
     unsigned int modifierFlags;
 };
 

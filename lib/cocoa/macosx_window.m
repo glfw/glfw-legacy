@@ -40,15 +40,14 @@
     if( _glfwWin.WindowCloseCallback )
     {
         if( !_glfwWin.WindowCloseCallback() )
+        {
             return NO;
+        }
     }
 
-    return YES;
-}
-
-- (void)windowWillClose:(NSNotification *)notification
-{
+    // This is horribly ugly, but it works
     glfwCloseWindow();
+    return NO;
 }
 
 - (void)windowDidResize:(NSNotification *)notification
@@ -62,6 +61,21 @@
         _glfwWin.WindowSizeCallback( contentRect.size.width,
                                      contentRect.size.height );
     }
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
+{
+    if( _glfwWin.WindowCloseCallback )
+    {
+        if( !_glfwWin.WindowCloseCallback() )
+        {
+            return NSTerminateCancel;
+        }
+    }
+
+    // This is horribly ugly, but it works
+    glfwCloseWindow();
+    return NSTerminateCancel;
 }
 
 @end
@@ -380,7 +394,21 @@ int _glfwPlatformOpenWindow( int width, int height,
                              int alphabits, int depthbits, int stencilbits,
                              int mode, _GLFWhints* hints )
 {
-    // Apparently 0 means "don't care" to GLFW, but Mac OS X sure cares...
+    _glfwWin.pixelFormat = nil;
+    _glfwWin.window = nil;
+    _glfwWin.context = nil;
+    _glfwWin.delegate = nil;
+
+    _glfwWin.delegate = [[GLFWWindowDelegate alloc] init];
+    if( _glfwWin.delegate == nil )
+    {
+	_glfwPlatformCloseWindow();
+	return GL_FALSE;
+    }
+
+    [NSApp setDelegate:_glfwWin.delegate];
+    
+    // Mac OS X needs non-zero color size, so set resonable values
     if( redbits + greenbits + bluebits < 15 )
     {
         redbits = greenbits = bluebits = 8;
@@ -430,14 +458,14 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         styleMask = NSBorderlessWindowMask;
     }
-    
+
     _glfwWin.window = [[NSWindow alloc]
 	initWithContentRect:NSMakeRect(0, 0, width, height)
 		      styleMask:styleMask
 		        backing:NSBackingStoreBuffered
 		          defer:NO];
     [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
-    [_glfwWin.window setDelegate:[[GLFWWindowDelegate alloc] init]];
+    [_glfwWin.window setDelegate:_glfwWin.delegate];
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
     [_glfwWin.window center];
     
@@ -553,6 +581,20 @@ void _glfwPlatformCloseWindow( void )
         CGReleaseAllDisplays();
     }
 
+    [_glfwWin.pixelFormat release];
+    _glfwWin.pixelFormat = nil;
+
+    [NSOpenGLContext clearCurrentContext];
+    [_glfwWin.context release];
+
+    [_glfwWin.window setDelegate:nil];
+    [NSApp setDelegate:nil];
+    [_glfwWin.delegate release];
+    _glfwWin.delegate = nil;
+
+    [_glfwWin.window close];
+    _glfwWin.window = nil;
+
     // TODO: Probably more cleanup
 }
 
@@ -582,7 +624,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 {
     NSRect contentRect = [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
 
-    // We here assume that the client code wants to position the window within the
+    // We assume here that the client code wants to position the window within the
     // screen the window currently occupies
     NSRect screenRect = [[_glfwWin.window screen] visibleFrame];
     contentRect.origin = NSMakePoint(screenRect.origin.x + x,

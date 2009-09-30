@@ -394,7 +394,7 @@ GLFWAPI void glfwOpenWindowHint( int target, int hint )
 GLFWAPI void glfwCloseWindow( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized )
+    if( !_glfwInitialized || !_glfwWin.Opened )
     {
         return;
     }
