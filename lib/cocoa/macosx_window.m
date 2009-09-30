@@ -30,6 +30,11 @@
 
 #include "internal.h"
 
+//========================================================================
+// Delegate for window related notifications
+// (but also used as an application delegate)
+//========================================================================
+
 @interface GLFWWindowDelegate : NSObject
 @end
 
@@ -213,7 +218,11 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 7f */ -1,
 };
 
-int _glfwFromMacKeyCode( unsigned int macKeyCode )
+//========================================================================
+// Converts a Mac OS X keycode to a GLFW keycode
+//========================================================================
+
+static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 {
     if( macKeyCode >= 128 )
     {
@@ -225,6 +234,10 @@ int _glfwFromMacKeyCode( unsigned int macKeyCode )
     // function should still get 'q' though.
     return MAC_TO_GLFW_KEYCODE_MAPPING[macKeyCode];
 }
+
+//========================================================================
+// Content view class for the GLFW window
+//========================================================================
 
 @interface GLFWContentView : NSView
 @end
@@ -420,8 +433,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     // OpenGLDebug
     //     pending it meaning anything on Mac OS X
     
-    // Don't use accumulation buffer support; it ain't accelerated
-    // I've put in support for aux buffers but I don't think they're accelerated either...
+    // Don't use accumulation buffer support; it's not accelerated
+    // Aux buffers probably aren't accelerated either
     
     CFDictionaryRef fullscreenMode = NULL;
     if( mode == GLFW_FULLSCREEN )
@@ -509,7 +522,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
-                            hints->AccumBlueBits + hints->AccumAlphaBits;
+                    hints->AccumBlueBits + hints->AccumAlphaBits;
 
     if( accumbits > 0)
     {
@@ -534,17 +547,15 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     ADD_ATTR(0);
     
-    _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc]
-        initWithAttributes:attributes];
+    _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
     if( _glfwWin.pixelFormat == nil )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    _glfwWin.context = [[NSOpenGLContext alloc]
-        initWithFormat:_glfwWin.pixelFormat
-          shareContext:nil];
+    _glfwWin.context = [[NSOpenGLContext alloc] initWithFormat:_glfwWin.pixelFormat
+                                                  shareContext:nil];
     if( _glfwWin.context == nil )
     {
         _glfwPlatformCloseWindow();
