@@ -81,6 +81,14 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
+// Platform specific definitions goes in platform.h (which also includes
+// glfw.h)
+//------------------------------------------------------------------------
+
+#include "platform.h"
+
+
+//------------------------------------------------------------------------
 // Framebuffer descriptor
 //------------------------------------------------------------------------
 typedef struct {
@@ -101,14 +109,6 @@ typedef struct {
 } _GLFWfbconfig;
 
 
-//------------------------------------------------------------------------
-// Platform specific definitions goes in platform.h (which also includes
-// glfw.h)
-//------------------------------------------------------------------------
-
-#include "platform.h"
-
-
 //========================================================================
 // System independent global variables (GLFW internals)
 //========================================================================
@@ -125,10 +125,10 @@ GLFWGLOBAL int _glfwInitialized;
 // Abstracted data stream (for image I/O)
 //------------------------------------------------------------------------
 typedef struct {
-	FILE*	File;
-	void*	Data;
-	long	Position;
-	long	Size;
+	FILE*	file;
+	void*	data;
+	long	position;
+	long	size;
 } _GLFWstream;
 
 

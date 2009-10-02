@@ -40,10 +40,10 @@ int _glfwOpenFileStream( _GLFWstream *stream, const char* name, const char* mode
 {
     memset( stream, 0, sizeof(_GLFWstream) );
 
-    stream->File = fopen( name, mode );
-    if( stream->File == NULL )
+    stream->file = fopen( name, mode );
+    if( stream->file == NULL )
     {
-	return GL_FALSE;
+        return GL_FALSE;
     }
 
     return GL_TRUE;
@@ -58,8 +58,8 @@ int _glfwOpenBufferStream( _GLFWstream *stream, void *data, long size )
 {
     memset( stream, 0, sizeof(_GLFWstream) );
 
-    stream->Data = data;
-    stream->Size = size;
+    stream->data = data;
+    stream->size = size;
     return GL_TRUE;
 }
 
@@ -70,29 +70,29 @@ int _glfwOpenBufferStream( _GLFWstream *stream, void *data, long size )
 
 long _glfwReadStream( _GLFWstream *stream, void *data, long size )
 {
-    if( stream->File != NULL )
+    if( stream->file != NULL )
     {
-	return fread( data, 1, size, stream->File );
+        return fread( data, 1, size, stream->file );
     }
 
-    if( stream->Data != NULL )
+    if( stream->data != NULL )
     {
-	// Check for EOF
-	if( stream->Position == stream->Size )
-	{
-	    return 0;
-	}
+        // Check for EOF
+        if( stream->position == stream->size )
+        {
+            return 0;
+        }
 
-	// Clamp read size to available data
-	if( stream->Position + size > stream->Size )
-	{
-	    size = stream->Size - stream->Position;
-	}
-	
-	// Perform data read
-	memcpy( data, (unsigned char*) stream->Data + stream->Position, size );
-	stream->Position += size;
-	return size;
+        // Clamp read size to available data
+        if( stream->position + size > stream->size )
+        {
+            size = stream->size - stream->position;
+        }
+        
+        // Perform data read
+        memcpy( data, (unsigned char*) stream->data + stream->position, size );
+        stream->position += size;
+        return size;
     }
 
     return 0;
@@ -105,14 +105,14 @@ long _glfwReadStream( _GLFWstream *stream, void *data, long size )
 
 long _glfwTellStream( _GLFWstream *stream )
 {
-    if( stream->File != NULL )
+    if( stream->file != NULL )
     {
-	return ftell( stream->File );
+        return ftell( stream->file );
     }
 
-    if( stream->Data != NULL )
+    if( stream->data != NULL )
     {
-	return stream->Position;
+        return stream->position;
     }
 
     return 0;
@@ -127,49 +127,49 @@ int _glfwSeekStream( _GLFWstream *stream, long offset, int whence )
 {
     long position;
 
-    if( stream->File != NULL )
+    if( stream->file != NULL )
     {
-	if( fseek( stream->File, offset, whence ) != 0 )
-	{
-	    return GL_FALSE;
-	}
+        if( fseek( stream->file, offset, whence ) != 0 )
+        {
+            return GL_FALSE;
+        }
 
-	return GL_TRUE;
+        return GL_TRUE;
     }
 
-    if( stream->Data != NULL )
+    if( stream->data != NULL )
     {
-	position = offset;
+        position = offset;
 
-	// Handle whence parameter
-	if( whence == SEEK_CUR )
-	{
-	    position += stream->Position;
-	}
-	else if( whence == SEEK_END )
-	{
-	    position += stream->Size;
-	}
-	else if( whence != SEEK_SET )
-	{
-	    return GL_FALSE;
-	}
+        // Handle whence parameter
+        if( whence == SEEK_CUR )
+        {
+            position += stream->position;
+        }
+        else if( whence == SEEK_END )
+        {
+            position += stream->size;
+        }
+        else if( whence != SEEK_SET )
+        {
+            return GL_FALSE;
+        }
 
-	// Clamp offset to buffer bounds and apply it
-	if( position > stream->Size )
-	{
-	    stream->Position = stream->Size;
-	}
-	else if( position < 0 )
-	{
-	    stream->Position = 0;
-	}
-	else
-	{
-	    stream->Position = position;
-	}
-	
-	return GL_TRUE;
+        // Clamp offset to buffer bounds and apply it
+        if( position > stream->size )
+        {
+            stream->position = stream->size;
+        }
+        else if( position < 0 )
+        {
+            stream->position = 0;
+        }
+        else
+        {
+            stream->position = position;
+        }
+        
+        return GL_TRUE;
     }
 
     return GL_FALSE;
@@ -182,9 +182,9 @@ int _glfwSeekStream( _GLFWstream *stream, long offset, int whence )
 
 void _glfwCloseStream( _GLFWstream *stream )
 {
-    if( stream->File != NULL )
+    if( stream->file != NULL )
     {
-	fclose( stream->File );
+        fclose( stream->file );
     }
 
     // Nothing to be done about (user allocated) memory blocks

@@ -119,6 +119,8 @@
 
 #endif
 
+// Pointer length integer
+// One day, this will most likely move into glfw.h
 typedef intptr_t GLFWintptr;
 
 void (*glXGetProcAddress(const GLubyte *procName))();
@@ -287,7 +289,7 @@ GLFWGLOBAL struct {
 GLFWGLOBAL struct {
 
     // Window opening hints
-    _GLFWhints           hints;
+    _GLFWhints      hints;
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
