@@ -106,19 +106,20 @@ GLFWGLOBAL _GLFWhints _glfwWinHints;
 // Framebuffer descriptor
 //------------------------------------------------------------------------
 typedef struct {
-	int RedBits;
-	int GreenBits;
-	int BlueBits;
-	int AlphaBits;
-	int DepthBits;
-	int StencilBits;
-	int AccumRedBits;
-   	int AccumGreenBits;
-	int AccumBlueBits;
-	int AccumAlphaBits;
-	int AuxBuffers;
-	int Stereo;
-	int Samples;
+	int          redBits;
+	int          greenBits;
+	int          blueBits;
+	int          alphaBits;
+	int          depthBits;
+	int          stencilBits;
+	int          accumRedBits;
+   	int          accumGreenBits;
+	int          accumBlueBits;
+	int          accumAlphaBits;
+	int          auxBuffers;
+	int          stereo;
+	int          samples;
+    GLFWintptr   platformID;
 } _GLFWfbconfig;
 
 
@@ -180,7 +181,7 @@ void _glfwPlatformSetTime( double time );
 void _glfwPlatformSleep( double time );
 
 // Window management
-int  _glfwPlatformOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode, _GLFWhints* hints );
+int  _glfwPlatformOpenWindow( int width, int height, int mode, const _GLFWhints *hints, const _GLFWfbconfig *fbconfig );
 void _glfwPlatformCloseWindow( void );
 void _glfwPlatformSetWindowTitle( const char *title );
 void _glfwPlatformSetWindowSize( int width, int height );
@@ -231,7 +232,9 @@ void _glfwCloseStream( _GLFWstream *stream );
 int _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags );
 
 // Framebuffer configs
-_GLFWfbconfig *_glfwChooseFramebufferConfig( _GLFWfbconfig *desired, _GLFWfbconfig *candidates, int count );
+const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
+                                          const _GLFWfbconfig *alternatives,
+                                          unsigned int count );
 
 
 #endif // _internal_h_

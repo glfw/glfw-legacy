@@ -177,7 +177,24 @@ static int _glfwInitDisplay( void )
     _glfwLibrary.XRandR.Available = 0;
 #endif
 
-     return GL_TRUE;
+    // Fullscreen & screen saver settings
+    // Check if GLX is supported on this display
+    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
+    {
+        fprintf(stderr, "GLX not supported\n");
+        return GL_FALSE;
+    }
+
+    // Retrieve GLX version
+    if( !glXQueryVersion( _glfwLibrary.display,
+                          &_glfwLibrary.glxMajor,
+                          &_glfwLibrary.glxMinor ) )
+    {
+        fprintf(stderr, "Unable to query GLX version\n");
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
 }
 
 

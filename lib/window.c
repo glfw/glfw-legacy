@@ -30,11 +30,18 @@
 
 #include "internal.h"
 
+#include <limits.h>
+
 
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
 //************************************************************************
+
+static int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
 
 //========================================================================
 // Clear all open window hints
@@ -230,16 +237,69 @@ void _glfwInputMouseClick( int button, int action )
 
 
 //========================================================================
-// Selects the best among the specified candidates, using GLFW heuristics
+// Return the available framebuffer config closest to the desired values
 //========================================================================
 
-_GLFWfbconfig *_glfwChooseFramebufferConfig( _GLFWfbconfig *desired,
-                                             _GLFWfbconfig *candidates,
-                                             int count )
+const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
+                                          const _GLFWfbconfig *alternatives,
+                                          unsigned int count )
 {
-    // TODO: The code.
+    unsigned int i;
+    unsigned int missing, bestMissing = UINT_MAX;
+    const _GLFWfbconfig *current;
+    const _GLFWfbconfig *closest = NULL;
 
-    return NULL;
+    for( i = 0;  i < count;  i++ )
+    {
+        current = alternatives + i;
+
+        if( desired->stereo > 0 && current->stereo == 0 )
+        {
+            // Stereo is a hard constraint
+            continue;
+        }
+
+        missing = 0;
+
+        if( desired->alphaBits > 0 && current->alphaBits == 0 )
+        {
+            missing++;
+        }
+
+        if( desired->depthBits > 0 && current->depthBits == 0 )
+        {
+            missing++;
+        }
+
+        if( desired->stencilBits > 0 && current->stencilBits == 0 )
+        {
+            missing++;
+        }
+
+        if( desired->auxBuffers > 0 && current->auxBuffers < desired->auxBuffers )
+        {
+            missing += desired->auxBuffers - current->auxBuffers;
+        }
+
+        if( desired->samples > 0 && current->samples == 0 )
+        {
+            missing++;
+        }
+
+        // TODO: Calculate buffer size deviation.
+
+        if( missing < bestMissing )
+        {
+            closest = current;
+            bestMissing = missing;
+        }
+        else if( missing == bestMissing )
+        {
+            // TODO: Compare buffer size deviations.
+        }
+    }
+
+    return closest;
 }
 
 
@@ -258,6 +318,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 {
     int x;
     _GLFWhints hints;
+    _GLFWfbconfig fbconfig;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || _glfwWin.Opened )
@@ -274,6 +335,21 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     {
         return GL_FALSE;
     }
+
+    // Set up desired framebuffer config
+    fbconfig.redBits        = redbits;
+    fbconfig.greenBits      = greenbits;
+    fbconfig.blueBits       = bluebits;
+    fbconfig.alphaBits      = alphabits;
+    fbconfig.depthBits      = depthbits;
+    fbconfig.stencilBits    = stencilbits;
+    fbconfig.accumRedBits   = hints.AccumRedBits;
+    fbconfig.accumGreenBits = hints.AccumGreenBits;
+    fbconfig.accumBlueBits  = hints.AccumBlueBits;
+    fbconfig.accumAlphaBits = hints.AccumAlphaBits;
+    fbconfig.auxBuffers     = hints.AuxBuffers;
+    fbconfig.stereo         = hints.Stereo;
+    fbconfig.samples        = hints.Samples;
 
     // Clear GLFW window state
     _glfwWin.Active            = GL_TRUE;
@@ -316,8 +392,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwWin.Fullscreen     = (mode == GLFW_FULLSCREEN ? 1 : 0);
 
     // Platform specific window opening routine
-    if( !_glfwPlatformOpenWindow( width, height, redbits, greenbits,
-            bluebits, alphabits, depthbits, stencilbits, mode, &hints ) )
+    if( !_glfwPlatformOpenWindow( width, height, mode, &hints, &fbconfig ) )
     {
         return GL_FALSE;
     }
@@ -365,44 +440,44 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
     switch( target )
     {
         case GLFW_REFRESH_RATE:
-            _glfwWinHints.RefreshRate = hint;
+            _glfwWinHints.RefreshRate = max(hint, 0);
             break;
         case GLFW_ACCUM_RED_BITS:
-            _glfwWinHints.AccumRedBits = hint;
+            _glfwWinHints.AccumRedBits = max(hint, 0);
             break;
         case GLFW_ACCUM_GREEN_BITS:
-            _glfwWinHints.AccumGreenBits = hint;
+            _glfwWinHints.AccumGreenBits = max(hint, 0);
             break;
         case GLFW_ACCUM_BLUE_BITS:
-            _glfwWinHints.AccumBlueBits = hint;
+            _glfwWinHints.AccumBlueBits = max(hint, 0);
             break;
         case GLFW_ACCUM_ALPHA_BITS:
-            _glfwWinHints.AccumAlphaBits = hint;
+            _glfwWinHints.AccumAlphaBits = max(hint, 0);
             break;
         case GLFW_AUX_BUFFERS:
-            _glfwWinHints.AuxBuffers = hint;
+            _glfwWinHints.AuxBuffers = max(hint, 0);
             break;
         case GLFW_STEREO:
-            _glfwWinHints.Stereo = hint;
+            _glfwWinHints.Stereo = hint ? GL_TRUE : GL_FALSE;
             break;
         case GLFW_WINDOW_NO_RESIZE:
-            _glfwWinHints.WindowNoResize = hint;
+            _glfwWinHints.WindowNoResize = hint ? GL_TRUE : GL_FALSE;
             break;
-	case GLFW_FSAA_SAMPLES:
-            _glfwWinHints.Samples = hint;
+        case GLFW_FSAA_SAMPLES:
+            _glfwWinHints.Samples = max(hint, 0);
             break;
-	case GLFW_OPENGL_VERSION_MAJOR:
-	    _glfwWinHints.OpenGLMajor = hint;
-	    break;
-	case GLFW_OPENGL_VERSION_MINOR:
-	    _glfwWinHints.OpenGLMinor = hint;
-	    break;
-	case GLFW_OPENGL_FORWARD_COMPAT:
-	    _glfwWinHints.OpenGLForward = hint;
-	    break;
-	case GLFW_DEBUG_CONTEXT:
-	    _glfwWinHints.OpenGLDebug = hint;
-	    break;
+        case GLFW_OPENGL_VERSION_MAJOR:
+            _glfwWinHints.OpenGLMajor = max(hint, 0);
+            break;
+        case GLFW_OPENGL_VERSION_MINOR:
+            _glfwWinHints.OpenGLMinor = max(hint, 0);
+            break;
+        case GLFW_OPENGL_FORWARD_COMPAT:
+            _glfwWinHints.OpenGLForward = hint ? GL_TRUE : GL_FALSE;
+            break;
+        case GLFW_DEBUG_CONTEXT:
+            _glfwWinHints.OpenGLDebug = hint ? GL_TRUE : GL_FALSE;
+            break;
         default:
             break;
     }
@@ -653,16 +728,16 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
             return _glfwWin.RefreshRate;
         case GLFW_WINDOW_NO_RESIZE:
             return _glfwWin.WindowNoResize;
-	case GLFW_FSAA_SAMPLES:
-	    return _glfwWin.Samples;
-	case GLFW_OPENGL_VERSION_MAJOR:
-	    return _glfwWin.GLVerMajor;
-	case GLFW_OPENGL_VERSION_MINOR:
-	    return _glfwWin.GLVerMinor;
-	case GLFW_OPENGL_FORWARD_COMPAT:
-	    return _glfwWin.GLForward;
-	case GLFW_DEBUG_CONTEXT:
-	    return _glfwWin.GLDebug;
+        case GLFW_FSAA_SAMPLES:
+            return _glfwWin.Samples;
+        case GLFW_OPENGL_VERSION_MAJOR:
+            return _glfwWin.GLVerMajor;
+        case GLFW_OPENGL_VERSION_MINOR:
+            return _glfwWin.GLVerMinor;
+        case GLFW_OPENGL_FORWARD_COMPAT:
+            return _glfwWin.GLForward;
+        case GLFW_DEBUG_CONTEXT:
+            return _glfwWin.GLDebug;
         default:
             return 0;
     }

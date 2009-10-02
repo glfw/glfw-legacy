@@ -52,6 +52,12 @@
  #include <sched.h>
 #endif
 
+// We need declarations for GLX version 1.3 or above even if the server doesn't
+// support version 1.3
+#ifndef GLX_VERSION_1_3
+ #error "GLX header version 1.3 or above is required"
+#endif
+
 // With XFree86, we can use the XF86VidMode extension
 #if defined( _GLFW_HAS_XF86VIDMODE )
  #include <X11/extensions/xf86vmode.h>
@@ -112,6 +118,8 @@
  #define _glfw_numprocessors(n) n=1
 
 #endif
+
+typedef intptr_t GLFWintptr;
 
 void (*glXGetProcAddress(const GLubyte *procName))();
 void (*glXGetProcAddressARB(const GLubyte *procName))();
@@ -199,7 +207,6 @@ struct _GLFWwin_struct {
     // Platform specific window resources
     Window      window;          // Window
     int         screen;          // Screen ID
-    GLXFBConfig fbconfig;        // GLX FB config
     XVisualInfo *visual;         // Visual
     GLXContext  context;         // OpenGL rendering context
     Atom        WMDeleteWindow;  // For WM close detection
@@ -282,6 +289,9 @@ GLFWGLOBAL struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     Display        *display;
+
+    // Server-side GLX version
+    int             glxMajor, glxMinor; 
 
     struct {
         int         Available;

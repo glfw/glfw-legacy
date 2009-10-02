@@ -31,15 +31,6 @@
 #include "internal.h"
 
 
-/* Defines some GLX FSAA tokens if not yet defined */
-#ifndef GLX_SAMPLE_BUFFERS
-# define GLX_SAMPLE_BUFFERS  100000
-#endif 
-#ifndef GLX_SAMPLES 
-# define GLX_SAMPLES         100001
-#endif 
-
-
 /* KDE decoration values */
 enum {
   KDE_noDecoration = 0,
@@ -51,19 +42,34 @@ enum {
   KDE_staysOnTop = 2048
 };
 
-/* Function signature for GLX_ARB_create_context glXCreateContextAttribs */
-typedef GLXContext (*GLXCREATECONTEXTATTRIBS_T)( Display *display,
-                                                 GLXFBConfig config,
-                                                 GLXContext share_context,
-                                                 Bool direct,
-                                                 const int *attrib_list);
 
-/* Constants for GLX_ARB_create_context glXCreateContextAttribs */
+/* Define GLX 1.4 FSAA tokens if not already defined */
+#ifndef GLX_VERSION_1_4
+
+#define GLX_SAMPLE_BUFFERS  100000
+#define GLX_SAMPLES         100001
+
+#endif /*GLX_VERSION_1_4*/
+
+
+/* Declare GLX_ARB_create_context API if not already declared */
+#ifndef GLX_ARB_create_context
+
+/* Tokens for glXCreateContextAttribs */
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
 #define GLX_CONTEXT_FLAGS_ARB 0x2094
 #define GLX_CONTEXT_DEBUG_BIT_ARB 0x0001
 #define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002 
+
+/* Prototype for glXCreateContextAttribs */
+typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)( Display *display,
+                                                         GLXFBConfig config,
+                                                         GLXContext share_context,
+                                                         Bool direct,
+                                                         const int *attrib_list);
+
+#endif /*GLX_ARB_create_context*/
 
 
 //************************************************************************
@@ -670,40 +676,108 @@ Cursor _glfwCreateNULLCursor( Display *display, Window root )
 
 
 //========================================================================
-// Initialize GLX
+// Return a list of available and usable framebuffer configs
 //========================================================================
 
-static int _glfwInitGLX( void )
+_GLFWfbconfig *_glfwGetFBConfigs( unsigned int *found )
 {
-    /*
-    int major, minor;
-    */
+    GLXFBConfig *fbconfigs;
+    _GLFWfbconfig *result;
+    XID platformID;
+    int i, value, count = 0;
 
-    // Fullscreen & screen saver settings
-    // Check if GLX is supported on this display
-    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
+    *found = 0;
+
+    if( _glfwLibrary.glxMajor == 1 && _glfwLibrary.glxMinor < 3 )
     {
-        fprintf(stderr, "GLX not supported\n");
-        return GL_FALSE;
+        if( !_glfwPlatformExtensionSupported( "GLX_SGIX_fbconfig" ) )
+        {
+            fprintf(stderr, "GLXFBConfigs are not supported by the X server\n");
+            return NULL;
+        }
     }
 
-    /*
-    // Retrieve GLX version
-    if( !glXQueryVersion( _glfwLibrary.display, &major, &minor ) )
+    fbconfigs = glXGetFBConfigs( _glfwLibrary.display, _glfwWin.screen, &count );
+    if( !count )
     {
-    fprintf(stderr, "Unable to query GLX version\n");
-        return GL_FALSE;
+        fprintf(stderr, "No GLXFBConfigs returned");
+        return NULL;
     }
 
-    // We need at least GLX 1.4 server side (because we're using GLXFBConfigs)
-    if( minor < 4 )
-    {
-    fprintf(stderr, "GLX version 1.4 or above required\n");
-        return GL_FALSE;
-    }
-    */
+    result = (_GLFWfbconfig*) malloc(sizeof(_GLFWfbconfig) * count);
 
-    return GL_TRUE;
+    for( i = 0;  i < count;  i++ )
+    {
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_DOUBLEBUFFER,
+                              &value );
+        if( !value )
+        {
+            // Only consider doublebuffered GLXFBConfigs
+            continue;
+        }
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_RENDER_TYPE,
+                              &value );
+        if( !( value & GLX_RGBA_BIT )  )
+        {
+            // Only consider RGBA GLXFBConfigs
+            continue;
+        }
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_DRAWABLE_TYPE,
+                              &value );
+        if( !( value & GLX_WINDOW_BIT )  )
+        {
+            // Only consider window GLXFBConfigs
+            continue;
+        }
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_VISUAL_ID,
+                              &value );
+        if( !value )
+        {
+            // Only consider GLXFBConfigs with associated visuals
+            continue;
+        }
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_RED_SIZE,
+                              &result[*found].redBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_GREEN_SIZE,
+                              &result[*found].greenBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_BLUE_SIZE,
+                              &result[*found].blueBits );
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_ALPHA_SIZE,
+                              &result[*found].alphaBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_DEPTH_SIZE,
+                              &result[*found].depthBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_STENCIL_SIZE,
+                              &result[*found].stencilBits );
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_ACCUM_RED_SIZE,
+                              &result[*found].accumRedBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_ACCUM_GREEN_SIZE,
+                              &result[*found].accumGreenBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_ACCUM_BLUE_SIZE,
+                              &result[*found].accumBlueBits );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_ACCUM_ALPHA_SIZE,
+                              &result[*found].accumAlphaBits );
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_AUX_BUFFERS,
+                              &result[*found].auxBuffers );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_STEREO,
+                              &result[*found].stereo );
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_SAMPLES,
+                              &result[*found].samples );
+
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_FBCONFIG_ID,
+                              (int*) &platformID );
+        result[*found].platformID = (GLFWintptr) platformID;
+                                                    
+        (*found)++;
+    }
+
+    return result;
 }
 
 
@@ -715,19 +789,18 @@ static int _glfwInitGLX( void )
     attribs[index++] = attribName; \
     attribs[index++] = attribValue;
 
-static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
-                               int alphabits, int depthbits, int stencilbits,
-                   _GLFWhints* hints )
+static int _glfwCreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
 {
-    GLXFBConfig *fbconfigs;
-    const GLubyte *extensions;
     int attribs[40];
     int flags, fbcount, index;
-    GLXCREATECONTEXTATTRIBS_T glXCreateContextAttribsARB = NULL; 
+    const GLubyte *extensions;
+    GLXFBConfig *fbconfigs;
+    PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL; 
 
     if( hints->OpenGLMajor > 2 )
     {
-        extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display, _glfwWin.screen );
+        extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display,
+                                                                _glfwWin.screen );
 
         if( !_glfwStringInExtensionString( "GLX_ARB_create_context", extensions ) )
         {
@@ -735,7 +808,7 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
             return GL_FALSE;
         }
 
-        glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBS_T) glXGetProcAddress(
+        glXCreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress(
                                          (const GLubyte*) "glXCreateContextAttribsARB" );
         if( glXCreateContextAttribsARB == NULL )
         {
@@ -744,67 +817,30 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
         }
     }
 
-    index = 0;
-
-    _glfwSetGLXattrib( attribs, index, GLX_RENDER_TYPE, GLX_RGBA_BIT );
-    _glfwSetGLXattrib( attribs, index, GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT );
-    _glfwSetGLXattrib( attribs, index, GLX_DOUBLEBUFFER, True );
-
-    _glfwSetGLXattrib( attribs, index, GLX_RED_SIZE, redbits );
-    _glfwSetGLXattrib( attribs, index, GLX_GREEN_SIZE, greenbits );
-    _glfwSetGLXattrib( attribs, index, GLX_BLUE_SIZE, bluebits );
-    _glfwSetGLXattrib( attribs, index, GLX_ALPHA_SIZE, alphabits );
-
-    if( depthbits > 0 )
+    // Retrieve the previously selected GLXFBConfig
     {
-        _glfwSetGLXattrib( attribs, index, GLX_DEPTH_SIZE, depthbits );
+        index = 0;
+
+        _glfwSetGLXattrib( attribs, index, GLX_FBCONFIG_ID, (int) fbconfigID );
+        _glfwSetGLXattrib( attribs, index, None, None );
+
+        fbconfigs = glXChooseFBConfig( _glfwLibrary.display, _glfwWin.screen, attribs, &fbcount );
+        if( fbconfigs == NULL )
+        {
+            fprintf(stderr, "Unable to retrieve the selected GLXFBConfig\n");
+            return GL_FALSE;
+        }
     }
 
-    if( stencilbits > 0 )
+    // Retrieve the corresponding visual
+    _glfwWin.visual = glXGetVisualFromFBConfig( _glfwLibrary.display, fbconfigs[0] );
+    if( _glfwWin.visual == NULL )
     {
-        _glfwSetGLXattrib( attribs, index, GLX_STENCIL_SIZE, stencilbits );
-    }
+        XFree( fbconfigs );
 
-    if( hints->AccumRedBits > 0 || hints->AccumGreenBits > 0 ||
-        hints->AccumBlueBits > 0 || hints->AccumAlphaBits > 0 )
-    {
-        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_RED_SIZE, hints->AccumRedBits );
-        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_GREEN_SIZE, hints->AccumGreenBits );
-        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_BLUE_SIZE, hints->AccumBlueBits );
-        _glfwSetGLXattrib( attribs, index, GLX_ACCUM_ALPHA_SIZE, hints->AccumAlphaBits );
-    }
-
-    if( hints->Stereo )
-    {
-        _glfwSetGLXattrib( attribs, index, GLX_STEREO, hints->Stereo ? 1 : 0 );
-    }
-
-    if( hints->Samples > 0 )
-    {
-        _glfwSetGLXattrib( attribs, index, GLX_SAMPLE_BUFFERS, 1 );
-        _glfwSetGLXattrib( attribs, index, GLX_SAMPLES, hints->Samples );
-    }
-
-    if( hints->AuxBuffers > 0 )
-    {
-        _glfwSetGLXattrib( attribs, index, GLX_AUX_BUFFERS, hints->AuxBuffers );
-    }
-
-    attribs[index] = None;
-
-    // Get an appropriate FB config
-    fbconfigs = glXChooseFBConfig( _glfwLibrary.display, _glfwWin.screen, attribs, &fbcount );
-    if( fbconfigs == NULL )
-    {
-        fprintf(stderr, "Unable to find any suitable GLXFBConfigs\n");
+        fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
         return GL_FALSE;
     }
-
-    // Pick the first (best) candidate
-    _glfwWin.fbconfig = fbconfigs[0];
-
-    XFree( fbconfigs );
-    fbconfigs = NULL;
 
     if( glXCreateContextAttribsARB )
     {
@@ -830,38 +866,28 @@ static int _glfwCreateContext( int redbits, int greenbits, int bluebits,
             _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
         }
 
-        attribs[index] = None;
+        _glfwSetGLXattrib( attribs, index, None, None );
 
         _glfwWin.context = glXCreateContextAttribsARB( _glfwLibrary.display,
-                                                       _glfwWin.fbconfig,
+                                                       fbconfigs[0],
                                                        NULL,
                                                        True,
                                                        attribs );
-        if( _glfwWin.context == NULL )
-        {
-            fprintf(stderr, "Unable to create OpenGL context\n");
-            return GL_FALSE;
-        }
     }
     else
     {
         _glfwWin.context = glXCreateNewContext( _glfwLibrary.display,
-                                                _glfwWin.fbconfig,
+                                                fbconfigs[0],
                                                 GLX_RGBA_TYPE,
                                                 NULL,
                                                 True );
-        if( _glfwWin.context == NULL )
-        {
-            fprintf(stderr, "Unable to create OpenGL context\n");
-            return GL_FALSE;
-        }
     }
 
-    // Retrieve the corresponding visual
-    _glfwWin.visual = glXGetVisualFromFBConfig( _glfwLibrary.display, _glfwWin.fbconfig );
-    if( _glfwWin.visual == NULL )
+    XFree( fbconfigs );
+
+    if( _glfwWin.context == NULL )
     {
-        fprintf(stderr, "Unable to retrieve visual for GLXFBconfig\n");
+        fprintf(stderr, "Unable to create OpenGL context\n");
         return GL_FALSE;
     }
 
@@ -902,17 +928,19 @@ static void _glfwInitGLXExtensions( void )
 // the OpenGL rendering context is created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height, int redbits,
-    int greenbits, int bluebits, int alphabits, int depthbits,
-    int stencilbits, int mode, _GLFWhints* hints )
+int _glfwPlatformOpenWindow( int width, int height, int mode,
+                             const _GLFWhints* hints,
+                             const _GLFWfbconfig* fbconfig )
 {
     Colormap    cmap;
     XSetWindowAttributes wa;
     XEvent      event;
     Atom protocols[2];
+    unsigned int fbcount;
+    _GLFWfbconfig *fbconfigs;
+    const _GLFWfbconfig *closest;
 
     // Clear platform specific GLFW window state
-    _glfwWin.fbconfig         = (GLXFBConfig)NULL;
     _glfwWin.visual           = (XVisualInfo*)NULL;
     _glfwWin.context          = (GLXContext)NULL;
     _glfwWin.window           = (Window)NULL;
@@ -924,28 +952,25 @@ int _glfwPlatformOpenWindow( int width, int height, int redbits,
     _glfwWin.Saver.Changed    = GL_FALSE;
     _glfwWin.RefreshRate      = hints->RefreshRate;
 
-    // Fullscreen & screen saver settings
-    // Check if GLX is supported on this display
-    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
+    // Get screen ID for this window
+    _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
+
+    fbconfigs = _glfwGetFBConfigs( &fbcount );
+    if( !fbconfigs )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    // Get screen ID for this window
-    _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
-
-    // Do basic GLX setup
-    if( !_glfwInitGLX() )
+    closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
+    if( !closest )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     // Create the OpenGL context
-    if( !_glfwCreateContext( redbits, greenbits, bluebits,
-                             alphabits, depthbits, stencilbits,
-                 hints ) )
+    if( !_glfwCreateContext( hints, (GLXFBConfigID) closest->platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -1465,12 +1490,13 @@ void _glfwPlatformRefreshWindowParams( void )
     int dotclock;
     float pixels_per_second, pixels_per_frame;
 #endif
-    int sample_buffers;
+    //int sample_buffers;
 
     // AFAIK, there is no easy/sure way of knowing if OpenGL is hardware
     // accelerated
     _glfwWin.Accelerated = GL_TRUE;
 
+    /*
     // "Standard" window parameters
     glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_RED_SIZE,
                   &_glfwWin.RedBits );
@@ -1507,6 +1533,7 @@ void _glfwPlatformRefreshWindowParams( void )
           &sample_buffers );
     if( sample_buffers == 0 )
       _glfwWin.Samples = 0;
+    */
     
     // Default to refresh rate unknown (=0 according to GLFW spec)
     _glfwWin.RefreshRate = 0;
