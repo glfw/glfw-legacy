@@ -775,7 +775,7 @@ static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
 // Create the OpenGL context
 //========================================================================
 
-#define _glfwSetGLXattrib( attribs, index, attribName, attribValue ) \
+#define SetGLXattrib( attribs, index, attribName, attribValue ) \
     attribs[index++] = attribName; \
     attribs[index++] = attribValue;
 
@@ -811,8 +811,8 @@ static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
     {
         index = 0;
 
-        _glfwSetGLXattrib( attribs, index, GLX_FBCONFIG_ID, (int) fbconfigID );
-        _glfwSetGLXattrib( attribs, index, None, None );
+        SetGLXattrib( attribs, index, GLX_FBCONFIG_ID, (int) fbconfigID );
+        SetGLXattrib( attribs, index, None, None );
 
         fbconfigs = glXChooseFBConfig( _glfwLibrary.display, _glfwWin.screen, attribs, &fbcount );
         if( fbconfigs == NULL )
@@ -836,8 +836,8 @@ static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
     {
         index = 0;
 
-        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->glMajor );
-        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->glMinor );
+        SetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->glMajor );
+        SetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->glMinor );
 
         if( hints->glForward || hints->glDebug )
         {
@@ -853,10 +853,10 @@ static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
                 flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
             }
 
-            _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
+            SetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
         }
 
-        _glfwSetGLXattrib( attribs, index, None, None );
+        SetGLXattrib( attribs, index, None, None );
 
         _glfwWin.context = glXCreateContextAttribsARB( _glfwLibrary.display,
                                                        fbconfigs[0],
