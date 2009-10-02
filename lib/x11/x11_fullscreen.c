@@ -36,10 +36,10 @@
 //************************************************************************
 
 //========================================================================
-// _glfwBPP2RGB() - Convert BPP to RGB bits (based on "best guess")
+// Convert BPP to RGB bits (based on "best guess")
 //========================================================================
 
-static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
+static void BPP2RGB( int bpp, int *r, int *g, int *b )
 {
     int delta;
 
@@ -352,7 +352,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
             depth = vislist[k].depth;
 
             // Convert to RGB
-            _glfwBPP2RGB( depth, &r, &g, &b );
+            BPP2RGB( depth, &r, &g, &b );
             depth = (r<<16) | (g<<8) | b;
 
             // Is this mode unique?
@@ -480,7 +480,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
     bpp = DefaultDepth( dpy, screen );
 
     // Convert BPP to RGB bits
-    _glfwBPP2RGB( bpp, &mode->RedBits, &mode->GreenBits, &mode->BlueBits );
+    BPP2RGB( bpp, &mode->RedBits, &mode->GreenBits, &mode->BlueBits );
 
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )

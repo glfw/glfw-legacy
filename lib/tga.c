@@ -94,7 +94,7 @@ typedef struct {
 // valid)
 //========================================================================
 
-static int _glfwReadTGAHeader( _GLFWstream *s, _tga_header_t *h )
+static int ReadTGAHeader( _GLFWstream *s, _tga_header_t *h )
 {
     unsigned char buf[ 18 ];
     int pos;
@@ -147,10 +147,10 @@ static int _glfwReadTGAHeader( _GLFWstream *s, _tga_header_t *h )
 }
 
 //========================================================================
-// _glfwReadTGA_RLE() - Read Run-Length Encoded data
+// Read Run-Length Encoded data
 //========================================================================
 
-static void _glfwReadTGA_RLE( unsigned char *buf, int size, int bpp,
+static void ReadTGA_RLE( unsigned char *buf, int size, int bpp,
     _GLFWstream *s )
 {
     int repcount, bytes, k, n;
@@ -210,7 +210,7 @@ int _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags )
     int bpp, bpp2, k, m, n, swapx, swapy;
 
     // Read TGA header
-    if( !_glfwReadTGAHeader( s, &h ) )
+    if( !ReadTGAHeader( s, &h ) )
     {
         return 0;
     }
@@ -276,7 +276,7 @@ int _glfwReadTGA( _GLFWstream *s, GLFWimage *img, int flags )
     // Read pixel data from file
     if( h.imagetype >= _TGA_IMAGETYPE_CMAP_RLE )
     {
-        _glfwReadTGA_RLE( pix, pixsize, bpp, s );
+        ReadTGA_RLE( pix, pixsize, bpp, s );
     }
     else
     {

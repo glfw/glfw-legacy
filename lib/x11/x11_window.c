@@ -97,13 +97,13 @@ Bool _glfwWaitForUnmapNotify( Display *d, XEvent *e, char *arg )
 
 
 //========================================================================
-// _glfwDisableDecorations() - Turn off window decorations
+// Turn off window decorations
 // Based on xawdecode: src/wmhooks.c
 //========================================================================
 
 #define MWM_HINTS_DECORATIONS (1L << 1)
 
-static void _glfwDisableDecorations( void )
+static void DisableDecorations( void )
 {
     int RemovedDecorations;
     Atom HintAtom;
@@ -204,10 +204,10 @@ static void _glfwDisableDecorations( void )
 
 
 //========================================================================
-// _glfwEnableDecorations() - Turn on window decorations
+// Turn on window decorations
 //========================================================================
 
-static void _glfwEnableDecorations( void )
+static void EnableDecorations( void )
 {
     int ActivatedDecorations;
     Atom HintAtom;
@@ -270,10 +270,10 @@ static void _glfwEnableDecorations( void )
 
 
 //========================================================================
-// _glfwTranslateKey() - Translates an X Window key to internal coding
+// Translates an X Window key to internal coding
 //========================================================================
 
-static int _glfwTranslateKey( int keycode )
+static int TranslateKey( int keycode )
 {
     KeySym key, key_lc, key_uc;
 
@@ -391,10 +391,10 @@ static int _glfwTranslateKey( int keycode )
 
 
 //========================================================================
-// _glfwTranslateChar() - Translates an X Window event to Unicode
+// Translates an X Window event to Unicode
 //========================================================================
 
-static int _glfwTranslateChar( XKeyEvent *event )
+static int TranslateChar( XKeyEvent *event )
 {
     KeySym keysym;
 
@@ -411,7 +411,7 @@ static int _glfwTranslateChar( XKeyEvent *event )
 // Get next X event (called by glfwPollEvents)
 //========================================================================
 
-static int _glfwGetNextEvent( void )
+static int GetNextEvent( void )
 {
     XEvent event, next_event;
 
@@ -425,12 +425,12 @@ static int _glfwGetNextEvent( void )
         case KeyPress:
         {
             // Translate and report key press
-            _glfwInputKey( _glfwTranslateKey( event.xkey.keycode ), GLFW_PRESS );
+            _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_PRESS );
 
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwInputChar( _glfwTranslateChar( &event.xkey ), GLFW_PRESS );
+                _glfwInputChar( TranslateChar( &event.xkey ), GLFW_PRESS );
             }
             break;
         }
@@ -456,12 +456,12 @@ static int _glfwGetNextEvent( void )
             }
 
             // Translate and report key release
-            _glfwInputKey( _glfwTranslateKey( event.xkey.keycode ), GLFW_RELEASE );
+            _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_RELEASE );
 
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwInputChar( _glfwTranslateChar( &event.xkey ), GLFW_RELEASE );
+                _glfwInputChar( TranslateChar( &event.xkey ), GLFW_RELEASE );
             }
             break;
         }
@@ -789,7 +789,7 @@ _GLFWfbconfig *_glfwGetFBConfigs( unsigned int *found )
     attribs[index++] = attribName; \
     attribs[index++] = attribValue;
 
-static int _glfwCreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
+static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
 {
     int attribs[40];
     int flags, fbcount, index;
@@ -896,10 +896,10 @@ static int _glfwCreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID
 
 
 //========================================================================
-// _glfwInitGLXExtensions() - Initialize GLX-specific extensions
+// Initialize GLX-specific extensions
 //========================================================================
 
-static void _glfwInitGLXExtensions( void )
+static void InitGLXExtensions( void )
 {
     int has_swap_control;
 
@@ -970,7 +970,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     }
 
     // Create the OpenGL context
-    if( !_glfwCreateContext( hints, (GLXFBConfigID) closest->platformID ) )
+    if( !CreateContext( hints, (GLXFBConfigID) closest->platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -1043,7 +1043,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     // Remove window decorations for fullscreen windows
     if( mode == GLFW_FULLSCREEN )
     {
-        _glfwDisableDecorations();
+        DisableDecorations();
     }
 
     _glfwWin.hints = XAllocSizeHints();
@@ -1131,7 +1131,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
 
     // Initialize GLX-specific OpenGL extensions
-    _glfwInitGLXExtensions();
+    InitGLXExtensions();
 
     return GL_TRUE;
 }
@@ -1587,7 +1587,7 @@ void _glfwPlatformPollEvents( void )
     // Empty the window event queue
     while( XPending( _glfwLibrary.display ) )
     {
-        if( _glfwGetNextEvent() )
+        if( GetNextEvent() )
         {
             winclosed = GL_TRUE;
         }
@@ -1645,7 +1645,7 @@ void _glfwPlatformPollEvents( void )
                                &_glfwWin.Height, &_glfwWin.RefreshRate );
 
             // Disable window manager decorations
-            _glfwEnableDecorations();
+            EnableDecorations();
 
             // Make sure window is in upper left corner
             XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );

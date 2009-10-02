@@ -214,10 +214,10 @@ void _glfwTerminateJoysticks( void )
 
 
 //========================================================================
-// _glfwPollJoystickEvents() - Empty joystick event queue
+// Empty joystick event queue
 //========================================================================
 
-static void _glfwPollJoystickEvents( void )
+static void PollJoystickEvents( void )
 {
 
 #ifdef _GLFW_USE_LINUX_JOYSTICKS
@@ -319,7 +319,7 @@ int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
     }
 
     // Update joystick state
-    _glfwPollJoystickEvents();
+    PollJoystickEvents();
 
     // Does the joystick support less axes than requested?
     if( _glfwJoy[ joy ].NumAxes < numaxes )
@@ -353,7 +353,7 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     }
 
     // Update joystick state
-    _glfwPollJoystickEvents();
+    PollJoystickEvents();
 
     // Does the joystick support less buttons than requested?
     if( _glfwJoy[ joy ].NumButtons < numbuttons )

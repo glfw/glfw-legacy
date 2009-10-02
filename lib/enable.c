@@ -39,7 +39,7 @@
 // Enable (show) mouse cursor
 //========================================================================
 
-static void _glfwEnableMouseCursor( void )
+static void EnableMouseCursor( void )
 {
     int CenterPosX, CenterPosY;
 
@@ -76,7 +76,7 @@ static void _glfwEnableMouseCursor( void )
 // Disable (hide) mouse cursor
 //========================================================================
 
-static void _glfwDisableMouseCursor( void )
+static void DisableMouseCursor( void )
 {
     if( !_glfwWin.Opened || _glfwWin.MouseLock )
     {
@@ -96,16 +96,19 @@ static void _glfwDisableMouseCursor( void )
 
 
 //========================================================================
-// _glfwEnableStickyKeys() - Enable sticky keys
-// _glfwDisableStickyKeys() - Disable sticky keys
+// Enable sticky keys
 //========================================================================
 
-static void _glfwEnableStickyKeys( void )
+static void EnableStickyKeys( void )
 {
     _glfwInput.StickyKeys = 1;
 }
 
-static void _glfwDisableStickyKeys( void )
+//========================================================================
+// Disable sticky keys
+//========================================================================
+
+static void DisableStickyKeys( void )
 {
     int i;
 
@@ -123,16 +126,19 @@ static void _glfwDisableStickyKeys( void )
 
 
 //========================================================================
-// _glfwEnableStickyMouseButtons() - Enable sticky mouse buttons
-// _glfwDisableStickyMouseButtons() - Disable sticky mouse buttons
+// Enable sticky mouse buttons
 //========================================================================
 
-static void _glfwEnableStickyMouseButtons( void )
+static void EnableStickyMouseButtons( void )
 {
     _glfwInput.StickyMouseButtons = 1;
 }
 
-static void _glfwDisableStickyMouseButtons( void )
+//========================================================================
+// Disable sticky mouse buttons
+//========================================================================
+
+static void DisableStickyMouseButtons( void )
 {
     int i;
 
@@ -150,11 +156,10 @@ static void _glfwDisableStickyMouseButtons( void )
 
 
 //========================================================================
-// _glfwEnableSystemKeys() - Enable system keys
-// _glfwDisableSystemKeys() - Disable system keys
+// Enable system keys
 //========================================================================
 
-static void _glfwEnableSystemKeys( void )
+static void EnableSystemKeys( void )
 {
     if( !_glfwWin.SysKeysDisabled )
     {
@@ -167,7 +172,11 @@ static void _glfwEnableSystemKeys( void )
     _glfwWin.SysKeysDisabled = GL_FALSE;
 }
 
-static void _glfwDisableSystemKeys( void )
+//========================================================================
+// Disable system keys
+//========================================================================
+
+static void DisableSystemKeys( void )
 {
     if( _glfwWin.SysKeysDisabled )
     {
@@ -182,32 +191,38 @@ static void _glfwDisableSystemKeys( void )
 
 
 //========================================================================
-// _glfwEnableKeyRepeat() - Enable key repeat
-// _glfwDisableKeyRepeat() - Disable key repeat
+// Enable key repeat
 //========================================================================
 
-static void _glfwEnableKeyRepeat( void )
+static void EnableKeyRepeat( void )
 {
     _glfwInput.KeyRepeat = 1;
 }
 
-static void _glfwDisableKeyRepeat( void )
+//========================================================================
+// Disable key repeat
+//========================================================================
+
+static void DisableKeyRepeat( void )
 {
     _glfwInput.KeyRepeat = 0;
 }
 
 
 //========================================================================
-// _glfwEnableAutoPollEvents() - Enable automatic event polling
-// _glfwDisableAutoPollEvents() - Disable automatic event polling
+// Enable automatic event polling
 //========================================================================
 
-static void _glfwEnableAutoPollEvents( void )
+static void EnableAutoPollEvents( void )
 {
     _glfwWin.AutoPollEvents = 1;
 }
 
-static void _glfwDisableAutoPollEvents( void )
+//========================================================================
+// Disable automatic event polling
+//========================================================================
+
+static void DisableAutoPollEvents( void )
 {
     _glfwWin.AutoPollEvents = 0;
 }
@@ -219,7 +234,7 @@ static void _glfwDisableAutoPollEvents( void )
 //************************************************************************
 
 //========================================================================
-// glfwEnable() - Enable certain GLFW/window/system functions.
+// Enable certain GLFW/window/system functions.
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
@@ -233,22 +248,22 @@ GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
     switch( token )
     {
     case GLFW_MOUSE_CURSOR:
-        _glfwEnableMouseCursor();
+        EnableMouseCursor();
         break;
     case GLFW_STICKY_KEYS:
-        _glfwEnableStickyKeys();
+        EnableStickyKeys();
         break;
     case GLFW_STICKY_MOUSE_BUTTONS:
-        _glfwEnableStickyMouseButtons();
+        EnableStickyMouseButtons();
         break;
     case GLFW_SYSTEM_KEYS:
-        _glfwEnableSystemKeys();
+        EnableSystemKeys();
         break;
     case GLFW_KEY_REPEAT:
-        _glfwEnableKeyRepeat();
+        EnableKeyRepeat();
         break;
     case GLFW_AUTO_POLL_EVENTS:
-        _glfwEnableAutoPollEvents();
+        EnableAutoPollEvents();
         break;
     default:
         break;
@@ -257,7 +272,7 @@ GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
 
 
 //========================================================================
-// glfwDisable() - Disable certain GLFW/window/system functions.
+// Disable certain GLFW/window/system functions.
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwDisable( int token )
@@ -271,22 +286,22 @@ GLFWAPI void GLFWAPIENTRY glfwDisable( int token )
     switch( token )
     {
     case GLFW_MOUSE_CURSOR:
-        _glfwDisableMouseCursor();
+        DisableMouseCursor();
         break;
     case GLFW_STICKY_KEYS:
-        _glfwDisableStickyKeys();
+        DisableStickyKeys();
         break;
     case GLFW_STICKY_MOUSE_BUTTONS:
-        _glfwDisableStickyMouseButtons();
+        DisableStickyMouseButtons();
         break;
     case GLFW_SYSTEM_KEYS:
-        _glfwDisableSystemKeys();
+        DisableSystemKeys();
         break;
     case GLFW_KEY_REPEAT:
-        _glfwDisableKeyRepeat();
+        DisableKeyRepeat();
         break;
     case GLFW_AUTO_POLL_EVENTS:
-        _glfwDisableAutoPollEvents();
+        DisableAutoPollEvents();
         break;
     default:
         break;

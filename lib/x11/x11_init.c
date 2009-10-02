@@ -40,7 +40,7 @@
 // Initialize GLFW thread package
 //========================================================================
 
-static void _glfwInitThreads( void )
+static void InitThreads( void )
 {
     // Initialize critical section handle
 #ifdef _GLFW_HAS_PTHREAD
@@ -65,7 +65,7 @@ static void _glfwInitThreads( void )
 // Terminate GLFW thread package
 //========================================================================
 
-static void _glfwTerminateThreads( void )
+static void TerminateThreads( void )
 {
 #ifdef _GLFW_HAS_PTHREAD
 
@@ -106,26 +106,23 @@ static void _glfwTerminateThreads( void )
 // Dynamically load libraries
 //========================================================================
 
-#ifdef _GLFW_DLOPEN_LIBGL
-static char * _glfw_libGL_name[ ] =
-{
-    "libGL.so",
-    "libGL.so.1",
-    "/usr/lib/libGL.so",
-    "/usr/lib/libGL.so.1",
-    NULL
-};
-#endif
-
-static void _glfwInitLibraries( void )
+static void InitLibraries( void )
 {
 #ifdef _GLFW_DLOPEN_LIBGL
     int i;
+    char *libGL_names[ ] =
+    {
+        "libGL.so",
+        "libGL.so.1",
+        "/usr/lib/libGL.so",
+        "/usr/lib/libGL.so.1",
+        NULL
+    };
 
     _glfwLibrary.Libs.libGL = NULL;
-    for( i = 0; !_glfw_libGL_name[ i ] != NULL; i ++ )
+    for( i = 0; !libGL_names[ i ] != NULL; i ++ )
     {
-        _glfwLibrary.Libs.libGL = dlopen( _glfw_libGL_name[ i ],
+        _glfwLibrary.Libs.libGL = dlopen( libGL_names[ i ],
                                           RTLD_LAZY | RTLD_GLOBAL );
         if( _glfwLibrary.Libs.libGL )
             break;
@@ -148,7 +145,7 @@ void _glfwTerminate_atexit( void )
 // Initialize X11 display
 //========================================================================
 
-static int _glfwInitDisplay( void )
+static int InitDisplay( void )
 {
     // Open display
     _glfwLibrary.display = XOpenDisplay( 0 );
@@ -202,7 +199,7 @@ static int _glfwInitDisplay( void )
 // Terminate X11 display
 //========================================================================
 
-static void _glfwTerminateDisplay( void )
+static void TerminateDisplay( void )
 {
     // Open display
     if( _glfwLibrary.display )
@@ -224,16 +221,16 @@ static void _glfwTerminateDisplay( void )
 int _glfwPlatformInit( void )
 {
     // Initialize display
-    if( !_glfwInitDisplay() )
+    if( InitDisplay() )
     {
         return GL_FALSE;
     }
 
     // Initialize thread package
-    _glfwInitThreads();
+    InitThreads();
 
     // Try to load libGL.so if necessary
-    _glfwInitLibraries();
+    InitLibraries();
 
     // Install atexit() routine
     atexit( _glfwTerminate_atexit );
@@ -266,10 +263,10 @@ int _glfwPlatformTerminate( void )
     glfwCloseWindow();
 
     // Kill thread package
-    _glfwTerminateThreads();
+    TerminateThreads();
 
     // Terminate display
-    _glfwTerminateDisplay();
+    TerminateDisplay();
 
     // Terminate joysticks
     _glfwTerminateJoysticks();

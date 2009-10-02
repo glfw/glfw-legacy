@@ -69,10 +69,10 @@
 //************************************************************************
 
 //========================================================================
-// _glfwUpsampleImage() - Upsample image, from size w1 x h1 to w2 x h2
+// Upsample image, from size w1 x h1 to w2 x h2
 //========================================================================
 
-static void _glfwUpsampleImage( unsigned char *src, unsigned char *dst,
+static void UpsampleImage( unsigned char *src, unsigned char *dst,
     int w1, int h1, int w2, int h2, int bpp )
 {
     int m, n, k, x, y, col8;
@@ -141,10 +141,10 @@ static void _glfwUpsampleImage( unsigned char *src, unsigned char *dst,
 
 
 //========================================================================
-// _glfwHalveImage() - Build the next mip-map level
+// Build the next mip-map level
 //========================================================================
 
-static int _glfwHalveImage( GLubyte *src, int *width, int *height,
+static int HalveImage( GLubyte *src, int *width, int *height,
     int components )
 {
     int     halfwidth, halfheight, m, n, k, idx1, idx2;
@@ -208,10 +208,10 @@ static int _glfwHalveImage( GLubyte *src, int *width, int *height,
 
 
 //========================================================================
-// _glfwRescaleImage() - Rescales an image into power-of-two dimensions
+// Rescales an image into power-of-two dimensions
 //========================================================================
 
-static int _glfwRescaleImage( GLFWimage* image )
+static int RescaleImage( GLFWimage* image )
 {
     int     width, height, log2, newsize;
     unsigned char *data;
@@ -219,19 +219,21 @@ static int _glfwRescaleImage( GLFWimage* image )
     // Calculate next larger 2^N width
     for( log2 = 0, width = image->Width; width > 1; width >>= 1, log2 ++ )
       ;
+
     width  = (int) 1 << log2;
     if( width < image->Width )
     {
-	width <<= 1;
+        width <<= 1;
     }
 
     // Calculate next larger 2^M height
     for( log2 = 0, height = image->Height; height > 1; height >>= 1, log2 ++ )
       ;
+
     height = (int) 1 << log2;
     if( height < image->Height )
     {
-	height <<= 1;
+        height <<= 1;
     }
 
     // Do we really need to rescale?
@@ -247,8 +249,8 @@ static int _glfwRescaleImage( GLFWimage* image )
         }
 
         // Copy old image data to new image data with interpolation
-        _glfwUpsampleImage( image->Data, data, image->Width, image->Height,
-                            width, height, image->BytesPerPixel );
+        UpsampleImage( image->Data, data, image->Width, image->Height,
+                       width, height, image->BytesPerPixel );
 
         // Free memory for old image data (not needed anymore)
         free( image->Data );
@@ -297,7 +299,7 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     // We only support TGA files at the moment
     if( !_glfwReadTGA( &stream, img, flags ) )
     {
-	_glfwCloseStream( &stream );
+        _glfwCloseStream( &stream );
         return GL_FALSE;
     }
 
@@ -307,10 +309,10 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
     // Should we rescale the image to closest 2^N x 2^M resolution?
     if( !(flags & GLFW_NO_RESCALE_BIT) )
     {
-	if( !_glfwRescaleImage( img ) )
-	{
-	    return GL_FALSE;
-	}
+        if( !RescaleImage( img ) )
+        {
+            return GL_FALSE;
+        }
     }
 
     // Interpret BytesPerPixel as an OpenGL format
@@ -343,7 +345,7 @@ GLFWAPI int GLFWAPIENTRY glfwReadImage( const char *name, GLFWimage *img,
 // glfwReadMemoryImage() - Read an image file from a memory buffer
 //========================================================================
 
-GLFWAPI int  GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags )
+GLFWAPI int GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags )
 {
     _GLFWstream stream;
 
@@ -368,7 +370,7 @@ GLFWAPI int  GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFW
     // We only support TGA files at the moment
     if( !_glfwReadTGA( &stream, img, flags ) )
     {
-	_glfwCloseStream( &stream );
+        _glfwCloseStream( &stream );
         return GL_FALSE;
     }
 
@@ -378,10 +380,10 @@ GLFWAPI int  GLFWAPIENTRY glfwReadMemoryImage( const void *data, long size, GLFW
     // Should we rescale the image to closest 2^N x 2^M resolution?
     if( !(flags & GLFW_NO_RESCALE_BIT) )
     {
-	if( !_glfwRescaleImage( img ) )
-	{
-	    return GL_FALSE;
-	}
+        if( !RescaleImage( img ) )
+        {
+            return GL_FALSE;
+        }
     }
 
     // Interpret BytesPerPixel as an OpenGL format
@@ -455,7 +457,7 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     // Force rescaling if necessary
     if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
     {
-      flags &= (~GLFW_NO_RESCALE_BIT);
+        flags &= (~GLFW_NO_RESCALE_BIT);
     }
 
     // Read image from file
@@ -466,7 +468,7 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
 
     if( !glfwLoadTextureImage2D( &img, flags ) )
     {
-	return GL_FALSE;
+        return GL_FALSE;
     }
 
     // Data buffer is not needed anymore
@@ -494,7 +496,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadMemoryTexture2D( const void *data, long size, 
     // Force rescaling if necessary
     if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
     {
-      flags &= (~GLFW_NO_RESCALE_BIT);
+        flags &= (~GLFW_NO_RESCALE_BIT);
     }
 
     // Read image from file
@@ -505,7 +507,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadMemoryTexture2D( const void *data, long size, 
 
     if( !glfwLoadTextureImage2D( &img, flags ) )
     {
-	return GL_FALSE;
+        return GL_FALSE;
     }
 
     // Data buffer is not needed anymore
@@ -607,7 +609,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
         // Build next mipmap level manually, if required
         if( ( flags & GLFW_BUILD_MIPMAPS_BIT ) && !AutoGen )
         {
-            level = _glfwHalveImage( img->Data, &img->Width,
+            level = HalveImage( img->Data, &img->Width,
                         &img->Height, img->BytesPerPixel ) ?
                     level + 1 : 0;
         }
