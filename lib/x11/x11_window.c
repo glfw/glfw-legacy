@@ -926,6 +926,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     XSetWindowAttributes wa;
     XEvent      event;
     Atom protocols[2];
+    XSizeHints *sizehints;
     unsigned int fbcount;
     _GLFWfbconfig *fbconfigs;
     const _GLFWfbconfig *closest;
@@ -934,7 +935,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     _glfwWin.visual           = (XVisualInfo*)NULL;
     _glfwWin.context          = (GLXContext)NULL;
     _glfwWin.window           = (Window)NULL;
-    _glfwWin.hints            = NULL;
     _glfwWin.PointerGrabbed   = GL_FALSE;
     _glfwWin.KeyboardGrabbed  = GL_FALSE;
     _glfwWin.OverrideRedirect = GL_FALSE;
@@ -1036,23 +1036,28 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         DisableDecorations();
     }
 
-    _glfwWin.hints = XAllocSizeHints();
-
-    if( hints->windowNoResize )
+    // Set window size hints
     {
-        _glfwWin.hints->flags |= (PMinSize | PMaxSize);
-        _glfwWin.hints->min_width = _glfwWin.hints->max_width = _glfwWin.Width;
-        _glfwWin.hints->min_height = _glfwWin.hints->max_height = _glfwWin.Height;
-    }
+        sizehints = XAllocSizeHints();
+        sizehints->flags = 0;
 
-    if( mode == GLFW_FULLSCREEN )
-    {
-        _glfwWin.hints->flags |= PPosition;
-        _glfwWin.hints->x = 0;
-        _glfwWin.hints->y = 0;
-    }
+        if( hints->windowNoResize )
+        {
+            sizehints->flags |= (PMinSize | PMaxSize);
+            sizehints->min_width  = sizehints->max_width  = _glfwWin.Width;
+            sizehints->min_height = sizehints->max_height = _glfwWin.Height;
+        }
 
-    XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, _glfwWin.hints );
+        if( mode == GLFW_FULLSCREEN )
+        {
+            sizehints->flags |= PPosition;
+            sizehints->x = 0;
+            sizehints->y = 0;
+        }
+
+        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
+        XFree( sizehints );
+    }
 
     // Map window
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
@@ -1137,13 +1142,6 @@ void _glfwPlatformCloseWindow( void )
     XRRScreenConfiguration *sc;
     Window root;
 #endif
-
-    // Free WM size hints
-    if( _glfwWin.hints )
-    {
-        XFree( _glfwWin.hints );
-        _glfwWin.hints = NULL;
-    }
 
     // Do we have a rendering context?
     if( _glfwWin.context )
@@ -1258,6 +1256,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     int     mode = 0, rate, sizechanged = GL_FALSE;
     GLint   drawbuffer;
     GLfloat clearcolor[4];
+    XSizeHints *sizehints;
 
     rate = _glfwWin.RefreshRate;
 
@@ -1270,11 +1269,15 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
     if( _glfwWin.WindowNoResize )
     {
-        _glfwWin.hints->min_width = _glfwWin.hints->max_width = width;
-        _glfwWin.hints->min_height = _glfwWin.hints->max_height = height;
-    }
+        sizehints = XAllocSizeHints();
+        sizehints->flags = 0;
 
-    XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, _glfwWin.hints );
+        sizehints->min_width  = sizehints->max_width  = width;
+        sizehints->min_height = sizehints->max_height = height;
+
+        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
+        XFree( sizehints );
+    }
 
     // Change window size before changing fullscreen mode?
     if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
