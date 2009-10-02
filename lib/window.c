@@ -49,19 +49,7 @@ static int max(int a, int b)
 
 void _glfwClearWindowHints( void )
 {
-    _glfwWinHints.RefreshRate    = 0;
-    _glfwWinHints.AccumRedBits   = 0;
-    _glfwWinHints.AccumGreenBits = 0;
-    _glfwWinHints.AccumBlueBits  = 0;
-    _glfwWinHints.AccumAlphaBits = 0;
-    _glfwWinHints.AuxBuffers     = 0;
-    _glfwWinHints.Stereo         = 0;
-    _glfwWinHints.WindowNoResize = 0;
-    _glfwWinHints.Samples        = 0;
-    _glfwWinHints.OpenGLMajor    = 0;
-    _glfwWinHints.OpenGLMinor    = 0;
-    _glfwWinHints.OpenGLForward  = 0;
-    _glfwWinHints.OpenGLDebug    = 0;
+    memset( &_glfwLibrary.hints, 0, sizeof( _glfwLibrary.hints ) );
 }
 
 
@@ -327,7 +315,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Copy and clear window hints
-    hints = _glfwWinHints;
+    hints = _glfwLibrary.hints;
     _glfwClearWindowHints();
 
     // Check input arguments
@@ -440,43 +428,43 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
     switch( target )
     {
         case GLFW_REFRESH_RATE:
-            _glfwWinHints.RefreshRate = max(hint, 0);
+            _glfwLibrary.hints.RefreshRate = max(hint, 0);
             break;
         case GLFW_ACCUM_RED_BITS:
-            _glfwWinHints.AccumRedBits = max(hint, 0);
+            _glfwLibrary.hints.AccumRedBits = max(hint, 0);
             break;
         case GLFW_ACCUM_GREEN_BITS:
-            _glfwWinHints.AccumGreenBits = max(hint, 0);
+            _glfwLibrary.hints.AccumGreenBits = max(hint, 0);
             break;
         case GLFW_ACCUM_BLUE_BITS:
-            _glfwWinHints.AccumBlueBits = max(hint, 0);
+            _glfwLibrary.hints.AccumBlueBits = max(hint, 0);
             break;
         case GLFW_ACCUM_ALPHA_BITS:
-            _glfwWinHints.AccumAlphaBits = max(hint, 0);
+            _glfwLibrary.hints.AccumAlphaBits = max(hint, 0);
             break;
         case GLFW_AUX_BUFFERS:
-            _glfwWinHints.AuxBuffers = max(hint, 0);
+            _glfwLibrary.hints.AuxBuffers = max(hint, 0);
             break;
         case GLFW_STEREO:
-            _glfwWinHints.Stereo = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.Stereo = hint ? GL_TRUE : GL_FALSE;
             break;
         case GLFW_WINDOW_NO_RESIZE:
-            _glfwWinHints.WindowNoResize = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.WindowNoResize = hint ? GL_TRUE : GL_FALSE;
             break;
         case GLFW_FSAA_SAMPLES:
-            _glfwWinHints.Samples = max(hint, 0);
+            _glfwLibrary.hints.Samples = max(hint, 0);
             break;
         case GLFW_OPENGL_VERSION_MAJOR:
-            _glfwWinHints.OpenGLMajor = max(hint, 0);
+            _glfwLibrary.hints.OpenGLMajor = max(hint, 0);
             break;
         case GLFW_OPENGL_VERSION_MINOR:
-            _glfwWinHints.OpenGLMinor = max(hint, 0);
+            _glfwLibrary.hints.OpenGLMinor = max(hint, 0);
             break;
         case GLFW_OPENGL_FORWARD_COMPAT:
-            _glfwWinHints.OpenGLForward = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.OpenGLForward = hint ? GL_TRUE : GL_FALSE;
             break;
         case GLFW_DEBUG_CONTEXT:
-            _glfwWinHints.OpenGLDebug = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.OpenGLDebug = hint ? GL_TRUE : GL_FALSE;
             break;
         default:
             break;

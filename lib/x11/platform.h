@@ -157,7 +157,7 @@ typedef struct _GLFWwin_struct _GLFWwin;
 struct _GLFWwin_struct {
 
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
+    
     // User callback functions
     GLFWwindowsizefun    WindowSizeCallback;
     GLFWwindowclosefun   WindowCloseCallback;
@@ -285,6 +285,9 @@ GLFWGLOBAL struct {
 // Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
+
+    // Window opening hints
+    _GLFWhints           hints;
 
 // ========= PLATFORM SPECIFIC PART ======================================
 

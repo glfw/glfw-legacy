@@ -61,26 +61,6 @@
 
 
 //------------------------------------------------------------------------
-// Platform specific definitions goes in platform.h (which also includes
-// glfw.h)
-//------------------------------------------------------------------------
-
-#include "platform.h"
-
-
-//========================================================================
-// System independent global variables (GLFW internals)
-//========================================================================
-
-// Flag indicating if GLFW has been initialized
-#if defined( _init_c_ )
-int _glfwInitialized = 0;
-#else
-GLFWGLOBAL int _glfwInitialized;
-#endif
-
-
-//------------------------------------------------------------------------
 // Window hints (set by glfwOpenWindowHint - will go into _GLFWthread)
 //------------------------------------------------------------------------
 typedef struct {
@@ -99,7 +79,25 @@ typedef struct {
 	int OpenGLDebug;
 } _GLFWhints;
 
-GLFWGLOBAL _GLFWhints _glfwWinHints;
+
+//------------------------------------------------------------------------
+// Platform specific definitions goes in platform.h (which also includes
+// glfw.h)
+//------------------------------------------------------------------------
+
+#include "platform.h"
+
+
+//========================================================================
+// System independent global variables (GLFW internals)
+//========================================================================
+
+// Flag indicating if GLFW has been initialized
+#if defined( _init_c_ )
+int _glfwInitialized = 0;
+#else
+GLFWGLOBAL int _glfwInitialized;
+#endif
 
 
 //------------------------------------------------------------------------
