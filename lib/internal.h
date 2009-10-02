@@ -61,23 +61,44 @@
 
 
 //------------------------------------------------------------------------
-// Window hints (set by glfwOpenWindowHint - will go into _GLFWthread)
+// Window hints (set by glfwOpenWindowHint)
 //------------------------------------------------------------------------
 typedef struct {
-	int refreshRate;
-	int accumRedBits;
-   	int accumGreenBits;
-	int accumBlueBits;
-	int accumAlphaBits;
-	int auxBuffers;
-	int stereo;
-	int windowNoResize;
-	int samples;
-	int glMajor;
-	int glMinor;
-	int glForward;
-	int glDebug;
+	int         refreshRate;
+	int         accumRedBits;
+   	int         accumGreenBits;
+	int         accumBlueBits;
+	int         accumAlphaBits;
+	int         auxBuffers;
+	int         stereo;
+	int         windowNoResize;
+	int         samples;
+	int         glMajor;
+	int         glMinor;
+	int         glForward;
+	int         glDebug;
 } _GLFWhints;
+
+
+//------------------------------------------------------------------------
+// Framebuffer descriptor
+//------------------------------------------------------------------------
+typedef struct {
+	int         redBits;
+	int         greenBits;
+	int         blueBits;
+	int         alphaBits;
+	int         depthBits;
+	int         stencilBits;
+	int         accumRedBits;
+   	int         accumGreenBits;
+	int         accumBlueBits;
+	int         accumAlphaBits;
+	int         auxBuffers;
+	int         stereo;
+	int         samples;
+    GLFWintptr  platformID;
+} _GLFWfbconfig;
 
 
 //------------------------------------------------------------------------
@@ -98,27 +119,6 @@ int _glfwInitialized = 0;
 #else
 GLFWGLOBAL int _glfwInitialized;
 #endif
-
-
-//------------------------------------------------------------------------
-// Framebuffer descriptor
-//------------------------------------------------------------------------
-typedef struct {
-	int          redBits;
-	int          greenBits;
-	int          blueBits;
-	int          alphaBits;
-	int          depthBits;
-	int          stencilBits;
-	int          accumRedBits;
-   	int          accumGreenBits;
-	int          accumBlueBits;
-	int          accumAlphaBits;
-	int          auxBuffers;
-	int          stereo;
-	int          samples;
-    GLFWintptr   platformID;
-} _GLFWfbconfig;
 
 
 //------------------------------------------------------------------------
