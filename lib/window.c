@@ -65,18 +65,18 @@ void _glfwInputDeactivation( void )
     for( i = 0; i <= GLFW_KEY_LAST; i ++ )
     {
         if( _glfwInput.Key[ i ] == GLFW_PRESS )
-	{
-	    _glfwInputKey( i, GLFW_RELEASE );
-	}
+        {
+            _glfwInputKey( i, GLFW_RELEASE );
+        }
     }
 
     // Release all mouse buttons
     for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i ++ )
     {
         if( _glfwInput.MouseButton[ i ] == GLFW_PRESS )
-	{
-	    _glfwInputMouseClick( i, GLFW_RELEASE );
-	}
+        {
+            _glfwInputMouseClick( i, GLFW_RELEASE );
+        }
     }
 }
 
@@ -130,31 +130,31 @@ void _glfwInputKey( int key, int action )
 
     if( key < 0 || key > GLFW_KEY_LAST )
     {
-	return;
+        return;
     }
 
     // Are we trying to release an already released key?
     if( action == GLFW_RELEASE && _glfwInput.Key[ key ] != GLFW_PRESS )
     {
-	return;
+        return;
     }
 
     // Register key action
     if( action == GLFW_RELEASE && _glfwInput.StickyKeys )
     {
-	_glfwInput.Key[ key ] = GLFW_STICK;
+        _glfwInput.Key[ key ] = GLFW_STICK;
     }
     else
     {
-	keyrepeat = (_glfwInput.Key[ key ] == GLFW_PRESS) &&
-		    (action == GLFW_PRESS);
-	_glfwInput.Key[ key ] = (char) action;
+        keyrepeat = (_glfwInput.Key[ key ] == GLFW_PRESS) &&
+                    (action == GLFW_PRESS);
+        _glfwInput.Key[ key ] = (char) action;
     }
 
     // Call user callback function
     if( _glfwWin.KeyCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
     {
-	_glfwWin.KeyCallback( key, action );
+        _glfwWin.KeyCallback( key, action );
     }
 }
 
