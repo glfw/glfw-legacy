@@ -77,22 +77,12 @@ typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)( Display *display,
 //************************************************************************
 
 //========================================================================
-// _glfwWaitForMapNotify()
+// Checks whether the event is a MapNotify for the specified window
 //========================================================================
 
-Bool _glfwWaitForMapNotify( Display *d, XEvent *e, char *arg )
+static Bool IsMapNotify( Display *d, XEvent *e, char *arg )
 {
     return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
-}
-
-
-//========================================================================
-// _glfwWaitForUnmapNotify()
-//========================================================================
-
-Bool _glfwWaitForUnmapNotify( Display *d, XEvent *e, char *arg )
-{
-    return (e->type == UnmapNotify) && (e->xmap.window == (Window)arg);
 }
 
 
@@ -648,10 +638,10 @@ static int GetNextEvent( void )
 
 
 //========================================================================
-// _glfwCreateNULLCursor() - Create a blank cursor (for locked mouse mode)
+// Create a blank cursor (for locked mouse mode)
 //========================================================================
 
-Cursor _glfwCreateNULLCursor( Display *display, Window root )
+static Cursor CreateNULLCursor( Display *display, Window root )
 {
     Pixmap    cursormask;
     XGCValues xgc;
@@ -679,7 +669,7 @@ Cursor _glfwCreateNULLCursor( Display *display, Window root )
 // Return a list of available and usable framebuffer configs
 //========================================================================
 
-_GLFWfbconfig *_glfwGetFBConfigs( unsigned int *found )
+static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
 {
     GLXFBConfig *fbconfigs;
     _GLFWfbconfig *result;
@@ -955,7 +945,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     // Get screen ID for this window
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
 
-    fbconfigs = _glfwGetFBConfigs( &fbcount );
+    fbconfigs = GetFBConfigs( &fbcount );
     if( !fbconfigs )
     {
         _glfwPlatformCloseWindow();
@@ -1068,7 +1058,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // Wait for map notification
-    XIfEvent( _glfwLibrary.display, &event, _glfwWaitForMapNotify,
+    XIfEvent( _glfwLibrary.display, &event, IsMapNotify,
               (char*)_glfwWin.window );
 
     // Make sure that our window ends up on top of things
@@ -1083,7 +1073,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         {
             XRRSelectInput( _glfwLibrary.display,
                             _glfwWin.window,
-                    RRScreenChangeNotifyMask );
+                            RRScreenChangeNotifyMask );
         }
 #endif
 
@@ -1428,8 +1418,9 @@ void _glfwPlatformRestoreWindow( void )
         if( !_glfwWin.PointerHidden )
         {
             XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                           _glfwCreateNULLCursor( _glfwLibrary.display,
-                                                  _glfwWin.window ) );
+                           CreateNULLCursor( _glfwLibrary.display,
+                                             _glfwWin.window ) );
+
             _glfwWin.PointerHidden = GL_TRUE;
         }
 
@@ -1642,8 +1633,7 @@ void _glfwPlatformPollEvents( void )
         {
             // Change back video mode to user selected mode
             _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
-                               &_glfwWin.Height, &_glfwWin.RefreshRate );
-
+                               &_glfwWin.Height, &_glfwWin.RefreshRate ); 
             // Disable window manager decorations
             EnableDecorations();
 
@@ -1661,8 +1651,9 @@ void _glfwPlatformPollEvents( void )
             if( !_glfwWin.PointerHidden )
             {
                 XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                    _glfwCreateNULLCursor( _glfwLibrary.display,
-                                           _glfwWin.window ) );
+                               CreateNULLCursor( _glfwLibrary.display,
+                                                 _glfwWin.window ) );
+
                 _glfwWin.PointerHidden = GL_TRUE;
             }
         }
@@ -1749,8 +1740,9 @@ void _glfwPlatformHideMouseCursor( void )
     if( !_glfwWin.PointerHidden )
     {
         XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                       _glfwCreateNULLCursor( _glfwLibrary.display,
-                                              _glfwWin.window ) );
+                       CreateNULLCursor( _glfwLibrary.display,
+                                         _glfwWin.window ) );
+
         _glfwWin.PointerHidden = GL_TRUE;
     }
 
