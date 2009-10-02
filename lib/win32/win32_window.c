@@ -136,19 +136,19 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 static int _glfwExtendedCreationRequired( _GLFWhints* hints )
 {
     // Check if FSAA is requested
-    if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
+    if( _glfwWin.ChoosePixelFormat && hints->samples > 0 )
     {
 	return GL_TRUE;
     }
     
     // Check if a versioned context is requested
-    if( hints->OpenGLMajor != 1 || hints->OpenGLMinor != 1 )
+    if( hints->glMajor != 1 || hints->glMinor != 1 )
     {
 	return GL_TRUE;
     }
 
     // Check if a forward-compatible context is requested
-    if( hints->OpenGLForward )
+    if( hints->glForward )
     {
 	return GL_TRUE;
     }
@@ -187,17 +187,17 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
     pfd.cBlueShift      = 0;                   // Blue shift ignored
     pfd.cAlphaBits      = (BYTE) alphabits;    // Alpha bits
     pfd.cAlphaShift     = 0;                   // Alpha shift ignored
-    pfd.cAccumBits      = (BYTE) (hints->AccumRedBits +
-                                  hints->AccumGreenBits +
-                                  hints->AccumBlueBits +
-                                  hints->AccumAlphaBits); // Accum. bits
-    pfd.cAccumRedBits   = (BYTE) hints->AccumRedBits;   // Accum. red bits
-    pfd.cAccumGreenBits = (BYTE) hints->AccumGreenBits; // Accum. green bits
-    pfd.cAccumBlueBits  = (BYTE) hints->AccumBlueBits;  // Accum. blue bits
-    pfd.cAccumAlphaBits = (BYTE) hints->AccumAlphaBits; // Accum. alpha bits
+    pfd.cAccumBits      = (BYTE) (hints->accumRedBits +
+                                  hints->accumGreenBits +
+                                  hints->accumBlueBits +
+                                  hints->accumAlphaBits); // Accum. bits
+    pfd.cAccumRedBits   = (BYTE) hints->accumRedBits;   // Accum. red bits
+    pfd.cAccumGreenBits = (BYTE) hints->accumGreenBits; // Accum. green bits
+    pfd.cAccumBlueBits  = (BYTE) hints->accumBlueBits;  // Accum. blue bits
+    pfd.cAccumAlphaBits = (BYTE) hints->accumAlphaBits; // Accum. alpha bits
     pfd.cDepthBits      = (BYTE) depthbits;    // Depth buffer bits
     pfd.cStencilBits    = (BYTE) stencilbits;  // Stencil buffer bits
-    pfd.cAuxBuffers     = (BYTE) hints->AuxBuffers;   // No. of aux buffers
+    pfd.cAuxBuffers     = (BYTE) hints->auxBuffers;   // No. of aux buffers
     pfd.iLayerType      = PFD_MAIN_PLANE;      // Drawing layer: main
     pfd.bReserved       = 0;                   // (reserved)
     pfd.dwLayerMask     = 0;                   // Ignored
@@ -210,7 +210,7 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
         pfd.dwFlags |= PFD_DEPTH_DONTCARE;
     }
 
-    if( hints->Stereo )
+    if( hints->stereo )
     {
         // Request a stereo mode
         pfd.dwFlags |= PFD_STEREO;
@@ -230,7 +230,7 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
     }
 
     // "stereo" is a strict requirement
-    if( hints->Stereo && !(pfd.dwFlags & PFD_STEREO) )
+    if( hints->stereo && !(pfd.dwFlags & PFD_STEREO) )
     {
         return GL_FALSE;
     }
@@ -261,10 +261,10 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
     int attribs[128];
     PIXELFORMATDESCRIPTOR pfd;
     
-    int accumredbits = hints->AccumRedBits;
-    int accumgreenbits = hints->AccumGreenBits;
-    int accumbluebits = hints->AccumBlueBits;
-    int accumalphabits = hints->AccumAlphaBits;
+    int accumredbits = hints->accumRedBits;
+    int accumgreenbits = hints->accumGreenBits;
+    int accumbluebits = hints->accumBlueBits;
+    int accumalphabits = hints->accumAlphaBits;
 
     _glfwSetWGLAttribute( WGL_DRAW_TO_WINDOW_ARB, GL_TRUE );
     _glfwSetWGLAttribute( WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB );
@@ -277,7 +277,7 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
     _glfwSetWGLAttribute( WGL_ALPHA_BITS_ARB,     alphabits );
     _glfwSetWGLAttribute( WGL_DEPTH_BITS_ARB,     depthbits );
     _glfwSetWGLAttribute( WGL_STENCIL_BITS_ARB,   stencilbits );
-    _glfwSetWGLAttribute( WGL_AUX_BUFFERS_ARB,    hints->AuxBuffers );
+    _glfwSetWGLAttribute( WGL_AUX_BUFFERS_ARB,    hints->auxBuffers );
     
     if( accumredbits || accumgreenbits || accumbluebits || accumalphabits )
     {
@@ -292,15 +292,15 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
         _glfwSetWGLAttribute( WGL_ACCUM_ALPHA_BITS_ARB, accumalphabits );
     }
 
-    if( hints->Stereo )
+    if( hints->stereo )
     {
         _glfwSetWGLAttribute( WGL_STEREO_ARB, GL_TRUE );
     }
 
-    if( hints->Samples > 0 )
+    if( hints->samples > 0 )
     {
         _glfwSetWGLAttribute( WGL_SAMPLE_BUFFERS_ARB, 1 );
-        _glfwSetWGLAttribute( WGL_SAMPLES_ARB, hints->Samples );
+        _glfwSetWGLAttribute( WGL_SAMPLES_ARB, hints->samples );
     }
 
     _glfwSetWGLAttribute( 0, 0 );
@@ -340,17 +340,17 @@ static HGLRC _glfwCreateContext( HDC dc, _GLFWhints* hints )
     {
 	// Use the newer wglCreateContextAttribsARB
 
-	if( hints->OpenGLMajor != 1 || hints->OpenGLMinor != 1 )
+	if( hints->glMajor != 1 || hints->glMinor != 1 )
 	{
 	    // Request an explicitly versioned context
 
 	    attribs[i++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
-	    attribs[i++] = hints->OpenGLMajor;
+	    attribs[i++] = hints->glMajor;
 	    attribs[i++] = WGL_CONTEXT_MINOR_VERSION_ARB;
-	    attribs[i++] = hints->OpenGLMinor;
+	    attribs[i++] = hints->glMinor;
 	}
 
-	if( hints->OpenGLForward )
+	if( hints->glForward )
 	{
 	    // Request a forward-compatible context
 
@@ -1209,7 +1209,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Remember desired refresh rate for this window (used only in
     // fullscreen mode)
-    _glfwWin.DesiredRefreshRate = hints->RefreshRate;
+    _glfwWin.DesiredRefreshRate = hints->refreshRate;
 
     // Set window class parameters
     wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; // Redraw on...
@@ -1243,7 +1243,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         _glfwSetVideoMode( &_glfwWin.Width, &_glfwWin.Height,
                            redbits, greenbits, bluebits,
-                           hints->RefreshRate );
+                           hints->refreshRate );
     }
 
     // Set common window styles
@@ -1271,7 +1271,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
-        if( !hints->WindowNoResize )
+        if( !hints->windowNoResize )
         {
             dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
             dwExStyle |= WS_EX_WINDOWEDGE;
@@ -1289,7 +1289,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    if( _glfwWin.ChoosePixelFormat && hints->Samples > 0 )
+    if( _glfwWin.ChoosePixelFormat && hints->samples > 0 )
     {
 	// Iteratively try to create a context with a decreasing number of
 	// FSAA samples (requires window recreation).
@@ -1304,9 +1304,9 @@ int _glfwPlatformOpenWindow( int width, int height,
                 break;
             }
 
-            if( hints->Samples > 0 )
+            if( hints->samples > 0 )
             {
-                hints->Samples--;
+                hints->samples--;
             }
             else
             {

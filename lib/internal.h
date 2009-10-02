@@ -64,19 +64,19 @@
 // Window hints (set by glfwOpenWindowHint - will go into _GLFWthread)
 //------------------------------------------------------------------------
 typedef struct {
-	int RefreshRate;
-	int AccumRedBits;
-   	int AccumGreenBits;
-	int AccumBlueBits;
-	int AccumAlphaBits;
-	int AuxBuffers;
-	int Stereo;
-	int WindowNoResize;
-	int Samples;
-	int OpenGLMajor;
-	int OpenGLMinor;
-	int OpenGLForward;
-	int OpenGLDebug;
+	int refreshRate;
+	int accumRedBits;
+   	int accumGreenBits;
+	int accumBlueBits;
+	int accumAlphaBits;
+	int auxBuffers;
+	int stereo;
+	int windowNoResize;
+	int samples;
+	int glMajor;
+	int glMinor;
+	int glForward;
+	int glDebug;
 } _GLFWhints;
 
 

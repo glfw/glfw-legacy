@@ -797,7 +797,7 @@ static int _glfwCreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID
     GLXFBConfig *fbconfigs;
     PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL; 
 
-    if( hints->OpenGLMajor > 2 )
+    if( hints->glMajor > 2 )
     {
         extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display,
                                                                 _glfwWin.screen );
@@ -846,19 +846,19 @@ static int _glfwCreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID
     {
         index = 0;
 
-        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->OpenGLMajor );
-        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->OpenGLMinor );
+        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->glMajor );
+        _glfwSetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->glMinor );
 
-        if( hints->OpenGLForward || hints->OpenGLDebug )
+        if( hints->glForward || hints->glDebug )
         {
             flags = 0;
 
-            if( hints->OpenGLForward )
+            if( hints->glForward )
             {
                 flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
             }
 
-            if( hints->OpenGLDebug )
+            if( hints->glDebug )
             {
                 flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
             }
@@ -950,7 +950,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     _glfwWin.OverrideRedirect = GL_FALSE;
     _glfwWin.FS.ModeChanged   = GL_FALSE;
     _glfwWin.Saver.Changed    = GL_FALSE;
-    _glfwWin.RefreshRate      = hints->RefreshRate;
+    _glfwWin.RefreshRate      = hints->refreshRate;
 
     // Get screen ID for this window
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
@@ -1048,7 +1048,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
 
     _glfwWin.hints = XAllocSizeHints();
 
-    if( hints->WindowNoResize )
+    if( hints->windowNoResize )
     {
         _glfwWin.hints->flags |= (PMinSize | PMaxSize);
         _glfwWin.hints->min_width = _glfwWin.hints->max_width = _glfwWin.Width;
