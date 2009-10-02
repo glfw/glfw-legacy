@@ -48,6 +48,9 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
         return GL_TRUE;
     }
 
+    memset( &_glfwLibrary, 0, sizeof( _glfwLibrary ) );
+    memset( &_glfwWin, 0, sizeof( _glfwWin ) );
+
     // Window is not yet opened
     _glfwWin.Opened = GL_FALSE;
 
