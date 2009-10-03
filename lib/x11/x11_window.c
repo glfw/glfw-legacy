@@ -171,7 +171,6 @@ static void DisableDecorations( void )
                          32, PropModeReplace, (unsigned char *)&NET_WMHints, 1 );
     }
 
-
     // Did we sucessfully remove the window decorations?
     if( RemovedDecorations )
     {
@@ -914,7 +913,7 @@ static void InitGLXExtensions( void )
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformOpenWindow() - Here is where the window is created, and
+// Here is where the window is created, and
 // the OpenGL rendering context is created
 //========================================================================
 
