@@ -227,8 +227,14 @@ typedef DWORD (WINAPI * TIMEGETTIME_T) (void);
 
 
 //========================================================================
-// Global variables (GLFW internals)
+// GLFW platform specific types
 //========================================================================
+
+//------------------------------------------------------------------------
+// Pointer length integer
+//------------------------------------------------------------------------
+typedef intptr_t GLFWintptr;
+
 
 //------------------------------------------------------------------------
 // Window structure
@@ -348,6 +354,9 @@ GLFWGLOBAL struct {
 // Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
+
+    // Window opening hints
+    _GLFWhints      hints;
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
