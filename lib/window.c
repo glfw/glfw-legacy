@@ -38,7 +38,7 @@
 //****                  GLFW internal functions                       ****
 //************************************************************************
 
-static int max(int a, int b)
+static int Max(int a, int b)
 {
     return (a > b) ? a : b;
 }
@@ -428,22 +428,22 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
     switch( target )
     {
         case GLFW_REFRESH_RATE:
-            _glfwLibrary.hints.refreshRate = max(hint, 0);
+            _glfwLibrary.hints.refreshRate = Max(hint, 0);
             break;
         case GLFW_ACCUM_RED_BITS:
-            _glfwLibrary.hints.accumRedBits = max(hint, 0);
+            _glfwLibrary.hints.accumRedBits = Max(hint, 0);
             break;
         case GLFW_ACCUM_GREEN_BITS:
-            _glfwLibrary.hints.accumGreenBits = max(hint, 0);
+            _glfwLibrary.hints.accumGreenBits = Max(hint, 0);
             break;
         case GLFW_ACCUM_BLUE_BITS:
-            _glfwLibrary.hints.accumBlueBits = max(hint, 0);
+            _glfwLibrary.hints.accumBlueBits = Max(hint, 0);
             break;
         case GLFW_ACCUM_ALPHA_BITS:
-            _glfwLibrary.hints.accumAlphaBits = max(hint, 0);
+            _glfwLibrary.hints.accumAlphaBits = Max(hint, 0);
             break;
         case GLFW_AUX_BUFFERS:
-            _glfwLibrary.hints.auxBuffers = max(hint, 0);
+            _glfwLibrary.hints.auxBuffers = Max(hint, 0);
             break;
         case GLFW_STEREO:
             _glfwLibrary.hints.stereo = hint ? GL_TRUE : GL_FALSE;
@@ -452,13 +452,13 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
             _glfwLibrary.hints.windowNoResize = hint ? GL_TRUE : GL_FALSE;
             break;
         case GLFW_FSAA_SAMPLES:
-            _glfwLibrary.hints.samples = max(hint, 0);
+            _glfwLibrary.hints.samples = Max(hint, 0);
             break;
         case GLFW_OPENGL_VERSION_MAJOR:
-            _glfwLibrary.hints.glMajor = max(hint, 0);
+            _glfwLibrary.hints.glMajor = Max(hint, 0);
             break;
         case GLFW_OPENGL_VERSION_MINOR:
-            _glfwLibrary.hints.glMinor = max(hint, 0);
+            _glfwLibrary.hints.glMinor = Max(hint, 0);
             break;
         case GLFW_OPENGL_FORWARD_COMPAT:
             _glfwLibrary.hints.glForward = hint ? GL_TRUE : GL_FALSE;
