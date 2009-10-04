@@ -409,6 +409,10 @@ visibility of the mouse cursor, use \textbf{glfwEnable} or
 In order to determine the actual properties of an opened window, use
 \textbf{glfwGetWindowParam} and \textbf{glfwGetWindowSize} (or
 \textbf{glfwSetWindowSizeCallback}).
+
+On Microsoft Windows, if the executable has an icon resource named
+\textbf{GLFW\_ICON}, it will be set as the icon for the window.  If no such
+icon is present, the \textbf{IDI\_WINLOGO} icon will be used instead.
 \end{refnotes}
 
 
