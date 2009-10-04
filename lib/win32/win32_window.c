@@ -43,7 +43,7 @@
 // Enable/disable minimize/restore animations
 //========================================================================
 
-static int _glfwMinMaxAnimations( int enable )
+static int setMinMaxAnimations( int enable )
 {
     ANIMATIONINFO AI;
     int old_enable;
@@ -72,7 +72,7 @@ static int _glfwMinMaxAnimations( int enable )
 // achieve this (thanks again, MS, for making life so much easier)!
 //========================================================================
 
-static void _glfwSetForegroundWindow( HWND hWnd )
+static void setForegroundWindow( HWND hWnd )
 {
     int try_count = 0;
     int old_animate;
@@ -98,7 +98,7 @@ static void _glfwSetForegroundWindow( HWND hWnd )
     // zoom animations to make it look a bit better at least).
 
     // Turn off minimize/restore animations
-    old_animate = _glfwMinMaxAnimations( 0 );
+    old_animate = setMinMaxAnimations( 0 );
 
     // We try this a few times, just to be on the safe side of things...
     do
@@ -119,7 +119,7 @@ static void _glfwSetForegroundWindow( HWND hWnd )
     while( hWnd != GetForegroundWindow() && try_count <= 3 );
 
     // Restore the system minimize/restore animation setting
-    (void) _glfwMinMaxAnimations( old_animate );
+    (void) setMinMaxAnimations( old_animate );
 
     // Try to modify the system settings (since this is now hopefully the
     // foreground process, we are probably allowed to do this)
@@ -133,24 +133,24 @@ static void _glfwSetForegroundWindow( HWND hWnd )
 // be retrieved after an initial context creation
 //========================================================================
 
-static int _glfwExtendedCreationRequired( _GLFWhints* hints )
+static int isExtendedCreationRequired( _GLFWhints* hints )
 {
     // Check if FSAA is requested
     if( _glfwWin.ChoosePixelFormat && hints->samples > 0 )
     {
-	return GL_TRUE;
+        return GL_TRUE;
     }
     
     // Check if a versioned context is requested
     if( hints->glMajor != 1 || hints->glMinor != 1 )
     {
-	return GL_TRUE;
+        return GL_TRUE;
     }
 
     // Check if a forward-compatible context is requested
     if( hints->glForward )
     {
-	return GL_TRUE;
+        return GL_TRUE;
     }
 
     // No extended creation required
@@ -162,9 +162,9 @@ static int _glfwExtendedCreationRequired( _GLFWhints* hints )
 // Sets the device context pixel format using a PFD
 //========================================================================
 
-static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
-                                   int alphabits, int depthbits, int stencilbits,
-                                   int mode, _GLFWhints* hints )
+static int setPixelFormatPFD( int redbits, int greenbits, int bluebits,
+                              int alphabits, int depthbits, int stencilbits,
+                              int mode, _GLFWhints* hints )
 {
     int PixelFormat;
     PIXELFORMATDESCRIPTOR pfd;
@@ -253,9 +253,9 @@ static int _glfwSetPixelFormatPFD( int redbits, int greenbits, int bluebits,
     attribs[ count++ ] = _glfwName; \
     attribs[ count++ ] = _glfwValue;
 
-static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
-                                      int alphabits, int depthbits, int stencilbits,
-                                      int mode, _GLFWhints* hints )
+static int setPixelFormatAttrib( int redbits, int greenbits, int bluebits,
+                                 int alphabits, int depthbits, int stencilbits,
+                                 int mode, _GLFWhints* hints )
 {
     int PixelFormat, dummy, count = 0;
     int attribs[128];
@@ -331,36 +331,36 @@ static int _glfwSetPixelFormatAttrib( int redbits, int greenbits, int bluebits,
 // Creates an OpenGL context on the specified device context
 //========================================================================
 
-static HGLRC _glfwCreateContext( HDC dc, _GLFWhints* hints )
+static HGLRC createContext( HDC dc, _GLFWhints* hints )
 {
     // Static array sizes are bad; don't use them
     int i = 0, attribs[7];
 
     if( _glfwWin.CreateContextAttribsARB )
     {
-	// Use the newer wglCreateContextAttribsARB
+        // Use the newer wglCreateContextAttribsARB
 
-	if( hints->glMajor != 1 || hints->glMinor != 1 )
-	{
-	    // Request an explicitly versioned context
+        if( hints->glMajor != 1 || hints->glMinor != 1 )
+        {
+            // Request an explicitly versioned context
 
-	    attribs[i++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
-	    attribs[i++] = hints->glMajor;
-	    attribs[i++] = WGL_CONTEXT_MINOR_VERSION_ARB;
-	    attribs[i++] = hints->glMinor;
-	}
+            attribs[i++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+            attribs[i++] = hints->glMajor;
+            attribs[i++] = WGL_CONTEXT_MINOR_VERSION_ARB;
+            attribs[i++] = hints->glMinor;
+        }
 
-	if( hints->glForward )
-	{
-	    // Request a forward-compatible context
+        if( hints->glForward )
+        {
+            // Request a forward-compatible context
 
-	    attribs[i++] = WGL_CONTEXT_FLAGS_ARB;
-	    attribs[i++] = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-	}
+            attribs[i++] = WGL_CONTEXT_FLAGS_ARB;
+            attribs[i++] = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+        }
 
-	attribs[i++] = 0;
+        attribs[i++] = 0;
 
-	return _glfwWin.CreateContextAttribsARB( dc, NULL, attribs );
+        return _glfwWin.CreateContextAttribsARB( dc, NULL, attribs );
     }
 
     return wglCreateContext( dc );
@@ -371,7 +371,7 @@ static HGLRC _glfwCreateContext( HDC dc, _GLFWhints* hints )
 // Translates a Windows key to the corresponding GLFW key
 //========================================================================
 
-static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
+static int translateKey( WPARAM wParam, LPARAM lParam )
 {
     MSG next_msg;
     DWORD msg_time;
@@ -382,6 +382,7 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
     {
         // The SHIFT keys require special handling
         case VK_SHIFT:
+        {
             // Compare scan code for this key with that of VK_RSHIFT in
             // order to determine which shift key was pressed (left or
             // right)
@@ -390,15 +391,19 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
             {
                 return GLFW_KEY_RSHIFT;
             }
+
             return GLFW_KEY_LSHIFT;
+        }
 
         // The CTRL keys require special handling
         case VK_CONTROL:
+        {
             // Is this an extended key (i.e. right key)?
             if( lParam & 0x01000000 )
             {
                 return GLFW_KEY_RCTRL;
             }
+
             // Here is a trick: "Alt Gr" sends LCTRL, then RALT. We only
             // want the RALT message, so we try to see if the next message
             // is a RALT message. In that case, this is a false LCTRL!
@@ -418,25 +423,33 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
                     }
                 }
             }
+
             return GLFW_KEY_LCTRL;
+        }
 
         // The ALT keys require special handling
         case VK_MENU:
+        {
             // Is this an extended key (i.e. right key)?
             if( lParam & 0x01000000 )
             {
                 return GLFW_KEY_RALT;
             }
+
             return GLFW_KEY_LALT;
+        }
 
         // The ENTER keys require special handling
         case VK_RETURN:
+        {
             // Is this an extended key (i.e. right key)?
             if( lParam & 0x01000000 )
             {
                 return GLFW_KEY_KP_ENTER;
             }
+
             return GLFW_KEY_ENTER;
+        }
 
         // Special keys (non character keys)
         case VK_ESCAPE:        return GLFW_KEY_ESC;
@@ -497,6 +510,7 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
 
         // The rest (should be printable keys)
         default:
+        {
             // Convert to printable character (ISO-8859-1 or Unicode)
             wParam = MapVirtualKey( (UINT) wParam, 2 ) & 0x0000FFFF;
 
@@ -516,7 +530,9 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
             {
                 return (int) wParam;
             }
+
             return GLFW_KEY_UNKNOWN;
+        }
     }
 }
 
@@ -525,7 +541,7 @@ static int _glfwTranslateKey( WPARAM wParam, LPARAM lParam )
 // Translates a windows key to Unicode
 //========================================================================
 
-static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
+static void translateChar( DWORD wParam, DWORD lParam, int action )
 {
     BYTE  keyboard_state[ 256 ];
     UCHAR char_buf[ 10 ];
@@ -590,8 +606,8 @@ static void _glfwTranslateChar( DWORD wParam, DWORD lParam, int action )
 // Window callback function (handles window events)
 //========================================================================
 
-static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
-                                             WPARAM wParam, LPARAM lParam )
+static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
+                                    WPARAM wParam, LPARAM lParam )
 {
     int WheelDelta, Iconified;
 
@@ -654,7 +670,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 
                         // Activate window
                         ShowWindow( hWnd, SW_SHOW );
-                        _glfwSetForegroundWindow( _glfwWin.Wnd );
+                        setForegroundWindow( _glfwWin.Wnd );
                         SetFocus( _glfwWin.Wnd );
                     }
                 }
@@ -706,13 +722,13 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         case WM_SYSKEYDOWN:
         {
             // Translate and report key press
-            _glfwInputKey( _glfwTranslateKey( wParam, lParam ),
+            _glfwInputKey( translateKey( wParam, lParam ),
                            GLFW_PRESS );
 
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwTranslateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
+                translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
             }
             return 0;
           }  
@@ -730,14 +746,14 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             else
             {
                 // Translate and report key release
-                _glfwInputKey( _glfwTranslateKey( wParam, lParam ),
+                _glfwInputKey( translateKey( wParam, lParam ),
                                GLFW_RELEASE );
             }
 
             // Translate and report character input
             if( _glfwWin.CharCallback )
             {
-                _glfwTranslateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
+                translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
             }
 
             return 0;
@@ -802,38 +818,36 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
         // Did the mouse move?
         case WM_MOUSEMOVE:
         {
+            int NewMouseX, NewMouseY;
+
+            // Get signed (!) mouse position
+            NewMouseX = (int)((short)LOWORD(lParam));
+            NewMouseY = (int)((short)HIWORD(lParam));
+
+            if( NewMouseX != _glfwInput.OldMouseX ||
+                NewMouseY != _glfwInput.OldMouseY )
             {
-                int NewMouseX, NewMouseY;
-
-                // Get signed (!) mouse position
-                NewMouseX = (int)((short)LOWORD(lParam));
-                NewMouseY = (int)((short)HIWORD(lParam));
-
-                if( NewMouseX != _glfwInput.OldMouseX ||
-                    NewMouseY != _glfwInput.OldMouseY )
+                if( _glfwWin.MouseLock )
                 {
-                    if( _glfwWin.MouseLock )
-                    {
-                        _glfwInput.MousePosX += NewMouseX -
-                                                _glfwInput.OldMouseX;
-                        _glfwInput.MousePosY += NewMouseY -
-                                                _glfwInput.OldMouseY;
-                    }
-                    else
-                    {
-                        _glfwInput.MousePosX = NewMouseX;
-                        _glfwInput.MousePosY = NewMouseY;
-                    }
-                    _glfwInput.OldMouseX = NewMouseX;
-                    _glfwInput.OldMouseY = NewMouseY;
-                    _glfwInput.MouseMoved = GL_TRUE;
-    
-                    // Call user callback function
-                    if( _glfwWin.MousePosCallback )
-                    {
-                        _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                                                   _glfwInput.MousePosY );
-                    }
+                    _glfwInput.MousePosX += NewMouseX -
+                                            _glfwInput.OldMouseX;
+                    _glfwInput.MousePosY += NewMouseY -
+                                            _glfwInput.OldMouseY;
+                }
+                else
+                {
+                    _glfwInput.MousePosX = NewMouseX;
+                    _glfwInput.MousePosY = NewMouseY;
+                }
+                _glfwInput.OldMouseX = NewMouseX;
+                _glfwInput.OldMouseY = NewMouseY;
+                _glfwInput.MouseMoved = GL_TRUE;
+
+                // Call user callback function
+                if( _glfwWin.MousePosCallback )
+                {
+                    _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                               _glfwInput.MousePosY );
                 }
             }
             return 0;
@@ -908,12 +922,12 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
             break;
         }
 
-	case WM_DISPLAYCHANGE:
-	{
-	    // TODO: Do stuff here.
+        case WM_DISPLAYCHANGE:
+        {
+            // TODO: Do stuff here.
 
-	    break;
-	}
+            break;
+        }
     }
 
     // Pass all unhandled messages to DefWindowProc
@@ -925,7 +939,7 @@ static LRESULT CALLBACK _glfwWindowCallback( HWND hWnd, UINT uMsg,
 // Translate client window size to full window size (including window borders)
 //========================================================================
 
-static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
+static void getFullWindowSize( int w, int h, int *w2, int *h2 )
 {
     RECT rect;
 
@@ -949,7 +963,7 @@ static void _glfwGetFullWindowSize( int w, int h, int *w2, int *h2 )
 // Initialize WGL-specific extensions
 //========================================================================
 
-static void _glfwInitWGLExtensions( void )
+static void initWGLExtensions( void )
 {
     GLubyte *extensions;
     int     has_create_context, has_swap_control, has_pixel_format;
@@ -958,13 +972,13 @@ static void _glfwInitWGLExtensions( void )
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
     {
-	    // Try wglGetExtensionsStringARB
-	    _glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
-	        wglGetProcAddress( "wglGetExtensionsStringARB" );
-	    if( !_glfwWin.GetExtensionsStringARB )
-	    {
-	        return;
-	    }
+        // Try wglGetExtensionsStringARB
+        _glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
+            wglGetProcAddress( "wglGetExtensionsStringARB" );
+        if( !_glfwWin.GetExtensionsStringARB )
+        {
+            return;
+        }
     }
 
     // Initialize OpenGL extension: WGL_EXT_swap_control
@@ -976,7 +990,7 @@ static void _glfwInitWGLExtensions( void )
     if( extensions != NULL )
     {
         has_create_context = _glfwStringInExtensionString(
-			         "WGL_ARB_create_context",
+                                 "WGL_ARB_create_context",
                                  extensions
                            );
         has_swap_control = _glfwStringInExtensionString(
@@ -991,12 +1005,12 @@ static void _glfwInitWGLExtensions( void )
 
     if( has_create_context )
     {
-	_glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
-	    wglGetProcAddress( "wglCreateContextAttribsARB" );
+        _glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
+            wglGetProcAddress( "wglCreateContextAttribsARB" );
     }
     else
     {
-	_glfwWin.CreateContextAttribsARB = NULL;
+        _glfwWin.CreateContextAttribsARB = NULL;
     }
 
     if( !has_swap_control )
@@ -1042,9 +1056,9 @@ static void _glfwInitWGLExtensions( void )
 // Creates the GLFW window and rendering context
 //========================================================================
 
-static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
-                              int alphabits, int depthbits, int stencilbits,
-                              int mode, _GLFWhints* hints )
+static int createWindow( int redbits, int greenbits, int bluebits,
+                         int alphabits, int depthbits, int stencilbits,
+                         int mode, _GLFWhints* hints )
 {
     int    full_width, full_height;
     RECT   wa;
@@ -1055,8 +1069,7 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
     _glfwWin.Wnd = NULL;
 
     // Set window size to true requested size (adjust for window borders)
-    _glfwGetFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width,
-                            &full_height );
+    getFullWindowSize( _glfwWin.Width, _glfwWin.Height, &full_width, &full_height );
 
     // Adjust window position to working area (e.g. if the task bar is at
     // the top of the display). Fullscreen windows are always opened in
@@ -1098,23 +1111,23 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
 
     if( _glfwWin.ChoosePixelFormat )
     {
-        if( !_glfwSetPixelFormatAttrib( redbits, greenbits, bluebits, alphabits,
-                                        depthbits, stencilbits, mode, hints ) )
+        if( !setPixelFormatAttrib( redbits, greenbits, bluebits, alphabits,
+                                   depthbits, stencilbits, mode, hints ) )
         {
             return GL_FALSE;
         }
     }
     else
     {
-        if( !_glfwSetPixelFormatPFD( redbits, greenbits, bluebits, alphabits,
-                                     depthbits, stencilbits, mode, hints ) )
+        if( !setPixelFormatPFD( redbits, greenbits, bluebits, alphabits,
+                                depthbits, stencilbits, mode, hints ) )
         {
             return GL_FALSE;
         }
     }
 
     // Get a rendering context
-    _glfwWin.RC = _glfwCreateContext( _glfwWin.DC, hints );
+    _glfwWin.RC = createContext( _glfwWin.DC, hints );
     if( !_glfwWin.RC )
     {
         return GL_FALSE;
@@ -1127,7 +1140,7 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
     }
 
     // Initialize WGL-specific OpenGL extensions
-    _glfwInitWGLExtensions();
+    initWGLExtensions();
 
     // Initialize mouse position
     GetCursorPos( &pos );
@@ -1143,7 +1156,7 @@ static int _glfwCreateWindow( int redbits, int greenbits, int bluebits,
 // Destroys the GLFW window and rendering context
 //========================================================================
 
-static void _glfwDestroyWindow( void )
+static void destroyWindow( void )
 {
     // Do we have a rendering context?
     if( _glfwWin.RC )
@@ -1213,7 +1226,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Set window class parameters
     wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC; // Redraw on...
-    wc.lpfnWndProc   = (WNDPROC)_glfwWindowCallback;  // Message handler
+    wc.lpfnWndProc   = (WNDPROC)windowProc;  // Message handler
     wc.cbClsExtra    = 0;                             // No extra class data
     wc.cbWndExtra    = 0;                             // No extra window data
     wc.hInstance     = _glfwLibrary.Instance;         // Set instance
@@ -1258,14 +1271,14 @@ int _glfwPlatformOpenWindow( int width, int height,
         // Here's a trick for helping us getting window focus
         // (SetForegroundWindow doesn't work properly under
         // Win98/ME/2K/.NET/+)
-	/*
+        /*
         if( _glfwLibrary.Sys.WinVer != _GLFW_WIN_95 &&
             _glfwLibrary.Sys.WinVer != _GLFW_WIN_NT4 && 
             _glfwLibrary.Sys.WinVer != _GLFW_WIN_XP )
         {
             dwStyle |= WS_MINIMIZE;
         }
-	*/
+        */
     }
     else
     {
@@ -1278,12 +1291,12 @@ int _glfwPlatformOpenWindow( int width, int height,
         }
     }
 
-    // Remember window styles (used by _glfwGetFullWindowSize)
+    // Remember window styles (used by getFullWindowSize)
     _glfwWin.dwStyle   = dwStyle;
     _glfwWin.dwExStyle = dwExStyle;
 
-    if( !_glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
-                            depthbits, stencilbits, mode, hints ) )
+    if( !createWindow( redbits, greenbits, bluebits, alphabits,
+                       depthbits, stencilbits, mode, hints ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -1291,15 +1304,15 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( _glfwWin.ChoosePixelFormat && hints->samples > 0 )
     {
-	// Iteratively try to create a context with a decreasing number of
-	// FSAA samples (requires window recreation).
+        // Iteratively try to create a context with a decreasing number of
+        // FSAA samples (requires window recreation).
 
         for (;;)
         {
             _glfwDestroyWindow();
 
-            if( _glfwCreateWindow( redbits, greenbits, bluebits, alphabits,
-                                   depthbits, stencilbits, mode, hints ) )
+            if( createWindow( redbits, greenbits, bluebits, alphabits,
+                              depthbits, stencilbits, mode, hints ) )
             {
                 break;
             }
@@ -1323,7 +1336,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         SetWindowPos( _glfwWin.Wnd, HWND_TOPMOST, 0,0,0,0,
                       SWP_NOMOVE | SWP_NOSIZE );
     }
-    _glfwSetForegroundWindow( _glfwWin.Wnd );
+    setForegroundWindow( _glfwWin.Wnd );
     SetFocus( _glfwWin.Wnd );
 
     // Start by clearing the front buffer to black (avoid ugly desktop
@@ -1408,7 +1421,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     {
         // If we are in windowed mode, adjust the window size to
         // compensate for window decorations
-        _glfwGetFullWindowSize( width, height, &width, &height );
+        getFullWindowSize( width, height, &width, &height );
     }
 
     // Change window size before changing fullscreen mode?
@@ -1507,7 +1520,7 @@ void _glfwPlatformRestoreWindow( void )
 
     // Make sure that our window ends up on top of things
     ShowWindow( _glfwWin.Wnd, SW_SHOW );
-    _glfwSetForegroundWindow( _glfwWin.Wnd );
+    setForegroundWindow( _glfwWin.Wnd );
     SetFocus( _glfwWin.Wnd );
 
     // Window is no longer iconified
