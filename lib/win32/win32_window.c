@@ -129,8 +129,8 @@ static void setForegroundWindow( HWND hWnd )
 
 
 //========================================================================
-// Return a list of available and usable framebuffer configs
-// NOTE: Do not call this unless you have _glfwWin.GetPixelFormatAttribiv
+// Returns the specified attribute of the specified pixel format
+// NOTE: Do not call this unless we have found WGL_ARB_pixel_format
 //========================================================================
 
 static int getPixelFormatAttrib(int pixelformat, int attrib)
@@ -162,15 +162,25 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
     if( _glfwWin.GetPixelFormatAttribiv )
     {
         count = getPixelFormatAttrib( 1, WGL_NUMBER_PIXEL_FORMATS_ARB );
-        if( !count )
-        {
-            return NULL;
-        }
+    }
+    else
+    {
+        count = _glfw_DescribePixelFormat( _glfwWin.DC, 1, sizeof( PIXELFORMATDESCRIPTOR ), NULL );
+    }
 
-        result = (_GLFWfbconfig*) malloc( sizeof( _GLFWfbconfig ) * count );
+    if( !count )
+    {
+        return NULL;
+    }
 
-        for( i = 1;  i <= count;  i++ )
+    result = (_GLFWfbconfig*) malloc( sizeof( _GLFWfbconfig ) * count );
+
+    for( i = 1;  i <= count;  i++ )
+    {
+        if( _glfwWin.GetPixelFormatAttribiv )
         {
+            // Get pixel format attributes through WGL_ARB_pixel_format
+
             if( !getPixelFormatAttrib( i, WGL_SUPPORT_OPENGL_ARB ) ||
                 !getPixelFormatAttrib( i, WGL_DRAW_TO_WINDOW_ARB ) ||
                 !getPixelFormatAttrib( i, WGL_DOUBLE_BUFFER_ARB ) )
@@ -201,23 +211,12 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
             result[*found].auxBuffers = getPixelFormatAttrib( i, WGL_AUX_BUFFERS_ARB );
             result[*found].stereo = getPixelFormatAttrib( i, WGL_STEREO_ARB );
             result[*found].samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
-
-            result[*found].platformID = i;
-
-            (*found)++;
         }
-    }
-    else
-    {
-        count = DescribePixelFormat( _glfwWin.DC, 1, sizeof( PIXELFORMATDESCRIPTOR ), NULL );
-        if( !count )
+        else
         {
-            return NULL;
-        }
+            // Get pixel format attributes through old-fashioned PFDs
 
-        for( i = 1;  i <= count;  i++ )
-        {
-            if( !DescribePixelFormat( _glfwWin.DC, i, sizeof( PIXELFORMATDESCRIPTOR ), &pfd ) )
+            if( !_glfw_DescribePixelFormat( _glfwWin.DC, i, sizeof( PIXELFORMATDESCRIPTOR ), &pfd ) )
             {
                 continue;
             }
@@ -251,189 +250,18 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
             result[*found].auxBuffers = pfd.cAuxBuffers;
             result[*found].stereo = ( pfd.dwFlags & PFD_STEREO ) ? GL_TRUE : GL_FALSE;
+
+            // PFD pixel formats do not support FSAA
             result[*found].samples = 0;
-
-            result[*found].platformID = i;
-
-            (*found)++;
         }
+
+        result[*found].platformID = i;
+
+        (*found)++;
     }
 
     return result;
 }
-
-
-//========================================================================
-// Sets the device context pixel format using a PFD
-//========================================================================
-
-static int setPixelFormatPFD( int pixelformat )
-{
-    /*
-    int pixelformat;
-    PIXELFORMATDESCRIPTOR pfd;
-
-    // Set required pixel format
-    pfd.nSize           = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion        = 1;
-    pfd.dwFlags         = PFD_DRAW_TO_WINDOW | // Draw to window
-                          PFD_SUPPORT_OPENGL | // Support OpenGL
-                          PFD_DOUBLEBUFFER;    // Double buffered window
-    pfd.iPixelType      = PFD_TYPE_RGBA;       // Request an RGBA format
-    pfd.cColorBits      = (BYTE) (fbconfig->redBits +
-                                  fbconfig->greenBits +
-                                  fbconfig->blueBits);   // Color bits (ex. alpha)
-    pfd.cRedBits        = (BYTE) fbconfig->redBits;      // Red bits
-    pfd.cRedShift       = 0;                   // Red shift ignored
-    pfd.cGreenBits      = (BYTE) fbconfig->greenBits;    // Green bits
-    pfd.cGreenShift     = 0;                   // Green shift ignored
-    pfd.cBlueBits       = (BYTE) fbconfig->blueBits;     // Blue bits
-    pfd.cBlueShift      = 0;                   // Blue shift ignored
-    pfd.cAlphaBits      = (BYTE) fbconfig->alphaBits;    // Alpha bits
-    pfd.cAlphaShift     = 0;                   // Alpha shift ignored
-    pfd.cAccumBits      = (BYTE) (fbconfig->accumRedBits +
-                                  fbconfig->accumGreenBits +
-                                  fbconfig->accumBlueBits +
-                                  fbconfig->accumAlphaBits); // Accum. bits
-    pfd.cAccumRedBits   = (BYTE) fbconfig->accumRedBits;   // Accum. red bits
-    pfd.cAccumGreenBits = (BYTE) fbconfig->accumGreenBits; // Accum. green bits
-    pfd.cAccumBlueBits  = (BYTE) fbconfig->accumBlueBits;  // Accum. blue bits
-    pfd.cAccumAlphaBits = (BYTE) fbconfig->accumAlphaBits; // Accum. alpha bits
-    pfd.cDepthBits      = (BYTE) depthbits;    // Depth buffer bits
-    pfd.cStencilBits    = (BYTE) stencilbits;  // Stencil buffer bits
-    pfd.cAuxBuffers     = (BYTE) fbconfig->auxBuffers;   // No. of aux buffers
-    pfd.iLayerType      = PFD_MAIN_PLANE;      // Drawing layer: main
-    pfd.bReserved       = 0;                   // (reserved)
-    pfd.dwLayerMask     = 0;                   // Ignored
-    pfd.dwVisibleMask   = 0;                   // "
-    pfd.dwDamageMask    = 0;                   // "
-
-    if( depthbits <= 0 )
-    {
-        // We do not need a depth buffer
-        pfd.dwFlags |= PFD_DEPTH_DONTCARE;
-    }
-
-    if( fbconfig->stereo )
-    {
-        // Request a stereo mode
-        pfd.dwFlags |= PFD_STEREO;
-    }
-
-    // Find a matching pixel format
-    pixelformat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd );
-    if( !pixelformat )
-    {
-        return GL_FALSE;
-    }
-
-    // Get actual pixel format description
-    if( !_glfw_DescribePixelFormat( _glfwWin.DC, pixelformat, sizeof(pfd), &pfd ) )
-    {
-        return GL_FALSE;
-    }
-
-    // "stereo" is a strict requirement
-    if( fbconfig->stereo && !(pfd.dwFlags & PFD_STEREO) )
-    {
-        return GL_FALSE;
-    }
-
-    // Set the pixel-format
-    if( !_glfw_SetPixelFormat( _glfwWin.DC, pixelformat, &pfd ) )
-    {
-        return GL_FALSE;
-    }
-
-    return GL_TRUE;
-    */
-
-    return GL_TRUE;
-}
-
-
-//========================================================================
-// Sets the device context pixel format using attributes
-//========================================================================
-
-#define _glfwSetWGLAttribute( _glfwName, _glfwValue ) \
-    attribs[ count++ ] = _glfwName; \
-    attribs[ count++ ] = _glfwValue;
-
-static int setPixelFormatAttrib( int redbits, int greenbits, int bluebits,
-                                 int alphabits, int depthbits, int stencilbits,
-                                 int mode, _GLFWhints* hints )
-{
-    /*
-    int PixelFormat, dummy, count = 0;
-    int attribs[128];
-    PIXELFORMATDESCRIPTOR pfd;
-    
-    int accumredbits = hints->accumRedBits;
-    int accumgreenbits = hints->accumGreenBits;
-    int accumbluebits = hints->accumBlueBits;
-    int accumalphabits = hints->accumAlphaBits;
-
-    _glfwSetWGLAttribute( WGL_DRAW_TO_WINDOW_ARB, GL_TRUE );
-    _glfwSetWGLAttribute( WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB );
-    _glfwSetWGLAttribute( WGL_SUPPORT_OPENGL_ARB, GL_TRUE );
-    _glfwSetWGLAttribute( WGL_DOUBLE_BUFFER_ARB,  GL_TRUE );
-    _glfwSetWGLAttribute( WGL_COLOR_BITS_ARB,     redbits + greenbits + bluebits );
-    _glfwSetWGLAttribute( WGL_RED_BITS_ARB,       redbits );
-    _glfwSetWGLAttribute( WGL_GREEN_BITS_ARB,     greenbits );
-    _glfwSetWGLAttribute( WGL_BLUE_BITS_ARB,      bluebits );
-    _glfwSetWGLAttribute( WGL_ALPHA_BITS_ARB,     alphabits );
-    _glfwSetWGLAttribute( WGL_DEPTH_BITS_ARB,     depthbits );
-    _glfwSetWGLAttribute( WGL_STENCIL_BITS_ARB,   stencilbits );
-    _glfwSetWGLAttribute( WGL_AUX_BUFFERS_ARB,    hints->auxBuffers );
-    
-    if( accumredbits || accumgreenbits || accumbluebits || accumalphabits )
-    {
-        _glfwSetWGLAttribute( WGL_ACCUM_BITS_ARB, accumredbits +
-                                                  accumgreenbits +
-                                                  accumbluebits +
-                                                  accumalphabits );
-
-        _glfwSetWGLAttribute( WGL_ACCUM_RED_BITS_ARB, accumredbits );
-        _glfwSetWGLAttribute( WGL_ACCUM_GREEN_BITS_ARB, accumgreenbits );
-        _glfwSetWGLAttribute( WGL_ACCUM_BLUE_BITS_ARB, accumbluebits );
-        _glfwSetWGLAttribute( WGL_ACCUM_ALPHA_BITS_ARB, accumalphabits );
-    }
-
-    if( hints->stereo )
-    {
-        _glfwSetWGLAttribute( WGL_STEREO_ARB, GL_TRUE );
-    }
-
-    if( hints->samples > 0 )
-    {
-        _glfwSetWGLAttribute( WGL_SAMPLE_BUFFERS_ARB, 1 );
-        _glfwSetWGLAttribute( WGL_SAMPLES_ARB, hints->samples );
-    }
-
-    _glfwSetWGLAttribute( 0, 0 );
-
-    if( !_glfwWin.ChoosePixelFormat( _glfwWin.DC, attribs, NULL, 1, &PixelFormat, &dummy ) )
-    {
-        return GL_FALSE;
-    }
-
-    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
-    {
-        return GL_FALSE;
-    }
-
-    // Set the pixel-format
-    if( !_glfw_SetPixelFormat( _glfwWin.DC, PixelFormat, &pfd ) )
-    {
-        return GL_FALSE;
-    }
-    */
-
-    return GL_TRUE; 
-}
-
-#undef _glfwSetWGLAttribute
 
 
 //========================================================================
@@ -444,12 +272,12 @@ static HGLRC createContext( HDC dc, const _GLFWhints* hints, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
 
-    if( !_glfw_DescribePixelFormat( DC, pixelFormat, sizeof(pfd), &pfd ) )
+    if( !_glfw_DescribePixelFormat( dc, pixelFormat, sizeof(pfd), &pfd ) )
     {
         return NULL;
     }
 
-    if( !_glfw_SetPixelFormat( DC, pixelFormat, &pfd ) )
+    if( !_glfw_SetPixelFormat( dc, pixelFormat, &pfd ) )
     {
         return NULL;
     }
@@ -1206,14 +1034,35 @@ static ATOM registerWindowClass( void )
 
 
 //========================================================================
-// Selects the closest matching pixel format, or zero on error
+// Returns the closest matching pixel format, or zero on error
 //========================================================================
 
 static int choosePixelFormat( const _GLFWfbconfig *fbconfig )
 {
-    int fbcount;
+    unsigned int fbcount;
+    int pixelFormat;
     _GLFWfbconfig *fbconfigs;
-    _GLFWfbconfig *closest;
+    const _GLFWfbconfig *closest;
+
+    fbconfigs = getFBConfigs( &fbcount );
+    if( !fbconfigs )
+    {
+        return 0;
+    }
+
+    closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
+    if( !closest )
+    {
+        free( fbconfigs );
+        return 0;
+    }
+
+    pixelFormat = (int) closest->platformID;
+
+    free( fbconfigs );
+    fbconfigs = NULL;
+
+    return pixelFormat;
 }
 
 
@@ -1307,23 +1156,11 @@ static int createWindow( int mode, const _GLFWhints *hints, const _GLFWfbconfig 
         return GL_FALSE;
     }
 
-    fbconfigs = getFBConfigs( &fbcount );
-    if( !fbconfigs )
+    pixelFormat = choosePixelFormat( fbconfig );
+    if( !pixelFormat )
     {
         return GL_FALSE;
     }
-
-    closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
-    if( !closest )
-    {
-        free( fbconfigs );
-        return GL_FALSE;
-    }
-
-    pixelFormat = (int) closest->platformID;
-
-    free( fbconfigs );
-    fbconfigs = NULL;
 
     _glfwWin.RC = createContext( _glfwWin.DC, hints, pixelFormat );
     if( !_glfwWin.RC )
