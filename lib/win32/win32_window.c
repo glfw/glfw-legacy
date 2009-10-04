@@ -159,14 +159,41 @@ static int isExtendedCreationRequired( _GLFWhints* hints )
 
 
 //========================================================================
+// Return a list of available and usable framebuffer configs
+//========================================================================
+
+static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
+{
+    _GLFWfbconfig *result;
+    PIXELFORMATDESCRIPTOR pfd;
+    int i, max;
+
+    *found = 0;
+
+    max = DescribePixelFormat( _glfwWin.DC, 1, sizeof( PIXELFORMATDESCRIPTOR ), NULL );
+    if( !max )
+    {
+        return NULL;
+    }
+
+    for( i = 1;  i <= max;  i++ )
+    {
+
+    }
+
+    return result;
+}
+
+
+//========================================================================
 // Sets the device context pixel format using a PFD
 //========================================================================
 
-static int setPixelFormatPFD( int redbits, int greenbits, int bluebits,
-                              int alphabits, int depthbits, int stencilbits,
-                              int mode, _GLFWhints* hints )
+static int setPixelFormatPFD( int pixelformat )
 {
-    int PixelFormat;
+    PIXELFORMATDESCRIPTOR pfd;
+    /*
+    int pixelformat;
     PIXELFORMATDESCRIPTOR pfd;
 
     // Set required pixel format
@@ -176,28 +203,28 @@ static int setPixelFormatPFD( int redbits, int greenbits, int bluebits,
                           PFD_SUPPORT_OPENGL | // Support OpenGL
                           PFD_DOUBLEBUFFER;    // Double buffered window
     pfd.iPixelType      = PFD_TYPE_RGBA;       // Request an RGBA format
-    pfd.cColorBits      = (BYTE) (redbits +
-                                  greenbits +
-                                  bluebits);   // Color bits (ex. alpha)
-    pfd.cRedBits        = (BYTE) redbits;      // Red bits
+    pfd.cColorBits      = (BYTE) (fbconfig->redBits +
+                                  fbconfig->greenBits +
+                                  fbconfig->blueBits);   // Color bits (ex. alpha)
+    pfd.cRedBits        = (BYTE) fbconfig->redBits;      // Red bits
     pfd.cRedShift       = 0;                   // Red shift ignored
-    pfd.cGreenBits      = (BYTE) greenbits;    // Green bits
+    pfd.cGreenBits      = (BYTE) fbconfig->greenBits;    // Green bits
     pfd.cGreenShift     = 0;                   // Green shift ignored
-    pfd.cBlueBits       = (BYTE) bluebits;     // Blue bits
+    pfd.cBlueBits       = (BYTE) fbconfig->blueBits;     // Blue bits
     pfd.cBlueShift      = 0;                   // Blue shift ignored
-    pfd.cAlphaBits      = (BYTE) alphabits;    // Alpha bits
+    pfd.cAlphaBits      = (BYTE) fbconfig->alphaBits;    // Alpha bits
     pfd.cAlphaShift     = 0;                   // Alpha shift ignored
-    pfd.cAccumBits      = (BYTE) (hints->accumRedBits +
-                                  hints->accumGreenBits +
-                                  hints->accumBlueBits +
-                                  hints->accumAlphaBits); // Accum. bits
-    pfd.cAccumRedBits   = (BYTE) hints->accumRedBits;   // Accum. red bits
-    pfd.cAccumGreenBits = (BYTE) hints->accumGreenBits; // Accum. green bits
-    pfd.cAccumBlueBits  = (BYTE) hints->accumBlueBits;  // Accum. blue bits
-    pfd.cAccumAlphaBits = (BYTE) hints->accumAlphaBits; // Accum. alpha bits
+    pfd.cAccumBits      = (BYTE) (fbconfig->accumRedBits +
+                                  fbconfig->accumGreenBits +
+                                  fbconfig->accumBlueBits +
+                                  fbconfig->accumAlphaBits); // Accum. bits
+    pfd.cAccumRedBits   = (BYTE) fbconfig->accumRedBits;   // Accum. red bits
+    pfd.cAccumGreenBits = (BYTE) fbconfig->accumGreenBits; // Accum. green bits
+    pfd.cAccumBlueBits  = (BYTE) fbconfig->accumBlueBits;  // Accum. blue bits
+    pfd.cAccumAlphaBits = (BYTE) fbconfig->accumAlphaBits; // Accum. alpha bits
     pfd.cDepthBits      = (BYTE) depthbits;    // Depth buffer bits
     pfd.cStencilBits    = (BYTE) stencilbits;  // Stencil buffer bits
-    pfd.cAuxBuffers     = (BYTE) hints->auxBuffers;   // No. of aux buffers
+    pfd.cAuxBuffers     = (BYTE) fbconfig->auxBuffers;   // No. of aux buffers
     pfd.iLayerType      = PFD_MAIN_PLANE;      // Drawing layer: main
     pfd.bReserved       = 0;                   // (reserved)
     pfd.dwLayerMask     = 0;                   // Ignored
@@ -210,33 +237,41 @@ static int setPixelFormatPFD( int redbits, int greenbits, int bluebits,
         pfd.dwFlags |= PFD_DEPTH_DONTCARE;
     }
 
-    if( hints->stereo )
+    if( fbconfig->stereo )
     {
         // Request a stereo mode
         pfd.dwFlags |= PFD_STEREO;
     }
 
     // Find a matching pixel format
-    PixelFormat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd );
-    if( !PixelFormat )
+    pixelformat = _glfw_ChoosePixelFormat( _glfwWin.DC, &pfd );
+    if( !pixelformat )
     {
         return GL_FALSE;
     }
 
     // Get actual pixel format description
-    if( !_glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat, sizeof(pfd), &pfd ) )
+    if( !_glfw_DescribePixelFormat( _glfwWin.DC, pixelformat, sizeof(pfd), &pfd ) )
     {
         return GL_FALSE;
     }
 
     // "stereo" is a strict requirement
-    if( hints->stereo && !(pfd.dwFlags & PFD_STEREO) )
+    if( fbconfig->stereo && !(pfd.dwFlags & PFD_STEREO) )
     {
         return GL_FALSE;
     }
 
     // Set the pixel-format
-    if( !_glfw_SetPixelFormat( _glfwWin.DC, PixelFormat, &pfd ) )
+    if( !_glfw_SetPixelFormat( _glfwWin.DC, pixelformat, &pfd ) )
+    {
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
+    */
+    // Set the pixel-format
+    if( !_glfw_SetPixelFormat( _glfwWin.DC, pixelformat, &pfd ) )
     {
         return GL_FALSE;
     }
@@ -1204,10 +1239,9 @@ static void destroyWindow( void )
 // created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height,
-                             int redbits, int greenbits, int bluebits,
-                             int alphabits, int depthbits, int stencilbits,
-                             int mode, _GLFWhints* hints )
+int _glfwPlatformOpenWindow( int width, int height, int mode,
+                             const _GLFWhints *hints,
+                             const _GLFWfbconfig *fbconfigs )
 {
     WNDCLASS    wc;
     DWORD  dwStyle, dwExStyle;
