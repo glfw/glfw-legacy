@@ -143,27 +143,33 @@ typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
 typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*);
 
 /* Constants for wglGetPixelFormatAttribivARB */
-#define WGL_DRAW_TO_WINDOW_ARB    0x2001
-#define WGL_SUPPORT_OPENGL_ARB    0x2010
-#define WGL_ACCELERATION_ARB      0x2003
-#define WGL_FULL_ACCELERATION_ARB 0x2027
-#define WGL_DOUBLE_BUFFER_ARB     0x2011
-#define WGL_STEREO_ARB            0x2012
-#define WGL_COLOR_BITS_ARB        0x2014
-#define WGL_RED_BITS_ARB          0x2015
-#define WGL_GREEN_BITS_ARB        0x2017
-#define WGL_BLUE_BITS_ARB         0x2019
-#define WGL_ALPHA_BITS_ARB        0x201B
-#define WGL_ACCUM_BITS_ARB        0x201D 
-#define WGL_ACCUM_RED_BITS_ARB    0x201E 
-#define WGL_ACCUM_GREEN_BITS_ARB  0x201F 
-#define WGL_ACCUM_BLUE_BITS_ARB   0x2020 
-#define WGL_ACCUM_ALPHA_BITS_ARB  0x2021 
-#define WGL_DEPTH_BITS_ARB        0x2022
-#define WGL_STENCIL_BITS_ARB      0x2023
-#define WGL_AUX_BUFFERS_ARB       0x2024 
-#define WGL_SAMPLE_BUFFERS_ARB    0x2041
-#define WGL_SAMPLES_ARB           0x2042
+#define WGL_NUMBER_PIXEL_FORMATS_ARB    0x2000
+#define WGL_DRAW_TO_WINDOW_ARB          0x2001
+#define WGL_SUPPORT_OPENGL_ARB          0x2010
+#define WGL_ACCELERATION_ARB            0x2003
+#define WGL_FULL_ACCELERATION_ARB       0x2027
+#define WGL_DOUBLE_BUFFER_ARB           0x2011
+#define WGL_STEREO_ARB                  0x2012
+#define WGL_PIXEL_TYPE_ARB              0x2013
+#define WGL_COLOR_BITS_ARB              0x2014
+#define WGL_RED_BITS_ARB                0x2015
+#define WGL_GREEN_BITS_ARB              0x2017
+#define WGL_BLUE_BITS_ARB               0x2019
+#define WGL_ALPHA_BITS_ARB              0x201B
+#define WGL_ACCUM_BITS_ARB              0x201D 
+#define WGL_ACCUM_RED_BITS_ARB          0x201E 
+#define WGL_ACCUM_GREEN_BITS_ARB        0x201F 
+#define WGL_ACCUM_BLUE_BITS_ARB         0x2020 
+#define WGL_ACCUM_ALPHA_BITS_ARB        0x2021 
+#define WGL_DEPTH_BITS_ARB              0x2022
+#define WGL_STENCIL_BITS_ARB            0x2023
+#define WGL_AUX_BUFFERS_ARB             0x2024 
+#define WGL_SAMPLE_BUFFERS_ARB          0x2041
+#define WGL_SAMPLES_ARB                 0x2042
+
+/* Constants for WGL_PIXEL_TYPE_ARB */
+#define WGL_TYPE_RGBA_ARB               0x202B
+#define WGL_TYPE_COLORINDEX_ARB         0x202C
 
 /* Constants for wglCreateContextAttribsARB */
 #define WGL_CONTEXT_MAJOR_VERSION_ARB          0x2091
