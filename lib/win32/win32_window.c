@@ -36,6 +36,8 @@
 //****                  GLFW internal functions                       ****
 //************************************************************************
 
+// We use versioned window class names in order not to cause conflicts
+// between applications using different versions of GLFW
 #define _GLFW_WNDCLASSNAME "GLFW27"
 
 
