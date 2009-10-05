@@ -914,14 +914,10 @@ static void getFullWindowSize( int w, int h, int *w2, int *h2 )
 
 static void initWGLExtensions( void )
 {
-    GLubyte *extensions;
-    int     has_create_context, has_swap_control, has_pixel_format;
-
     _glfwWin.GetExtensionsStringEXT = (WGLGETEXTENSIONSSTRINGEXT_T)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
     {
-        // Try wglGetExtensionsStringARB
         _glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
             wglGetProcAddress( "wglGetExtensionsStringARB" );
         if( !_glfwWin.GetExtensionsStringARB )
@@ -930,29 +926,7 @@ static void initWGLExtensions( void )
         }
     }
 
-    // Initialize OpenGL extension: WGL_EXT_swap_control
-    has_create_context = GL_FALSE;
-    has_swap_control = GL_FALSE;
-    has_pixel_format = GL_FALSE;
-    extensions = (GLubyte *) glGetString( GL_EXTENSIONS );
-
-    if( extensions != NULL )
-    {
-        has_create_context = _glfwStringInExtensionString(
-                                 "WGL_ARB_create_context",
-                                 extensions
-                           );
-        has_swap_control = _glfwStringInExtensionString(
-                               "WGL_EXT_swap_control",
-                               extensions
-                           );
-        has_pixel_format = _glfwStringInExtensionString(
-                               "WGL_ARB_pixel_format",
-                               extensions
-                           );
-    }
-
-    if( has_create_context )
+    if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
         _glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
             wglGetProcAddress( "wglCreateContextAttribsARB" );
@@ -962,21 +936,7 @@ static void initWGLExtensions( void )
         _glfwWin.CreateContextAttribsARB = NULL;
     }
 
-    if( !has_swap_control )
-    {
-        has_swap_control = _glfwPlatformExtensionSupported(
-                               "WGL_EXT_swap_control"
-                           );
-    }
-
-    if( !has_pixel_format )
-    {
-        has_pixel_format = _glfwPlatformExtensionSupported(
-                               "WGL_ARB_pixel_format"
-                           );
-    }
-
-    if( has_swap_control )
+    if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
         _glfwWin.SwapInterval = (WGLSWAPINTERVALEXT_T)
             wglGetProcAddress( "wglSwapIntervalEXT" );
@@ -986,7 +946,7 @@ static void initWGLExtensions( void )
         _glfwWin.SwapInterval = NULL;
     }
     
-    if( has_pixel_format )
+    if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
         _glfwWin.ChoosePixelFormat = (WGLCHOOSEPIXELFORMATARB_T)
             wglGetProcAddress( "wglChoosePixelFormatARB" );
