@@ -296,8 +296,7 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 //************************************************************************
 
 //========================================================================
-// glfwOpenWindow() - Here is where the window is created, and the OpenGL
-// rendering context is created
+// Create the GLFW window and its associated context
 //========================================================================
 
 GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
