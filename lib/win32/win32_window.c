@@ -988,7 +988,6 @@ static ATOM registerWindowClass( void )
         wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); 
     }
 
-    // Register the window class
     return RegisterClass( &wc );
 }
 
@@ -1234,11 +1233,34 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         return GL_FALSE;
     }
 
+    if( hints->glMajor > 2 )
+    {
+        if( !_glfwWin.CreateContextAttribsARB )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        recreateContext = GL_TRUE;
+    }
+
+    if( hints->samples > 0 )
+    {
+        if( !_glfwWin.GetPixelFormatAttribiv )
+        {
+            recreateContext = GL_TRUE;
+        }
+    }
+
     if( recreateContext )
     {
         // Some window hints require us to re-create the context using
         // extensions retrieved through the current context
         // Yes, this is strange, and yes, this is the proper way on Win32
+
+        // As Windows only allows you to set the pixel format once for a
+        // window, we need to destroy the current window and create a new one
+        // to be able to use the new pixel format
 
         destroyWindow();
 
