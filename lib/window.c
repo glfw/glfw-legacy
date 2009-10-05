@@ -233,7 +233,7 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
                                           unsigned int count )
 {
     unsigned int i;
-    unsigned int missing, bestMissing = UINT_MAX;
+    unsigned int missing, leastMissing = UINT_MAX;
     const _GLFWfbconfig *current;
     const _GLFWfbconfig *closest = NULL;
 
@@ -276,12 +276,12 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 
         // TODO: Calculate buffer size deviation.
 
-        if( missing < bestMissing )
+        if( missing < leastMissing )
         {
             closest = current;
-            bestMissing = missing;
+            leastMissing = missing;
         }
-        else if( missing == bestMissing )
+        else if( missing == leastMissing )
         {
             // TODO: Compare buffer size deviations.
         }
