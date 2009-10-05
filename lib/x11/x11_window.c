@@ -921,7 +921,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
                              const _GLFWhints* hints,
                              const _GLFWfbconfig* fbconfig )
 {
-    Colormap    cmap;
     XSetWindowAttributes wa;
     XEvent      event;
     Atom protocols[2];
@@ -932,8 +931,9 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
 
     // Clear platform specific GLFW window state
     _glfwWin.visual           = (XVisualInfo*)NULL;
+    _glfwWin.colormap         = (Colormap)0;
     _glfwWin.context          = (GLXContext)NULL;
-    _glfwWin.window           = (Window)NULL;
+    _glfwWin.window           = (Window)0;
     _glfwWin.PointerGrabbed   = GL_FALSE;
     _glfwWin.KeyboardGrabbed  = GL_FALSE;
     _glfwWin.OverrideRedirect = GL_FALSE;
@@ -966,10 +966,11 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     }
 
     // Create a colormap
-    cmap = XCreateColormap( _glfwLibrary.display,
-                            RootWindow( _glfwLibrary.display, _glfwWin.screen ),
-                            _glfwWin.visual->visual,
-                            AllocNone );
+    _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
+                                         RootWindow( _glfwLibrary.display,
+                                                     _glfwWin.screen ),
+                                         _glfwWin.visual->visual,
+                                         AllocNone );
 
     // Do we want fullscreen?
     if( mode == GLFW_FULLSCREEN )
@@ -989,7 +990,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     }
 
     // Attributes for window
-    wa.colormap = cmap;
+    wa.colormap = _glfwWin.colormap;
     wa.border_pixel = 0;
     wa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask |
         PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
@@ -1181,6 +1182,12 @@ void _glfwPlatformCloseWindow( void )
         // Destroy the window
         XDestroyWindow( _glfwLibrary.display, _glfwWin.window );
         _glfwWin.window = (Window) 0;
+    }
+
+    if( _glfwWin.colormap )
+    {
+        XFreeColormap( _glfwLibrary.display, _glfwWin.colormap );
+        _glfwWin.colormap = (Colormap) 0;
     }
 
     // Did we change the fullscreen resolution?

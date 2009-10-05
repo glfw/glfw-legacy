@@ -207,6 +207,7 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
+    Colormap    colormap;        // Window colormap
     Window      window;          // Window
     int         screen;          // Screen ID
     XVisualInfo *visual;         // Visual
