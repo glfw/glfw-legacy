@@ -7,6 +7,7 @@
 //========================================================================
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <GL/glfw.h>
 
 
@@ -21,13 +22,19 @@ int main( void )
     char    titlestr[ 200 ];
 
     // Initialise GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf(stderr, "Failed to initialize GLFW\n");
+        exit(1);
+    }
 
     // Open OpenGL window
     if( !glfwOpenWindow( 640, 480, 0,0,0,0, 0,0, GLFW_WINDOW ) )
     {
+        fprintf(stderr, "Failed to open GLFW window\n");
+
         glfwTerminate();
-        return 0;
+        exit(1);
     }
 
     // Enable sticky keys
@@ -71,8 +78,7 @@ int main( void )
         // Select and setup the projection matrix
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
-        gluPerspective( 65.0f, (GLfloat)width/(GLfloat)height, 1.0f,
-            100.0f );
+        gluPerspective( 65.0f, (GLfloat)width/(GLfloat)height, 1.0f, 100.0f );
 
         // Select and setup the modelview matrix
         glMatrixMode( GL_MODELVIEW );
