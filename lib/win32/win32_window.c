@@ -888,23 +888,23 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
 // Translate client window size to full window size (including window borders)
 //========================================================================
 
-static void getFullWindowSize( int w, int h, int *w2, int *h2 )
+static void getFullWindowSize( int clientWidth, int clientHeight,
+                               int *fullWidth, int *fullHeight )
 {
     RECT rect;
 
     // Create a window rectangle
     rect.left   = (long)0;
-    rect.right  = (long)w-1;
+    rect.right  = (long)clientWidth - 1;
     rect.top    = (long)0;
-    rect.bottom = (long)h-1;
+    rect.bottom = (long)clientHeight - 1;
 
     // Adjust according to window styles
-    AdjustWindowRectEx( &rect, _glfwWin.dwStyle, FALSE,
-                        _glfwWin.dwExStyle );
+    AdjustWindowRectEx( &rect, _glfwWin.dwStyle, FALSE, _glfwWin.dwExStyle );
 
     // Calculate width and height of full window
-    *w2 = rect.right-rect.left+1;
-    *h2 = rect.bottom-rect.top+1;
+    *fullWidth = rect.right - rect.left + 1;
+    *fullHeight = rect.bottom - rect.top + 1;
 }
 
 
