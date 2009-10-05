@@ -221,7 +221,7 @@ static void TerminateDisplay( void )
 int _glfwPlatformInit( void )
 {
     // Initialize display
-    if( InitDisplay() )
+    if( !InitDisplay() )
     {
         return GL_FALSE;
     }
