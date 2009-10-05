@@ -1254,13 +1254,20 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
 
     if( recreateContext )
     {
-        // Some window hints require us to re-create the context using
-        // extensions retrieved through the current context
+        // Some window hints require us to re-create the context using WGL
+        // extensions retrieved through the current context, as we cannot check
+        // for WGL extensions or retrieve WGL entry points before we have a
+        // current context (actually until we have implicitly loaded the ICD)
+
         // Yes, this is strange, and yes, this is the proper way on Win32
 
         // As Windows only allows you to set the pixel format once for a
         // window, we need to destroy the current window and create a new one
         // to be able to use the new pixel format
+
+        // Technically, it may be possible to keep the old window around if
+        // we're just creating an OpenGL 3.0+ context with the same pixel
+        // format, but it's not worth the potential compatibility problems
 
         destroyWindow();
 
@@ -1271,7 +1278,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         }
     }
 
-    // Make sure that our window ends up on top of things
     if( _glfwWin.Fullscreen )
     {
         // Place the window above all topmost windows
