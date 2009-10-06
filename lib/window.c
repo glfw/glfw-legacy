@@ -374,9 +374,9 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Remember window settings
-    _glfwWin.Width          = width;
-    _glfwWin.Height         = height;
-    _glfwWin.Fullscreen     = (mode == GLFW_FULLSCREEN ? 1 : 0);
+    _glfwWin.Width      = width;
+    _glfwWin.Height     = height;
+    _glfwWin.Fullscreen = (mode == GLFW_FULLSCREEN ? GL_TRUE : GL_FALSE);
 
     // Platform specific window opening routine
     if( !_glfwPlatformOpenWindow( width, height, mode, &hints, &fbconfig ) )
