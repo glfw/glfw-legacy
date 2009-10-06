@@ -339,10 +339,10 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     fbconfig.samples        = hints.samples;
 
     // Clear GLFW window state
-    _glfwWin.Active            = GL_TRUE;
-    _glfwWin.Iconified         = GL_FALSE;
-    _glfwWin.MouseLock         = GL_FALSE;
-    _glfwWin.AutoPollEvents    = GL_TRUE;
+    _glfwWin.Active         = GL_TRUE;
+    _glfwWin.Iconified      = GL_FALSE;
+    _glfwWin.MouseLock      = GL_FALSE;
+    _glfwWin.AutoPollEvents = GL_TRUE;
     _glfwClearInput();
 
     // Unregister all callback functions
