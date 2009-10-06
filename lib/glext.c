@@ -36,6 +36,52 @@
 //************************************************************************
 
 //========================================================================
+// Parses the OpenGL version string and extracts the version number
+//========================================================================
+
+void _glfwParseGLVersion( int *major, int *minor, int *rev )
+{
+    GLuint _major, _minor = 0, _rev = 0;
+    const GLubyte *version;
+    const GLubyte *ptr;
+
+    // Get OpenGL version string
+    version = glGetString( GL_VERSION );
+    if( !version )
+    {
+        return;
+    }
+
+    // Parse string
+    ptr = version;
+    for( _major = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
+    {
+        _major = 10*_major + (*ptr - '0');
+    }
+    if( *ptr == '.' )
+    {
+        ptr ++;
+        for( _minor = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
+        {
+            _minor = 10*_minor + (*ptr - '0');
+        }
+        if( *ptr == '.' )
+        {
+            ptr ++;
+            for( _rev = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
+            {
+                _rev = 10*_rev + (*ptr - '0');
+            }
+        }
+    }
+
+    // Return parsed values
+    *major = _major;
+    *minor = _minor;
+    *rev = _rev;
+}
+
+//========================================================================
 // _glfwStringInExtensionString() - Check if a string can be found in an
 // OpenGL extension string
 //========================================================================
@@ -138,64 +184,28 @@ GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )
 
 
 //========================================================================
-// glfwGetGLVersion() - Get OpenGL version
+// Returns the OpenGL version
 //========================================================================
 
-GLFWAPI void GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor,
-    int *rev )
+GLFWAPI void GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor, int *rev )
 {
-    GLuint _major, _minor = 0, _rev = 0;
-    const GLubyte *version;
-    GLubyte *ptr;
-
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
     {
         return;
     }
 
-    // Get OpenGL version string
-    version = glGetString( GL_VERSION );
-    if( !version )
-    {
-        return;
-    }
-
-    // Parse string
-    ptr = (GLubyte*) version;
-    for( _major = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
-    {
-        _major = 10*_major + (*ptr - '0');
-    }
-    if( *ptr == '.' )
-    {
-        ptr ++;
-        for( _minor = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
-        {
-            _minor = 10*_minor + (*ptr - '0');
-        }
-        if( *ptr == '.' )
-        {
-            ptr ++;
-            for( _rev = 0; *ptr >= '0' && *ptr <= '9'; ptr ++ )
-            {
-                _rev = 10*_rev + (*ptr - '0');
-            }
-        }
-    }
-
-    // Return parsed values
     if( major != NULL )
     {
-        *major = _major;
+        *major = _glfwWin.GLVerMajor;
     }
     if( minor != NULL )
     {
-        *minor = _minor;
+        *minor = _glfwWin.GLVerMinor;
     }
     if( rev != NULL )
     {
-        *rev = _rev;
+        *rev = _glfwWin.GLRevision;
     }
 }
 

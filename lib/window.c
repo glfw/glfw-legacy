@@ -391,7 +391,8 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwPlatformRefreshWindowParams();
 
     // Get OpenGL version
-    glfwGetGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor, &x );
+    _glfwParseGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor,
+                         &_glfwWin.GLRevision );
 
     // Do we have non-power-of-two textures?
     _glfwWin.Has_GL_ARB_texture_non_power_of_two =

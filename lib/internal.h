@@ -216,6 +216,7 @@ void _glfwAppendThread( _GLFWthread * t );
 void _glfwRemoveThread( _GLFWthread * t );
 
 // OpenGL extensions (glext.c)
+void _glfwParseGLVersion( int *major, int *minor, int *rev );
 int _glfwStringInExtensionString( const char *string, const GLubyte *extensions );
 
 // Abstracted data streams (stream.c)
