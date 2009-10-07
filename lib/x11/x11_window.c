@@ -992,6 +992,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     // Attributes for window
     wa.colormap = _glfwWin.colormap;
     wa.border_pixel = 0;
+    wa.background_pixel = BlackPixel( _glfwLibrary.display, _glfwWin.screen );
     wa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask |
         PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
         ExposureMask | FocusChangeMask | VisibilityChangeMask;
@@ -1006,7 +1007,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         _glfwWin.visual->depth,              // Depth
         InputOutput,
         _glfwWin.visual->visual,
-        CWBorderPixel | CWColormap | CWEventMask,
+        CWBackPixel | CWBorderPixel | CWColormap | CWEventMask,
         &wa
     );
     if( !_glfwWin.window )
@@ -1054,7 +1055,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
             sizehints->x = 0;
             sizehints->y = 0;
         }
-
+        
         XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
         XFree( sizehints );
     }

@@ -431,6 +431,8 @@ version of GLFW.</p>
   <li>Added <code>GLFW_DEBUG_CONTEXT</code> hint for debug context creation</li>
   <li>Added <code>GLFW_NO_GLU</code> macro for disabling the inclusion of the GLU header</li>
   <li>Added a rudimentary joystick API testing example</li>
+  <li>Added platform-independent default color depth calculation</li>
+  <li>Added platform-independent pixel format selection (not used Mac OS X)</li>
   <li>Changed all comments in public header file to plain C style</li>
   <li>Removed all deprecated platforms</li>
   <li>Removed all unsupported language bindings</li>
@@ -439,6 +441,7 @@ version of GLFW.</p>
   <li>[X11] Removed unnecessary calls to XSync</li>
   <li>[X11] Bugfix: Close callback was called for glfwCloseWindow</li>
   <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
+  <li>[X11] Bugfix: Window decorations would not appear using Compiz on Intel hardware</li>
   <li>[MacOSX] Added Universal Binary build targets for all examples</li>
   <li>[MacOSX] Bugfix: Using the Dock or menu Quit command did not call the close callback</li>
   <li>[MacOSX] Bugfix: Key repeat events were not caught on 10.5 Leopard</li>
@@ -907,6 +910,9 @@ target="_blank">developer's mailing list</a>, or you could join us on
   language.</li><br>
 
   <li>David Medlock, for doing the initial Lua port.</li><br>
+
+  <li>Alex Holkner, for writing the code from which the Compiz/Intel fix was
+  stolen.</li><br>
 
   <li>Frank Wille, for helping with the AmigaOS port and making GLFW
   compile under IRIX 5.3.</li><br>
