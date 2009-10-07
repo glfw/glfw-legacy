@@ -925,6 +925,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     XEvent      event;
     Atom protocols[2];
     XSizeHints *sizehints;
+    unsigned long wamask;
     unsigned int fbcount;
     _GLFWfbconfig *fbconfigs;
     const _GLFWfbconfig *closest;
@@ -941,38 +942,33 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     _glfwWin.Saver.Changed    = GL_FALSE;
     _glfwWin.RefreshRate      = hints->refreshRate;
 
-    // Get screen ID for this window
+    // As the 2.x API doesn't understand screens, we hardcode this choice and
+    // hope for the best
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
 
-    fbconfigs = GetFBConfigs( &fbcount );
-    if( !fbconfigs )
+    // Choose the best available fbconfig
     {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
+        fbconfigs = GetFBConfigs( &fbcount );
+        if( !fbconfigs )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
+        if( !closest )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
     }
 
-    closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
-    if( !closest )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    // Create the OpenGL context
     if( !CreateContext( hints, (GLXFBConfigID) closest->platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    // Create a colormap
-    _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
-                                         RootWindow( _glfwLibrary.display,
-                                                     _glfwWin.screen ),
-                                         _glfwWin.visual->visual,
-                                         AllocNone );
-
-    // Do we want fullscreen?
     if( mode == GLFW_FULLSCREEN )
     {
         // Change video mode
@@ -989,49 +985,68 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
                          DefaultExposures );
     }
 
-    // Attributes for window
-    wa.colormap = _glfwWin.colormap;
-    wa.border_pixel = 0;
-    wa.background_pixel = BlackPixel( _glfwLibrary.display, _glfwWin.screen );
-    wa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask |
-        PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
-        ExposureMask | FocusChangeMask | VisibilityChangeMask;
+    _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
+                                         RootWindow( _glfwLibrary.display,
+                                                     _glfwWin.screen ),
+                                         _glfwWin.visual->visual,
+                                         AllocNone );
 
-    // Create a window
-    _glfwWin.window = XCreateWindow(
-        _glfwLibrary.display,
-        RootWindow( _glfwLibrary.display, _glfwWin.screen ),
-        0, 0,                            // Upper left corner
-        _glfwWin.Width, _glfwWin.Height, // Width, height
-        0,                               // Borderwidth
-        _glfwWin.visual->depth,              // Depth
-        InputOutput,
-        _glfwWin.visual->visual,
-        CWBackPixel | CWBorderPixel | CWColormap | CWEventMask,
-        &wa
-    );
-    if( !_glfwWin.window )
+    // Create the window
     {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
+        wamask = CWBorderPixel | CWColormap | CWEventMask;
+
+        wa.colormap = _glfwWin.colormap;
+        wa.border_pixel = 0;
+        wa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask |
+            PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
+            ExposureMask | FocusChangeMask | VisibilityChangeMask;
+
+        if( mode == GLFW_WINDOW )
+        {
+            // The /only/ reason we are setting the background pixel here is
+            // because otherwise our window wont get any decorations on systems
+            // using Compiz on Intel hardware
+            wa.background_pixel = BlackPixel( _glfwLibrary.display, _glfwWin.screen );
+            wamask |= CWBackPixel;
+        }
+
+        _glfwWin.window = XCreateWindow(
+            _glfwLibrary.display,
+            RootWindow( _glfwLibrary.display, _glfwWin.screen ),
+            0, 0,                            // Upper left corner of this window on root
+            _glfwWin.Width, _glfwWin.Height,
+            0,                               // Border width
+            _glfwWin.visual->depth,          // Color depth
+            InputOutput,
+            _glfwWin.visual->visual,
+            wamask,
+            &wa
+        );
+        if( !_glfwWin.window )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
     }
 
-    // Get the delete window WM protocol atom
-    _glfwWin.WMDeleteWindow = XInternAtom( _glfwLibrary.display,
-                                           "WM_DELETE_WINDOW",
-                                           False );
+    // Declare which WM protocols we support
+    {
+        // Basic window close notification protocol
+        _glfwWin.WMDeleteWindow = XInternAtom( _glfwLibrary.display,
+                                               "WM_DELETE_WINDOW",
+                                               False );
 
-    // Get the ping WM protocol atom
-    _glfwWin.WMPing = XInternAtom( _glfwLibrary.display, "_NET_WM_PING", False );
+        // Tells the WM to ping our window and flag us as unresponsive if we
+        // don't reply within a few seconds
+        _glfwWin.WMPing = XInternAtom( _glfwLibrary.display, "_NET_WM_PING", False );
 
-    protocols[0] = _glfwWin.WMDeleteWindow;
-    protocols[1] = _glfwWin.WMPing;
+        protocols[0] = _glfwWin.WMDeleteWindow;
+        protocols[1] = _glfwWin.WMPing;
 
-    // Allow us to trap the Window Close protocol
-    XSetWMProtocols( _glfwLibrary.display, _glfwWin.window, protocols,
-                     sizeof(protocols) / sizeof(Atom) );
+        XSetWMProtocols( _glfwLibrary.display, _glfwWin.window, protocols,
+                         sizeof(protocols) / sizeof(Atom) );
+    }
 
-    // Remove window decorations for fullscreen windows
     if( mode == GLFW_FULLSCREEN )
     {
         DisableDecorations();
@@ -1060,7 +1075,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         XFree( sizehints );
     }
 
-    // Map window
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // Wait for map notification
@@ -1070,9 +1084,10 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     // Make sure that our window ends up on top of things
     XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
 
-    // Fullscreen mode "post processing"
     if( mode == GLFW_FULLSCREEN )
     {
+        // Fullscreen mode post-window-creation work
+
 #if defined( _GLFW_HAS_XRANDR )
         // Request screen change notifications
         if( _glfwLibrary.XRandR.Available )
@@ -1089,7 +1104,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         XResizeWindow( _glfwLibrary.display, _glfwWin.window, _glfwWin.Width,
                        _glfwWin.Height );
 
-        // Grab keyboard
         if( XGrabKeyboard( _glfwLibrary.display, _glfwWin.window, True,
                            GrabModeAsync, GrabModeAsync, CurrentTime ) ==
             GrabSuccess )
@@ -1097,7 +1111,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
             _glfwWin.KeyboardGrabbed = GL_TRUE;
         }
 
-        // Grab mouse cursor
         if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                           ButtonPressMask | ButtonReleaseMask |
                           PointerMotionMask, GrabModeAsync, GrabModeAsync,
@@ -1115,7 +1128,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
                       _glfwWin.Width/2, _glfwWin.Height/2 );
     }
 
-    // Set window & icon name
     _glfwPlatformSetWindowTitle( "GLFW Window" );
 
     // Connect the context to the window
@@ -1126,7 +1138,6 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     glClear( GL_COLOR_BUFFER_BIT );
     glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
 
-    // Initialize GLX-specific OpenGL extensions
     InitGLXExtensions();
 
     return GL_TRUE;
