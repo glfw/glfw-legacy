@@ -143,8 +143,39 @@ void (*glXGetProcAddressEXT(const GLubyte *procName))();
 #define _glfw_glXGetProcAddress(x) NULL
 #endif
 
-// glXSwapIntervalSGI typedef (X11 buffer-swap interval control)
-typedef int ( * GLXSWAPINTERVALSGI_T) (int interval);
+#ifndef GLX_SGI_swap_control
+
+// Function signature for GLX_SGI_swap_control
+typedef int ( * PFNGLXSWAPINTERVALSGIPROC) (int interval);
+
+#endif /*GLX_SGI_swap_control*/
+
+#ifndef GLX_SGIX_fbconfig
+
+// Type definitions for GLX_SGIX_fbconfig
+typedef XID GLXFBConfigIDSGIX;
+typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;
+
+// Function signatures for GLX_SGIX_fbconfig
+typedef int ( * PFNGLXGETFBCONFIGATTRIBSGIXPROC) (Display *dpy, GLXFBConfigSGIX config, int attribute, int *value);
+typedef GLXFBConfigSGIX * ( * PFNGLXCHOOSEFBCONFIGSGIXPROC) (Display *dpy, int screen, int *attrib_list, int *nelements);
+typedef GLXContext ( * PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC) (Display *dpy, GLXFBConfigSGIX config, int render_type, GLXContext share_list, Bool direct);
+typedef XVisualInfo * ( * PFNGLXGETVISUALFROMFBCONFIGSGIXPROC) (Display *dpy, GLXFBConfigSGIX config);
+
+// Tokens for GLX_SGI_swap_control
+#define GLX_WINDOW_BIT_SGIX                0x00000001
+#define GLX_PIXMAP_BIT_SGIX                0x00000002
+#define GLX_RGBA_BIT_SGIX                  0x00000001
+#define GLX_COLOR_INDEX_BIT_SGIX           0x00000002
+#define GLX_DRAWABLE_TYPE_SGIX             0x8010
+#define GLX_RENDER_TYPE_SGIX               0x8011
+#define GLX_X_RENDERABLE_SGIX              0x8012
+#define GLX_FBCONFIG_ID_SGIX               0x8013
+#define GLX_RGBA_TYPE_SGIX                 0x8014
+#define GLX_COLOR_INDEX_TYPE_SGIX          0x8015
+#define GLX_SCREEN_EXT                     0x800C
+
+#endif /*GLX_SGIX_fbconfig*/
 
 
 //========================================================================
@@ -216,7 +247,11 @@ struct _GLFWwin_struct {
     Atom        WMPing;          // For WM ping response
 
     // Platform specific extensions
-    GLXSWAPINTERVALSGI_T SwapInterval;
+    PFNGLXSWAPINTERVALSGIPROC             SwapInterval;
+    PFNGLXGETFBCONFIGATTRIBSGIXPROC       GetFBConfigAttrib;
+    PFNGLXCHOOSEFBCONFIGSGIXPROC          ChooseFBConfig;
+    PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC CreateContextWithConfig;
+    PFNGLXGETVISUALFROMFBCONFIGSGIXPROC   GetVisualFromFBConfig;
 
     // Various platform specific internal variables
     int         OverrideRedirect; // True if window is OverrideRedirect

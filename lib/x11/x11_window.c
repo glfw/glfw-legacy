@@ -897,7 +897,7 @@ static void InitGLXExtensions( void )
 
     if( has_swap_control )
     {
-        _glfwWin.SwapInterval = (GLXSWAPINTERVALSGI_T)
+        _glfwWin.SwapInterval = (PFNGLXSWAPINTERVALSGIPROC)
         _glfw_glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
     }
     else
