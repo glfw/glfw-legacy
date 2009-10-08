@@ -358,11 +358,7 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 
         // Figure out if the current one is better than the best one found so far
 
-        if( closest == NULL )
-        {
-            closest = current;
-        }
-        else if( missing < leastMissing )
+        if( missing < leastMissing )
         {
             closest = current;
         }
