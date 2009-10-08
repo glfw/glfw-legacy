@@ -241,6 +241,8 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
     const _GLFWfbconfig *current;
     const _GLFWfbconfig *closest = NULL;
 
+    // Cache some long-winded preferences
+
     if( desired->redBits || desired->greenBits || desired->blueBits ||
         desired->alphaBits )
     {
@@ -264,44 +266,40 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
         }
 
         // Count number of missing buffers
-
-        missing = 0;
-
-        if( desired->alphaBits > 0 && current->alphaBits == 0 )
         {
-            missing++;
+            missing = 0;
+
+            if( desired->alphaBits > 0 && current->alphaBits == 0 )
+            {
+                missing++;
+            }
+
+            if( desired->depthBits > 0 && current->depthBits == 0 )
+            {
+                missing++;
+            }
+
+            if( desired->stencilBits > 0 && current->stencilBits == 0 )
+            {
+                missing++;
+            }
+
+            if( desired->auxBuffers > 0 && current->auxBuffers < desired->auxBuffers )
+            {
+                missing += desired->auxBuffers - current->auxBuffers;
+            }
+
+            if( desired->samples > 0 && current->samples == 0 )
+            {
+                missing++;
+            }
         }
 
-        if( desired->depthBits > 0 && current->depthBits == 0 )
-        {
-            missing++;
-        }
+        // These polynomials make many small channel size differences matter
+        // less than one large channel size difference
 
-        if( desired->stencilBits > 0 && current->stencilBits == 0 )
+        // Calculate color channel size difference value
         {
-            missing++;
-        }
-
-        if( desired->auxBuffers > 0 && current->auxBuffers < desired->auxBuffers )
-        {
-            missing += desired->auxBuffers - current->auxBuffers;
-        }
-
-        if( desired->samples > 0 && current->samples == 0 )
-        {
-            missing++;
-        }
-
-        if( missing < leastMissing )
-        {
-            closest = current;
-            leastMissing = missing;
-        }
-        else if( missing == leastMissing )
-        {
-            // This polynomial makes many small channel size differences matter
-            // less than one large channel size difference
-
             colorDiff = 0;
 
             colorDiff += ( desired->redBits - current->redBits ) *
@@ -312,7 +310,10 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 
             colorDiff += ( desired->blueBits - current->blueBits ) *
                          ( desired->blueBits - current->blueBits );
+        }
 
+        // Calculate non-color channel size difference value
+        {
             extraDiff = 0;
 
             if( desired->alphaBits > 0 )
@@ -353,9 +354,43 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
                 extraDiff += ( desired->accumAlphaBits - current->accumAlphaBits ) *
                              ( desired->accumAlphaBits - current->accumAlphaBits );
             }
-                 
-            // TODO: Calculate buffer size deviation.
-            // TODO: Compare buffer size deviations.
+        }
+
+        // Figure out if the current one is better than the best one found so far
+
+        if( closest == NULL )
+        {
+            closest = current;
+        }
+        else if( missing < leastMissing )
+        {
+            closest = current;
+        }
+        else if( missing == leastMissing )
+        {
+            if( desiresColor )
+            {
+                if( ( colorDiff < leastColorDiff ) ||
+                    ( colorDiff == leastColorDiff && extraDiff < leastExtraDiff ) )
+                {
+                    closest = current;
+                }
+            }
+            else
+            {
+                if( ( extraDiff < leastExtraDiff ) ||
+                    ( extraDiff == leastExtraDiff && colorDiff < leastColorDiff ) )
+                {
+                    closest = current;
+                }
+            }
+        }
+
+        if( current == closest )
+        {
+            leastMissing = missing;
+            leastColorDiff = colorDiff;
+            leastExtraDiff = extraDiff;
         }
     }
 
