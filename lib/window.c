@@ -226,6 +226,7 @@ void _glfwInputMouseClick( int button, int action )
 
 //========================================================================
 // Return the available framebuffer config closest to the desired values
+// This is based on the manual GLX Visual selection from 2.6
 //========================================================================
 
 const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
@@ -234,8 +235,23 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 {
     unsigned int i;
     unsigned int missing, leastMissing = UINT_MAX;
+    unsigned int colorDiff, leastColorDiff = UINT_MAX;
+    unsigned int extraDiff, leastExtraDiff = UINT_MAX;
+    GLboolean desiresColor = GL_FALSE, desiresAccum = GL_FALSE;
     const _GLFWfbconfig *current;
     const _GLFWfbconfig *closest = NULL;
+
+    if( desired->redBits || desired->greenBits || desired->blueBits ||
+        desired->alphaBits )
+    {
+        desiresColor = GL_TRUE;
+    }
+
+    if( desired->accumRedBits || desired->accumGreenBits || desired->accumBlueBits ||
+        desired->accumAlphaBits )
+    {
+        desiresAccum = GL_TRUE;
+    }
 
     for( i = 0;  i < count;  i++ )
     {
@@ -246,6 +262,8 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
             // Stereo is a hard constraint
             continue;
         }
+
+        // Count number of missing buffers
 
         missing = 0;
 
@@ -274,8 +292,6 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
             missing++;
         }
 
-        // TODO: Calculate buffer size deviation.
-
         if( missing < leastMissing )
         {
             closest = current;
@@ -283,6 +299,62 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
         }
         else if( missing == leastMissing )
         {
+            // This polynomial makes many small channel size differences matter
+            // less than one large channel size difference
+
+            colorDiff = 0;
+
+            colorDiff += ( desired->redBits - current->redBits ) *
+                         ( desired->redBits - current->redBits );
+
+            colorDiff += ( desired->greenBits - current->greenBits ) *
+                         ( desired->greenBits - current->greenBits );
+
+            colorDiff += ( desired->blueBits - current->blueBits ) *
+                         ( desired->blueBits - current->blueBits );
+
+            extraDiff = 0;
+
+            if( desired->alphaBits > 0 )
+            {
+                extraDiff += ( desired->alphaBits - current->alphaBits ) *
+                             ( desired->alphaBits - current->alphaBits );
+            }
+
+            if( desired->depthBits > 0 )
+            {
+                extraDiff += ( desired->depthBits - current->depthBits ) *
+                             ( desired->depthBits - current->depthBits );
+            }
+
+            if( desired->stencilBits > 0 )
+            {
+                extraDiff += ( desired->stencilBits - current->stencilBits ) *
+                             ( desired->stencilBits - current->stencilBits );
+            }
+
+            if( desired->accumRedBits > 0 )
+            {
+                extraDiff += ( desired->stencilBits - current->stencilBits ) *
+                             ( desired->stencilBits - current->stencilBits );
+            }
+
+            if( desiresAccum )
+            {
+                extraDiff += ( desired->accumRedBits - current->accumRedBits ) *
+                             ( desired->accumRedBits - current->accumRedBits );
+
+                extraDiff += ( desired->accumGreenBits - current->accumGreenBits ) *
+                             ( desired->accumGreenBits - current->accumGreenBits );
+
+                extraDiff += ( desired->accumBlueBits - current->accumBlueBits ) *
+                             ( desired->accumBlueBits - current->accumBlueBits );
+
+                extraDiff += ( desired->accumAlphaBits - current->accumAlphaBits ) *
+                             ( desired->accumAlphaBits - current->accumAlphaBits );
+            }
+                 
+            // TODO: Calculate buffer size deviation.
             // TODO: Compare buffer size deviations.
         }
     }
