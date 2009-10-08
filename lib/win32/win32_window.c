@@ -68,10 +68,9 @@ static int setMinMaxAnimations( int enable )
 
 
 //========================================================================
-// Function for bringing a window into focus and placing it on top of the
-// window z stack. Due to some nastiness with how Win98/ME/2k/XP handles
-// SetForegroundWindow, we have to go through some really bizarre measures to
-// achieve this (thanks again, MS, for making life so much easier)!
+// Focus the window and bring it to the top of the stack
+// Due to some nastiness with how Win98/ME/2k/XP handles SetForegroundWindow,
+// we have to go through some really bizarre measures to achieve this
 //========================================================================
 
 static void setForegroundWindow( HWND hWnd )
@@ -1029,7 +1028,9 @@ static int choosePixelFormat( const _GLFWfbconfig *fbconfig )
 // Creates the GLFW window and rendering context
 //========================================================================
 
-static int createWindow( int mode, const _GLFWhints *hints, const _GLFWfbconfig *fbconfig )
+static int createWindow( int mode,
+                         const _GLFWhints *hints,
+                         const _GLFWfbconfig *fbconfig )
 {
     DWORD dwStyle, dwExStyle;
     int pixelFormat, fullWidth, fullHeight;
