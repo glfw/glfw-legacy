@@ -273,6 +273,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 static HGLRC createContext( HDC dc, const _GLFWhints* hints, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
+    int i = 0, attribs[7];
 
     if( !_glfw_DescribePixelFormat( dc, pixelFormat, sizeof(pfd), &pfd ) )
     {
@@ -283,9 +284,6 @@ static HGLRC createContext( HDC dc, const _GLFWhints* hints, int pixelFormat )
     {
         return NULL;
     }
-
-    // Static array sizes are bad; don't use them
-    int i = 0, attribs[7];
 
     if( _glfwWin.CreateContextAttribsARB )
     {
