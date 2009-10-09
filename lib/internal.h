@@ -62,6 +62,8 @@
 
 //------------------------------------------------------------------------
 // Window hints (set by glfwOpenWindowHint)
+// This is used only by the platform independent code and only to store
+// parameters passed to us by glfwOpenWindowHint
 //------------------------------------------------------------------------
 typedef struct {
     int         refreshRate;
@@ -89,7 +91,9 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
-// Window option descriptor
+// Window/context option descriptor
+// This is used to pass window and context creation parameters from the
+// platform independent code to the platform specific code
 //------------------------------------------------------------------------
 typedef struct {
     int         mode;
@@ -103,7 +107,10 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
-// Framebuffer descriptor
+// Framebuffer configuration descriptor
+// This is used to pass framebuffer parameters from the platform independent
+// code to the platform specific code, and also to enumerate and select
+// available framebuffer configurations
 //------------------------------------------------------------------------
 typedef struct {
     int         redBits;
@@ -136,7 +143,7 @@ GLFWGLOBAL int _glfwInitialized;
 
 
 //------------------------------------------------------------------------
-// Abstracted data stream (for image I/O)
+// Abstract data stream (for image I/O)
 //------------------------------------------------------------------------
 typedef struct {
     FILE*   file;
