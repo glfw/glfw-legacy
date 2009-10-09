@@ -611,16 +611,9 @@ if ( CGLparameter != 0 ) \
     variableName = cglValue; \
 }
 
-int  _glfwPlatformOpenWindow( int width,
-                              int height,
-                              int redbits,
-                              int greenbits,
-                              int bluebits,
-                              int alphabits,
-                              int depthbits,
-                              int stencilbits,
-                              int mode,
-                              _GLFWhints* hints )
+int  _glfwPlatformOpenWindow( int width, int height,
+                              const _GLFWwndconfig *wndconfig,
+                              const _GLFWfbconfig *fbconfig )
 {
     OSStatus error;
     ProcessSerialNumber psn;
@@ -628,12 +621,12 @@ int  _glfwPlatformOpenWindow( int width,
     unsigned int windowAttributes;
 
     // TO DO: Refactor this function!
-    _glfwWin.WindowFunctions = ( _glfwWin.Fullscreen ?
+    _glfwWin.WindowFunctions = ( wndconfig->mode == GLFW_FULLSCREEN ?
                                &_glfwMacFSWindowFunctions :
                                &_glfwMacDWWindowFunctions );
 
     // Fail if OpenGL 3.0 or above was requested
-    if( hints->glMajor > 2 )
+    if( wndconfig->glMajor > 2 )
     {
         fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
         _glfwPlatformCloseWindow();
@@ -644,7 +637,7 @@ int  _glfwPlatformOpenWindow( int width,
     // AGL appears to be the only choice for attaching OpenGL contexts to
     // Carbon windows, but it leaves the user no control over fullscreen
     // mode stretching. Solution: AGL for windowed, CGL for fullscreen.
-    if( !_glfwWin.Fullscreen )
+    if( wndconfig->mode == GLFW_WINDOW )
     {
         // create AGL pixel format attribute list
         GLint AGLpixelFormatAttributes[256];
@@ -653,27 +646,27 @@ int  _glfwPlatformOpenWindow( int width,
         AGLpixelFormatAttributes[numAGLAttrs++] = AGL_RGBA;
         AGLpixelFormatAttributes[numAGLAttrs++] = AGL_DOUBLEBUFFER;
 
-        if( hints->stereo )
+        if( fbconfig->stereo )
         {
             AGLpixelFormatAttributes[numAGLAttrs++] = AGL_STEREO;
         }
 
-        _setAGLAttribute( AGL_AUX_BUFFERS,      hints->auxBuffers);
-        _setAGLAttribute( AGL_RED_SIZE,         redbits );
-        _setAGLAttribute( AGL_GREEN_SIZE,       greenbits );
-        _setAGLAttribute( AGL_BLUE_SIZE,        bluebits );
-        _setAGLAttribute( AGL_ALPHA_SIZE,       alphabits );
-        _setAGLAttribute( AGL_DEPTH_SIZE,       depthbits );
-        _setAGLAttribute( AGL_STENCIL_SIZE,     stencilbits );
-        _setAGLAttribute( AGL_ACCUM_RED_SIZE,   hints->accumRedBits );
-        _setAGLAttribute( AGL_ACCUM_GREEN_SIZE, hints->accumGreenBits );
-        _setAGLAttribute( AGL_ACCUM_BLUE_SIZE,  hints->accumBlueBits );
-        _setAGLAttribute( AGL_ACCUM_ALPHA_SIZE, hints->accumAlphaBits );
+        _setAGLAttribute( AGL_AUX_BUFFERS,      fbconfig->auxBuffers);
+        _setAGLAttribute( AGL_RED_SIZE,         fbconfig->redBits );
+        _setAGLAttribute( AGL_GREEN_SIZE,       fbconfig->greenBits );
+        _setAGLAttribute( AGL_BLUE_SIZE,        fbconfig->blueBits );
+        _setAGLAttribute( AGL_ALPHA_SIZE,       fbconfig->alphaBits );
+        _setAGLAttribute( AGL_DEPTH_SIZE,       fbconfig->depthBits );
+        _setAGLAttribute( AGL_STENCIL_SIZE,     fbconfig->stencilBits );
+        _setAGLAttribute( AGL_ACCUM_RED_SIZE,   fbconfig->accumRedBits );
+        _setAGLAttribute( AGL_ACCUM_GREEN_SIZE, fbconfig->accumGreenBits );
+        _setAGLAttribute( AGL_ACCUM_BLUE_SIZE,  fbconfig->accumBlueBits );
+        _setAGLAttribute( AGL_ACCUM_ALPHA_SIZE, fbconfig->accumAlphaBits );
 
-        if( hints->samples > 1 )
+        if( fbconfig->samples > 1 )
         {
             _setAGLattribute( AGL_SAMPLE_BUFFERS_ARB, 1 );
-            _setAGLattribute( AGL_SAMPLES_ARB, hints->samples );
+            _setAGLattribute( AGL_SAMPLES_ARB, fbconfig->samples );
             AGLpixelFormatAttributes[numAGLAttrs++] = AGL_NO_RECOVERY;
         }
 
@@ -705,7 +698,7 @@ int  _glfwPlatformOpenWindow( int width,
         _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
         _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
         _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
-        _glfwWin.RefreshRate = hints->refreshRate;
+        _glfwWin.RefreshRate = wndconfig->refreshRate;
 
         // create AGL context
         _glfwWin.AGLContext = aglCreateContext( pixelFormat, NULL );
@@ -751,7 +744,7 @@ int  _glfwPlatformOpenWindow( int width,
                            | kWindowCollapseBoxAttribute     \
                            | kWindowStandardHandlerAttribute );
 
-        if( hints->windowNoResize )
+        if( wndconfig->windowNoResize )
         {
             windowAttributes |= kWindowLiveResizeAttribute;
         }
@@ -835,14 +828,14 @@ int  _glfwPlatformOpenWindow( int width,
         _setCGLAttribute( kCGLPFADisplayMask,
                           CGDisplayIDToOpenGLDisplayMask( kCGDirectMainDisplay ) );
 
-        if( hints->stereo )
+        if( fbconfig->stereo )
         {
             CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAStereo;
         }
 
-        if( hints->samples > 1 )
+        if( fbconfig->samples > 1 )
         {
-            _setCGLAttribute( kCGLPFASamples,       (CGLPixelFormatAttribute)hints->samples );
+            _setCGLAttribute( kCGLPFASamples,       (CGLPixelFormatAttribute)fbconfig->samples );
             _setCGLAttribute( kCGLPFASampleBuffers, (CGLPixelFormatAttribute)1 );
             CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFANoRecovery;
         }
@@ -854,15 +847,15 @@ int  _glfwPlatformOpenWindow( int width,
         CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAMinimumPolicy;
 
         _setCGLAttribute( kCGLPFAAccumSize,
-                          (CGLPixelFormatAttribute)( hints->accumRedBits \
-                                                   + hints->accumGreenBits \
-                                                   + hints->accumBlueBits \
-                                                   + hints->accumAlphaBits ) );
+                          (CGLPixelFormatAttribute)( fbconfig->accumRedBits \
+                                                   + fbconfig->accumGreenBits \
+                                                   + fbconfig->accumBlueBits \
+                                                   + fbconfig->accumAlphaBits ) );
 
-        _setCGLAttribute( kCGLPFAAlphaSize,   (CGLPixelFormatAttribute)alphabits );
-        _setCGLAttribute( kCGLPFADepthSize,   (CGLPixelFormatAttribute)depthbits );
-        _setCGLAttribute( kCGLPFAStencilSize, (CGLPixelFormatAttribute)stencilbits );
-        _setCGLAttribute( kCGLPFAAuxBuffers,  (CGLPixelFormatAttribute)hints->auxBuffers );
+        _setCGLAttribute( kCGLPFAAlphaSize,   (CGLPixelFormatAttribute)fbconfig->alphabits );
+        _setCGLAttribute( kCGLPFADepthSize,   (CGLPixelFormatAttribute)fbconfig->depthbits );
+        _setCGLAttribute( kCGLPFAStencilSize, (CGLPixelFormatAttribute)fbconfig->stencilbits );
+        _setCGLAttribute( kCGLPFAAuxBuffers,  (CGLPixelFormatAttribute)fbconfig->auxBuffers );
 
         CGLpixelFormatAttributes[ numCGLAttrs++ ] = (CGLPixelFormatAttribute)NULL;
 
@@ -917,7 +910,8 @@ int  _glfwPlatformOpenWindow( int width,
         _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumAlphaBits );
         _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
         _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
-        _glfwWin.RefreshRate = hints->refreshRate;
+
+        _glfwWin.RefreshRate = wndconfig->refreshRate;
 
         // destroy our pixel format
         (void)CGLDestroyPixelFormat( CGLpfObj );
@@ -935,7 +929,7 @@ int  _glfwPlatformOpenWindow( int width,
                             rgbColorDepth,
                             width,
                             height,
-                            hints->refreshRate,
+                            wndconfig->refreshRate,
                             NULL,
                             NULL );
         if( optimalMode == NULL )

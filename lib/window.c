@@ -406,21 +406,11 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     int redbits, int greenbits, int bluebits, int alphabits,
     int depthbits, int stencilbits, int mode )
 {
-    _GLFWhints hints;
     _GLFWfbconfig fbconfig;
+    _GLFWwndconfig wndconfig;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || _glfwWin.Opened )
-    {
-        return GL_FALSE;
-    }
-
-    // Copy and clear window hints
-    hints = _glfwLibrary.hints;
-    _glfwClearWindowHints();
-
-    // Check input arguments
-    if( mode != GLFW_WINDOW && mode != GLFW_FULLSCREEN )
     {
         return GL_FALSE;
     }
@@ -432,13 +422,30 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     fbconfig.alphaBits      = alphabits;
     fbconfig.depthBits      = depthbits;
     fbconfig.stencilBits    = stencilbits;
-    fbconfig.accumRedBits   = hints.accumRedBits;
-    fbconfig.accumGreenBits = hints.accumGreenBits;
-    fbconfig.accumBlueBits  = hints.accumBlueBits;
-    fbconfig.accumAlphaBits = hints.accumAlphaBits;
-    fbconfig.auxBuffers     = hints.auxBuffers;
-    fbconfig.stereo         = hints.stereo;
-    fbconfig.samples        = hints.samples;
+    fbconfig.accumRedBits   = _glfwLibrary.hints.accumRedBits;
+    fbconfig.accumGreenBits = _glfwLibrary.hints.accumGreenBits;
+    fbconfig.accumBlueBits  = _glfwLibrary.hints.accumBlueBits;
+    fbconfig.accumAlphaBits = _glfwLibrary.hints.accumAlphaBits;
+    fbconfig.auxBuffers     = _glfwLibrary.hints.auxBuffers;
+    fbconfig.stereo         = _glfwLibrary.hints.stereo;
+    fbconfig.samples        = _glfwLibrary.hints.samples;
+
+    // Set up desired window config
+    wndconfig.mode          = mode;
+    wndconfig.refreshRate   = _glfwLibrary.hints.refreshRate;
+    wndconfig.glMajor       = _glfwLibrary.hints.glMajor;
+    wndconfig.glMinor       = _glfwLibrary.hints.glMinor;
+    wndconfig.glForward     = _glfwLibrary.hints.glForward;
+    wndconfig.glDebug       = _glfwLibrary.hints.glDebug;
+
+    // Clear for next open call
+    _glfwClearWindowHints();
+
+    // Check input arguments
+    if( mode != GLFW_WINDOW && mode != GLFW_FULLSCREEN )
+    {
+        return GL_FALSE;
+    }
 
     // Clear GLFW window state
     _glfwWin.Active         = GL_TRUE;
@@ -481,7 +488,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwWin.Fullscreen = (mode == GLFW_FULLSCREEN ? GL_TRUE : GL_FALSE);
 
     // Platform specific window opening routine
-    if( !_glfwPlatformOpenWindow( width, height, mode, &hints, &fbconfig ) )
+    if( !_glfwPlatformOpenWindow( width, height, &wndconfig, &fbconfig ) )
     {
         return GL_FALSE;
     }

@@ -193,7 +193,7 @@ void _glfwPlatformSetTime( double time );
 void _glfwPlatformSleep( double time );
 
 // Window management
-int  _glfwPlatformOpenWindow( int width, int height, int mode, const _GLFWhints *hints, const _GLFWfbconfig *fbconfig );
+int  _glfwPlatformOpenWindow( int width, int height, const _GLFWwndconfig *wndconfig, const _GLFWfbconfig *fbconfig );
 void _glfwPlatformCloseWindow( void );
 void _glfwPlatformSetWindowTitle( const char *title );
 void _glfwPlatformSetWindowSize( int width, int height );

@@ -269,7 +269,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 // Creates an OpenGL context on the specified device context
 //========================================================================
 
-static HGLRC createContext( HDC dc, const _GLFWhints* hints, int pixelFormat )
+static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
     int i = 0, attribs[7];
@@ -288,17 +288,17 @@ static HGLRC createContext( HDC dc, const _GLFWhints* hints, int pixelFormat )
     {
         // Use the newer wglCreateContextAttribsARB
 
-        if( hints->glMajor != 1 || hints->glMinor != 1 )
+        if( wndconfig->glMajor != 1 || wndconfig->glMinor != 1 )
         {
             // Request an explicitly versioned context
 
             attribs[i++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
-            attribs[i++] = hints->glMajor;
+            attribs[i++] = wndconfig->glMajor;
             attribs[i++] = WGL_CONTEXT_MINOR_VERSION_ARB;
-            attribs[i++] = hints->glMinor;
+            attribs[i++] = wndconfig->glMinor;
         }
 
-        if( hints->glForward )
+        if( wndconfig->glForward )
         {
             // Request a forward-compatible context
 
@@ -1028,8 +1028,7 @@ static int choosePixelFormat( const _GLFWfbconfig *fbconfig )
 // Creates the GLFW window and rendering context
 //========================================================================
 
-static int createWindow( int mode,
-                         const _GLFWhints *hints,
+static int createWindow( const _GLFWwndconfig *wndconfig,
                          const _GLFWfbconfig *fbconfig )
 {
     DWORD dwStyle, dwExStyle;
@@ -1066,7 +1065,7 @@ static int createWindow( int mode,
     {
         dwStyle |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
-        if( !hints->windowNoResize )
+        if( !wndconfig->windowNoResize )
         {
             dwStyle |= ( WS_MAXIMIZEBOX | WS_SIZEBOX );
             dwExStyle |= WS_EX_WINDOWEDGE;
@@ -1122,7 +1121,7 @@ static int createWindow( int mode,
         return GL_FALSE;
     }
 
-    _glfwWin.RC = createContext( _glfwWin.DC, hints, pixelFormat );
+    _glfwWin.RC = createContext( _glfwWin.DC, wndconfig, pixelFormat );
     if( !_glfwWin.RC )
     {
         return GL_FALSE;
@@ -1197,8 +1196,8 @@ static void destroyWindow( void )
 // created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height, int mode,
-                             const _GLFWhints *hints,
+int _glfwPlatformOpenWindow( int width, int height,
+                             const _GLFWwndconfig *wndconfig,
                              const _GLFWfbconfig *fbconfig )
 {
     int recreateContext = GL_FALSE;
@@ -1212,7 +1211,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     _glfwWin.GetExtensionsStringEXT = NULL;
     _glfwWin.CreateContextAttribsARB = NULL;
 
-    _glfwWin.DesiredRefreshRate = hints->refreshRate;
+    _glfwWin.DesiredRefreshRate = wndconfig->refreshRate;
 
     _glfwWin.ClassAtom = registerWindowClass();
     if( !_glfwWin.ClassAtom )
@@ -1225,16 +1224,16 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     {
         _glfwSetVideoMode( &_glfwWin.Width, &_glfwWin.Height,
                            fbconfig->redBits, fbconfig->greenBits, fbconfig->blueBits,
-                           hints->refreshRate );
+                           wndconfig->refreshRate );
     }
 
-    if( !createWindow( mode, hints, fbconfig ) )
+    if( !createWindow( wndconfig, fbconfig ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    if( hints->glMajor > 2 )
+    if( wndconfig->glMajor > 2 )
     {
         if( !_glfwWin.CreateContextAttribsARB )
         {
@@ -1245,7 +1244,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         recreateContext = GL_TRUE;
     }
 
-    if( hints->samples > 0 )
+    if( fbconfig->samples > 0 )
     {
         if( !_glfwWin.GetPixelFormatAttribiv )
         {
@@ -1272,7 +1271,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
 
         destroyWindow();
 
-        if( !createWindow( mode, hints, fbconfig ) )
+        if( !createWindow( wndconfig, fbconfig ) )
         {
             _glfwPlatformCloseWindow();
             return GL_FALSE;

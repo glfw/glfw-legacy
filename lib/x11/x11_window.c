@@ -778,7 +778,7 @@ static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
     attribs[index++] = attribName; \
     attribs[index++] = attribValue;
 
-static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
+static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfigID )
 {
     int attribs[40];
     int flags, fbcount, index;
@@ -786,7 +786,7 @@ static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
     GLXFBConfig *fbconfigs;
     PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL; 
 
-    if( hints->glMajor > 2 )
+    if( wndconfig->glMajor > 2 )
     {
         extensions = (const GLubyte*) glXQueryExtensionsString( _glfwLibrary.display,
                                                                 _glfwWin.screen );
@@ -835,19 +835,19 @@ static int CreateContext( const _GLFWhints *hints, GLXFBConfigID fbconfigID )
     {
         index = 0;
 
-        SetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, hints->glMajor );
-        SetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, hints->glMinor );
+        SetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, wndconfig->glMajor );
+        SetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, wndconfig->glMinor );
 
-        if( hints->glForward || hints->glDebug )
+        if( wndconfig->glForward || wndconfig->glDebug )
         {
             flags = 0;
 
-            if( hints->glForward )
+            if( wndconfig->glForward )
             {
                 flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
             }
 
-            if( hints->glDebug )
+            if( wndconfig->glDebug )
             {
                 flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
             }
@@ -917,8 +917,8 @@ static void InitGLXExtensions( void )
 // the OpenGL rendering context is created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height, int mode,
-                             const _GLFWhints* hints,
+int _glfwPlatformOpenWindow( int width, int height,
+                             const _GLFWwndconfig* wndconfig,
                              const _GLFWfbconfig* fbconfig )
 {
     XSetWindowAttributes wa;
@@ -940,7 +940,8 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     _glfwWin.OverrideRedirect = GL_FALSE;
     _glfwWin.FS.ModeChanged   = GL_FALSE;
     _glfwWin.Saver.Changed    = GL_FALSE;
-    _glfwWin.RefreshRate      = hints->refreshRate;
+    _glfwWin.RefreshRate      = wndconfig->refreshRate;
+    _glfwWin.WindowNoResize   = wndconfig->windowNoResize;
 
     // As the 2.x API doesn't understand screens, we hardcode this choice and
     // hope for the best
@@ -963,13 +964,13 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         }
     }
 
-    if( !CreateContext( hints, (GLXFBConfigID) closest->platformID ) )
+    if( !CreateContext( wndconfig, (GLXFBConfigID) closest->platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         // Change video mode
         _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
@@ -1001,7 +1002,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
             PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
             ExposureMask | FocusChangeMask | VisibilityChangeMask;
 
-        if( mode == GLFW_WINDOW )
+        if( wndconfig->mode == GLFW_WINDOW )
         {
             // The /only/ reason we are setting the background pixel here is
             // because otherwise our window wont get any decorations on systems
@@ -1047,7 +1048,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
                          sizeof(protocols) / sizeof(Atom) );
     }
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         DisableDecorations();
     }
@@ -1057,20 +1058,20 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
         sizehints = XAllocSizeHints();
         sizehints->flags = 0;
 
-        if( hints->windowNoResize )
+        if( wndconfig->windowNoResize )
         {
             sizehints->flags |= (PMinSize | PMaxSize);
             sizehints->min_width  = sizehints->max_width  = _glfwWin.Width;
             sizehints->min_height = sizehints->max_height = _glfwWin.Height;
         }
 
-        if( mode == GLFW_FULLSCREEN )
+        if( wndconfig->mode == GLFW_FULLSCREEN )
         {
             sizehints->flags |= PPosition;
             sizehints->x = 0;
             sizehints->y = 0;
         }
-        
+
         XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
         XFree( sizehints );
     }
@@ -1084,7 +1085,7 @@ int _glfwPlatformOpenWindow( int width, int height, int mode,
     // Make sure that our window ends up on top of things
     XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         // Fullscreen mode post-window-creation work
 
