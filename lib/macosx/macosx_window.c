@@ -117,6 +117,8 @@ static void handleMacKeyChange( UInt32 keyCode, int action )
     }
 }
 
+// The set of event class/kind combinations supported by keyEventHandler
+// This is used by installEventHandlers below
 static const EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
 {
     { kEventClassKeyboard, kEventRawKeyDown },
@@ -206,6 +208,8 @@ static OSStatus keyEventHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
+// The set of event class/kind combinations supported by mouseEventHandler
+// This is used by installEventHandlers below
 static const EventTypeSpec GLFW_MOUSE_EVENT_TYPES[] =
 {
     { kEventClassMouse, kEventMouseDown },
@@ -370,6 +374,8 @@ static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
+// The set of event class/kind combinations supported by commandHandler
+// This is used by installEventHandlers below
 static const EventTypeSpec GLFW_COMMAND_EVENT_TYPES[] =
 {
     { kEventClassCommand, kEventCommandProcess }
@@ -419,6 +425,8 @@ static OSStatus commandHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
+// The set of event class/kind combinations supported by windowEventHandler
+// This is used by installEventHandlers below
 static const EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
 {
   { kEventClassWindow, kEventWindowBoundsChanged },
@@ -571,25 +579,11 @@ if ( AGLparameter != 0 ) \
     AGLpixelFormatAttributes[numAGLAttrs++] = AGLparameter; \
 }
 
-#define _getAGLAttribute( aglAttributeName, variableName ) \
-{ \
-    GLint aglValue; \
-    (void)aglDescribePixelFormat( pixelFormat, aglAttributeName, (GLint*) &aglValue ); \
-    variableName = aglValue; \
-}
-
 #define _setCGLAttribute( cglAttributeName, CGLparameter ) \
 if ( CGLparameter != 0 ) \
 { \
     CGLpixelFormatAttributes[ numCGLAttrs++ ] = cglAttributeName; \
     CGLpixelFormatAttributes[ numCGLAttrs++ ] = CGLparameter; \
-}
-
-#define _getCGLAttribute( cglAttributeName, variableName ) \
-{ \
-    long cglValue; \
-    (void)CGLDescribePixelFormat( CGLpfObj, 0, cglAttributeName, (GLint*) &cglValue ); \
-    variableName = cglValue; \
 }
 
 //========================================================================
@@ -812,8 +806,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         // variables for enumerating color depths
         GLint rgbColorDepth;
-        GLint rgbaAccumDepth = 0;
-        GLint rgbChannelDepth = 0;
 
         // CGL pixel format attributes
         _setCGLAttribute( kCGLPFADisplayMask,
@@ -870,24 +862,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         // enumerate depth of RGB channels - unlike AGL, CGL works with
         // a single parameter reflecting the full depth of the frame buffer
-        (void)CGLDescribePixelFormat( _glfwWin.cglPixelFormat, 0, kCGLPFAColorSize, &rgbColorDepth );
-        if( rgbColorDepth == 24 || rgbColorDepth == 32 )
-        {
-            rgbChannelDepth = 8;
-        }
-        if( rgbColorDepth == 16 )
-        {
-            rgbChannelDepth = 5;
-        }
-
-        // get pixel depth of accumulator - I haven't got the slightest idea
-        // how this number conforms to any other channel depth than 8 bits,
-        // so this might end up giving completely knackered results...
-        (void)CGLDescribePixelFormat( _glfwWin.cglPixelFormat, 0, kCGLPFAAccumSize, &rgbaAccumDepth );
-        if( rgbaAccumDepth == 32 )
-        {
-            rgbaAccumDepth = 8;
-        }
+        (void)CGLDescribePixelFormat( _glfwWin.cglPixelFormat,
+                                      0,
+                                      kCGLPFAColorSize,
+                                      &rgbColorDepth );
 
         // capture the display for our application
         cgErr = CGCaptureAllDisplays();
@@ -1124,39 +1102,87 @@ void _glfwPlatformSwapInterval( int interval )
 // Read back framebuffer parameters from the context
 //========================================================================
 
+#define _getAGLAttribute( aglAttributeName, variableName ) \
+{ \
+    GLint aglValue; \
+    (void)aglDescribePixelFormat( _glfwWin.aglPixelFormat, aglAttributeName, &aglValue ); \
+    variableName = aglValue; \
+}
+
+#define _getCGLAttribute( cglAttributeName, variableName ) \
+{ \
+    GLint cglValue; \
+    (void)CGLDescribePixelFormat( _glfwWin.cglPixelFormat, 0, cglAttributeName, &cglValue ); \
+    variableName = cglValue; \
+}
+
 void _glfwPlatformRefreshWindowParams( void )
 {
-    /*
-    _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
-    _getCGLAttribute( rgbChannelDepth,    _glfwWin.RedBits );
-    _getCGLAttribute( rgbChannelDepth,    _glfwWin.GreenBits );
-    _getCGLAttribute( rgbChannelDepth,    _glfwWin.BlueBits );
-    _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.AlphaBits );
-    _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.DepthBits );
-    _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.StencilBits );
-    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumRedBits );
-    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumGreenBits );
-    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumBlueBits );
-    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumAlphaBits );
-    _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
-    _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
-    _getCGLAttribute( kCGLPFASamples,     _glfwWin.Samples );
+    GLint rgbColorDepth;
+    GLint rgbaAccumDepth = 0;
+    GLint rgbChannelDepth = 0;
 
-    _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.Accelerated );
-    _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.RedBits );
-    _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.GreenBits );
-    _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.BlueBits );
-    _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.AlphaBits );
-    _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.DepthBits );
-    _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.StencilBits );
-    _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.AccumRedBits );
-    _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.AccumGreenBits );
-    _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.AccumBlueBits );
-    _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.AccumAlphaBits );
-    _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
-    _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
-    _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
-    */
+    if( _glfwWin.Fullscreen )
+    {
+        _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
+        _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.AlphaBits );
+        _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.DepthBits );
+        _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.StencilBits );
+        _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
+        _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
+        _getCGLAttribute( kCGLPFASamples,     _glfwWin.Samples );
+
+        // Enumerate depth of RGB channels - unlike AGL, CGL works with
+        // a single parameter reflecting the full depth of the frame buffer
+        (void)CGLDescribePixelFormat( _glfwWin.cglPixelFormat,
+                                      0,
+                                      kCGLPFAColorSize,
+                                      &rgbColorDepth );
+
+        if( rgbColorDepth == 24 || rgbColorDepth == 32 )
+        {
+            rgbChannelDepth = 8;
+        }
+        if( rgbColorDepth == 16 )
+        {
+            rgbChannelDepth = 5;
+        }
+
+        _glfwWin.RedBits   = rgbChannelDepth;
+        _glfwWin.GreenBits = rgbChannelDepth;
+        _glfwWin.BlueBits  = rgbChannelDepth;
+
+        // Get pixel depth of accumulator - I haven't got the slightest idea
+        // how this number conforms to any other channel depth than 8 bits,
+        // so this might end up giving completely knackered results...
+        _getCGLAttribute( kCGLPFAColorSize, rgbaAccumDepth );
+        if( rgbaAccumDepth == 32 )
+        {
+            rgbaAccumDepth = 8;
+        }
+
+        _glfwWin.AccumRedBits   = rgbaAccumDepth;
+        _glfwWin.AccumGreenBits = rgbaAccumDepth;
+        _glfwWin.AccumBlueBits  = rgbaAccumDepth;
+        _glfwWin.AccumAlphaBits = rgbaAccumDepth;
+    }
+    else
+    {
+        _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.Accelerated );
+        _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.RedBits );
+        _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.GreenBits );
+        _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.BlueBits );
+        _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.AlphaBits );
+        _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.DepthBits );
+        _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.StencilBits );
+        _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.AccumRedBits );
+        _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.AccumGreenBits );
+        _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.AccumBlueBits );
+        _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.AccumAlphaBits );
+        _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
+        _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
+        _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
+    }
 }
 
 //========================================================================
