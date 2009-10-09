@@ -1491,7 +1491,7 @@ void _glfwPlatformSwapInterval( int interval )
 
 
 //========================================================================
-// _glfwPlatformRefreshWindowParams()
+// Read back framebuffer parameters from the context
 //========================================================================
 
 void _glfwPlatformRefreshWindowParams( void )

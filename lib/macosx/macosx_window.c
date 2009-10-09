@@ -36,6 +36,10 @@ if ( changed & modifierMask ) \
     _glfwInputKey( glfwKey, (modifiers & modifierMask ? GLFW_PRESS : GLFW_RELEASE) ); \
 }
 
+//************************************************************************
+//****                  GLFW internal functions                       ****
+//************************************************************************
+
 static void handleMacModifierChange( UInt32 modifiers )
 {
     UInt32 changed = modifiers ^ _glfwInput.Modifiers;
@@ -556,6 +560,10 @@ static int installEventHandlers( void )
     return GL_TRUE;
 }
 
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
 #define _setAGLAttribute( aglAttributeName, AGLparameter ) \
 if ( AGLparameter != 0 ) \
 { \
@@ -584,6 +592,11 @@ if ( CGLparameter != 0 ) \
     variableName = cglValue; \
 }
 
+//========================================================================
+// Here is where the window is created, and
+// the OpenGL rendering context is created
+//========================================================================
+
 int  _glfwPlatformOpenWindow( int width, int height,
                               const _GLFWwndconfig *wndconfig,
                               const _GLFWfbconfig *fbconfig )
@@ -600,7 +613,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
     {
-        fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
+        fprintf( stderr, "OpenGL 3.0+ is not yet supported on Mac OS X" );
 
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -612,7 +625,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     {
         if( GetCurrentProcess( &psn ) != noErr )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't get the PSN\n" );
+            fprintf( stderr, "Failed to get the process serial number\n" );
 
             _glfwPlatformCloseWindow();
             return GL_FALSE;
@@ -620,7 +633,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't become a foreground application\n" );
+            fprintf( stderr, "Failed to become a foreground application\n" );
 
             _glfwPlatformCloseWindow();
             return GL_FALSE;
@@ -928,6 +941,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
     return GL_TRUE;
 }
 
+//========================================================================
+// Properly kill the window/video display
+//========================================================================
+
 void _glfwPlatformCloseWindow( void )
 {
     if( _glfwWin.mouseUPP != NULL )
@@ -992,6 +1009,10 @@ void _glfwPlatformCloseWindow( void )
     }
 }
 
+//========================================================================
+// Set the window title
+//========================================================================
+
 void _glfwPlatformSetWindowTitle( const char *title )
 {
     CFStringRef windowTitle;
@@ -1008,6 +1029,10 @@ void _glfwPlatformSetWindowTitle( const char *title )
     }
 }
 
+//========================================================================
+// Set the window size
+//========================================================================
+
 void _glfwPlatformSetWindowSize( int width, int height )
 {
     if( !_glfwWin.Fullscreen )
@@ -1015,6 +1040,10 @@ void _glfwPlatformSetWindowSize( int width, int height )
         SizeWindow( _glfwWin.window, width, height, TRUE );
     }
 }
+
+//========================================================================
+// Set the window position
+//========================================================================
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
@@ -1024,6 +1053,10 @@ void _glfwPlatformSetWindowPos( int x, int y )
     }
 }
 
+//========================================================================
+// Window iconification
+//========================================================================
+
 void _glfwPlatformIconifyWindow( void )
 {
     if( !_glfwWin.Fullscreen )
@@ -1032,6 +1065,10 @@ void _glfwPlatformIconifyWindow( void )
     }
 }
 
+//========================================================================
+// Window un-iconification
+//========================================================================
+
 void _glfwPlatformRestoreWindow( void )
 {
     if( !_glfwWin.Fullscreen )
@@ -1039,6 +1076,10 @@ void _glfwPlatformRestoreWindow( void )
         (void)CollapseWindow( _glfwWin.window, FALSE );
     }
 }
+
+//========================================================================
+// Swap buffers (double-buffering) and poll any new events
+//========================================================================
 
 void _glfwPlatformSwapBuffers( void )
 {
@@ -1051,6 +1092,10 @@ void _glfwPlatformSwapBuffers( void )
         aglSwapBuffers( _glfwWin.aglContext );
     }
 }
+
+//========================================================================
+// Set double buffering swap interval
+//========================================================================
 
 void _glfwPlatformSwapInterval( int interval )
 {
@@ -1074,6 +1119,10 @@ void _glfwPlatformSwapInterval( int interval )
                              &AGLparameter );
     }
 }
+
+//========================================================================
+// Read back framebuffer parameters from the context
+//========================================================================
 
 void _glfwPlatformRefreshWindowParams( void )
 {
@@ -1110,6 +1159,10 @@ void _glfwPlatformRefreshWindowParams( void )
     */
 }
 
+//========================================================================
+// Poll for new window and input events
+//========================================================================
+
 void _glfwPlatformPollEvents( void )
 {
     EventRef event;
@@ -1122,6 +1175,10 @@ void _glfwPlatformPollEvents( void )
     }
 }
 
+//========================================================================
+// Wait for new window and input events
+//========================================================================
+
 void _glfwPlatformWaitEvents( void )
 {
     EventRef event;
@@ -1133,17 +1190,29 @@ void _glfwPlatformWaitEvents( void )
     _glfwPlatformPollEvents();
 }
 
+//========================================================================
+// Hide mouse cursor (lock it)
+//========================================================================
+
 void _glfwPlatformHideMouseCursor( void )
 {
     CGDisplayHideCursor( kCGDirectMainDisplay );
     CGAssociateMouseAndMouseCursorPosition( false );
 }
 
+//========================================================================
+// Show mouse cursor (unlock it)
+//========================================================================
+
 void _glfwPlatformShowMouseCursor( void )
 {
     CGDisplayShowCursor( kCGDirectMainDisplay );
     CGAssociateMouseAndMouseCursorPosition( true );
 }
+
+//========================================================================
+// Set physical mouse cursor position
+//========================================================================
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
