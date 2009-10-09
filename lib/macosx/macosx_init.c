@@ -113,14 +113,10 @@ int _glfwPlatformInit( void )
     struct timeval tv;
     UInt32 nullDummy = 0;
 
-    _glfwWin.MacWindow = NULL;
-    _glfwWin.AGLContext = NULL;
-    _glfwWin.CGLContext = NULL;
-    _glfwWin.WindowFunctions = NULL;
-    _glfwWin.MouseUPP = NULL;
-    _glfwWin.CommandUPP = NULL;
-    _glfwWin.KeyboardUPP = NULL;
-    _glfwWin.WindowUPP = NULL;
+    _glfwWin.window = NULL;
+    _glfwWin.aglContext = NULL;
+    _glfwWin.cglContext = NULL;
+    _glfwWin.windowUPP = NULL;
     
     _glfwInput.Modifiers = 0;
     
@@ -145,13 +141,6 @@ int _glfwPlatformInit( void )
 
     _glfwChangeToResourcesDirectory();
 
-    if( !_glfwInstallEventHandlers() )
-    {
-        fprintf( stderr, "glfwInit failing because it can't install event handlers\n" );
-        _glfwPlatformTerminate();
-        return GL_FALSE;
-    }
-
     // Ugly hack to reduce the nasty jump that occurs at the first non-
     // sys keypress, caused by OS X loading certain meta scripts used
     // for lexical- and raw keycode translation - instead of letting
@@ -172,22 +161,6 @@ int _glfwPlatformInit( void )
 
 int _glfwPlatformTerminate( void )
 {
-    if( _glfwWin.MouseUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.MouseUPP );
-        _glfwWin.MouseUPP = NULL;
-    }
-    if( _glfwWin.CommandUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.CommandUPP );
-        _glfwWin.CommandUPP = NULL;
-    }
-    if( _glfwWin.KeyboardUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.KeyboardUPP );
-        _glfwWin.KeyboardUPP = NULL;
-    }
-    
     return GL_TRUE;
 }
 

@@ -109,32 +109,6 @@
 #define MAC_KEY_KP_EQUAL    0x51
 #define MAC_KEY_KP_ENTER    0x4C
 
-//========================================================================
-// full-screen/desktop-window "virtual" function table
-//========================================================================
-
-typedef void ( * GLFWmacclosewindowfun )( void );
-typedef void ( * GLFWmacsetwindowtitlefun )( const char * );
-typedef void ( * GLFWmacsetwindowsizefun )( int, int );
-typedef void ( * GLFWmacsetwindowposfun )( int, int );
-typedef void ( * GLFWmaciconifywindowfun )( void );
-typedef void ( * GLFWmacrestorewindowfun )( void );
-typedef void ( * GLFWmacrefreshwindowparamsfun )( void );
-typedef void ( * GLFWmacsetmousecursorposfun )( int, int );
-
-typedef struct
-{
-    GLFWmacclosewindowfun         CloseWindow;
-    GLFWmacsetwindowtitlefun      SetWindowTitle;
-    GLFWmacsetwindowsizefun       SetWindowSize;
-    GLFWmacsetwindowposfun        SetWindowPos;
-    GLFWmaciconifywindowfun       IconifyWindow;
-    GLFWmacrestorewindowfun       RestoreWindow;
-    GLFWmacrefreshwindowparamsfun RefreshWindowParams;
-    GLFWmacsetmousecursorposfun   SetMouseCursorPos;
-}
-_GLFWmacwindowfunctions;
-
 
 //========================================================================
 // GLFW platform specific types
@@ -202,16 +176,18 @@ struct _GLFWwin_struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
-    WindowRef       MacWindow;
-    AGLContext      AGLContext;
-    CGLContextObj   CGLContext;
+    WindowRef          window;
 
-    EventHandlerUPP MouseUPP;
-    EventHandlerUPP CommandUPP;
-    EventHandlerUPP KeyboardUPP;
-    EventHandlerUPP WindowUPP;
+    AGLContext         aglContext;
+    AGLPixelFormat     aglPixelFormat;
 
-    _GLFWmacwindowfunctions* WindowFunctions;
+    CGLContextObj      cglContext;
+    CGLPixelFormatObj  cglPixelFormat;
+
+    EventHandlerUPP    windowUPP;
+    EventHandlerUPP    mouseUPP;
+    EventHandlerUPP    commandUPP;
+    EventHandlerUPP    keyboardUPP;
 };
 
 GLFWGLOBAL _GLFWwin _glfwWin;
@@ -225,26 +201,24 @@ GLFWGLOBAL struct {
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // Mouse status
-    int  MousePosX, MousePosY;
-    int  WheelPos;
-    char MouseButton[ GLFW_MOUSE_BUTTON_LAST+1 ];
+    int      MousePosX, MousePosY;
+    int      WheelPos;
+    char     MouseButton[ GLFW_MOUSE_BUTTON_LAST + 1 ];
 
     // Keyboard status
-    char Key[ GLFW_KEY_LAST+1 ];
-    int  LastChar;
+    char     Key[ GLFW_KEY_LAST + 1 ];
+    int      LastChar;
 
     // User selected settings
-    int  StickyKeys;
-    int  StickyMouseButtons;
-    int  KeyRepeat;
-
+    int      StickyKeys;
+    int      StickyMouseButtons;
+    int      KeyRepeat;
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
     UInt32 Modifiers;
 
 } _glfwInput;
-
 
 
 
@@ -255,6 +229,7 @@ typedef struct _GLFWthread_struct _GLFWthread;
 
 // Thread record (one for each thread)
 struct _GLFWthread_struct {
+
     // Pointer to previous and next threads in linked list
     _GLFWthread   *Previous, *Next;
 
@@ -268,6 +243,7 @@ struct _GLFWthread_struct {
 
 // General thread information
 GLFWGLOBAL struct {
+
     // Critical section lock
     pthread_mutex_t  CriticalSection;
 
@@ -276,6 +252,7 @@ GLFWGLOBAL struct {
 
     // First thread in linked list (always the main thread)
     _GLFWthread      First;
+
 } _glfwThrd;
 
 
@@ -302,7 +279,7 @@ GLFWGLOBAL struct {
     } Libs;
     
     int Unbundled;
-    
+
 } _glfwLibrary;
 
 
