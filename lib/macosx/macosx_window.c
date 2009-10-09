@@ -268,8 +268,7 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                     button -= kEventMouseButtonPrimary;
                     if( button <= GLFW_MOUSE_BUTTON_LAST )
                     {
-                        _glfwInputMouseClick( button
-                                              + GLFW_MOUSE_BUTTON_LEFT,
+                        _glfwInputMouseClick( button + GLFW_MOUSE_BUTTON_LEFT,
                                               GLFW_PRESS );
                     }
                     return noErr;
@@ -292,8 +291,7 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
                 button -= kEventMouseButtonPrimary;
                 if( button <= GLFW_MOUSE_BUTTON_LAST )
                 {
-                    _glfwInputMouseClick( button
-                                          + GLFW_MOUSE_BUTTON_LEFT,
+                    _glfwInputMouseClick( button + GLFW_MOUSE_BUTTON_LEFT,
                                           GLFW_RELEASE );
                 }
                 return noErr;
@@ -305,55 +303,55 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
         case kEventMouseDragged:
         {
             HIPoint mouseLocation;
-	    if( _glfwWin.MouseLock )
-	    {
-		if( GetEventParameter( event,
-				       kEventParamMouseDelta,
-				       typeHIPoint,
-				       NULL,
-				       sizeof( HIPoint ),
-				       NULL,
-				       &mouseLocation ) != noErr )
-		{
-		    break;
-		}
+            if( _glfwWin.MouseLock )
+            {
+                if( GetEventParameter( event,
+                            kEventParamMouseDelta,
+                            typeHIPoint,
+                            NULL,
+                            sizeof( HIPoint ),
+                            NULL,
+                            &mouseLocation ) != noErr )
+                {
+                    break;
+                }
 
-		_glfwInput.MousePosX += mouseLocation.x;
-		_glfwInput.MousePosY += mouseLocation.y;
-	    }
-	    else
-	    {
-		if( GetEventParameter( event,
-				       kEventParamMouseLocation,
-				       typeHIPoint,
-				       NULL,
-				       sizeof( HIPoint ),
-				       NULL,
-				       &mouseLocation ) != noErr )
-		{
-		    break;
-		}
+                _glfwInput.MousePosX += mouseLocation.x;
+                _glfwInput.MousePosY += mouseLocation.y;
+            }
+            else
+            {
+                if( GetEventParameter( event,
+                            kEventParamMouseLocation,
+                            typeHIPoint,
+                            NULL,
+                            sizeof( HIPoint ),
+                            NULL,
+                            &mouseLocation ) != noErr )
+                {
+                    break;
+                }
 
-		_glfwInput.MousePosX = mouseLocation.x;
-		_glfwInput.MousePosY = mouseLocation.y;
+                _glfwInput.MousePosX = mouseLocation.x;
+                _glfwInput.MousePosY = mouseLocation.y;
 
-		if( !_glfwWin.Fullscreen )
-		{
-		    Rect content;
-		    GetWindowBounds( _glfwWin.MacWindow,
-		                     kWindowContentRgn,
-				     &content );
+                if( !_glfwWin.Fullscreen )
+                {
+                    Rect content;
+                    GetWindowBounds( _glfwWin.MacWindow,
+                                     kWindowContentRgn,
+                                     &content );
 
-		    _glfwInput.MousePosX -= content.left;
-		    _glfwInput.MousePosY -= content.top;
-		}
-	    }
+                    _glfwInput.MousePosX -= content.left;
+                    _glfwInput.MousePosY -= content.top;
+                }
+            }
 
-	    if( _glfwWin.MousePosCallback )
-	    {
-		_glfwWin.MousePosCallback( _glfwInput.MousePosX,
-					   _glfwInput.MousePosY );
-	    }
+            if( _glfwWin.MousePosCallback )
+            {
+                _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                                           _glfwInput.MousePosY );
+            }
 
             break;
         }
@@ -458,75 +456,79 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 {
     switch( GetEventKind(event) )
     {
-    	case kEventWindowBoundsChanged:
-    	{
-      	    WindowRef window;
-      	    GetEventParameter( event, kEventParamDirectObject, typeWindowRef, NULL,
-			       sizeof(WindowRef), NULL, &window );
+        case kEventWindowBoundsChanged:
+        {
+            WindowRef window;
+            GetEventParameter( event,
+                               kEventParamDirectObject,
+                               typeWindowRef,
+                               NULL,
+                               sizeof(WindowRef),
+                               NULL,
+                               &window );
 
-      	    Rect rect;
-      	    GetWindowPortBounds( window, &rect );
+            Rect rect;
+            GetWindowPortBounds( window, &rect );
 
-      	    if( _glfwWin.Width != rect.right ||
-           	_glfwWin.Height != rect.bottom )
-      	    {
-        	aglUpdateContext(_glfwWin.AGLContext);
+            if( _glfwWin.Width != rect.right ||
+                _glfwWin.Height != rect.bottom )
+            {
+                aglUpdateContext(_glfwWin.AGLContext);
 
-        	_glfwWin.Width  = rect.right;
-        	_glfwWin.Height = rect.bottom;
-        	if( _glfwWin.WindowSizeCallback )
-        	{
-          	    _glfwWin.WindowSizeCallback( _glfwWin.Width,
-                                                _glfwWin.Height );
-        	}
-        	// Emulate (force) content invalidation
-        	if( _glfwWin.WindowRefreshCallback )
-        	{
-                    _glfwWin.WindowRefreshCallback();
-        	}
-      	    }
-      	    break;
-    	}
-
-    	case kEventWindowClose:
-    	{
-      	    // Check if the program wants us to close the window
-      	    if( _glfwWin.WindowCloseCallback )
-      	    {
-          	if( _glfwWin.WindowCloseCallback() )
-          	{
-              	    glfwCloseWindow();
-          	}
-     	    }
-      	    else
-      	    {
-          	glfwCloseWindow();
-      	    }
-      	    return noErr;
-    	}
-
-    	case kEventWindowDrawContent:
-    	{
-	    // Call user callback function
-            if( _glfwWin.WindowRefreshCallback )
-	    {
-		_glfwWin.WindowRefreshCallback();
-	    }
-	    break;
+                _glfwWin.Width  = rect.right;
+                _glfwWin.Height = rect.bottom;
+                if( _glfwWin.WindowSizeCallback )
+                {
+                    _glfwWin.WindowSizeCallback( _glfwWin.Width, _glfwWin.Height );
+                }
+                // Emulate (force) content invalidation
+                if( _glfwWin.WindowRefreshCallback )
+                {
+                        _glfwWin.WindowRefreshCallback();
+                }
+            }
+            break;
         }
 
-	case kEventWindowActivated:
-	{
-	    _glfwWin.Active = GL_TRUE;
-	    break;
-	}
+        case kEventWindowClose:
+        {
+            // Check if the program wants us to close the window
+            if( _glfwWin.WindowCloseCallback )
+            {
+                if( _glfwWin.WindowCloseCallback() )
+                {
+                        glfwCloseWindow();
+                }
+            }
+            else
+            {
+                glfwCloseWindow();
+            }
+            return noErr;
+        }
 
-	case kEventWindowDeactivated:
-	{
-	    _glfwWin.Active = GL_FALSE;
-	    _glfwInputDeactivation();
-	    break;
-	}
+        case kEventWindowDrawContent:
+        {
+            // Call user callback function
+            if( _glfwWin.WindowRefreshCallback )
+            {
+                _glfwWin.WindowRefreshCallback();
+            }
+            break;
+        }
+
+    case kEventWindowActivated:
+    {
+        _glfwWin.Active = GL_TRUE;
+        break;
+    }
+
+    case kEventWindowDeactivated:
+    {
+        _glfwWin.Active = GL_FALSE;
+        _glfwInputDeactivation();
+        break;
+    }
     }
 
     return eventNotHandledErr;
@@ -633,9 +635,9 @@ int  _glfwPlatformOpenWindow( int width,
     // Fail if OpenGL 3.0 or above was requested
     if( hints->glMajor > 2 )
     {
-	fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
-	_glfwPlatformCloseWindow();
-	return GL_FALSE;
+        fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
     }
 
     // Windowed or fullscreen; AGL or CGL? Quite the mess...
@@ -668,12 +670,12 @@ int  _glfwPlatformOpenWindow( int width,
         _setAGLAttribute( AGL_ACCUM_BLUE_SIZE,  hints->accumBlueBits );
         _setAGLAttribute( AGL_ACCUM_ALPHA_SIZE, hints->accumAlphaBits );
 
-	if( hints->samples > 1 )
-	{
-	    _setAGLattribute( AGL_SAMPLE_BUFFERS_ARB, 1 );
-	    _setAGLattribute( AGL_SAMPLES_ARB, hints->samples );
-	    AGLpixelFormatAttributes[numAGLAttrs++] = AGL_NO_RECOVERY;
-	}
+        if( hints->samples > 1 )
+        {
+            _setAGLattribute( AGL_SAMPLE_BUFFERS_ARB, 1 );
+            _setAGLattribute( AGL_SAMPLES_ARB, hints->samples );
+            AGLpixelFormatAttributes[numAGLAttrs++] = AGL_NO_RECOVERY;
+        }
 
         AGLpixelFormatAttributes[numAGLAttrs++] = AGL_NONE;
 
@@ -728,7 +730,7 @@ int  _glfwPlatformOpenWindow( int width,
                 return GL_FALSE;
             }
 
-    	    if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
+            if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
             {
                 fprintf( stderr, "glfwOpenWindow failing because it can't become a foreground application\n" );
                 _glfwPlatformCloseWindow();
@@ -737,7 +739,7 @@ int  _glfwPlatformOpenWindow( int width,
         }
 
 #endif /* higher than Jagwire */
-	    
+
         // create window
         Rect windowContentBounds;
         windowContentBounds.left = 0;
@@ -838,18 +840,18 @@ int  _glfwPlatformOpenWindow( int width,
             CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAStereo;
         }
 
-	if( hints->samples > 1 )
-	{
-	    _setCGLAttribute( kCGLPFASamples,       (CGLPixelFormatAttribute)hints->samples );
-	    _setCGLAttribute( kCGLPFASampleBuffers, (CGLPixelFormatAttribute)1 );
-	    CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFANoRecovery;
-	}
+        if( hints->samples > 1 )
+        {
+            _setCGLAttribute( kCGLPFASamples,       (CGLPixelFormatAttribute)hints->samples );
+            _setCGLAttribute( kCGLPFASampleBuffers, (CGLPixelFormatAttribute)1 );
+            CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFANoRecovery;
+        }
 
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = kCGLPFAFullScreen;
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = kCGLPFADoubleBuffer;
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = kCGLPFAAccelerated;
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = kCGLPFANoRecovery;
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = kCGLPFAMinimumPolicy;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAFullScreen;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFADoubleBuffer;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAAccelerated;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFANoRecovery;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = kCGLPFAMinimumPolicy;
 
         _setCGLAttribute( kCGLPFAAccumSize,
                           (CGLPixelFormatAttribute)( hints->accumRedBits \
@@ -862,44 +864,44 @@ int  _glfwPlatformOpenWindow( int width,
         _setCGLAttribute( kCGLPFAStencilSize, (CGLPixelFormatAttribute)stencilbits );
         _setCGLAttribute( kCGLPFAAuxBuffers,  (CGLPixelFormatAttribute)hints->auxBuffers );
 
-        CGLpixelFormatAttributes[ numCGLAttrs++ ]     = (CGLPixelFormatAttribute)NULL;
+        CGLpixelFormatAttributes[ numCGLAttrs++ ] = (CGLPixelFormatAttribute)NULL;
 
         // create a suitable pixel format with above attributes..
         cglErr = CGLChoosePixelFormat( CGLpixelFormatAttributes,
                                        &CGLpfObj,
                                        &numCGLvs );
         if( cglErr != kCGLNoError )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         // ..and create a rendering context using that pixel format
         cglErr = CGLCreateContext( CGLpfObj, NULL, &_glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         // enumerate depth of RGB channels - unlike AGL, CGL works with
         // a single parameter reflecting the full depth of the frame buffer
         (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAColorSize, &rgbColorDepth );
         if( rgbColorDepth == 24 || rgbColorDepth == 32 )
-	{
-	    rgbChannelDepth = 8;
-	}
+        {
+            rgbChannelDepth = 8;
+        }
         if( rgbColorDepth == 16 )
-	{
-	    rgbChannelDepth = 5;
-	}
+        {
+            rgbChannelDepth = 5;
+        }
 
         // get pixel depth of accumulator - I haven't got the slightest idea
         // how this number conforms to any other channel depth than 8 bits,
         // so this might end up giving completely knackered results...
         (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAAccumSize, &rgbaAccumDepth );
         if( rgbaAccumDepth == 32 )
-	{
-	    rgbaAccumDepth = 8;
-	}
+        {
+            rgbaAccumDepth = 8;
+        }
 
         // store values of pixel format for _glfwPlatformGetWindowParam's use
         _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
@@ -923,42 +925,43 @@ int  _glfwPlatformOpenWindow( int width,
         // capture the display for our application
         cgErr = CGCaptureAllDisplays();
         if( cgErr != kCGErrorSuccess )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         // find closest matching NON-STRETCHED display mode..
-        optimalMode = CGDisplayBestModeForParametersAndRefreshRateWithProperty( kCGDirectMainDisplay,
-	                                                                            rgbColorDepth,
-	                                                                            width,
-	/* Check further to the right -> */                                         height,
-	                                                                            hints->refreshRate,
-	                                                                            NULL,
-	                                                                            NULL );
+        optimalMode = CGDisplayBestModeForParametersAndRefreshRateWithProperty(
+                            kCGDirectMainDisplay,
+                            rgbColorDepth,
+                            width,
+                            height,
+                            hints->refreshRate,
+                            NULL,
+                            NULL );
         if( optimalMode == NULL )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         // ..and switch to that mode
         cgErr = CGDisplaySwitchToMode( kCGDirectMainDisplay, optimalMode );
         if( cgErr != kCGErrorSuccess )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         // switch to our OpenGL context, and bring it up fullscreen
         cglErr = CGLSetCurrentContext( _glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         cglErr = CGLSetFullScreen( _glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
-	{
-	    return GL_FALSE;
-	}
+        {
+            return GL_FALSE;
+        }
 
         return GL_TRUE;
     }
@@ -1278,7 +1281,7 @@ void _glfwMacDWSetMouseCursorPos( int x, int y )
     _glfwInput.MousePosY = y + content.top;
 
     CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
-			        CGPointMake( _glfwInput.MousePosX,
-					     _glfwInput.MousePosY ) );
+                                CGPointMake( _glfwInput.MousePosX,
+                                             _glfwInput.MousePosY ) );
 }
 
