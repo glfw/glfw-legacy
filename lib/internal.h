@@ -89,6 +89,20 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
+// Window option descriptor
+//------------------------------------------------------------------------
+typedef struct {
+    int         mode;
+    int         refreshRate;
+    int         windowNoResize;
+    int         glMajor;
+    int         glMinor;
+    int         glForward;
+    int         glDebug;
+} _GLFWwndconfig;
+
+
+//------------------------------------------------------------------------
 // Framebuffer descriptor
 //------------------------------------------------------------------------
 typedef struct {
