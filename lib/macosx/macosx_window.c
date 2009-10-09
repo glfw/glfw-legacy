@@ -597,9 +597,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
 {
     OSStatus error;
     unsigned int windowAttributes;
-#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
     ProcessSerialNumber psn;
-#endif
 
     // TODO: Break up this function!
 
@@ -624,8 +622,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
-
     if( _glfwLibrary.Unbundled )
     {
         if( GetCurrentProcess( &psn ) != noErr )
@@ -644,8 +640,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
             return GL_FALSE;
         }
     }
-
-#endif /* higher than Jagwire */
 
     if( !installEventHandlers() )
     {
