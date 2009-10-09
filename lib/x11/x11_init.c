@@ -151,6 +151,7 @@ static int InitDisplay( void )
     _glfwLibrary.display = XOpenDisplay( 0 );
     if( !_glfwLibrary.display )
     {
+        fprintf(stderr, "Failed to open X display\n");
         return GL_FALSE;
     }
 
