@@ -517,18 +517,18 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
             break;
         }
 
-    case kEventWindowActivated:
-    {
-        _glfwWin.Active = GL_TRUE;
-        break;
-    }
+        case kEventWindowActivated:
+        {
+            _glfwWin.Active = GL_TRUE;
+            break;
+        }
 
-    case kEventWindowDeactivated:
-    {
-        _glfwWin.Active = GL_FALSE;
-        _glfwInputDeactivation();
-        break;
-    }
+        case kEventWindowDeactivated:
+        {
+            _glfwWin.Active = GL_FALSE;
+            _glfwInputDeactivation();
+            break;
+        }
     }
 
     return eventNotHandledErr;
@@ -593,7 +593,7 @@ if ( AGLparameter != 0 ) \
 #define _getAGLAttribute( aglAttributeName, variableName ) \
 { \
     GLint aglValue; \
-    (void)aglDescribePixelFormat( pixelFormat, aglAttributeName, &aglValue ); \
+    (void)aglDescribePixelFormat( pixelFormat, aglAttributeName, (GLint*) &aglValue ); \
     variableName = aglValue; \
 }
 
@@ -607,7 +607,7 @@ if ( CGLparameter != 0 ) \
 #define _getCGLAttribute( cglAttributeName, variableName ) \
 { \
     long cglValue; \
-    (void)CGLDescribePixelFormat( CGLpfObj, 0, cglAttributeName, &cglValue ); \
+    (void)CGLDescribePixelFormat( CGLpfObj, 0, cglAttributeName, (GLint*) &cglValue ); \
     variableName = cglValue; \
 }
 
@@ -616,7 +616,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                               const _GLFWfbconfig *fbconfig )
 {
     OSStatus error;
-    ProcessSerialNumber psn;
 
     unsigned int windowAttributes;
 
@@ -665,8 +664,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         if( fbconfig->samples > 1 )
         {
-            _setAGLattribute( AGL_SAMPLE_BUFFERS_ARB, 1 );
-            _setAGLattribute( AGL_SAMPLES_ARB, fbconfig->samples );
+            _setAGLAttribute( AGL_SAMPLE_BUFFERS_ARB, 1 );
+            _setAGLAttribute( AGL_SAMPLES_ARB, fbconfig->samples );
             AGLpixelFormatAttributes[numAGLAttrs++] = AGL_NO_RECOVERY;
         }
 
@@ -814,7 +813,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
         CFDictionaryRef optimalMode;
 
         CGLPixelFormatObj CGLpfObj;
-        long numCGLvs = 0;
+        GLint numCGLvs = 0;
 
         CGLPixelFormatAttribute CGLpixelFormatAttributes[64];
         int numCGLAttrs = 0;
@@ -852,9 +851,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                                    + fbconfig->accumBlueBits \
                                                    + fbconfig->accumAlphaBits ) );
 
-        _setCGLAttribute( kCGLPFAAlphaSize,   (CGLPixelFormatAttribute)fbconfig->alphabits );
-        _setCGLAttribute( kCGLPFADepthSize,   (CGLPixelFormatAttribute)fbconfig->depthbits );
-        _setCGLAttribute( kCGLPFAStencilSize, (CGLPixelFormatAttribute)fbconfig->stencilbits );
+        _setCGLAttribute( kCGLPFAAlphaSize,   (CGLPixelFormatAttribute)fbconfig->alphaBits );
+        _setCGLAttribute( kCGLPFADepthSize,   (CGLPixelFormatAttribute)fbconfig->depthBits );
+        _setCGLAttribute( kCGLPFAStencilSize, (CGLPixelFormatAttribute)fbconfig->stencilBits );
         _setCGLAttribute( kCGLPFAAuxBuffers,  (CGLPixelFormatAttribute)fbconfig->auxBuffers );
 
         CGLpixelFormatAttributes[ numCGLAttrs++ ] = (CGLPixelFormatAttribute)NULL;
@@ -877,7 +876,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         // enumerate depth of RGB channels - unlike AGL, CGL works with
         // a single parameter reflecting the full depth of the frame buffer
-        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAColorSize, &rgbColorDepth );
+        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAColorSize, (GLint*) &rgbColorDepth );
         if( rgbColorDepth == 24 || rgbColorDepth == 32 )
         {
             rgbChannelDepth = 8;
@@ -890,7 +889,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
         // get pixel depth of accumulator - I haven't got the slightest idea
         // how this number conforms to any other channel depth than 8 bits,
         // so this might end up giving completely knackered results...
-        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAAccumSize, &rgbaAccumDepth );
+        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAAccumSize, (GLint*) &rgbaAccumDepth );
         if( rgbaAccumDepth == 32 )
         {
             rgbaAccumDepth = 8;
@@ -1056,7 +1055,7 @@ void _glfwPlatformSwapInterval( int interval )
         // ..or here
         (void)CGLSetParameter( _glfwWin.CGLContext,
                                kCGLCPSwapInterval,
-                               &CGLparameter );
+                               (GLint*) &CGLparameter );
     }
 }
 
