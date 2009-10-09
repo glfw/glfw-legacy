@@ -74,7 +74,7 @@ void _glfwChangeToResourcesDirectory( void )
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     if( mainBundle == NULL )
     {
-	UNBUNDLED;
+        UNBUNDLED;
     }
 
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
@@ -126,22 +126,18 @@ int _glfwPlatformInit( void )
     
     _glfwLibrary.Unbundled = 0;
     
-    _glfwLibrary.Libs.OpenGLFramework
-        = CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
+    _glfwLibrary.Libs.OpenGLFramework =
+        CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
     if( _glfwLibrary.Libs.OpenGLFramework == NULL )
     {
-        fprintf(
-            stderr,
-            "glfwInit failing because you aren't linked to OpenGL\n" );
+        fprintf( stderr, "glfwInit failing because you aren't linked to OpenGL\n" );
         return GL_FALSE;
     }
 
     _glfwDesktopVideoMode = CGDisplayCurrentMode( kCGDirectMainDisplay );
     if( _glfwDesktopVideoMode == NULL )
     {
-        fprintf(
-            stderr,
-            "glfwInit failing because it kind find the desktop display mode\n" );
+        fprintf( stderr, "glfwInit failing because it kind find the desktop display mode\n" );
         return GL_FALSE;
     }
 
@@ -151,9 +147,7 @@ int _glfwPlatformInit( void )
 
     if( !_glfwInstallEventHandlers() )
     {
-    	fprintf(
-            stderr,
-            "glfwInit failing because it can't install event handlers\n" );
+        fprintf( stderr, "glfwInit failing because it can't install event handlers\n" );
         _glfwPlatformTerminate();
         return GL_FALSE;
     }

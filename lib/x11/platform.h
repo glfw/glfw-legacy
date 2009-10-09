@@ -323,6 +323,8 @@ GLFWGLOBAL struct {
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
 
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+
     // Window opening hints
     _GLFWhints      hints;
 

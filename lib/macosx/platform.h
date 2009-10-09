@@ -113,7 +113,6 @@
 // full-screen/desktop-window "virtual" function table
 //========================================================================
 
-typedef int  ( * GLFWmacopenwindowfun )( int, int, int, int, int, int, int, int, int, int, int, int, int, int, int );
 typedef void ( * GLFWmacclosewindowfun )( void );
 typedef void ( * GLFWmacsetwindowtitlefun )( const char * );
 typedef void ( * GLFWmacsetwindowsizefun )( int, int );
@@ -125,7 +124,6 @@ typedef void ( * GLFWmacsetmousecursorposfun )( int, int );
 
 typedef struct
 {
-    GLFWmacopenwindowfun          OpenWindow;
     GLFWmacclosewindowfun         CloseWindow;
     GLFWmacsetwindowtitlefun      SetWindowTitle;
     GLFWmacsetwindowsizefun       SetWindowSize;
@@ -157,13 +155,8 @@ typedef struct _GLFWwin_struct _GLFWwin;
 
 struct _GLFWwin_struct {
 
-    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-
-    // Window states
-    int       Opened;          // Flag telling if window is opened or not
-    int       Active;          // Application active flag
-    int       Iconified;       // Window iconified flag
-
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+    
     // User callback functions
     GLFWwindowsizefun    WindowSizeCallback;
     GLFWwindowclosefun   WindowCloseCallback;
@@ -179,40 +172,46 @@ struct _GLFWwin_struct {
     int       MouseLock;       // Mouse-lock flag
     int       AutoPollEvents;  // Auto polling flag
     int       SysKeysDisabled; // System keys disabled flag
-    int       RefreshRate;     // Refresh rate (for fullscreen mode)
     int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
-    int	      Samples;
 
-    // Window status
+    // Window status & parameters
+    int       Opened;          // Flag telling if window is opened or not
+    int       Active;          // Application active flag
+    int       Iconified;       // Window iconified flag
     int       Width, Height;   // Window width and heigth
+    int       Accelerated;     // GL_TRUE if window is HW accelerated
+    int       RedBits;
+    int       GreenBits;
+    int       BlueBits;
+    int       AlphaBits;
+    int       DepthBits;
+    int       StencilBits;
+    int       AccumRedBits;
+    int       AccumGreenBits;
+    int       AccumBlueBits;
+    int       AccumAlphaBits;
+    int       AuxBuffers;
+    int       Stereo;
+    int       RefreshRate;     // Vertical monitor refresh rate
+    int       Samples;
 
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
     int       GLVerMajor,GLVerMinor,GLRevision,GLForward,GLDebug;
 
+// ========= PLATFORM SPECIFIC PART ======================================
 
-    // ========= PLATFORM SPECIFIC PART ======================================
+    WindowRef       MacWindow;
+    AGLContext      AGLContext;
+    CGLContextObj   CGLContext;
 
-    WindowRef               MacWindow;
-    AGLContext              AGLContext;
-    CGLContextObj           CGLContext;
-
-    EventHandlerUPP         MouseUPP;
-    EventHandlerUPP         CommandUPP;
-    EventHandlerUPP         KeyboardUPP;
-    EventHandlerUPP         WindowUPP;
+    EventHandlerUPP MouseUPP;
+    EventHandlerUPP CommandUPP;
+    EventHandlerUPP KeyboardUPP;
+    EventHandlerUPP WindowUPP;
 
     _GLFWmacwindowfunctions* WindowFunctions;
-
-    // for easy access by _glfwPlatformGetWindowParam
-    int Accelerated;
-    int RedBits, GreenBits, BlueBits, AlphaBits;
-    int DepthBits;
-    int StencilBits;
-    int AccumRedBits, AccumGreenBits, AccumBlueBits, AccumAlphaBits;
-    int AuxBuffers;
-    int Stereo;
 };
 
 GLFWGLOBAL _GLFWwin _glfwWin;
@@ -223,7 +222,7 @@ GLFWGLOBAL _GLFWwin _glfwWin;
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
 
-    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // Mouse status
     int  MousePosX, MousePosY;
@@ -240,7 +239,7 @@ GLFWGLOBAL struct {
     int  KeyRepeat;
 
 
-    // ========= PLATFORM SPECIFIC PART ======================================
+// ========= PLATFORM SPECIFIC PART ======================================
 
     UInt32 Modifiers;
 
@@ -284,6 +283,8 @@ GLFWGLOBAL struct {
 // Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
+
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // Window opening hints
     _GLFWhints      hints;

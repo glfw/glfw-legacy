@@ -30,39 +30,13 @@
 
 #include "internal.h"
 
-static _GLFWmacwindowfunctions _glfwMacFSWindowFunctions =
-{
-    _glfwMacFSOpenWindow,
-    _glfwMacFSCloseWindow,
-    _glfwMacFSSetWindowTitle,
-    _glfwMacFSSetWindowSize,
-    _glfwMacFSSetWindowPos,
-    _glfwMacFSIconifyWindow,
-    _glfwMacFSRestoreWindow,
-    _glfwMacFSRefreshWindowParams,
-    _glfwMacFSSetMouseCursorPos
-};
-
-static _GLFWmacwindowfunctions _glfwMacDWWindowFunctions =
-{
-    _glfwMacDWOpenWindow,
-    _glfwMacDWCloseWindow,
-    _glfwMacDWSetWindowTitle,
-    _glfwMacDWSetWindowSize,
-    _glfwMacDWSetWindowPos,
-    _glfwMacDWIconifyWindow,
-    _glfwMacDWRestoreWindow,
-    _glfwMacDWRefreshWindowParams,
-    _glfwMacDWSetMouseCursorPos
-};
-
 #define _glfwTestModifier( modifierMask, glfwKey ) \
 if ( changed & modifierMask ) \
 { \
     _glfwInputKey( glfwKey, (modifiers & modifierMask ? GLFW_PRESS : GLFW_RELEASE) ); \
 }
 
-void _glfwHandleMacModifierChange( UInt32 modifiers )
+static void handleMacModifierChange( UInt32 modifiers )
 {
     UInt32 changed = modifiers ^ _glfwInput.Modifiers;
 
@@ -76,7 +50,7 @@ void _glfwHandleMacModifierChange( UInt32 modifiers )
     _glfwInput.Modifiers = modifiers;
 }
 
-void _glfwHandleMacKeyChange( UInt32 keyCode, int action )
+static void handleMacKeyChange( UInt32 keyCode, int action )
 {
     switch ( keyCode )
     {
@@ -139,7 +113,7 @@ void _glfwHandleMacKeyChange( UInt32 keyCode, int action )
     }
 }
 
-EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
+static const EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
 {
     { kEventClassKeyboard, kEventRawKeyDown },
     { kEventClassKeyboard, kEventRawKeyUp },
@@ -147,9 +121,9 @@ EventTypeSpec GLFW_KEY_EVENT_TYPES[] =
     { kEventClassKeyboard, kEventRawKeyModifiersChanged }
 };
 
-OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
-                               EventRef event,
-                               void *userData )
+static OSStatus keyEventHandler( EventHandlerCallRef handlerCallRef,
+                                 EventRef event,
+                                 void *userData )
 {
     UInt32 keyCode;
     short int keyChar;
@@ -168,7 +142,7 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                    NULL,
                                    &keyCode ) == noErr )
             {
-                _glfwHandleMacKeyChange( keyCode, GLFW_PRESS );
+                handleMacKeyChange( keyCode, GLFW_PRESS );
             }
             if( GetEventParameter( event,
                                    kEventParamKeyUnicodes,
@@ -193,7 +167,7 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                    NULL,
                                    &keyCode ) == noErr )
             {
-                _glfwHandleMacKeyChange( keyCode, GLFW_RELEASE );
+                handleMacKeyChange( keyCode, GLFW_RELEASE );
             }
             if( GetEventParameter( event,
                                    kEventParamKeyUnicodes,
@@ -218,7 +192,7 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
                                    NULL,
                                    &modifiers ) == noErr )
             {
-                _glfwHandleMacModifierChange( modifiers );
+                handleMacModifierChange( modifiers );
                 return noErr;
             }
         }
@@ -228,7 +202,7 @@ OSStatus _glfwKeyEventHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
-EventTypeSpec GLFW_MOUSE_EVENT_TYPES[] =
+static const EventTypeSpec GLFW_MOUSE_EVENT_TYPES[] =
 {
     { kEventClassMouse, kEventMouseDown },
     { kEventClassMouse, kEventMouseUp },
@@ -237,9 +211,9 @@ EventTypeSpec GLFW_MOUSE_EVENT_TYPES[] =
     { kEventClassMouse, kEventMouseWheelMoved },
 };
 
-OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
-                                 EventRef event,
-                                 void *userData )
+static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
+                                   EventRef event,
+                                   void *userData )
 {
     switch( GetEventKind( event ) )
     {
@@ -392,18 +366,18 @@ OSStatus _glfwMouseEventHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
-EventTypeSpec GLFW_COMMAND_EVENT_TYPES[] =
+static const EventTypeSpec GLFW_COMMAND_EVENT_TYPES[] =
 {
     { kEventClassCommand, kEventCommandProcess }
 };
 
-OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
-                                 EventRef event,
-                                 void *userData )
+static OSStatus commandHandler( EventHandlerCallRef handlerCallRef,
+                                EventRef event,
+                                void *userData )
 {
     if( _glfwWin.SysKeysDisabled )
     {
-        // TO DO: give adequate UI feedback that this is the case
+        // TODO: Give adequate UI feedback that this is the case
         return eventNotHandledErr;
     }
 
@@ -441,7 +415,7 @@ OSStatus _glfwCommandHandler( EventHandlerCallRef handlerCallRef,
     return eventNotHandledErr;
 }
 
-EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
+static const EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
 {
   { kEventClassWindow, kEventWindowBoundsChanged },
   { kEventClassWindow, kEventWindowClose },
@@ -450,9 +424,9 @@ EventTypeSpec GLFW_WINDOW_EVENT_TYPES[] =
   { kEventClassWindow, kEventWindowDeactivated },
 };
 
-OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
-                              EventRef event,
-                              void *userData )
+static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
+                                    EventRef event,
+                                    void *userData )
 {
     switch( GetEventKind(event) )
     {
@@ -492,7 +466,7 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 
         case kEventWindowClose:
         {
-            // Check if the program wants us to close the window
+            // Check if the client wants us to close the window
             if( _glfwWin.WindowCloseCallback )
             {
                 if( _glfwWin.WindowCloseCallback() )
@@ -509,7 +483,6 @@ OSStatus _glfwWindowEventHandler( EventHandlerCallRef handlerCallRef,
 
         case kEventWindowDrawContent:
         {
-            // Call user callback function
             if( _glfwWin.WindowRefreshCallback )
             {
                 _glfwWin.WindowRefreshCallback();
@@ -538,7 +511,7 @@ int _glfwInstallEventHandlers( void )
 {
     OSStatus error;
 
-    _glfwWin.MouseUPP = NewEventHandlerUPP( _glfwMouseEventHandler );
+    _glfwWin.MouseUPP = NewEventHandlerUPP( mouseEventHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  _glfwWin.MouseUPP,
@@ -552,7 +525,7 @@ int _glfwInstallEventHandlers( void )
         return GL_FALSE;
     }
 
-    _glfwWin.CommandUPP = NewEventHandlerUPP( _glfwCommandHandler );
+    _glfwWin.CommandUPP = NewEventHandlerUPP( commandHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  _glfwWin.CommandUPP,
@@ -566,7 +539,7 @@ int _glfwInstallEventHandlers( void )
         return GL_FALSE;
     }
 
-    _glfwWin.KeyboardUPP = NewEventHandlerUPP( _glfwKeyEventHandler );
+    _glfwWin.KeyboardUPP = NewEventHandlerUPP( keyEventHandler );
 
     error = InstallEventHandler( GetApplicationEventTarget(),
                                  _glfwWin.KeyboardUPP,
@@ -616,21 +589,45 @@ int  _glfwPlatformOpenWindow( int width, int height,
                               const _GLFWfbconfig *fbconfig )
 {
     OSStatus error;
+#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
+    ProcessSerialNumber psn;
+#endif
 
     unsigned int windowAttributes;
 
-    // TO DO: Refactor this function!
-    _glfwWin.WindowFunctions = ( wndconfig->mode == GLFW_FULLSCREEN ?
-                               &_glfwMacFSWindowFunctions :
-                               &_glfwMacDWWindowFunctions );
+    // TODO: Break up this function!
 
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
     {
         fprintf( stderr, "glfwOpenWindow failing because OpenGL 3.0+ is not yet supported on Mac OS X" );
+
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
+
+#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
+
+    if( _glfwLibrary.Unbundled )
+    {
+        if( GetCurrentProcess( &psn ) != noErr )
+        {
+            fprintf( stderr, "glfwOpenWindow failing because it can't get the PSN\n" );
+
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
+        {
+            fprintf( stderr, "glfwOpenWindow failing because it can't become a foreground application\n" );
+
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+    }
+
+#endif /* higher than Jagwire */
 
     // Windowed or fullscreen; AGL or CGL? Quite the mess...
     // AGL appears to be the only choice for attaching OpenGL contexts to
@@ -644,6 +641,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         AGLpixelFormatAttributes[numAGLAttrs++] = AGL_RGBA;
         AGLpixelFormatAttributes[numAGLAttrs++] = AGL_DOUBLEBUFFER;
+        AGLpixelFormatAttributes[numAGLAttrs++] = AGL_CLOSEST_POLICY;
 
         if( fbconfig->stereo )
         {
@@ -678,26 +676,13 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                                            AGLpixelFormatAttributes );
         if( pixelFormat == NULL )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't create a pixel format\n" );
+            fprintf( stderr,
+                     "Failed to choose AGL pixel format: %s\n",
+                     aglErrorString( aglGetError() ) );
+
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
-
-        // store pixel format's values for _glfwPlatformGetWindowParam's use
-        _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.Accelerated );
-        _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.RedBits );
-        _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.GreenBits );
-        _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.BlueBits );
-        _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.AlphaBits );
-        _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.DepthBits );
-        _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.StencilBits );
-        _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.AccumRedBits );
-        _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.AccumGreenBits );
-        _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.AccumBlueBits );
-        _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.AccumAlphaBits );
-        _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
-        _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
-        _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
-        _glfwWin.RefreshRate = wndconfig->refreshRate;
 
         // create AGL context
         _glfwWin.AGLContext = aglCreateContext( pixelFormat, NULL );
@@ -706,31 +691,13 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
         if( _glfwWin.AGLContext == NULL )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't create an OpenGL context\n" );
+            fprintf( stderr,
+                     "Failed to create AGL context: %s\n",
+                     aglErrorString( aglGetError() ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
-
-#if MACOSX_DEPLOYMENT_TARGET > MAC_OS_X_VERSION_10_2
-
-        if( _glfwLibrary.Unbundled )
-        {
-            if( GetCurrentProcess( &psn ) != noErr )
-            {
-                fprintf( stderr, "glfwOpenWindow failing because it can't get the PSN\n" );
-                _glfwPlatformCloseWindow();
-                return GL_FALSE;
-            }
-
-            if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
-            {
-                fprintf( stderr, "glfwOpenWindow failing because it can't become a foreground application\n" );
-                _glfwPlatformCloseWindow();
-                return GL_FALSE;
-            }
-        }
-
-#endif /* higher than Jagwire */
 
         // create window
         Rect windowContentBounds;
@@ -739,9 +706,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
         windowContentBounds.right = width;
         windowContentBounds.bottom = height;
 
-        windowAttributes = ( kWindowCloseBoxAttribute        \
-                           | kWindowCollapseBoxAttribute     \
-                           | kWindowStandardHandlerAttribute );
+        windowAttributes = ( kWindowCloseBoxAttribute |
+                             kWindowCollapseBoxAttribute |
+                             kWindowStandardHandlerAttribute );
 
         if( wndconfig->windowNoResize )
         {
@@ -749,7 +716,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
         }
         else
         {
-            windowAttributes |= ( kWindowFullZoomAttribute | kWindowResizableAttribute );
+            windowAttributes |= ( kWindowFullZoomAttribute |
+                                  kWindowResizableAttribute );
         }
 
         error = CreateNewWindow( kDocumentWindowClass,
@@ -758,12 +726,13 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                  &( _glfwWin.MacWindow ) );
         if( ( error != noErr ) || ( _glfwWin.MacWindow == NULL ) )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't create a window\n" );
+            fprintf( stderr, "Failed to create Carbon window\n" );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
-        _glfwWin.WindowUPP = NewEventHandlerUPP( _glfwWindowEventHandler );
+        _glfwWin.WindowUPP = NewEventHandlerUPP( windowEventHandler );
 
         error = InstallWindowEventHandler( _glfwWin.MacWindow,
                                            _glfwWin.WindowUPP,
@@ -773,7 +742,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                            NULL );
         if( error != noErr )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't install window event handlers\n" );
+            fprintf( stderr, "Failed to install Carbon window event handler\n" );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -787,7 +757,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
         if( !aglSetDrawable( _glfwWin.AGLContext,
                              GetWindowPort( _glfwWin.MacWindow ) ) )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't draw to the window\n" );
+            fprintf( stderr,
+                     "Failed to set the AGL context as the Carbon window drawable: %s\n",
+                     aglErrorString( aglGetError() ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -795,15 +768,15 @@ int  _glfwPlatformOpenWindow( int width, int height,
         // Make OpenGL context current
         if( !aglSetCurrentContext( _glfwWin.AGLContext ) )
         {
-            fprintf( stderr, "glfwOpenWindow failing because it can't make the OpenGL context current\n" );
+            fprintf( stderr,
+                     "Failed to make AGL context current: %s\n",
+                     aglErrorString( aglGetError() ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
-        // show window
         ShowWindow( _glfwWin.MacWindow );
-
-        return GL_TRUE;
     }
     else
     {
@@ -819,9 +792,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
         int numCGLAttrs = 0;
 
         // variables for enumerating color depths
-        long rgbColorDepth;
-        long rgbaAccumDepth = 0;
-        int rgbChannelDepth = 0;
+        GLint rgbColorDepth;
+        GLint rgbaAccumDepth = 0;
+        GLint rgbChannelDepth = 0;
 
         // CGL pixel format attributes
         _setCGLAttribute( kCGLPFADisplayMask,
@@ -864,6 +837,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                        &numCGLvs );
         if( cglErr != kCGLNoError )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -871,12 +845,13 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cglErr = CGLCreateContext( CGLpfObj, NULL, &_glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
         // enumerate depth of RGB channels - unlike AGL, CGL works with
         // a single parameter reflecting the full depth of the frame buffer
-        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAColorSize, (GLint*) &rgbColorDepth );
+        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAColorSize, &rgbColorDepth );
         if( rgbColorDepth == 24 || rgbColorDepth == 32 )
         {
             rgbChannelDepth = 8;
@@ -889,28 +864,11 @@ int  _glfwPlatformOpenWindow( int width, int height,
         // get pixel depth of accumulator - I haven't got the slightest idea
         // how this number conforms to any other channel depth than 8 bits,
         // so this might end up giving completely knackered results...
-        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAAccumSize, (GLint*) &rgbaAccumDepth );
+        (void)CGLDescribePixelFormat( CGLpfObj, 0, kCGLPFAAccumSize, &rgbaAccumDepth );
         if( rgbaAccumDepth == 32 )
         {
             rgbaAccumDepth = 8;
         }
-
-        // store values of pixel format for _glfwPlatformGetWindowParam's use
-        _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
-        _getCGLAttribute( rgbChannelDepth,    _glfwWin.RedBits );
-        _getCGLAttribute( rgbChannelDepth,    _glfwWin.GreenBits );
-        _getCGLAttribute( rgbChannelDepth,    _glfwWin.BlueBits );
-        _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.AlphaBits );
-        _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.DepthBits );
-        _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.StencilBits );
-        _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumRedBits );
-        _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumGreenBits );
-        _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumBlueBits );
-        _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumAlphaBits );
-        _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
-        _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
-
-        _glfwWin.RefreshRate = wndconfig->refreshRate;
 
         // destroy our pixel format
         (void)CGLDestroyPixelFormat( CGLpfObj );
@@ -919,6 +877,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cgErr = CGCaptureAllDisplays();
         if( cgErr != kCGErrorSuccess )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -933,6 +892,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
                             NULL );
         if( optimalMode == NULL )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -940,6 +900,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cgErr = CGDisplaySwitchToMode( kCGDirectMainDisplay, optimalMode );
         if( cgErr != kCGErrorSuccess )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -947,40 +908,34 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cglErr = CGLSetCurrentContext( _glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
         cglErr = CGLSetFullScreen( _glfwWin.CGLContext );
         if( cglErr != kCGLNoError )
         {
+            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
-
-        return GL_TRUE;
     }
+
+    _glfwWin.RefreshRate = wndconfig->refreshRate;
+
+    return GL_TRUE;
 }
 
 void _glfwPlatformCloseWindow( void )
 {
-    if( _glfwWin.WindowFunctions != NULL )
+    if( _glfwWin.WindowUPP != NULL )
     {
-        if( _glfwWin.WindowUPP != NULL )
-        {
-            DisposeEventHandlerUPP( _glfwWin.WindowUPP );
-            _glfwWin.WindowUPP = NULL;
-        }
+        DisposeEventHandlerUPP( _glfwWin.WindowUPP );
+        _glfwWin.WindowUPP = NULL;
+    }
 
-        _glfwWin.WindowFunctions->CloseWindow();
-
-        if( !_glfwWin.Fullscreen && _glfwWin.AGLContext != NULL )
-        {
-            aglSetCurrentContext( NULL );
-            aglSetDrawable( _glfwWin.AGLContext, NULL );
-            aglDestroyContext( _glfwWin.AGLContext );
-            _glfwWin.AGLContext = NULL;
-        }
-
-        if( _glfwWin.Fullscreen && _glfwWin.CGLContext != NULL )
+    if( _glfwWin.Fullscreen )
+    {
+        if( _glfwWin.CGLContext != NULL )
         {
             CGLSetCurrentContext( NULL );
             CGLClearDrawable( _glfwWin.CGLContext );
@@ -988,51 +943,82 @@ void _glfwPlatformCloseWindow( void )
             CGReleaseAllDisplays();
             _glfwWin.CGLContext = NULL;
         }
-
-        if( _glfwWin.MacWindow != NULL )
+    }
+    else
+    {
+        if( _glfwWin.AGLContext != NULL )
         {
-            ReleaseWindow( _glfwWin.MacWindow );
-            _glfwWin.MacWindow = NULL;
+            aglSetCurrentContext( NULL );
+            aglSetDrawable( _glfwWin.AGLContext, NULL );
+            aglDestroyContext( _glfwWin.AGLContext );
+            _glfwWin.AGLContext = NULL;
         }
+    }
 
-        _glfwWin.WindowFunctions = NULL;
+    if( _glfwWin.MacWindow != NULL )
+    {
+        ReleaseWindow( _glfwWin.MacWindow );
+        _glfwWin.MacWindow = NULL;
     }
 }
 
 void _glfwPlatformSetWindowTitle( const char *title )
 {
-    _glfwWin.WindowFunctions->SetWindowTitle( title );
+    CFStringRef windowTitle;
+
+    if( !_glfwWin.Fullscreen )
+    {
+        windowTitle = CFStringCreateWithCString( kCFAllocatorDefault,
+                                                 title,
+                                                 kCFStringEncodingISOLatin1 );
+
+        (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, windowTitle );
+
+        CFRelease( windowTitle );
+    }
 }
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    _glfwWin.WindowFunctions->SetWindowSize( width, height );
+    if( !_glfwWin.Fullscreen )
+    {
+        SizeWindow( _glfwWin.MacWindow, width, height, TRUE );
+    }
 }
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    _glfwWin.WindowFunctions->SetWindowPos( x, y );
+    if( !_glfwWin.Fullscreen )
+    {
+        MoveWindow( _glfwWin.MacWindow, x, y, FALSE );
+    }
 }
 
 void _glfwPlatformIconifyWindow( void )
 {
-    _glfwWin.WindowFunctions->IconifyWindow();
+    if( !_glfwWin.Fullscreen )
+    {
+        (void)CollapseWindow( _glfwWin.MacWindow, TRUE );
+    }
 }
 
 void _glfwPlatformRestoreWindow( void )
 {
-    _glfwWin.WindowFunctions->RestoreWindow();
+    if( !_glfwWin.Fullscreen )
+    {
+        (void)CollapseWindow( _glfwWin.MacWindow, FALSE );
+    }
 }
 
 void _glfwPlatformSwapBuffers( void )
 {
-    if( !_glfwWin.Fullscreen )
+    if( _glfwWin.Fullscreen )
     {
-        aglSwapBuffers( _glfwWin.AGLContext );
+        CGLFlushDrawable( _glfwWin.CGLContext );
     }
     else
     {
-        CGLFlushDrawable( _glfwWin.CGLContext );
+        aglSwapBuffers( _glfwWin.AGLContext );
     }
 }
 
@@ -1041,49 +1027,57 @@ void _glfwPlatformSwapInterval( int interval )
     GLint AGLparameter = interval;
 
     // CGL doesn't seem to like intervals other than 0 (vsync off) or 1 (vsync on)
-    long CGLparameter = ( interval == 0 ? 0 : 1 );
+    long CGLparameter = ( interval ? 1 : 0 );
 
-    if( !_glfwWin.Fullscreen )
+    if( _glfwWin.Fullscreen )
     {
         // Don't care if we fail here..
-        (void)aglSetInteger( _glfwWin.AGLContext,
-                             AGL_SWAP_INTERVAL,
-                             &AGLparameter );
+        (void)CGLSetParameter( _glfwWin.CGLContext,
+                               kCGLCPSwapInterval,
+                               (GLint*) &CGLparameter );
     }
     else
     {
         // ..or here
-        (void)CGLSetParameter( _glfwWin.CGLContext,
-                               kCGLCPSwapInterval,
-                               (GLint*) &CGLparameter );
+        (void)aglSetInteger( _glfwWin.AGLContext,
+                             AGL_SWAP_INTERVAL,
+                             &AGLparameter );
     }
 }
 
 void _glfwPlatformRefreshWindowParams( void )
 {
-    _glfwWin.WindowFunctions->RefreshWindowParams();
-}
+    /*
+    _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
+    _getCGLAttribute( rgbChannelDepth,    _glfwWin.RedBits );
+    _getCGLAttribute( rgbChannelDepth,    _glfwWin.GreenBits );
+    _getCGLAttribute( rgbChannelDepth,    _glfwWin.BlueBits );
+    _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.AlphaBits );
+    _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.DepthBits );
+    _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.StencilBits );
+    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumRedBits );
+    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumGreenBits );
+    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumBlueBits );
+    _getCGLAttribute( rgbaAccumDepth,     _glfwWin.AccumAlphaBits );
+    _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
+    _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
+    _getCGLAttribute( kCGLPFASamples,     _glfwWin.Samples );
 
-int _glfwPlatformGetWindowParam( int param )
-{
-    switch ( param )
-    {
-        case GLFW_ACCELERATED:      return _glfwWin.Accelerated;    break;
-        case GLFW_RED_BITS:         return _glfwWin.RedBits;        break;
-        case GLFW_GREEN_BITS:       return _glfwWin.GreenBits;      break;
-        case GLFW_BLUE_BITS:        return _glfwWin.BlueBits;       break;
-        case GLFW_ALPHA_BITS:       return _glfwWin.AlphaBits;      break;
-        case GLFW_DEPTH_BITS:       return _glfwWin.DepthBits;      break;
-        case GLFW_STENCIL_BITS:     return _glfwWin.StencilBits;    break;
-        case GLFW_ACCUM_RED_BITS:   return _glfwWin.AccumRedBits;   break;
-        case GLFW_ACCUM_GREEN_BITS: return _glfwWin.AccumGreenBits; break;
-        case GLFW_ACCUM_BLUE_BITS:  return _glfwWin.AccumBlueBits;  break;
-        case GLFW_ACCUM_ALPHA_BITS: return _glfwWin.AccumAlphaBits; break;
-        case GLFW_AUX_BUFFERS:      return _glfwWin.AuxBuffers;     break;
-        case GLFW_STEREO:           return _glfwWin.Stereo;         break;
-        case GLFW_REFRESH_RATE:     return _glfwWin.RefreshRate;    break;
-        default:                    return GL_FALSE;
-    }
+    _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.Accelerated );
+    _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.RedBits );
+    _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.GreenBits );
+    _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.BlueBits );
+    _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.AlphaBits );
+    _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.DepthBits );
+    _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.StencilBits );
+    _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.AccumRedBits );
+    _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.AccumGreenBits );
+    _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.AccumBlueBits );
+    _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.AccumAlphaBits );
+    _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
+    _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
+    _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
+    */
 }
 
 void _glfwPlatformPollEvents( void )
@@ -1105,176 +1099,41 @@ void _glfwPlatformWaitEvents( void )
     // Wait for new events
     ReceiveNextEvent( 0, NULL, kEventDurationForever, FALSE, &event );
 
-    // Poll new events
+    // Process the new events
     _glfwPlatformPollEvents();
 }
 
 void _glfwPlatformHideMouseCursor( void )
 {
-    // TO DO: What if we fail here?
     CGDisplayHideCursor( kCGDirectMainDisplay );
     CGAssociateMouseAndMouseCursorPosition( false );
 }
 
 void _glfwPlatformShowMouseCursor( void )
 {
-    // TO DO: What if we fail here?
     CGDisplayShowCursor( kCGDirectMainDisplay );
     CGAssociateMouseAndMouseCursorPosition( true );
 }
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    _glfwWin.WindowFunctions->SetMouseCursorPos( x, y );
-}
-
-int _glfwMacFSOpenWindow( int width,
-                          int height,
-                          int redbits,
-                          int greenbits,
-                          int bluebits,
-                          int alphabits,
-                          int depthbits,
-                          int stencilbits,
-                          int accumredbits,
-                          int accumgreenbits,
-                          int accumbluebits,
-                          int accumalphabits,
-                          int auxbuffers,
-                          int stereo,
-                          int refreshrate )
-{
-    return GL_FALSE;
-}
-
-void _glfwMacFSCloseWindow( void )
-{
-    // TO DO: un-capture displays, &c.
-}
-
-void _glfwMacFSSetWindowTitle( const char *title )
-{
-    // no-op really, change "fake" mini-window title
-    _glfwMacDWSetWindowTitle( title );
-}
-
-void _glfwMacFSSetWindowSize( int width, int height )
-{
-    // TO DO: something funky for full-screen
-    _glfwMacDWSetWindowSize( width, height );
-}
-
-void _glfwMacFSSetWindowPos( int x, int y )
-{
-    // no-op really, change "fake" mini-window position
-    _glfwMacDWSetWindowPos( x, y );
-}
-
-void _glfwMacFSIconifyWindow( void )
-{
-    // TO DO: Something funky for full-screen
-    _glfwMacDWIconifyWindow();
-}
-
-void _glfwMacFSRestoreWindow( void )
-{
-    _glfwMacDWRestoreWindow();
-    // TO DO: Something funky for full-screen
-}
-
-void _glfwMacFSRefreshWindowParams( void )
-{
-    // TO DO: implement this!
-}
-
-void _glfwMacFSSetMouseCursorPos( int x, int y )
-{
-    // TO DO: what if we fail here?
-    CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
-                                CGPointMake( x, y ) );
-}
-
-int  _glfwMacDWOpenWindow( int width,
-                           int height,
-                           int redbits,
-                           int greenbits,
-                           int bluebits,
-                           int alphabits,
-                           int depthbits,
-                           int stencilbits,
-                           int accumredbits,
-                           int accumgreenbits,
-                           int accumbluebits,
-                           int accumalphabits,
-                           int auxbuffers,
-                           int stereo,
-                           int refreshrate )
-{
-    return GL_FALSE;
-}
-
-void _glfwMacDWCloseWindow( void )
-{
-}
-
-void _glfwMacDWSetWindowTitle( const char *title )
-{
-    CFStringRef windowTitle = CFStringCreateWithCString( kCFAllocatorDefault,
-                                                         title,
-                                                         kCFStringEncodingISOLatin1 );
-
-    // Don't care if we fail
-    (void)SetWindowTitleWithCFString( _glfwWin.MacWindow, windowTitle );
-
-    CFRelease( windowTitle );
-}
-
-void _glfwMacDWSetWindowSize( int width, int height )
-{
-    SizeWindow( _glfwWin.MacWindow,
-                width,
-                height,
-                TRUE );
-}
-
-void _glfwMacDWSetWindowPos( int x, int y )
-{
-    // TO DO: take main monitor bounds into account
-    MoveWindow( _glfwWin.MacWindow,
-                x,
-                y,
-                FALSE );
-}
-
-void _glfwMacDWIconifyWindow( void )
-{
-    // TO DO: What if we fail here?
-    (void)CollapseWindow( _glfwWin.MacWindow,
-                          TRUE );
-}
-
-void _glfwMacDWRestoreWindow( void )
-{
-    // TO DO: What if we fail here?
-    (void)CollapseWindow( _glfwWin.MacWindow,
-                          FALSE );
-}
-
-void _glfwMacDWRefreshWindowParams( void )
-{
-    // TO DO: implement this!
-}
-
-void _glfwMacDWSetMouseCursorPos( int x, int y )
-{
     Rect content;
-    GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
 
-    _glfwInput.MousePosX = x + content.left;
-    _glfwInput.MousePosY = y + content.top;
+    if( _glfwWin.Fullscreen )
+    {
+        CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
+                                    CGPointMake( x, y ) );
+    }
+    else
+    {
+        GetWindowBounds(_glfwWin.MacWindow, kWindowContentRgn, &content);
 
-    CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
-                                CGPointMake( _glfwInput.MousePosX,
-                                             _glfwInput.MousePosY ) );
+        _glfwInput.MousePosX = x + content.left;
+        _glfwInput.MousePosY = y + content.top;
+
+        CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
+                                    CGPointMake( _glfwInput.MousePosX,
+                                                _glfwInput.MousePosY ) );
+    }
 }
 
