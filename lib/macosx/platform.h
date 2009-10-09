@@ -139,8 +139,14 @@ _GLFWmacwindowfunctions;
 
 
 //========================================================================
-// Global variables (GLFW internals)
+// GLFW platform specific types
 //========================================================================
+
+//------------------------------------------------------------------------
+// Pointer length integer
+//------------------------------------------------------------------------
+typedef intptr_t GLFWintptr;
+
 
 GLFWGLOBAL CFDictionaryRef _glfwDesktopVideoMode;
 
@@ -278,6 +284,11 @@ GLFWGLOBAL struct {
 // Library global data
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
+
+    // Window opening hints
+    _GLFWhints      hints;
+
+// ========= PLATFORM SPECIFIC PART ======================================
 
     // Timer data
     struct {
