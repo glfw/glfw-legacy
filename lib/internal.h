@@ -61,7 +61,8 @@
 
 
 //------------------------------------------------------------------------
-// Window hints (set by glfwOpenWindowHint)
+// Window opening hints (set by glfwOpenWindowHint)
+// A bucket of semi-random stuff bunched together for historical reasons
 // This is used only by the platform independent code and only to store
 // parameters passed to us by glfwOpenWindowHint
 //------------------------------------------------------------------------
@@ -91,7 +92,8 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
-// Window/context option descriptor
+// Parameters relating to the creation of the context and window but not
+// directly related to the properties of the framebuffer
 // This is used to pass window and context creation parameters from the
 // platform independent code to the platform specific code
 //------------------------------------------------------------------------
@@ -107,7 +109,8 @@ typedef struct {
 
 
 //------------------------------------------------------------------------
-// Framebuffer configuration descriptor
+// Framebuffer configuration descriptor, i.e. buffers and their sizes
+// Also a platform specific ID used to map back to the actual backend APIs
 // This is used to pass framebuffer parameters from the platform independent
 // code to the platform specific code, and also to enumerate and select
 // available framebuffer configurations
