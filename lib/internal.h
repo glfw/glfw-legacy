@@ -64,19 +64,19 @@
 // Window hints (set by glfwOpenWindowHint)
 //------------------------------------------------------------------------
 typedef struct {
-	int         refreshRate;
-	int         accumRedBits;
-   	int         accumGreenBits;
-	int         accumBlueBits;
-	int         accumAlphaBits;
-	int         auxBuffers;
-	int         stereo;
-	int         windowNoResize;
-	int         samples;
-	int         glMajor;
-	int         glMinor;
-	int         glForward;
-	int         glDebug;
+    int         refreshRate;
+    int         accumRedBits;
+    int         accumGreenBits;
+    int         accumBlueBits;
+    int         accumAlphaBits;
+    int         auxBuffers;
+    int         stereo;
+    int         windowNoResize;
+    int         samples;
+    int         glMajor;
+    int         glMinor;
+    int         glForward;
+    int         glDebug;
 } _GLFWhints;
 
 
@@ -92,19 +92,19 @@ typedef struct {
 // Framebuffer descriptor
 //------------------------------------------------------------------------
 typedef struct {
-	int         redBits;
-	int         greenBits;
-	int         blueBits;
-	int         alphaBits;
-	int         depthBits;
-	int         stencilBits;
-	int         accumRedBits;
-   	int         accumGreenBits;
-	int         accumBlueBits;
-	int         accumAlphaBits;
-	int         auxBuffers;
-	int         stereo;
-	int         samples;
+    int         redBits;
+    int         greenBits;
+    int         blueBits;
+    int         alphaBits;
+    int         depthBits;
+    int         stencilBits;
+    int         accumRedBits;
+    int         accumGreenBits;
+    int         accumBlueBits;
+    int         accumAlphaBits;
+    int         auxBuffers;
+    int         stereo;
+    int         samples;
     GLFWintptr  platformID;
 } _GLFWfbconfig;
 
@@ -125,10 +125,10 @@ GLFWGLOBAL int _glfwInitialized;
 // Abstracted data stream (for image I/O)
 //------------------------------------------------------------------------
 typedef struct {
-	FILE*	file;
-	void*	data;
-	long	position;
-	long	size;
+    FILE*   file;
+    void*   data;
+    long    position;
+    long    size;
 } _GLFWstream;
 
 
@@ -149,7 +149,7 @@ int  _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount );
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode );
 
 // OpenGL extensions
-int	_glfwPlatformExtensionSupported( const char *extension );
+int _glfwPlatformExtensionSupported( const char *extension );
 void * _glfwPlatformGetProcAddress( const char *procname );
 
 // Joystick
