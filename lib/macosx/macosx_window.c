@@ -613,6 +613,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.cglContext     = NULL;
     _glfwWin.cglPixelFormat = NULL;
 
+    _glfwWin.RefreshRate = wndconfig->refreshRate;
+
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
     {
@@ -857,6 +859,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                        &numCGLvs );
         if( cglErr != kCGLNoError )
         {
+            fprintf( stderr,
+                     "Failed to choose CGL pixel format: %s\n",
+                     CGLErrorString( cglErr ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -865,6 +871,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cglErr = CGLCreateContext( _glfwWin.cglPixelFormat, NULL, &_glfwWin.cglContext );
         if( cglErr != kCGLNoError )
         {
+            fprintf( stderr,
+                     "Failed to create CGL context: %s\n",
+                     CGLErrorString( cglErr ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -880,6 +890,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cgErr = CGCaptureAllDisplays();
         if( cgErr != kCGErrorSuccess )
         {
+            fprintf( stderr,
+                     "Failed to capture Core Graphics displays\n");
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -895,6 +908,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
                             NULL );
         if( optimalMode == NULL )
         {
+            fprintf( stderr,
+                     "Failed to retrieve Core Graphics display mode\n");
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -903,6 +919,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cgErr = CGDisplaySwitchToMode( kCGDirectMainDisplay, optimalMode );
         if( cgErr != kCGErrorSuccess )
         {
+            fprintf( stderr,
+                     "Failed to switch to Core Graphics display mode\n");
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -911,6 +930,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cglErr = CGLSetCurrentContext( _glfwWin.cglContext );
         if( cglErr != kCGLNoError )
         {
+            fprintf( stderr,
+                     "Failed to make CGL context current: %s\n",
+                     CGLErrorString( cglErr ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -918,12 +941,14 @@ int  _glfwPlatformOpenWindow( int width, int height,
         cglErr = CGLSetFullScreen( _glfwWin.cglContext );
         if( cglErr != kCGLNoError )
         {
+            fprintf( stderr,
+                     "Failed to set CGL fullscreen mode: %s\n",
+                     CGLErrorString( cglErr ) );
+
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
     }
-
-    _glfwWin.RefreshRate = wndconfig->refreshRate;
 
     return GL_TRUE;
 }
