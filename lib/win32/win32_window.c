@@ -486,7 +486,7 @@ static int translateKey( WPARAM wParam, LPARAM lParam )
 
 
 //========================================================================
-// Translates a windows key to Unicode
+// Translates a Windows key to Unicode
 //========================================================================
 
 static void translateChar( DWORD wParam, DWORD lParam, int action )
