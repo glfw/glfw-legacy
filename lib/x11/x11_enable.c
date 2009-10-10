@@ -36,8 +36,7 @@
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformEnableSystemKeys() - Enable system keys
-// _glfwPlatformDisableSystemKeys() - Disable system keys
+// Enable system keys
 //========================================================================
 
 void _glfwPlatformEnableSystemKeys( void )
@@ -45,7 +44,12 @@ void _glfwPlatformEnableSystemKeys( void )
     // Not supported under X11 (yet)
 }
 
+//========================================================================
+// Disable system keys
+//========================================================================
+
 void _glfwPlatformDisableSystemKeys( void )
 {
     // Not supported under X11 (yet)
 }
+
