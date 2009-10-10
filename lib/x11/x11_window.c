@@ -436,11 +436,18 @@ static int GetNextEvent( void )
                 XPeekEvent( _glfwLibrary.display, &next_event );
                 if( next_event.type == KeyPress &&
                     next_event.xkey.window == event.xkey.window &&
-                    next_event.xkey.keycode == event.xkey.keycode &&
-                    next_event.xkey.time == event.xkey.time )
+                    next_event.xkey.keycode == event.xkey.keycode )
                 {
-                    // Do not report anything for this event
-                    break;
+                    // This last check is a hack to work around key repeats
+                    // leaking through due to some sort of time drift
+                    // Toshiyuki Takahashi can press a button 16 times per
+                    // second so it's fairly safe to assume that no human is
+                    // pressing the key 50 times per second (value is ms)
+                    if( ( next_event.xkey.time - event.xkey.time ) < 20 )
+                    {
+                        // Do not report anything for this event
+                        break;
+                    }
                 }
             }
 
