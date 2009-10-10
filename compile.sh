@@ -581,6 +581,20 @@ echo "LFLAGS = $LFLAGS_LINK" >>$MKNAME
 echo " " >>$MKNAME
 cat './examples/Makefile.x11.in' >>$MKNAME
 
+# ./tests/Makefile.x11
+MKNAME='./tests/Makefile.x11'
+echo "Creating ""$MKNAME""..." 1>&6
+echo " " 1>&6
+echo "$config_script: Creating ""$MKNAME""..." >&5
+echo "##########################################################################" >$MKNAME
+echo "# Automatically generated Makefile for GLFW" >>$MKNAME
+echo "##########################################################################" >>$MKNAME
+echo "CC     = $CC" >>$MKNAME
+echo "CFLAGS = $CFLAGS_LINK" >>$MKNAME
+echo "LFLAGS = $LFLAGS_LINK" >>$MKNAME
+echo " " >>$MKNAME
+cat './tests/Makefile.x11.in' >>$MKNAME
+
 
 ##########################################################################
 # Create pkg-config template file
