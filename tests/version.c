@@ -88,6 +88,8 @@ int main(void)
         extensions++;
     }
 
+    putchar('\n');
+
     glfwTerminate();
     exit(0);
 }
