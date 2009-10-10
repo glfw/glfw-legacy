@@ -1,33 +1,63 @@
+//========================================================================
+// Fullscreen multisampling anti-aliasing test
+// Copyright (c) Camilla Berglund <elmindreda@users.sourceforge.net>
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//    claim that you wrote the original software. If you use this software
+//    in a product, an acknowledgment in the product documentation would
+//    be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such, and must not
+//    be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source
+//    distribution.
+//
+//========================================================================
+//
+// This test renders a high contrast, slowly rotating quad, allowing for
+// visual verification of whether FSAA is indeed enabled
+//
+//========================================================================
 
 #include <GL/glfw.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 
-static int running = 1;
-
-static void keyboard(int key, int pressed)
+static void window_size_callback(int width, int height)
 {
-  if (key == GLFW_KEY_ESC && pressed)
-    running = 0;
-}
-
-static void resized(int width, int height)
-{
-  glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height);
 }
 
 int main(void)
 {
-  if (!glfwInit())
-    exit(1);
+    if (!glfwInit())
+    {
+        fprintf(stderr, "Failed to initialize GLFW\n");
+        exit(1);
+    }
 
-  glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
+    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
-  if (glfwOpenWindow(640, 480, 8, 8, 8, 0, 0, 0, GLFW_WINDOW))
-  {
+    if (!glfwOpenWindow(640, 480, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
+    {
+        glfwTerminate();
+
+        fprintf(stderr, "Failed to open GLFW default window\n");
+        exit(1);
+    }
+
     glfwSetWindowTitle("Aliasing Detector");
-    glfwSetWindowSizeCallback(resized);
-    glfwSetKeyCallback(keyboard);
+    glfwSetWindowSizeCallback(window_size_callback);
     glfwSwapInterval(1);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -35,31 +65,25 @@ int main(void)
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0.f, 1.f, 0.f, 1.f);
 
-    while (running)
+    while (glfwGetWindowParam(GLFW_OPENED))
     {
-      glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-      glLoadIdentity();
-      glRotatef(glfwGetTime(), 0.f, 0.f, 1.f);
+        glLoadIdentity();
+        glRotatef(glfwGetTime(), 0.f, 0.f, 1.f);
 
-      glBegin(GL_QUADS);
-      glColor3f(1.f, 1.f, 1.f);
-      glVertex2f(-0.25f,  0.25f);
-      glVertex2f( 0.25f,  0.25f);
-      glVertex2f( 0.25f, -0.25f);
-      glVertex2f(-0.25f, -0.25f);
-      glEnd();
+        glBegin(GL_QUADS);
+        glColor3f(1.f, 1.f, 1.f);
+        glVertex2f(-0.25f,  0.25f);
+        glVertex2f( 0.25f,  0.25f);
+        glVertex2f( 0.25f, -0.25f);
+        glVertex2f(-0.25f, -0.25f);
+        glEnd();
 
-      glfwSwapBuffers();
-
-      if (!glfwGetWindowParam(GLFW_OPENED))
-	running = 0;
+        glfwSwapBuffers();
     }
-  }
-  else
-    exit(1);
 
-  glfwTerminate();
-  exit(0);
+    glfwTerminate();
+    exit(0);
 }
 
