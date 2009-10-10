@@ -190,7 +190,7 @@ typedef struct _GLFWwin_struct _GLFWwin;
 struct _GLFWwin_struct {
 
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-    
+
     // User callback functions
     GLFWwindowsizefun    WindowSizeCallback;
     GLFWwindowclosefun   WindowCloseCallback;
@@ -333,7 +333,7 @@ GLFWGLOBAL struct {
     Display        *display;
 
     // Server-side GLX version
-    int             glxMajor, glxMinor; 
+    int             glxMajor, glxMinor;
 
     struct {
         int         Available;
