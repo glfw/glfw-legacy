@@ -679,7 +679,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
             }
             return 0;
-          }  
+          }
 
         // Is a key being released?
         case WM_KEYUP:
@@ -944,7 +944,7 @@ static void initWGLExtensions( void )
     {
         _glfwWin.SwapInterval = NULL;
     }
-    
+
     if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
         _glfwWin.ChoosePixelFormat = (WGLCHOOSEPIXELFORMATARB_T)
@@ -956,7 +956,7 @@ static void initWGLExtensions( void )
     {
         _glfwWin.ChoosePixelFormat = NULL;
         _glfwWin.GetPixelFormatAttribiv = NULL;
-    }  
+    }
 }
 
 
@@ -984,7 +984,7 @@ static ATOM registerWindowClass( void )
     if( !wc.hIcon )
     {
         // Load default icon
-        wc.hIcon = LoadIcon( NULL, IDI_WINLOGO ); 
+        wc.hIcon = LoadIcon( NULL, IDI_WINLOGO );
     }
 
     return RegisterClass( &wc );
@@ -1054,7 +1054,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
         // Win98/ME/2K/.NET/+)
         /*
         if( _glfwLibrary.Sys.WinVer != _GLFW_WIN_95 &&
-            _glfwLibrary.Sys.WinVer != _GLFW_WIN_NT4 && 
+            _glfwLibrary.Sys.WinVer != _GLFW_WIN_NT4 &&
             _glfwLibrary.Sys.WinVer != _GLFW_WIN_XP )
         {
             dwStyle |= WS_MINIMIZE;
@@ -1081,7 +1081,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
     // Adjust window position to working area (e.g. if the task bar is at
     // the top of the display). Fullscreen windows are always opened in
-    // the upper left corner regardless of the desktop working area. 
+    // the upper left corner regardless of the desktop working area.
     if( _glfwWin.Fullscreen )
     {
         wa.left = wa.top = 0;
@@ -1565,8 +1565,8 @@ void _glfwPlatformRefreshWindowParams( void )
 
         int values[sizeof(attribs) / sizeof(attribs[0])];
 
-        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, PixelFormat, 0, 
-                                         sizeof(attribs) / sizeof(attribs[0]), 
+        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, PixelFormat, 0,
+                                         sizeof(attribs) / sizeof(attribs[0]),
                                          attribs, values);
 
         // Is current OpenGL context accelerated?
@@ -1580,7 +1580,7 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.DepthBits      = values[5];
         _glfwWin.StencilBits    = values[6];
         _glfwWin.AccumRedBits   = values[7];
-        _glfwWin.AccumGreenBits = values[8]; 
+        _glfwWin.AccumGreenBits = values[8];
         _glfwWin.AccumBlueBits  = values[9];
         _glfwWin.AccumAlphaBits = values[10];
         _glfwWin.AuxBuffers     = values[11];

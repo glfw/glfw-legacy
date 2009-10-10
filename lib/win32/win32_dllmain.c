@@ -34,27 +34,27 @@
 #if defined(GLFW_BUILD_DLL)
 
 //========================================================================
-// DllMain()
+// GLFW DLL entry point
 //========================================================================
 
-int WINAPI DllMain( HINSTANCE hinst, unsigned long reason, void *x )
+BOOL WINAPI DllMain( HINSTANCE instance, DWORD reason, LPVOID reserved )
 {
-    // NOTE: Some compilers complains about hinst and x never being used -
+    // NOTE: Some compilers complains about instance and x never being used -
     // never mind that (we don't want to use them)!
 
     switch( reason )
     {
-    case DLL_PROCESS_ATTACH:
-        // Initializations
-        //glfwInit();   // We don't want to do that now!
-        break;
-    case DLL_PROCESS_DETACH:
-        // Do some cleanup
-        glfwTerminate();
-        break;
+        case DLL_PROCESS_ATTACH:
+            // Initializations
+            break;
+        case DLL_PROCESS_DETACH:
+            // Do some cleanup
+            glfwTerminate();
+            break;
     };
 
-    return 1;
+    return TRUE;
 }
 
 #endif // GLFW_BUILD_DLL
+

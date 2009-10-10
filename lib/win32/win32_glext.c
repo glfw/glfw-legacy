@@ -36,15 +36,13 @@
 //************************************************************************
 
 //========================================================================
-// Check if an OpenGL extension is available at runtime (Windows version checks
-// for WGL extensions)
+// Check if the current context supports the specified WGL extension
 //========================================================================
 
 int _glfwPlatformExtensionSupported( const char *extension )
 {
     const GLubyte *extensions;
 
-    // Try wglGetExtensionsStringEXT
     if( _glfwWin.GetExtensionsStringEXT != NULL )
     {
         extensions = (GLubyte *) _glfwWin.GetExtensionsStringEXT();
@@ -57,7 +55,6 @@ int _glfwPlatformExtensionSupported( const char *extension )
         }
     }
 
-    // Try wglGetExtensionsStringARB
     if( _glfwWin.GetExtensionsStringARB != NULL )
     {
         extensions = (GLubyte *) _glfwWin.GetExtensionsStringARB( _glfwWin.DC );
@@ -78,7 +75,7 @@ int _glfwPlatformExtensionSupported( const char *extension )
 // Get the function pointer to an OpenGL function
 //========================================================================
 
-void * _glfwPlatformGetProcAddress( const char *procname )
+void *_glfwPlatformGetProcAddress( const char *procname )
 {
     return (void *) wglGetProcAddress( procname );
 }

@@ -36,17 +36,21 @@
 //************************************************************************
 
 //========================================================================
-// _glfwBPP2RGB() - Convert BPP to RGB bits (based on "best guess")
+// Convert BPP to RGB bits based on "best guess"
 //========================================================================
 
-static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
+static void bpp2rgb( int bpp, int *r, int *g, int *b )
 {
     int delta;
 
-    // Special case: BPP = 32
-    if( bpp == 32 ) bpp = 24;
+    // We assume that by 32 they really meant 24
+    if( bpp == 32 )
+    {
+        bpp = 24;
+    }
 
     // Convert "bits per pixel" to red, green & blue sizes
+
     *r = *g = *b = bpp / 3;
     delta = bpp - (*r * 3);
     if( delta >= 1 )
@@ -61,7 +65,7 @@ static void _glfwBPP2RGB( int bpp, int *r, int *g, int *b )
 
 
 //========================================================================
-// _glfwGetClosestVideoModeBPP()
+// Return closest video mode by dimensions, refresh rate and bits per pixel
 //========================================================================
 
 int _glfwGetClosestVideoModeBPP( int *w, int *h, int *bpp, int *refresh )
@@ -128,13 +132,14 @@ int _glfwGetClosestVideoModeBPP( int *w, int *h, int *bpp, int *refresh )
 
 
 //========================================================================
-// _glfwGetClosestVideoMode()
+// Return closest video mode by dimensions, refresh rate and channel sizes
 //========================================================================
 
-int _glfwGetClosestVideoMode( int *w, int *h, int *r, int *g, int *b,
-    int *refresh )
+static int getClosestVideoMode( int *w, int *h,
+                                int *r, int *g, int *b,
+                                int *refresh )
 {
-    int     bpp, bestmode;
+    int bpp, bestmode;
 
     // Colorbits = sum of red/green/blue bits
     bpp = *r + *g + *b;
@@ -149,7 +154,7 @@ int _glfwGetClosestVideoMode( int *w, int *h, int *r, int *g, int *b,
     bestmode = _glfwGetClosestVideoModeBPP( w, h, &bpp, refresh );
 
     // Convert "bits per pixel" to red, green & blue sizes
-    _glfwBPP2RGB( bpp, r, g, b );
+    bpp2rgb( bpp, r, g, b );
 
     return bestmode;
 }
@@ -162,7 +167,7 @@ int _glfwGetClosestVideoMode( int *w, int *h, int *r, int *g, int *b,
 void _glfwSetVideoModeMODE( int mode )
 {
     DEVMODE dm;
-    int     success;
+    int success;
 
     // Get the parameters for the best matching display mode
     dm.dmSize = sizeof( DEVMODE );
@@ -209,7 +214,7 @@ void _glfwSetVideoMode( int *w, int *h, int r, int g, int b, int refresh )
     int     bestmode;
 
     // Find a best match mode
-    bestmode = _glfwGetClosestVideoMode( w, h, &r, &g, &b, &refresh );
+    bestmode = getClosestVideoMode( w, h, &r, &g, &b, &refresh );
 
     // Change mode
     _glfwSetVideoModeMODE( bestmode );
@@ -243,7 +248,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
         if( success && dm.dmBitsPerPel >= 15 )
         {
             // Convert to RGB, and back to bpp ("mask out" alpha bits etc)
-            _glfwBPP2RGB( dm.dmBitsPerPel, &r, &g, &b );
+            bpp2rgb( dm.dmBitsPerPel, &r, &g, &b );
             bpp = r + g + b;
 
             // Mode "code" for this mode
@@ -296,7 +301,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 
 
 //========================================================================
-// _glfwPlatformGetDesktopMode() - Get the desktop video mode
+// Get the desktop video mode
 //========================================================================
 
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
@@ -310,8 +315,6 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
     // Return desktop mode parameters
     mode->Width  = dm.dmPelsWidth;
     mode->Height = dm.dmPelsHeight;
-    _glfwBPP2RGB( dm.dmBitsPerPel, &mode->RedBits, &mode->GreenBits,
-                  &mode->BlueBits );
+    bpp2rgb( dm.dmBitsPerPel, &mode->RedBits, &mode->GreenBits, &mode->BlueBits );
 }
-
 
