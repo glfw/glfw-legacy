@@ -37,6 +37,78 @@
 
 static unsigned int counter = 0;
 
+static const char* get_key_name(int key)
+{
+    switch (key)
+    {
+        case GLFW_KEY_UNKNOWN:      return "unknown";
+        case GLFW_KEY_SPACE:        return "space";
+        case GLFW_KEY_ESC:          return "escape";
+        case GLFW_KEY_F1:           return "F1";
+        case GLFW_KEY_F2:           return "F2";
+        case GLFW_KEY_F3:           return "F3";
+        case GLFW_KEY_F4:           return "F4";
+        case GLFW_KEY_F5:           return "F5";
+        case GLFW_KEY_F6:           return "F6";
+        case GLFW_KEY_F7:           return "F7";
+        case GLFW_KEY_F8:           return "F8";
+        case GLFW_KEY_F9:           return "F9";
+        case GLFW_KEY_F10:          return "F10";
+        case GLFW_KEY_F11:          return "F11";
+        case GLFW_KEY_F12:          return "F12";
+        case GLFW_KEY_F13:          return "F13";
+        case GLFW_KEY_F14:          return "F14";
+        case GLFW_KEY_F15:          return "F15";
+        case GLFW_KEY_F16:          return "F16";
+        case GLFW_KEY_F17:          return "F17";
+        case GLFW_KEY_F18:          return "F18";
+        case GLFW_KEY_F19:          return "F19";
+        case GLFW_KEY_F20:          return "F20";
+        case GLFW_KEY_F21:          return "F21";
+        case GLFW_KEY_F22:          return "F22";
+        case GLFW_KEY_F23:          return "F23";
+        case GLFW_KEY_F24:          return "F24";
+        case GLFW_KEY_F25:          return "F25";
+        case GLFW_KEY_UP:           return "up";
+        case GLFW_KEY_DOWN:         return "down";
+        case GLFW_KEY_LEFT:         return "left";
+        case GLFW_KEY_RIGHT:        return "right";
+        case GLFW_KEY_LSHIFT:       return "left shift";
+        case GLFW_KEY_RSHIFT:       return "right shift";
+        case GLFW_KEY_LCTRL:        return "left control";
+        case GLFW_KEY_RCTRL:        return "right control";
+        case GLFW_KEY_LALT:         return "left alt";
+        case GLFW_KEY_RALT:         return "right alt";
+        case GLFW_KEY_TAB:          return "tab";
+        case GLFW_KEY_ENTER:        return "enter";
+        case GLFW_KEY_BACKSPACE:    return "backspace";
+        case GLFW_KEY_INSERT:       return "insert";
+        case GLFW_KEY_DEL:          return "delete";
+        case GLFW_KEY_PAGEUP:       return "page up";
+        case GLFW_KEY_PAGEDOWN:     return "page down";
+        case GLFW_KEY_HOME:         return "home";
+        case GLFW_KEY_END:          return "end";
+        case GLFW_KEY_KP_0:         return "keypad 0";
+        case GLFW_KEY_KP_1:         return "keypad 1";
+        case GLFW_KEY_KP_2:         return "keypad 2";
+        case GLFW_KEY_KP_3:         return "keypad 3";
+        case GLFW_KEY_KP_4:         return "keypad 4";
+        case GLFW_KEY_KP_5:         return "keypad 5";
+        case GLFW_KEY_KP_6:         return "keypad 6";
+        case GLFW_KEY_KP_7:         return "keypad 7";
+        case GLFW_KEY_KP_8:         return "keypad 8";
+        case GLFW_KEY_KP_9:         return "keypad 9";
+        case GLFW_KEY_KP_DIVIDE:    return "keypad divide";
+        case GLFW_KEY_KP_MULTIPLY:  return "keypad multiply";
+        case GLFW_KEY_KP_SUBTRACT:  return "keypad subtract";
+        case GLFW_KEY_KP_ADD:       return "keypad add";
+        case GLFW_KEY_KP_DECIMAL:   return "keypad decimal";
+        case GLFW_KEY_KP_EQUAL:     return "keypad equal";
+        case GLFW_KEY_KP_ENTER:     return "keypad enter";
+        default:                    return NULL;
+    }
+}
+
 static const char* get_action_name(int action)
 {
     switch (action)
@@ -87,10 +159,22 @@ static void mouse_wheel_callback(int position)
 
 static void key_callback(int key, int action)
 {
-    printf("%08x: Key 0x%04x was %s\n",
-           counter++,
-           key,
-           get_action_name(action));
+    const char* name = get_key_name(key);
+    if (name)
+    {
+        printf("%08x: Key 0x%04x (%s) was %s\n",
+               counter++,
+               key,
+               name,
+               get_action_name(action));
+    }
+    else
+    {
+        printf("%08x: Key 0x%04x was %s\n",
+               counter++,
+               key,
+               get_action_name(action));
+    }
 }
 
 static void char_callback(int character, int action)
