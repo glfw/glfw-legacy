@@ -105,8 +105,9 @@ static const char* get_key_name(int key)
         case GLFW_KEY_KP_DECIMAL:   return "keypad decimal";
         case GLFW_KEY_KP_EQUAL:     return "keypad equal";
         case GLFW_KEY_KP_ENTER:     return "keypad enter";
-        default:                    return NULL;
     }
+
+    return NULL;
 }
 
 static const char* get_action_name(int action)
