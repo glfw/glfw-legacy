@@ -5,55 +5,55 @@ all: triangle listmodes mthello pong3d mtbench particles splitview \
 
 
 # Rule for triangle
-triangle: triangle.c
+triangle: triangle.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) triangle.c $(LFLAGS) -o $@
 
 # Rule for listmodes
-listmodes: listmodes.c
+listmodes: listmodes.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o $@
 
 # Rule for mthello
-mthello: mthello.c
+mthello: mthello.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o $@
 
 # Rule for pong3d
-pong3d: pong3d.c
+pong3d: pong3d.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o $@
 
 # Rule for mtbench
-mtbench: mtbench.c
+mtbench: mtbench.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o $@
 
 # Rule for particles
-particles: particles.c
+particles: particles.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) particles.c $(LFLAGS) -o $@
 
 # Rule for splitview
-splitview: splitview.c
+splitview: splitview.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) splitview.c $(LFLAGS) -o $@
 
 # Rule for mipmaps
-mipmaps: mipmaps.c
+mipmaps: mipmaps.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o $@
 
 # Rule for keytest
-keytest: keytest.c
+keytest: keytest.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o $@
 
 # Rule for joytest
-joytest: joytest.c
+joytest: joytest.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o $@
 
 # Rule for gears
-gears: gears.c
+gears: gears.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) gears.c $(LFLAGS) -o $@
 
 # Rule for boing
-boing: boing.c
+boing: boing.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) boing.c $(LFLAGS) -o $@
 
 # Rule for wave
-wave: wave.c
+wave: wave.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o $@
 
 clean:
