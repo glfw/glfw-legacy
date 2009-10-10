@@ -236,9 +236,6 @@ int main(void)
 
     while (glfwGetWindowParam(GLFW_OPENED) == GL_TRUE)
     {
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers();
         glfwWaitEvents();
     }
 
