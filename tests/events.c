@@ -25,6 +25,8 @@
 //
 // This test hooks every available callback and outputs their arguments
 //
+// Log messages go to stdout, error messages to stderr
+//
 // Every event also gets a (sequential) number to aid discussion of logs
 //
 //========================================================================
