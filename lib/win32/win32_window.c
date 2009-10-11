@@ -455,10 +455,10 @@ static int translateKey( WPARAM wParam, LPARAM lParam )
         case VK_SUBTRACT:      return GLFW_KEY_KP_SUBTRACT;
         case VK_ADD:           return GLFW_KEY_KP_ADD;
         case VK_DECIMAL:       return GLFW_KEY_KP_DECIMAL;
-        case VK_NUMLOCK:       return GLFW_KEY_KP_NUMLOCK;
+        case VK_NUMLOCK:       return GLFW_KEY_KP_NUM_LOCK;
 
-        case VK_CAPITAL:       return GLFW_KEY_CAPSLOCK;
-        case VK_SCROLL:        return GLFW_KEY_SCROLL;
+        case VK_CAPITAL:       return GLFW_KEY_CAPS_LOCK;
+        case VK_SCROLL:        return GLFW_KEY_SCROLL_LOCK;
         case VK_PAUSE:         return GLFW_KEY_PAUSE;
 
         case VK_LWIN:          return GLFW_KEY_LSUPER;
