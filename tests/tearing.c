@@ -39,7 +39,7 @@ static void window_size_callback(int width, int height)
     glViewport(0, 0, width, height);
 }
 
-int main(int argc, char** argv)
+int main(void)
 {
     float position;
 
