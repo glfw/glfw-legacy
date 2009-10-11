@@ -60,7 +60,7 @@ enum {
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
 #define GLX_CONTEXT_FLAGS_ARB 0x2094
 #define GLX_CONTEXT_DEBUG_BIT_ARB 0x0001
-#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002 
+#define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
 
 /* Prototype for glXCreateContextAttribs */
 typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)( Display *display,
@@ -776,7 +776,7 @@ static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
         glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[i], GLX_FBCONFIG_ID,
                               (int*) &platformID );
         result[*found].platformID = (GLFWintptr) platformID;
-                                                    
+
         (*found)++;
     }
 
@@ -798,7 +798,7 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     int flags, fbcount, index;
     const GLubyte *extensions;
     GLXFBConfig *fbconfigs;
-    PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL; 
+    PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL;
 
     if( wndconfig->glMajor > 2 )
     {
@@ -1556,15 +1556,15 @@ void _glfwPlatformRefreshWindowParams( void )
     // Get multisample buffer samples
     glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLES,
           &_glfwWin.Samples );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLE_BUFFERS, 
+    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLE_BUFFERS,
           &sample_buffers );
     if( sample_buffers == 0 )
       _glfwWin.Samples = 0;
     */
-    
+
     // Default to refresh rate unknown (=0 according to GLFW spec)
     _glfwWin.RefreshRate = 0;
-          
+
     // Retrieve refresh rate, if possible
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
@@ -1669,7 +1669,7 @@ void _glfwPlatformPollEvents( void )
         {
             // Change back video mode to user selected mode
             _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
-                               &_glfwWin.Height, &_glfwWin.RefreshRate ); 
+                               &_glfwWin.Height, &_glfwWin.RefreshRate );
             // Disable window manager decorations
             EnableDecorations();
 
