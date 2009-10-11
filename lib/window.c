@@ -431,12 +431,13 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     fbconfig.samples        = _glfwLibrary.hints.samples;
 
     // Set up desired window config
-    wndconfig.mode          = mode;
-    wndconfig.refreshRate   = _glfwLibrary.hints.refreshRate;
-    wndconfig.glMajor       = _glfwLibrary.hints.glMajor;
-    wndconfig.glMinor       = _glfwLibrary.hints.glMinor;
-    wndconfig.glForward     = _glfwLibrary.hints.glForward;
-    wndconfig.glDebug       = _glfwLibrary.hints.glDebug;
+    wndconfig.mode           = mode;
+    wndconfig.refreshRate    = _glfwLibrary.hints.refreshRate;
+    wndconfig.windowNoResize = _glfwLibrary.hints.windowNoResize;
+    wndconfig.glMajor        = _glfwLibrary.hints.glMajor;
+    wndconfig.glMinor        = _glfwLibrary.hints.glMinor;
+    wndconfig.glForward      = _glfwLibrary.hints.glForward;
+    wndconfig.glDebug        = _glfwLibrary.hints.glDebug;
 
     // Clear for next open call
     _glfwClearWindowHints();
