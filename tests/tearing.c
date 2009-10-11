@@ -49,7 +49,7 @@ int main(void)
         exit(1);
     }
 
-    if (!glfwOpenWindow(640, 480, 0, 0, 0, 0, 16, 0, GLFW_WINDOW))
+    if (!glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
     {
         glfwTerminate();
 
