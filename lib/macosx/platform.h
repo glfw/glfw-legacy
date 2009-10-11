@@ -108,7 +108,6 @@
 #define MAC_KEY_KP_DECIMAL  0x41
 #define MAC_KEY_KP_EQUAL    0x51
 #define MAC_KEY_KP_ENTER    0x4C
-#define MAC_KEY_CAPSLOCK    0x39
 #define MAC_KEY_NUMLOCK     0x47
 
 
@@ -132,7 +131,7 @@ typedef struct _GLFWwin_struct _GLFWwin;
 struct _GLFWwin_struct {
 
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
-    
+
     // User callback functions
     GLFWwindowsizefun    WindowSizeCallback;
     GLFWwindowclosefun   WindowCloseCallback;
@@ -277,9 +276,9 @@ GLFWGLOBAL struct {
 
     struct {
 	    // Bundle for dynamically-loading extension function pointers
-    	CFBundleRef OpenGLFramework;
+        CFBundleRef OpenGLFramework;
     } Libs;
-    
+
     int Unbundled;
 
 } _glfwLibrary;

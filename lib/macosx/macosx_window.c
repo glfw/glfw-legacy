@@ -44,12 +44,15 @@ static void handleMacModifierChange( UInt32 modifiers )
 {
     UInt32 changed = modifiers ^ _glfwInput.Modifiers;
 
+    // The right *key variants below never actually occur
+    // There also isn't even a broken right command key constant
     _glfwTestModifier( shiftKey,        GLFW_KEY_LSHIFT );
     _glfwTestModifier( rightShiftKey,   GLFW_KEY_RSHIFT );
     _glfwTestModifier( controlKey,      GLFW_KEY_LCTRL );
     _glfwTestModifier( rightControlKey, GLFW_KEY_RCTRL );
     _glfwTestModifier( optionKey,       GLFW_KEY_LALT );
     _glfwTestModifier( rightOptionKey,  GLFW_KEY_RALT );
+    _glfwTestModifier( cmdKey,          GLFW_KEY_LSUPER );
 
     _glfwInput.Modifiers = modifiers;
 }
@@ -105,8 +108,7 @@ static void handleMacKeyChange( UInt32 keyCode, int action )
         case MAC_KEY_KP_DECIMAL:  _glfwInputKey( GLFW_KEY_KP_DECIMAL,  action); break;
         case MAC_KEY_KP_EQUAL:    _glfwInputKey( GLFW_KEY_KP_EQUAL,    action); break;
         case MAC_KEY_KP_ENTER:    _glfwInputKey( GLFW_KEY_KP_ENTER,    action); break;
-        case MAC_KEY_CAPSLOCK:    _glfwInputKey( GLFW_KEY_CAPSLOCK,    action); break;
-        case MAC_KEY_NUMLOCK:     _glfwInputKey( GLFW_KEY_KP_NUMLOCK,  action); break;
+        case MAC_KEY_NUMLOCK:     _glfwInputKey( GLFW_KEY_KP_NUM_LOCK, action); break;
         default:
         {
             extern void *KCHRPtr;
@@ -640,6 +642,17 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
             _glfwPlatformCloseWindow();
             return GL_FALSE;
+        }
+
+        if( wndconfig->mode == GLFW_FULLSCREEN )
+        {
+            if( SetFrontProcess( &psn ) != noErr )
+            {
+                fprintf( stderr, "Failed to become the front process\n" );
+
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
         }
     }
 
