@@ -315,6 +315,7 @@ static int TranslateKey( int keycode )
         case XK_Alt_L:        return GLFW_KEY_LALT;
         case XK_Mode_switch:  // Mapped to Alt_R on many keyboards
         case XK_Meta_R:
+        case XK_ISO_Level3_Shift: // AltGr on at least some machines
         case XK_Alt_R:        return GLFW_KEY_RALT;
         case XK_Super_L:      return GLFW_KEY_LSUPER;
         case XK_Super_R:      return GLFW_KEY_RSUPER;
