@@ -319,30 +319,4 @@ pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 
 void  _glfwChangeToResourcesDirectory( void );
 
-int  _glfwInstallEventHandlers( void );
-
-//========================================================================
-// Prototypes for full-screen/desktop-window "virtual" functions
-//========================================================================
-
-int  _glfwMacFSOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int accumredbits, int accumgreenbits, int accumbluebits, int accumalphabits, int auxbuffers, int stereo, int refreshrate );
-void _glfwMacFSCloseWindow( void );
-void _glfwMacFSSetWindowTitle( const char *title );
-void _glfwMacFSSetWindowSize( int width, int height );
-void _glfwMacFSSetWindowPos( int x, int y );
-void _glfwMacFSIconifyWindow( void );
-void _glfwMacFSRestoreWindow( void );
-void _glfwMacFSRefreshWindowParams( void );
-void _glfwMacFSSetMouseCursorPos( int x, int y );
-
-int  _glfwMacDWOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int accumredbits, int accumgreenbits, int accumbluebits, int accumalphabits, int auxbuffers, int stereo, int refreshrate );
-void _glfwMacDWCloseWindow( void );
-void _glfwMacDWSetWindowTitle( const char *title );
-void _glfwMacDWSetWindowSize( int width, int height );
-void _glfwMacDWSetWindowPos( int x, int y );
-void _glfwMacDWIconifyWindow( void );
-void _glfwMacDWRestoreWindow( void );
-void _glfwMacDWRefreshWindowParams( void );
-void _glfwMacDWSetMouseCursorPos( int x, int y );
-
 #endif // _platform_h_
