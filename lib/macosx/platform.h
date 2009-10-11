@@ -108,6 +108,8 @@
 #define MAC_KEY_KP_DECIMAL  0x41
 #define MAC_KEY_KP_EQUAL    0x51
 #define MAC_KEY_KP_ENTER    0x4C
+#define MAC_KEY_CAPSLOCK    0x39
+#define MAC_KEY_NUMLOCK     0x47
 
 
 //========================================================================

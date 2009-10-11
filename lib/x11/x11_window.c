@@ -306,6 +306,13 @@ static int TranslateKey( int keycode )
         case XK_Mode_switch:  // Mapped to Alt_R on many keyboards
         case XK_Meta_R:
         case XK_Alt_R:        return GLFW_KEY_RALT;
+        case XK_Super_L:      return GLFW_KEY_LSUPER;
+        case XK_Super_R:      return GLFW_KEY_RSUPER;
+        case XK_Menu:         return GLFW_KEY_MENU;
+        case XK_Num_Lock:     return GLFW_KEY_KP_NUM_LOCK;
+        case XK_Caps_Lock:    return GLFW_KEY_CAPS_LOCK;
+        case XK_Scroll_Lock:  return GLFW_KEY_SCROLL_LOCK;
+        case XK_Pause:        return GLFW_KEY_PAUSE;
         case XK_KP_Delete:
         case XK_Delete:       return GLFW_KEY_DEL;
         case XK_BackSpace:    return GLFW_KEY_BACKSPACE;

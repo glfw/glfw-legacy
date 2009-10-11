@@ -107,6 +107,13 @@ static const char* get_key_name(int key)
         case GLFW_KEY_KP_DECIMAL:   return "keypad decimal";
         case GLFW_KEY_KP_EQUAL:     return "keypad equal";
         case GLFW_KEY_KP_ENTER:     return "keypad enter";
+        case GLFW_KEY_KP_NUM_LOCK:  return "keypad num lock";
+        case GLFW_KEY_CAPS_LOCK:    return "caps lock";
+        case GLFW_KEY_SCROLL_LOCK:  return "scroll lock";
+        case GLFW_KEY_PAUSE:        return "pause";
+        case GLFW_KEY_LSUPER:       return "left super";
+        case GLFW_KEY_RSUPER:       return "right super";
+        case GLFW_KEY_MENU:         return "menu";
     }
 
     return NULL;
@@ -221,7 +228,6 @@ int main(void)
 
     glfwSetWindowTitle("Event Linter");
     glfwSwapInterval(1);
-    glfwDisable(GLFW_AUTO_POLL_EVENTS);
 
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSetWindowCloseCallback(window_close_callback);

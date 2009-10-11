@@ -105,6 +105,8 @@ static void handleMacKeyChange( UInt32 keyCode, int action )
         case MAC_KEY_KP_DECIMAL:  _glfwInputKey( GLFW_KEY_KP_DECIMAL,  action); break;
         case MAC_KEY_KP_EQUAL:    _glfwInputKey( GLFW_KEY_KP_EQUAL,    action); break;
         case MAC_KEY_KP_ENTER:    _glfwInputKey( GLFW_KEY_KP_ENTER,    action); break;
+        case MAC_KEY_CAPSLOCK:    _glfwInputKey( GLFW_KEY_CAPSLOCK,    action); break;
+        case MAC_KEY_NUMLOCK:     _glfwInputKey( GLFW_KEY_KP_NUMLOCK,  action); break;
         default:
         {
             extern void *KCHRPtr;
