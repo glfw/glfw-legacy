@@ -134,37 +134,43 @@ static const char* get_action_name(int action)
 
 static void window_size_callback(int width, int height)
 {
-    printf("%08x: Window size: %i %i\n", counter++, width, height);
+    printf("%08x at %0.3f: Window size: %i %i\n",
+           counter++,
+           glfwGetTime(),
+           width,
+           height);
+
     glViewport(0, 0, width, height);
 }
 
 static int window_close_callback(void)
 {
-    printf("%08x: Window close\n", counter++);
+    printf("%08x at %0.3f: Window close\n", counter++, glfwGetTime());
     return 1;
 }
 
 static void window_refresh_callback(void)
 {
-    printf("%08x: Window refresh\n", counter++);
+    printf("%08x at %0.3f: Window refresh\n", counter++, glfwGetTime());
 }
 
 static void mouse_button_callback(int button, int action)
 {
-    printf("%08x: Mouse button %i was %s\n",
+    printf("%08x at %0.3f: Mouse button %i was %s\n",
            counter++,
+           glfwGetTime(),
            button,
            get_action_name(action));
 }
 
 static void mouse_position_callback(int x, int y)
 {
-    printf("%08x: Mouse position: %i %i\n", counter++, x, y);
+    printf("%08x at %0.3f: Mouse position: %i %i\n", counter++, glfwGetTime(), x, y);
 }
 
 static void mouse_wheel_callback(int position)
 {
-    printf("%08x: Mouse wheel: %i\n", counter++, position);
+    printf("%08x at %0.3f: Mouse wheel: %i\n", counter++, glfwGetTime(), position);
 }
 
 static void key_callback(int key, int action)
@@ -172,16 +178,18 @@ static void key_callback(int key, int action)
     const char* name = get_key_name(key);
     if (name)
     {
-        printf("%08x: Key 0x%04x (%s) was %s\n",
+        printf("%08x at %0.3f: Key 0x%04x (%s) was %s\n",
                counter++,
+               glfwGetTime(),
                key,
                name,
                get_action_name(action));
     }
     else
     {
-        printf("%08x: Key 0x%04x was %s\n",
+        printf("%08x at %0.3f: Key 0x%04x was %s\n",
                counter++,
+               glfwGetTime(),
                key,
                get_action_name(action));
     }
@@ -191,16 +199,18 @@ static void char_callback(int character, int action)
 {
     if (isgraph(character))
     {
-        printf("%08x: Character 0x%04x (%c) was %s\n",
+        printf("%08x at %0.3f: Character 0x%04x (%c) was %s\n",
                counter++,
+               glfwGetTime(),
                character,
                character,
                get_action_name(action));
     }
     else
     {
-        printf("%08x: Character 0x%04x was %s\n",
+        printf("%08x at %0.3f: Character 0x%04x was %s\n",
                counter++,
+               glfwGetTime(),
                character,
                get_action_name(action));
     }
