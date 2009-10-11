@@ -93,17 +93,17 @@ static Bool IsMapNotify( Display *d, XEvent *e, char *arg )
 
 #define MWM_HINTS_DECORATIONS (1L << 1)
 
-static void DisableDecorations( void )
+static void disableDecorations( void )
 {
-    int RemovedDecorations;
-    Atom HintAtom;
+    GLboolean removedDecorations;
+    Atom hintAtom;
     XSetWindowAttributes attributes;
 
-    RemovedDecorations = 0;
+    removedDecorations = GL_FALSE;
 
     // First try to set MWM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
+    if ( hintAtom != None )
     {
         struct {
             unsigned long flags;
@@ -113,66 +113,72 @@ static void DisableDecorations( void )
             unsigned long status;
         } MWMHints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
 
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
                          32, PropModeReplace, (unsigned char *)&MWMHints,
-                         sizeof(MWMHints)/4 );
-        RemovedDecorations = 1;
+                         sizeof(MWMHints) / 4 );
+        removedDecorations = GL_TRUE;
     }
 
     // Now try to set KWM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
+    if ( hintAtom != None )
     {
         long KWMHints = KDE_tinyDecoration;
 
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
                          32, PropModeReplace, (unsigned char *)&KWMHints,
-                         sizeof(KWMHints)/4 );
-        RemovedDecorations = 1;
+                         sizeof(KWMHints) / 4 );
+        removedDecorations = GL_TRUE;
     }
 
     // Now try to set GNOME hints
-    HintAtom = XInternAtom(_glfwLibrary.display, "_WIN_HINTS", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
+    if ( hintAtom != None )
     {
         long GNOMEHints = 0;
 
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, HintAtom,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
                          32, PropModeReplace, (unsigned char *)&GNOMEHints,
-                         sizeof(GNOMEHints)/4 );
-        RemovedDecorations = 1;
+                         sizeof(GNOMEHints) / 4 );
+        removedDecorations = GL_TRUE;
     }
 
     // Now try to set KDE NET_WM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
+    if ( hintAtom != None )
     {
         Atom NET_WMHints[2];
 
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.display, "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE", True );
+        NET_WMHints[0] = XInternAtom( _glfwLibrary.display,
+                                      "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE",
+                                      True );
         /* define a fallback... */
-        NET_WMHints[1] = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE_NORMAL", True );
+        NET_WMHints[1] = XInternAtom( _glfwLibrary.display,
+                                      "_NET_WM_WINDOW_TYPE_NORMAL",
+                                      True );
 
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, XA_ATOM,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, XA_ATOM,
                          32, PropModeReplace, (unsigned char *)&NET_WMHints,
                          2 );
-        RemovedDecorations = 1;
+        removedDecorations = GL_TRUE;
     }
 
     // Set ICCCM fullscreen WM hint
-    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE", True );
+    if ( hintAtom != None )
     {
         Atom NET_WMHints[1];
 
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE_FULLSCREEN", True );
+        NET_WMHints[0] = XInternAtom( _glfwLibrary.display,
+                                      "_NET_WM_STATE_FULLSCREEN",
+                                      True );
 
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, HintAtom, XA_ATOM,
+        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, XA_ATOM,
                          32, PropModeReplace, (unsigned char *)&NET_WMHints, 1 );
     }
 
     // Did we sucessfully remove the window decorations?
-    if( RemovedDecorations )
+    if( removedDecorations )
     {
         // Finally set the transient hints
         XSetTransientForHint( _glfwLibrary.display,
@@ -185,8 +191,10 @@ static void DisableDecorations( void )
     {
         // The Butcher way of removing window decorations
         attributes.override_redirect = True;
-        XChangeWindowAttributes( _glfwLibrary.display, _glfwWin.window,
-                                 CWOverrideRedirect, &attributes );
+        XChangeWindowAttributes( _glfwLibrary.display,
+                                 _glfwWin.window,
+                                 CWOverrideRedirect,
+                                 &attributes );
         _glfwWin.OverrideRedirect = GL_TRUE;
     }
 }
@@ -196,10 +204,10 @@ static void DisableDecorations( void )
 // Turn on window decorations
 //========================================================================
 
-static void EnableDecorations( void )
+static void enableDecorations( void )
 {
-    int ActivatedDecorations;
-    Atom HintAtom;
+    GLboolean activatedDecorations;
+    Atom hintAtom;
 
     // If this is an override redirect window, skip it...
     if( _glfwWin.OverrideRedirect )
@@ -207,51 +215,53 @@ static void EnableDecorations( void )
         return;
     }
 
-    ActivatedDecorations = 0;
+    activatedDecorations = 0;
 
     // First try to unset MWM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
+    if ( hintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
-        ActivatedDecorations = 1;
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
+        activatedDecorations = GL_TRUE;
     }
 
     // Now try to unset KWM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
+    if ( hintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
-        ActivatedDecorations = 1;
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
+        activatedDecorations = GL_TRUE;
     }
 
     // Now try to unset GNOME hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
+    if ( hintAtom != None )
     {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, HintAtom );
-        ActivatedDecorations = 1;
+        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
+        activatedDecorations = GL_TRUE;
     }
 
     // Now try to unset NET_WM hints
-    HintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
-    if ( HintAtom != None )
+    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
+    if ( hintAtom != None )
     {
-        Atom NET_WMHints = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE_NORMAL", True);
+        Atom NET_WMHints = XInternAtom( _glfwLibrary.display,
+                                        "_NET_WM_WINDOW_TYPE_NORMAL",
+                                        True);
         if( NET_WMHints != None )
         {
             XChangeProperty( _glfwLibrary.display, _glfwWin.window,
-                            HintAtom, XA_ATOM, 32, PropModeReplace,
+                            hintAtom, XA_ATOM, 32, PropModeReplace,
                             (unsigned char *)&NET_WMHints, 1 );
-            ActivatedDecorations = 1;
+            activatedDecorations = GL_TRUE;
         }
     }
 
     // Finally unset the transient hints if necessary
-    if( ActivatedDecorations )
+    if( activatedDecorations )
     {
         // NOTE: Does this work?
-        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, None);
+        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, None );
         XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
         XMapWindow( _glfwLibrary.display, _glfwWin.window );
     }
@@ -1064,7 +1074,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
-        DisableDecorations();
+        disableDecorations();
     }
 
     // Set window size hints
@@ -1671,7 +1681,7 @@ void _glfwPlatformPollEvents( void )
             _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
                                &_glfwWin.Height, &_glfwWin.RefreshRate );
             // Disable window manager decorations
-            EnableDecorations();
+            enableDecorations();
 
             // Make sure window is in upper left corner
             XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
