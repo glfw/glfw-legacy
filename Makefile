@@ -143,10 +143,12 @@ cross-mgw-install: cross-mgw
 cross-mgw:
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw
 	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw 
+	cd tests     && $(MAKE) -f Makefile.win32.cross-mgw
 
 cross-mgw-clean:
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cross-mgw clean 
 	cd examples  && $(MAKE) -f Makefile.win32.cross-mgw clean
+	cd tests     && $(MAKE) -f Makefile.win32.cross-mgw clean
 
 
 ###########################################################################
@@ -175,6 +177,7 @@ $(MAKEFILES_X11) : compile.sh $(MAKEFILES_X11_IN)
 x11: $(MAKEFILES_X11)
 	cd lib/x11;  $(MAKE) -f Makefile.x11
 	cd examples; $(MAKE) -f Makefile.x11
+	cd tests;    $(MAKE) -f Makefile.x11
 
 # X11 install
 x11-install: x11
@@ -193,13 +196,14 @@ x11-distro-install: x11
 macosx-clean:
 	cd lib/macosx; $(MAKE) -f Makefile.macosx clean
 	cd examples;   $(MAKE) -f Makefile.macosx clean
+	cd tests;      $(MAKE) -f Makefile.macosx clean
 
 # Backward compatibility
 macosx-gcc: macosx
 
 # Mac OS X, GCC
-macosx: macosx-library macosx-examples
-macosx-universal: macosx-universal-library macosx-examples-universal
+macosx: macosx-library macosx-examples macosx-tests
+macosx-universal: macosx-universal-library macosx-examples-universal macosx-tests-universal
 
 macosx-library:
 	cd lib/macosx; $(MAKE) -f Makefile.macosx
@@ -212,6 +216,12 @@ macosx-examples:
 
 macosx-examples-universal:
 	cd examples;   $(MAKE) -f Makefile.macosx.universal
+
+macosx-tests:
+	cd tests;      $(MAKE) -f Makefile.macosx
+
+macosx-tests-universal:
+	cd tests;      $(MAKE) -f Makefile.macosx.universal
 
 # Mac OS X, GCC install
 macosx-install: macosx-library
