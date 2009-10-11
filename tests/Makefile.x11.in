@@ -1,5 +1,5 @@
 
-all: accuracy defaults events fsaa peter reopen tearing version
+all: accuracy defaults events fsaa fullscreen peter reopen tearing version
 
 accuracy: accuracy.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) accuracy.c $(LFLAGS) -o $@
@@ -12,6 +12,9 @@ events: events.c ../lib/x11/libglfw.a
 
 fsaa: fsaa.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) fsaa.c $(LFLAGS) -o $@
+
+fullscreen: fullscreen.c ../lib/x11/libglfw.a
+	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o $@
 
 peter: peter.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) peter.c $(LFLAGS) -o $@
@@ -26,5 +29,5 @@ version: version.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) version.c $(LFLAGS) -o $@
 
 clean:
-	rm -f accuracy defaults events fsaa peter reopen tearing version
+	rm -f accuracy defaults events fsaa fullscreen peter reopen tearing version
 
