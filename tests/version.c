@@ -23,7 +23,7 @@
 //
 //========================================================================
 //
-// This test is a pale imitation of glxinfo(1)
+// This test is a pale imitation of glxinfo(1), except not really
 //
 // It dumps GLFW and OpenGL version information
 //
