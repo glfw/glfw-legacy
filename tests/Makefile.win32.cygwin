@@ -35,7 +35,7 @@ events.exe: events.c
 	$(CC) $(CFLAGS) $(CONSOLE) events.c $(LFLAGS) -o $@
 
 fsaa.exe: fsaa.c
-	$(CC) $(CFLAGS) $(WINDOWS) fsaa.c $(LFLAGS) -lm -o $@
+	$(CC) $(CFLAGS) $(CONSOLE) fsaa.c $(LFLAGS) -lm -o $@
 
 fullscreen.exe: fullscreen.c
 	$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -lm -o $@
