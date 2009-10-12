@@ -95,7 +95,7 @@ static int open_window(int width, int height, int mode)
     glfwSetKeyCallback(key_callback);
     glfwSwapInterval(1);
 
-    printf("Opening %s window took %0.3f seconds\n",
+    printf("Opening %s mode window took %0.3f seconds\n",
            get_mode_name(mode),
            glfwGetTime() - base);
 
