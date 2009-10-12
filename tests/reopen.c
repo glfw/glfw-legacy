@@ -60,7 +60,7 @@ static void window_size_callback(int width, int height)
 
 static int window_close_callback(void)
 {
-    printf("Close callback\n");
+    printf("Close callback triggered\n");
     closed = GL_TRUE;
     return 0;
 }
