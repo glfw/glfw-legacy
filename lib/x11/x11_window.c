@@ -905,6 +905,8 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
         return GL_FALSE;
     }
 
+    _glfwWin.fbconfigID = fbconfigID;
+
     return GL_TRUE;
 }
 
@@ -1521,6 +1523,8 @@ void _glfwPlatformSwapInterval( int interval )
 
 void _glfwPlatformRefreshWindowParams( void )
 {
+    int fbcount, sample_buffers;
+    GLXFBConfig *fbconfigs;
 #if defined( _GLFW_HAS_XRANDR )
     XRRScreenConfiguration *sc;
 #elif defined( _GLFW_HAS_XF86VIDMODE )
@@ -1528,55 +1532,69 @@ void _glfwPlatformRefreshWindowParams( void )
     int dotclock;
     float pixels_per_second, pixels_per_frame;
 #endif
-    //int sample_buffers;
+    int attribs[] = { GLX_FBCONFIG_ID, _glfwWin.fbconfigID, None };
 
-    // AFAIK, there is no easy/sure way of knowing if OpenGL is hardware
-    // accelerated
+    fbconfigs = glXChooseFBConfig( _glfwLibrary.display,
+                                   _glfwWin.screen,
+                                   attribs,
+                                   &fbcount );
+    if( fbconfigs == NULL )
+    {
+        return;
+    }
+
+    // There is no clear definition of an "accelerated" context on X11/GLX, and
+    // true sounds better than false, so we hardcode true here
     _glfwWin.Accelerated = GL_TRUE;
 
-    /*
     // "Standard" window parameters
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_RED_SIZE,
-                  &_glfwWin.RedBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_GREEN_SIZE,
-                  &_glfwWin.GreenBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_BLUE_SIZE,
-                  &_glfwWin.BlueBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ALPHA_SIZE,
-                  &_glfwWin.AlphaBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_DEPTH_SIZE,
-                  &_glfwWin.DepthBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_STENCIL_SIZE,
-                  &_glfwWin.StencilBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_RED_SIZE,
-                  &_glfwWin.AccumRedBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_GREEN_SIZE,
-                  &_glfwWin.AccumGreenBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_BLUE_SIZE,
-                  &_glfwWin.AccumBlueBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_ACCUM_ALPHA_SIZE,
-                  &_glfwWin.AccumAlphaBits );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_AUX_BUFFERS,
-                  &_glfwWin.AuxBuffers );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_RED_SIZE,
+                          &_glfwWin.RedBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_GREEN_SIZE,
+                          &_glfwWin.GreenBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_BLUE_SIZE,
+                          &_glfwWin.BlueBits );
+
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_ALPHA_SIZE,
+                          &_glfwWin.AlphaBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_DEPTH_SIZE,
+                          &_glfwWin.DepthBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_STENCIL_SIZE,
+                          &_glfwWin.StencilBits );
+
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_ACCUM_RED_SIZE,
+                          &_glfwWin.AccumRedBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_ACCUM_GREEN_SIZE,
+                          &_glfwWin.AccumGreenBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_ACCUM_BLUE_SIZE,
+                          &_glfwWin.AccumBlueBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_ACCUM_ALPHA_SIZE,
+                          &_glfwWin.AccumAlphaBits );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_AUX_BUFFERS,
+                          &_glfwWin.AuxBuffers );
 
     // Get stereo rendering setting
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_STEREO,
-                  &_glfwWin.Stereo );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_STEREO,
+                          &_glfwWin.Stereo );
     _glfwWin.Stereo = _glfwWin.Stereo ? 1 : 0;
 
     // Get multisample buffer samples
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLES,
-          &_glfwWin.Samples );
-    glXGetFBConfigAttrib( _glfwLibrary.display, _glfwWin.fbconfig, GLX_SAMPLE_BUFFERS,
-          &sample_buffers );
+    glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_SAMPLE_BUFFERS,
+                          &sample_buffers );
     if( sample_buffers == 0 )
-      _glfwWin.Samples = 0;
-    */
+    {
+        _glfwWin.Samples = 0;
+    }
+    else
+    {
+        glXGetFBConfigAttrib( _glfwLibrary.display, fbconfigs[0], GLX_SAMPLES,
+                              &_glfwWin.Samples );
+    }
 
     // Default to refresh rate unknown (=0 according to GLFW spec)
     _glfwWin.RefreshRate = 0;
 
-    // Retrieve refresh rate, if possible
+    // Retrieve refresh rate if possible
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
     {

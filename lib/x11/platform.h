@@ -238,13 +238,14 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
-    Colormap    colormap;        // Window colormap
-    Window      window;          // Window
-    int         screen;          // Screen ID
-    XVisualInfo *visual;         // Visual
-    GLXContext  context;         // OpenGL rendering context
-    Atom        WMDeleteWindow;  // For WM close detection
-    Atom        WMPing;          // For WM ping response
+    Colormap      colormap;        // Window colormap:
+    Window        window;          // Window
+    int           screen;          // Screen ID
+    XVisualInfo  *visual;          // Visual
+    GLXFBConfigID fbconfigID;      // ID of the selected GLXFBConfig
+    GLXContext    context;         // OpenGL rendering context
+    Atom          WMDeleteWindow;  // For WM close detection
+    Atom          WMPing;          // For WM ping response
 
     // Platform specific extensions
     PFNGLXSWAPINTERVALSGIPROC             SwapInterval;
