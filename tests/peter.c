@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void mouse_button_callback(int button, int pressed)
+static void GLFWCALL mouse_button_callback(int button, int pressed)
 {
     if (button == 0)
     {
@@ -46,12 +46,12 @@ static void mouse_button_callback(int button, int pressed)
     }
 }
 
-static GLFWCALL void mouse_position_callback(int x, int y)
+static void GLFWCALL mouse_position_callback(int x, int y)
 {
     printf("%i %i\n", x, y);
 }
 
-static GLFWCALL void window_size_callback(int width, int height)
+static void GLFWCALL window_size_callback(int width, int height)
 {
     glViewport(0, 0, width, height);
 }
