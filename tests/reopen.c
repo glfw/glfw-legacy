@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int closed = 0;
+static GLboolean closed = GL_FALSE;
 
 static const char* get_mode_name(int mode)
 {
@@ -61,7 +61,8 @@ static void window_size_callback(int width, int height)
 static int window_close_callback(void)
 {
     printf("Close callback\n");
-    return 1;
+    closed = GL_TRUE;
+    return 0;
 }
 
 static void key_callback(int key, int action)
@@ -73,13 +74,15 @@ static void key_callback(int key, int action)
     {
         case 'Q':
         case GLFW_KEY_ESC:
-            closed = 1;
+            closed = GL_TRUE;
             break;
     }
 }
 
 static int open_window(int width, int height, int mode)
 {
+    double base = glfwGetTime();
+
     if (!glfwOpenWindow(width, height, 0, 0, 0, 0, 16, 0, mode))
     {
         fprintf(stderr, "Failed to create %s mode GLFW window\n", get_mode_name(mode));
@@ -92,7 +95,20 @@ static int open_window(int width, int height, int mode)
     glfwSetKeyCallback(key_callback);
     glfwSwapInterval(1);
 
+    printf("Opening %s window took %0.3f seconds\n",
+           get_mode_name(mode),
+           glfwGetTime() - base);
+
     return 1;
+}
+
+static void close_window(void)
+{
+    double base = glfwGetTime();
+
+    glfwCloseWindow();
+
+    printf("Closing window took %0.3f seconds\n", glfwGetTime() - base);
 }
 
 int main(int argc, char** argv)
@@ -134,7 +150,7 @@ int main(int argc, char** argv)
             glfwSwapBuffers();
 
             if (closed)
-                glfwCloseWindow();
+                close_window();
 
             if (!glfwGetWindowParam(GLFW_OPENED))
             {
@@ -146,7 +162,7 @@ int main(int argc, char** argv)
         }
 
         printf("Closing window\n");
-        glfwCloseWindow();
+        close_window();
 
         count++;
     }
