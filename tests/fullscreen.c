@@ -36,7 +36,7 @@
 static GLboolean running;
 static int window_width = 640, window_height = 480;
 
-static void window_size_callback(int width, int height)
+static void GLFWCALL window_size_callback(int width, int height)
 {
     window_width = width;
     window_height = height;
@@ -48,25 +48,25 @@ static void window_size_callback(int width, int height)
     gluOrtho2D(0.f, window_width, 0.f, window_height);
 }
 
-static void key_callback(int key, int action)
+static void GLFWCALL key_callback(int key, int action)
 {
     if (key == GLFW_KEY_ESC)
         running = GL_FALSE;
 }
 
-static void char_callback(int character, int action)
+static void GLFWCALL char_callback(int character, int action)
 {
 }
 
-static void mouse_button_callback(int button, int action)
+static void GLFWCALL mouse_button_callback(int button, int action)
 {
 }
 
-static void mouse_position_callback(int x, int y)
+static void GLFWCALL mouse_position_callback(int x, int y)
 {
 }
 
-static void mouse_wheel_callback(int position)
+static void GLFWCALL mouse_wheel_callback(int position)
 {
 }
 

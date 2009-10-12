@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void window_size_callback(int width, int height)
+static void GLFWCALL window_size_callback(int width, int height)
 {
     glViewport(0, 0, width, height);
 }

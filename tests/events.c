@@ -132,7 +132,7 @@ static const char* get_action_name(int action)
     }
 }
 
-static void window_size_callback(int width, int height)
+static void GLFWCALL window_size_callback(int width, int height)
 {
     printf("%08x at %0.3f: Window size: %i %i\n",
            counter++,
@@ -143,18 +143,18 @@ static void window_size_callback(int width, int height)
     glViewport(0, 0, width, height);
 }
 
-static int window_close_callback(void)
+static int GLFWCALL window_close_callback(void)
 {
     printf("%08x at %0.3f: Window close\n", counter++, glfwGetTime());
     return 1;
 }
 
-static void window_refresh_callback(void)
+static void GLFWCALL window_refresh_callback(void)
 {
     printf("%08x at %0.3f: Window refresh\n", counter++, glfwGetTime());
 }
 
-static void mouse_button_callback(int button, int action)
+static void GLFWCALL mouse_button_callback(int button, int action)
 {
     printf("%08x at %0.3f: Mouse button %i was %s\n",
            counter++,
@@ -163,17 +163,17 @@ static void mouse_button_callback(int button, int action)
            get_action_name(action));
 }
 
-static void mouse_position_callback(int x, int y)
+static void GLFWCALL mouse_position_callback(int x, int y)
 {
     printf("%08x at %0.3f: Mouse position: %i %i\n", counter++, glfwGetTime(), x, y);
 }
 
-static void mouse_wheel_callback(int position)
+static void GLFWCALL mouse_wheel_callback(int position)
 {
     printf("%08x at %0.3f: Mouse wheel: %i\n", counter++, glfwGetTime(), position);
 }
 
-static void key_callback(int key, int action)
+static void GLFWCALL key_callback(int key, int action)
 {
     const char* name = get_key_name(key);
     if (name)
@@ -195,7 +195,7 @@ static void key_callback(int key, int action)
     }
 }
 
-static void char_callback(int character, int action)
+static void GLFWCALL char_callback(int character, int action)
 {
     if (isgraph(character))
     {
