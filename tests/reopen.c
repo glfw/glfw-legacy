@@ -28,8 +28,8 @@
 // It closes and re-opens the GLFW window every five seconds, alternating
 // between windowed and fullscreen mode
 //
-// It also logs opening and closing actions and attempts to separate user
-// initiated window closing from its own
+// It also times and logs opening and closing actions and attempts to separate
+// user initiated window closing from its own
 //
 //========================================================================
 
