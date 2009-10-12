@@ -34,16 +34,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void)
+#include "getopt.h"
+
+static void usage(void)
 {
-    int major, minor, revision;
+    printf("version [-h] [-m MAJOR] [-n MINOR]\n");
+}
+
+int main(int argc, char** argv)
+{
     const GLubyte* extensions;
+    int ch, major = 0, minor = 0, revision;
+
+    while ((ch = getopt(argc, argv, "hm:n:")) != -1)
+    {
+        switch (ch)
+        {
+            case 'h':
+                usage();
+                exit(0);
+            case 'm':
+                major = atoi(optarg);
+                break;
+            case 'n':
+                minor = atoi(optarg);
+                break;
+            default:
+                usage();
+                exit(1);
+        }
+    }
+
+    argc -= optind;
+    argv += optind;
 
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
         exit(1);
     }
+
+    if (major > 0)
+        glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, major);
+
+    if (minor > 0)
+        glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, minor);
+
+    // We assume here that we stand a better chance of success by leaving all
+    // possible details of pixel format selection to GLFW
 
     if (!glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
     {

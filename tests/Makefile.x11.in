@@ -25,8 +25,8 @@ reopen: reopen.c ../lib/x11/libglfw.a
 tearing: tearing.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) tearing.c $(LFLAGS) -o $@
 
-version: version.c ../lib/x11/libglfw.a
-	$(CC) $(CFLAGS) version.c $(LFLAGS) -o $@
+version: version.c getopt.c ../lib/x11/libglfw.a
+	$(CC) $(CFLAGS) version.c getopt.c $(LFLAGS) -o $@
 
 clean:
 	rm -f accuracy defaults events fsaa fullscreen peter reopen tearing version
