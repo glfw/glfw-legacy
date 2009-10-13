@@ -1540,7 +1540,11 @@ void _glfwPlatformRefreshWindowParams( void )
                                   &dummy );
     if( fbconfig == NULL )
     {
-        return;
+        // This should never ever happen
+        // TODO: Figure out what to do when this happens
+        fprintf( stderr, "Cannot find known GLXFBConfig by ID. "
+                         "This cannot happen. Have a nice day.\n");
+        abort();
     }
 
     // There is no clear definition of an "accelerated" context on X11/GLX, and
