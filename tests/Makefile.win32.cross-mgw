@@ -12,7 +12,8 @@ CC     = gcc
 CFLAGS = -I../include -Wall -O3 -ffast-math
 
 # Linker settings
-LFLAGS = -L../lib/win32 -lglfw -lglu32 -lopengl32 
+LIB    = ../lib/win32/libglfw.a
+LFLAGS = $(LIB) -lglu32 -lopengl32 
 
 # Subsystem settings
 WINDOWS = -mwindows -e _mainCRTStartup
@@ -27,30 +28,30 @@ all: $(BINARIES)
 clean:
 	@rm -f $(BINARIES)
 
-accuracy.exe: accuracy.c
+accuracy.exe: accuracy.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) accuracy.c $(LFLAGS) -o $@
 
-defaults.exe: defaults.c
+defaults.exe: defaults.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) defaults.c $(LFLAGS) -o $@
 
-events.exe: events.c
+events.exe: events.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) events.c $(LFLAGS) -o $@
 
-fsaa.exe: fsaa.c
-	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) fsaa.c $(LFLAGS) -lm -o $@
+fsaa.exe: fsaa.c $(LIB)
+	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) fsaa.c $(LFLAGS) -lm -o $@
 
-fullscreen.exe: fullscreen.c
+fullscreen.exe: fullscreen.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -lm -o $@
 
-peter.exe: peter.c
+peter.exe: peter.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) peter.c $(LFLAGS) -o $@
 
-reopen.exe: reopen.c
+reopen.exe: reopen.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) reopen.c $(LFLAGS) -lm -o $@
 
-tearing.exe: tearing.c
+tearing.exe: tearing.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) tearing.c $(LFLAGS) -lm -o $@
 
-version.exe: version.c
+version.exe: version.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) version.c $(LFLAGS) -lm -o $@
 
