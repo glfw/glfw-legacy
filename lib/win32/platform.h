@@ -314,6 +314,7 @@ struct _GLFWwin_struct {
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;
     WGLCREATECONTEXTATTRIBSARB_T   CreateContextAttribsARB;
+    GLboolean                      has_WGL_ARB_multisample;
 
     // Various platform specific internal variables
     int       OldMouseLock;    // Old mouse-lock flag (used for remembering

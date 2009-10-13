@@ -134,11 +134,11 @@ static void setForegroundWindow( HWND hWnd )
 // NOTE: Do not call this unless we have found WGL_ARB_pixel_format
 //========================================================================
 
-static int getPixelFormatAttrib(int pixelformat, int attrib)
+static int getPixelFormatAttrib(int pixelFormat, int attrib)
 {
     int value;
 
-    if( !_glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, 0, 0, 1, &attrib, &value) )
+    if( !_glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, pixelFormat, 0, 1, &attrib, &value) )
     {
         // NOTE: We should probably handle this error somehow
         return 0;
@@ -171,6 +171,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
     if( !count )
     {
+        fprintf( stderr, "No Win32 pixel formats available\n" );
         return NULL;
     }
 
@@ -211,7 +212,11 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
             result[*found].auxBuffers = getPixelFormatAttrib( i, WGL_AUX_BUFFERS_ARB );
             result[*found].stereo = getPixelFormatAttrib( i, WGL_STEREO_ARB );
-            result[*found].samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
+
+            if( _glfwWin.has_WGL_ARB_multisample )
+            {
+                result[*found].samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
+            }
         }
         else
         {
@@ -934,6 +939,11 @@ static void initWGLExtensions( void )
         }
     }
 
+    if( _glfwPlatformExtensionSupported( "WGL_ARB_multisample" ) )
+    {
+        _glfwWin.has_WGL_ARB_multisample = GL_TRUE;
+    }
+
     if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
         _glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
@@ -1014,12 +1024,14 @@ static int choosePixelFormat( const _GLFWfbconfig *fbconfig )
     fbconfigs = getFBConfigs( &fbcount );
     if( !fbconfigs )
     {
+        fprintf( stderr, "Failed to find any usable GLFWFBConfigs\n" );
         return 0;
     }
 
     closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
     if( !closest )
     {
+        fprintf( stderr, "Failed to select a GLFWFBConfig from the alternatives\n" );
         free( fbconfigs );
         return 0;
     }
@@ -1115,29 +1127,34 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
     if( !_glfwWin.Wnd )
     {
+        fprintf( stderr, "Unable to create Win32 window\n" );
         return GL_FALSE;
     }
 
     _glfwWin.DC = GetDC( _glfwWin.Wnd );
     if( !_glfwWin.DC )
     {
+        fprintf( stderr, "Unable to retrieve GLFW window DC\n" );
         return GL_FALSE;
     }
 
     pixelFormat = choosePixelFormat( fbconfig );
     if( !pixelFormat )
     {
+        fprintf( stderr, "Unable to find a usable pixel format\n" );
         return GL_FALSE;
     }
 
     _glfwWin.RC = createContext( _glfwWin.DC, wndconfig, pixelFormat );
     if( !_glfwWin.RC )
     {
+        fprintf( stderr, "Unable to create OpenGL context\n" );
         return GL_FALSE;
     }
 
     if( !wglMakeCurrent( _glfwWin.DC, _glfwWin.RC ) )
     {
+        fprintf( stderr, "Unable to make OpenGL context current\n" );
         return GL_FALSE;
     }
 
@@ -1219,12 +1236,14 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.GetExtensionsStringARB = NULL;
     _glfwWin.GetExtensionsStringEXT = NULL;
     _glfwWin.CreateContextAttribsARB = NULL;
+    _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
 
     _glfwWin.DesiredRefreshRate = wndconfig->refreshRate;
 
     _glfwWin.ClassAtom = registerWindowClass();
     if( !_glfwWin.ClassAtom )
     {
+        fprintf( stderr, "Failed to register GLFW window class\n" );
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
@@ -1238,6 +1257,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( !createWindow( wndconfig, fbconfig ) )
     {
+        fprintf( stderr, "Failed to create GLFW window\n" );
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
@@ -1246,6 +1266,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         if( !_glfwWin.CreateContextAttribsARB )
         {
+            fprintf( stderr, "OpenGL 3.0+ is not supported\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -1255,8 +1276,11 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( fbconfig->samples > 0 )
     {
-        if( !_glfwWin.GetPixelFormatAttribiv )
+        // We want FSAA, but can we get it?
+
+        if( _glfwWin.has_WGL_ARB_multisample && _glfwWin.GetPixelFormatAttribiv )
         {
+            // We appear to have both the FSAA extension and the means to ask for it
             recreateContext = GL_TRUE;
         }
     }
@@ -1282,6 +1306,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
         if( !createWindow( wndconfig, fbconfig ) )
         {
+            fprintf( stderr, "Unable to re-create GLFW window\n" );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
@@ -1524,14 +1549,49 @@ void _glfwPlatformRefreshWindowParams( void )
 {
     PIXELFORMATDESCRIPTOR pfd;
     DEVMODE dm;
-    int     PixelFormat, mode;
+    int pixelFormat, mode;
 
     // Obtain a detailed description of current pixel format
-    PixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
+    pixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
 
-    if( !_glfwWin.GetPixelFormatAttribiv )
+    if( _glfwWin.GetPixelFormatAttribiv )
     {
-        _glfw_DescribePixelFormat( _glfwWin.DC, PixelFormat,
+        if( getPixelFormatAttrib( pixelFormat, WGL_ACCELERATION_ARB ) ==
+            WGL_FULL_ACCELERATION_ARB )
+        {
+            _glfwWin.Accelerated = GL_TRUE;
+        }
+        else
+        {
+            _glfwWin.Accelerated = GL_FALSE;
+        }
+
+        _glfwWin.RedBits        = getPixelFormatAttrib( pixelFormat, WGL_RED_BITS_ARB );
+        _glfwWin.GreenBits      = getPixelFormatAttrib( pixelFormat, WGL_GREEN_BITS_ARB );
+        _glfwWin.BlueBits       = getPixelFormatAttrib( pixelFormat, WGL_BLUE_BITS_ARB );
+        _glfwWin.AlphaBits      = getPixelFormatAttrib( pixelFormat, WGL_ALPHA_BITS_ARB );
+        _glfwWin.DepthBits      = getPixelFormatAttrib( pixelFormat, WGL_DEPTH_BITS_ARB );
+        _glfwWin.StencilBits    = getPixelFormatAttrib( pixelFormat, WGL_STENCIL_BITS_ARB );
+        _glfwWin.AccumRedBits   = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_RED_BITS_ARB );
+        _glfwWin.AccumGreenBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_GREEN_BITS_ARB );
+        _glfwWin.AccumBlueBits  = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_BLUE_BITS_ARB );
+        _glfwWin.AccumAlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_ALPHA_BITS_ARB );
+        _glfwWin.AuxBuffers     = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
+        _glfwWin.Stereo         = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
+
+        if( _glfwWin.has_WGL_ARB_multisample )
+        {
+            _glfwWin.Samples = getPixelFormatAttrib( pixelFormat, WGL_SAMPLES_ARB );
+            // Should we force 1 to 0 here for consistency, or keep 1 for transparency?
+        }
+        else
+        {
+            _glfwWin.Samples = 0;
+        }
+    }
+    else
+    {
+        _glfw_DescribePixelFormat( _glfwWin.DC, pixelFormat,
                                    sizeof(PIXELFORMATDESCRIPTOR), &pfd );
 
         // Is current OpenGL context accelerated?
@@ -1555,49 +1615,6 @@ void _glfwPlatformRefreshWindowParams( void )
         // If we don't have WGL_ARB_pixel_format then we can't have created a
         // multisampling context, so it's safe to hardcode zero here
         _glfwWin.Samples = 0;
-    }
-    else
-    {
-        const int attribs[] = {
-            WGL_ACCELERATION_ARB,
-            WGL_RED_BITS_ARB,
-            WGL_GREEN_BITS_ARB,
-            WGL_BLUE_BITS_ARB,
-            WGL_ALPHA_BITS_ARB,
-            WGL_DEPTH_BITS_ARB,
-            WGL_STENCIL_BITS_ARB,
-            WGL_ACCUM_RED_BITS_ARB,
-            WGL_ACCUM_GREEN_BITS_ARB,
-            WGL_ACCUM_BLUE_BITS_ARB,
-            WGL_ACCUM_ALPHA_BITS_ARB,
-            WGL_AUX_BUFFERS_ARB,
-            WGL_STEREO_ARB,
-            WGL_SAMPLES_ARB
-        };
-
-        int values[sizeof(attribs) / sizeof(attribs[0])];
-
-        _glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, PixelFormat, 0,
-                                         sizeof(attribs) / sizeof(attribs[0]),
-                                         attribs, values);
-
-        // Is current OpenGL context accelerated?
-        _glfwWin.Accelerated = (values[0] == WGL_FULL_ACCELERATION_ARB);
-
-        // "Standard" window parameters
-        _glfwWin.RedBits        = values[1];
-        _glfwWin.GreenBits      = values[2];
-        _glfwWin.BlueBits       = values[3];
-        _glfwWin.AlphaBits      = values[4];
-        _glfwWin.DepthBits      = values[5];
-        _glfwWin.StencilBits    = values[6];
-        _glfwWin.AccumRedBits   = values[7];
-        _glfwWin.AccumGreenBits = values[8];
-        _glfwWin.AccumBlueBits  = values[9];
-        _glfwWin.AccumAlphaBits = values[10];
-        _glfwWin.AuxBuffers     = values[11];
-        _glfwWin.Stereo         = values[12];
-        _glfwWin.Samples        = values[13];
     }
 
     // Get refresh rate
