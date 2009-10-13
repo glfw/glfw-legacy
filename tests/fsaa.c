@@ -54,7 +54,7 @@ int main(void)
     {
         glfwTerminate();
 
-        fprintf(stderr, "Failed to open GLFW default window\n");
+        fprintf(stderr, "Failed to open GLFW window\n");
         exit(1);
     }
 
