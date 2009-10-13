@@ -156,14 +156,14 @@ typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*)
 #define WGL_GREEN_BITS_ARB              0x2017
 #define WGL_BLUE_BITS_ARB               0x2019
 #define WGL_ALPHA_BITS_ARB              0x201B
-#define WGL_ACCUM_BITS_ARB              0x201D 
-#define WGL_ACCUM_RED_BITS_ARB          0x201E 
-#define WGL_ACCUM_GREEN_BITS_ARB        0x201F 
-#define WGL_ACCUM_BLUE_BITS_ARB         0x2020 
-#define WGL_ACCUM_ALPHA_BITS_ARB        0x2021 
+#define WGL_ACCUM_BITS_ARB              0x201D
+#define WGL_ACCUM_RED_BITS_ARB          0x201E
+#define WGL_ACCUM_GREEN_BITS_ARB        0x201F
+#define WGL_ACCUM_BLUE_BITS_ARB         0x2020
+#define WGL_ACCUM_ALPHA_BITS_ARB        0x2021
 #define WGL_DEPTH_BITS_ARB              0x2022
 #define WGL_STENCIL_BITS_ARB            0x2023
-#define WGL_AUX_BUFFERS_ARB             0x2024 
+#define WGL_AUX_BUFFERS_ARB             0x2024
 #define WGL_SAMPLE_BUFFERS_ARB          0x2041
 #define WGL_SAMPLES_ARB                 0x2042
 
