@@ -1551,7 +1551,10 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.AccumAlphaBits = pfd.cAccumAlphaBits;
         _glfwWin.AuxBuffers     = pfd.cAuxBuffers;
         _glfwWin.Stereo         = pfd.dwFlags & PFD_STEREO ? 1 : 0;
-        _glfwWin.Samples        = 0;
+
+        // If we don't have WGL_ARB_pixel_format then we can't have created a
+        // multisampling context, so it's safe to hardcode zero here
+        _glfwWin.Samples = 0;
     }
     else
     {
