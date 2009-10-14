@@ -237,7 +237,7 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
     unsigned int missing, leastMissing = UINT_MAX;
     unsigned int colorDiff, leastColorDiff = UINT_MAX;
     unsigned int extraDiff, leastExtraDiff = UINT_MAX;
-    GLboolean desiresColor = GL_FALSE, desiresAccum = GL_FALSE;
+    GLboolean desiresColor = GL_FALSE;
     const _GLFWfbconfig *current;
     const _GLFWfbconfig *closest = NULL;
 
@@ -247,12 +247,6 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
         desired->alphaBits )
     {
         desiresColor = GL_TRUE;
-    }
-
-    if( desired->accumRedBits || desired->accumGreenBits || desired->accumBlueBits ||
-        desired->accumAlphaBits )
-    {
-        desiresAccum = GL_TRUE;
     }
 
     for( i = 0;  i < count;  i++ )
@@ -302,14 +296,23 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
         {
             colorDiff = 0;
 
-            colorDiff += ( desired->redBits - current->redBits ) *
-                         ( desired->redBits - current->redBits );
+            if ( desired->redBits > 0 )
+            {
+                colorDiff += ( desired->redBits - current->redBits ) *
+                             ( desired->redBits - current->redBits );
+            }
 
-            colorDiff += ( desired->greenBits - current->greenBits ) *
-                         ( desired->greenBits - current->greenBits );
+            if ( desired->redBits > 0 )
+            {
+                colorDiff += ( desired->greenBits - current->greenBits ) *
+                             ( desired->greenBits - current->greenBits );
+            }
 
-            colorDiff += ( desired->blueBits - current->blueBits ) *
-                         ( desired->blueBits - current->blueBits );
+            if ( desired->redBits > 0 )
+            {
+                colorDiff += ( desired->blueBits - current->blueBits ) *
+                             ( desired->blueBits - current->blueBits );
+            }
         }
 
         // Calculate non-color channel size difference value
@@ -336,23 +339,32 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 
             if( desired->accumRedBits > 0 )
             {
-                extraDiff += ( desired->stencilBits - current->stencilBits ) *
-                             ( desired->stencilBits - current->stencilBits );
-            }
-
-            if( desiresAccum )
-            {
                 extraDiff += ( desired->accumRedBits - current->accumRedBits ) *
                              ( desired->accumRedBits - current->accumRedBits );
+            }
 
+            if( desired->accumGreenBits > 0 )
+            {
                 extraDiff += ( desired->accumGreenBits - current->accumGreenBits ) *
                              ( desired->accumGreenBits - current->accumGreenBits );
+            }
 
+            if( desired->accumBlueBits > 0 )
+            {
                 extraDiff += ( desired->accumBlueBits - current->accumBlueBits ) *
                              ( desired->accumBlueBits - current->accumBlueBits );
+            }
 
+            if( desired->accumAlphaBits > 0 )
+            {
                 extraDiff += ( desired->accumAlphaBits - current->accumAlphaBits ) *
                              ( desired->accumAlphaBits - current->accumAlphaBits );
+            }
+
+            if( desired->samples > 0 )
+            {
+                extraDiff += ( desired->samples - current->samples ) *
+                             ( desired->samples - current->samples );
             }
         }
 
