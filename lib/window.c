@@ -285,6 +285,9 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
 
             if( desired->samples > 0 && current->samples == 0 )
             {
+                // Technically, several multisampling buffers could be
+                // involved, but that's a lower level implementation detail and
+                // not important to us here, so we count them as one
                 missing++;
             }
         }
@@ -302,13 +305,13 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
                              ( desired->redBits - current->redBits );
             }
 
-            if ( desired->redBits > 0 )
+            if ( desired->redGreen > 0 )
             {
                 colorDiff += ( desired->greenBits - current->greenBits ) *
                              ( desired->greenBits - current->greenBits );
             }
 
-            if ( desired->redBits > 0 )
+            if ( desired->redBlue > 0 )
             {
                 colorDiff += ( desired->blueBits - current->blueBits ) *
                              ( desired->blueBits - current->blueBits );
