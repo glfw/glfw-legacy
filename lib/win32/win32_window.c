@@ -1228,7 +1228,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     int recreateContext = GL_FALSE;
 
     // Clear platform specific GLFW window state
-    _glfwWin.ClassAtom         = 0;
+    _glfwWin.classAtom         = 0;
     _glfwWin.OldMouseLockValid = GL_FALSE;
     _glfwWin.ChoosePixelFormat = NULL;
     _glfwWin.GetPixelFormatAttribiv = NULL;
@@ -1239,8 +1239,8 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     _glfwWin.DesiredRefreshRate = wndconfig->refreshRate;
 
-    _glfwWin.ClassAtom = registerWindowClass();
-    if( !_glfwWin.ClassAtom )
+    _glfwWin.classAtom = registerWindowClass();
+    if( !_glfwWin.classAtom )
     {
         fprintf( stderr, "Failed to register GLFW window class\n" );
         _glfwPlatformCloseWindow();
@@ -1339,11 +1339,11 @@ void _glfwPlatformCloseWindow( void )
     destroyWindow();
 
     // Do we have an instance?
-    if( _glfwWin.ClassAtom )
+    if( _glfwWin.classAtom )
     {
         // Unregister class
         UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.Instance );
-        _glfwWin.ClassAtom = 0;
+        _glfwWin.classAtom = 0;
     }
 
     // Are we in fullscreen mode?
