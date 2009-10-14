@@ -305,13 +305,13 @@ const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
                              ( desired->redBits - current->redBits );
             }
 
-            if ( desired->redGreen > 0 )
+            if ( desired->greenBits > 0 )
             {
                 colorDiff += ( desired->greenBits - current->greenBits ) *
                              ( desired->greenBits - current->greenBits );
             }
 
-            if ( desired->redBlue > 0 )
+            if ( desired->blueBits > 0 )
             {
                 colorDiff += ( desired->blueBits - current->blueBits ) *
                              ( desired->blueBits - current->blueBits );
