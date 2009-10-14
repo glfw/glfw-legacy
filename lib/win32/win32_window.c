@@ -1566,18 +1566,21 @@ void _glfwPlatformRefreshWindowParams( void )
             _glfwWin.Accelerated = GL_FALSE;
         }
 
-        _glfwWin.RedBits        = getPixelFormatAttrib( pixelFormat, WGL_RED_BITS_ARB );
-        _glfwWin.GreenBits      = getPixelFormatAttrib( pixelFormat, WGL_GREEN_BITS_ARB );
-        _glfwWin.BlueBits       = getPixelFormatAttrib( pixelFormat, WGL_BLUE_BITS_ARB );
-        _glfwWin.AlphaBits      = getPixelFormatAttrib( pixelFormat, WGL_ALPHA_BITS_ARB );
-        _glfwWin.DepthBits      = getPixelFormatAttrib( pixelFormat, WGL_DEPTH_BITS_ARB );
-        _glfwWin.StencilBits    = getPixelFormatAttrib( pixelFormat, WGL_STENCIL_BITS_ARB );
-        _glfwWin.AccumRedBits   = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_RED_BITS_ARB );
+        _glfwWin.RedBits = getPixelFormatAttrib( pixelFormat, WGL_RED_BITS_ARB );
+        _glfwWin.GreenBits = getPixelFormatAttrib( pixelFormat, WGL_GREEN_BITS_ARB );
+        _glfwWin.BlueBits = getPixelFormatAttrib( pixelFormat, WGL_BLUE_BITS_ARB );
+
+        _glfwWin.AlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ALPHA_BITS_ARB );
+        _glfwWin.DepthBits = getPixelFormatAttrib( pixelFormat, WGL_DEPTH_BITS_ARB );
+        _glfwWin.StencilBits = getPixelFormatAttrib( pixelFormat, WGL_STENCIL_BITS_ARB );
+
+        _glfwWin.AccumRedBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_RED_BITS_ARB );
         _glfwWin.AccumGreenBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_GREEN_BITS_ARB );
-        _glfwWin.AccumBlueBits  = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_BLUE_BITS_ARB );
+        _glfwWin.AccumBlueBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_BLUE_BITS_ARB );
         _glfwWin.AccumAlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_ALPHA_BITS_ARB );
-        _glfwWin.AuxBuffers     = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
-        _glfwWin.Stereo         = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
+
+        _glfwWin.AuxBuffers = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
+        _glfwWin.Stereo = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
 
         if( _glfwWin.has_WGL_ARB_multisample )
         {
