@@ -304,7 +304,7 @@ struct _GLFWwin_struct {
     // Platform specific window resources
     HDC       DC;              // Private GDI device context
     HGLRC     RC;              // Permanent rendering context
-    HWND      Wnd;             // Window handle
+    HWND      window;          // Window handle
     ATOM      ClassAtom;       // Window class atom
     int       ModeID;          // Mode ID for fullscreen mode
     HHOOK     KeyboardHook;    // Keyboard hook handle

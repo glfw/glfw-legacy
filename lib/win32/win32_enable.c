@@ -85,7 +85,7 @@ static LRESULT CALLBACK keyboardHook( int nCode, WPARAM wParam, LPARAM lParam )
         // Pass the key event to our window message loop
         if( _glfwWin.Opened )
         {
-            PostMessage( _glfwWin.Wnd, (UINT) wParam, p->vkCode, 0 );
+            PostMessage( _glfwWin.window, (UINT) wParam, p->vkCode, 0 );
         }
 
         // We've taken care of it - don't let the system know about this

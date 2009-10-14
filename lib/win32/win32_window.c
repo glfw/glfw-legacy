@@ -595,7 +595,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     if( !Iconified )
                     {
                         // Minimize window
-                        CloseWindow( _glfwWin.Wnd );
+                        CloseWindow( _glfwWin.window );
 
                         // The window is now iconified
                         Iconified = GL_TRUE;
@@ -625,15 +625,15 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     if( Iconified )
                     {
                         // Restore window
-                        OpenIcon( _glfwWin.Wnd );
+                        OpenIcon( _glfwWin.window );
 
                         // The window is no longer iconified
                         Iconified = GL_FALSE;
 
                         // Activate window
                         ShowWindow( hWnd, SW_SHOW );
-                        setForegroundWindow( _glfwWin.Wnd );
-                        SetFocus( _glfwWin.Wnd );
+                        setForegroundWindow( _glfwWin.window );
+                        SetFocus( _glfwWin.window );
                     }
                 }
 
@@ -843,7 +843,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             if( _glfwWin.MouseLock )
             {
                 RECT ClipWindowRect;
-                if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+                if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
                 {
                     ClipCursor( &ClipWindowRect );
                 }
@@ -865,7 +865,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             if( _glfwWin.MouseLock )
             {
                 RECT ClipWindowRect;
-                if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+                if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
                 {
                     ClipCursor( &ClipWindowRect );
                 }
@@ -1059,7 +1059,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
     _glfwWin.DC  = NULL;
     _glfwWin.RC  = NULL;
-    _glfwWin.Wnd = NULL;
+    _glfwWin.window = NULL;
 
     // Set common window styles
     dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
@@ -1112,26 +1112,25 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
         SystemParametersInfo( SPI_GETWORKAREA, 0, &wa, 0 );
     }
 
-    _glfwWin.Wnd = CreateWindowEx(
-               _glfwWin.dwExStyle,        // Extended style
-               _GLFW_WNDCLASSNAME,        // Class name
-               "GLFW Window",             // Window title
-               _glfwWin.dwStyle,          // Defined window style
-               wa.left, wa.top,           // Window position
-               fullWidth,                 // Decorated window width
-               fullHeight,                // Decorated window height
-               NULL,                      // No parent window
-               NULL,                      // No menu
-               _glfwLibrary.Instance,     // Instance
-               NULL );                    // Nothing to WM_CREATE
+    _glfwWin.window = CreateWindowEx( _glfwWin.dwExStyle,    // Extended style
+                                      _GLFW_WNDCLASSNAME,    // Class name
+                                      "GLFW Window",         // Window title
+                                      _glfwWin.dwStyle,      // Defined window style
+                                      wa.left, wa.top,       // Window position
+                                      fullWidth,             // Decorated window width
+                                      fullHeight,            // Decorated window height
+                                      NULL,                  // No parent window
+                                      NULL,                  // No menu
+                                      _glfwLibrary.Instance, // Instance
+                                      NULL );                // Nothing to WM_CREATE
 
-    if( !_glfwWin.Wnd )
+    if( !_glfwWin.window )
     {
         fprintf( stderr, "Unable to create Win32 window\n" );
         return GL_FALSE;
     }
 
-    _glfwWin.DC = GetDC( _glfwWin.Wnd );
+    _glfwWin.DC = GetDC( _glfwWin.window );
     if( !_glfwWin.DC )
     {
         fprintf( stderr, "Unable to retrieve GLFW window DC\n" );
@@ -1162,7 +1161,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
     // Initialize mouse position data
     GetCursorPos( &pos );
-    ScreenToClient( _glfwWin.Wnd, &pos );
+    ScreenToClient( _glfwWin.window, &pos );
     _glfwInput.OldMouseX = _glfwInput.MousePosX = pos.x;
     _glfwInput.OldMouseY = _glfwInput.MousePosY = pos.y;
 
@@ -1191,23 +1190,23 @@ static void destroyWindow( void )
     if( _glfwWin.DC )
     {
         // Release the device context
-        ReleaseDC( _glfwWin.Wnd, _glfwWin.DC );
+        ReleaseDC( _glfwWin.window, _glfwWin.DC );
         _glfwWin.DC = NULL;
     }
 
     // Do we have a window?
-    if( _glfwWin.Wnd )
+    if( _glfwWin.window )
     {
         // Destroy the window
         if( _glfwLibrary.Sys.WinVer <= _GLFW_WIN_NT4 )
         {
             // Note: Hiding the window first fixes an annoying W98/NT4
             // remaining icon bug for fullscreen displays
-            ShowWindow( _glfwWin.Wnd, SW_HIDE );
+            ShowWindow( _glfwWin.window, SW_HIDE );
         }
 
-        DestroyWindow( _glfwWin.Wnd );
-        _glfwWin.Wnd = NULL;
+        DestroyWindow( _glfwWin.window );
+        _glfwWin.window = NULL;
     }
 }
 
@@ -1315,12 +1314,12 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( _glfwWin.Fullscreen )
     {
         // Place the window above all topmost windows
-        SetWindowPos( _glfwWin.Wnd, HWND_TOPMOST, 0,0,0,0,
+        SetWindowPos( _glfwWin.window, HWND_TOPMOST, 0,0,0,0,
                       SWP_NOMOVE | SWP_NOSIZE );
     }
 
-    setForegroundWindow( _glfwWin.Wnd );
-    SetFocus( _glfwWin.Wnd );
+    setForegroundWindow( _glfwWin.window );
+    SetFocus( _glfwWin.window );
 
     // Start by clearing the front buffer to black (avoid ugly desktop
     // remains in our OpenGL window)
@@ -1363,7 +1362,7 @@ void _glfwPlatformCloseWindow( void )
 void _glfwPlatformSetWindowTitle( const char *title )
 {
     // Set window title
-    (void) SetWindowText( _glfwWin.Wnd, title );
+    (void) SetWindowText( _glfwWin.window, title );
 }
 
 
@@ -1410,7 +1409,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     // Change window size before changing fullscreen mode?
     if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
     {
-        SetWindowPos( _glfwWin.Wnd, HWND_TOP, 0, 0, width, height,
+        SetWindowPos( _glfwWin.window, HWND_TOP, 0, 0, width, height,
                       SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOZORDER );
         sizechanged = GL_TRUE;
     }
@@ -1438,7 +1437,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     // Set window size (if not already changed)
     if( !sizechanged )
     {
-        SetWindowPos( _glfwWin.Wnd, HWND_TOP, 0, 0, width, height,
+        SetWindowPos( _glfwWin.window, HWND_TOP, 0, 0, width, height,
                       SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOZORDER );
     }
 }
@@ -1451,7 +1450,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 void _glfwPlatformSetWindowPos( int x, int y )
 {
     // Set window position
-    (void) SetWindowPos( _glfwWin.Wnd, HWND_TOP, x, y, 0, 0,
+    (void) SetWindowPos( _glfwWin.window, HWND_TOP, x, y, 0, 0,
                          SWP_NOOWNERZORDER | SWP_NOSIZE | SWP_NOZORDER );
 }
 
@@ -1463,7 +1462,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 void _glfwPlatformIconifyWindow( void )
 {
     // Iconify window
-    CloseWindow( _glfwWin.Wnd );
+    CloseWindow( _glfwWin.window );
 
     // Window is now iconified
     _glfwWin.Iconified = GL_TRUE;
@@ -1499,12 +1498,12 @@ void _glfwPlatformRestoreWindow( void )
     }
 
     // Un-iconify window
-    OpenIcon( _glfwWin.Wnd );
+    OpenIcon( _glfwWin.window );
 
     // Make sure that our window ends up on top of things
-    ShowWindow( _glfwWin.Wnd, SW_SHOW );
-    setForegroundWindow( _glfwWin.Wnd );
-    SetFocus( _glfwWin.Wnd );
+    ShowWindow( _glfwWin.window, SW_SHOW );
+    setForegroundWindow( _glfwWin.window );
+    SetFocus( _glfwWin.window );
 
     // Window is no longer iconified
     _glfwWin.Iconified = GL_FALSE;
@@ -1749,13 +1748,13 @@ void _glfwPlatformHideMouseCursor( void )
     ShowCursor( FALSE );
 
     // Clip cursor to the window
-    if( GetWindowRect( _glfwWin.Wnd, &ClipWindowRect ) )
+    if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
     {
         ClipCursor( &ClipWindowRect );
     }
 
     // Capture cursor to user window
-    SetCapture( _glfwWin.Wnd );
+    SetCapture( _glfwWin.window );
 }
 
 
@@ -1787,7 +1786,7 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // Convert client coordinates to screen coordinates
     pos.x = x;
     pos.y = y;
-    ClientToScreen( _glfwWin.Wnd, &pos );
+    ClientToScreen( _glfwWin.window, &pos );
 
     // Change cursor position
     SetCursorPos( pos.x, pos.y );
