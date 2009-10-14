@@ -1058,7 +1058,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     POINT pos;
 
     _glfwWin.DC  = NULL;
-    _glfwWin.RC  = NULL;
+    _glfwWin.context = NULL;
     _glfwWin.window = NULL;
 
     // Set common window styles
@@ -1144,14 +1144,14 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
         return GL_FALSE;
     }
 
-    _glfwWin.RC = createContext( _glfwWin.DC, wndconfig, pixelFormat );
-    if( !_glfwWin.RC )
+    _glfwWin.context = createContext( _glfwWin.DC, wndconfig, pixelFormat );
+    if( !_glfwWin.context )
     {
         fprintf( stderr, "Unable to create OpenGL context\n" );
         return GL_FALSE;
     }
 
-    if( !wglMakeCurrent( _glfwWin.DC, _glfwWin.RC ) )
+    if( !wglMakeCurrent( _glfwWin.DC, _glfwWin.context ) )
     {
         fprintf( stderr, "Unable to make OpenGL context current\n" );
         return GL_FALSE;
@@ -1176,14 +1176,14 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 static void destroyWindow( void )
 {
     // Do we have a rendering context?
-    if( _glfwWin.RC )
+    if( _glfwWin.context )
     {
         // Release the DC and RC contexts
         wglMakeCurrent( NULL, NULL );
 
         // Delete the rendering context
-        wglDeleteContext( _glfwWin.RC );
-        _glfwWin.RC = NULL;
+        wglDeleteContext( _glfwWin.context );
+        _glfwWin.context = NULL;
     }
 
     // Do we have a device context?
