@@ -41,7 +41,7 @@
 
 static void EnableMouseCursor( void )
 {
-    int CenterPosX, CenterPosY;
+    int centerPosX, centerPosY;
 
     if( !_glfwWin.Opened || !_glfwWin.MouseLock )
     {
@@ -51,20 +51,20 @@ static void EnableMouseCursor( void )
     // Show mouse cursor
     _glfwPlatformShowMouseCursor();
 
-    CenterPosX = _glfwWin.Width / 2;
-    CenterPosY = _glfwWin.Height / 2;
+    centerPosX = _glfwWin.Width / 2;
+    centerPosY = _glfwWin.Height / 2;
 
-    if( CenterPosX != _glfwInput.MousePosX || CenterPosY != _glfwInput.MousePosY )
+    if( centerPosX != _glfwInput.MousePosX || centerPosY != _glfwInput.MousePosY )
     {
-        _glfwPlatformSetMouseCursorPos( CenterPosX, CenterPosY );
+        _glfwPlatformSetMouseCursorPos( centerPosX, centerPosY );
 
-        _glfwInput.MousePosX = CenterPosX;
-        _glfwInput.MousePosY = CenterPosY;
+        _glfwInput.MousePosX = centerPosX;
+        _glfwInput.MousePosY = centerPosY;
 
         if( _glfwWin.MousePosCallback )
         {
             _glfwWin.MousePosCallback( _glfwInput.MousePosX,
-                        _glfwInput.MousePosY );
+                                       _glfwInput.MousePosY );
         }
     }
 
