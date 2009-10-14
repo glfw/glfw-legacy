@@ -147,7 +147,6 @@ typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*)
 #define WGL_DRAW_TO_WINDOW_ARB          0x2001
 #define WGL_SUPPORT_OPENGL_ARB          0x2010
 #define WGL_ACCELERATION_ARB            0x2003
-#define WGL_FULL_ACCELERATION_ARB       0x2027
 #define WGL_DOUBLE_BUFFER_ARB           0x2011
 #define WGL_STEREO_ARB                  0x2012
 #define WGL_PIXEL_TYPE_ARB              0x2013
@@ -166,6 +165,11 @@ typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*)
 #define WGL_AUX_BUFFERS_ARB             0x2024
 #define WGL_SAMPLE_BUFFERS_ARB          0x2041
 #define WGL_SAMPLES_ARB                 0x2042
+
+/* Constants for WGL_ACCELERATION_ARB */
+#define WGL_NO_ACCELERATION_ARB         0x2025
+#define WGL_GENERIC_ACCELERATION_ARB    0x2026
+#define WGL_FULL_ACCELERATION_ARB       0x2027
 
 /* Constants for WGL_PIXEL_TYPE_ARB */
 #define WGL_TYPE_RGBA_ARB               0x202B

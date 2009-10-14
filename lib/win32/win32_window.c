@@ -1556,8 +1556,8 @@ void _glfwPlatformRefreshWindowParams( void )
 
     if( _glfwWin.GetPixelFormatAttribiv )
     {
-        if( getPixelFormatAttrib( pixelFormat, WGL_ACCELERATION_ARB ) ==
-            WGL_FULL_ACCELERATION_ARB )
+        if( getPixelFormatAttrib( pixelFormat, WGL_ACCELERATION_ARB ) !=
+            WGL_NO_ACCELERATION_ARB )
         {
             _glfwWin.Accelerated = GL_TRUE;
         }
