@@ -87,7 +87,7 @@ void _glfwParseGLVersion( int *major, int *minor, int *rev )
 //========================================================================
 
 int _glfwStringInExtensionString( const char *string,
-    const GLubyte *extensions )
+                                  const GLubyte *extensions )
 {
     const GLubyte *start;
     GLubyte *where, *terminator;
@@ -131,7 +131,7 @@ int _glfwStringInExtensionString( const char *string,
 GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
 {
     const GLubyte *extensions;
-    GLubyte       *where;
+    GLubyte *where;
 
     // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.Opened )
@@ -147,7 +147,7 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
     }
 
     // Check if extension is in the standard OpenGL extensions string
-    extensions = (GLubyte *) glGetString( GL_EXTENSIONS );
+    extensions = glGetString( GL_EXTENSIONS );
     if( extensions != NULL )
     {
         if( _glfwStringInExtensionString( extension, extensions ) )
