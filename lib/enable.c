@@ -56,16 +56,16 @@ static void EnableMouseCursor( void )
 
     if( CenterPosX != _glfwInput.MousePosX || CenterPosY != _glfwInput.MousePosY )
     {
-	_glfwPlatformSetMouseCursorPos( CenterPosX, CenterPosY );
+        _glfwPlatformSetMouseCursorPos( CenterPosX, CenterPosY );
 
-	_glfwInput.MousePosX = CenterPosX;
-	_glfwInput.MousePosY = CenterPosY;
+        _glfwInput.MousePosX = CenterPosX;
+        _glfwInput.MousePosY = CenterPosY;
 
-	if( _glfwWin.MousePosCallback )
-	{
-	    _glfwWin.MousePosCallback( _glfwInput.MousePosX, 
-				       _glfwInput.MousePosY );
-	}
+        if( _glfwWin.MousePosCallback )
+        {
+            _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                        _glfwInput.MousePosY );
+        }
     }
 
     // From now on the mouse is unlocked
@@ -87,8 +87,8 @@ static void DisableMouseCursor( void )
     _glfwPlatformHideMouseCursor();
 
     // Move cursor to the middle of the window
-    _glfwPlatformSetMouseCursorPos( _glfwWin.Width>>1,
-                                    _glfwWin.Height>>1 );
+    _glfwPlatformSetMouseCursorPos( _glfwWin.Width >> 1,
+                                    _glfwWin.Height >> 1 );
 
     // From now on the mouse is locked
     _glfwWin.MouseLock = GL_TRUE;
@@ -115,7 +115,7 @@ static void DisableStickyKeys( void )
     _glfwInput.StickyKeys = 0;
 
     // Release all sticky keys
-    for( i = 0; i <= GLFW_KEY_LAST; i ++ )
+    for( i = 0; i <= GLFW_KEY_LAST; i++ )
     {
         if( _glfwInput.Key[ i ] == 2 )
         {
@@ -145,7 +145,7 @@ static void DisableStickyMouseButtons( void )
     _glfwInput.StickyMouseButtons = 0;
 
     // Release all sticky mouse buttons
-    for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i ++ )
+    for( i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i++ )
     {
         if( _glfwInput.MouseButton[ i ] == 2 )
         {
@@ -247,26 +247,26 @@ GLFWAPI void GLFWAPIENTRY glfwEnable( int token )
 
     switch( token )
     {
-    case GLFW_MOUSE_CURSOR:
-        EnableMouseCursor();
-        break;
-    case GLFW_STICKY_KEYS:
-        EnableStickyKeys();
-        break;
-    case GLFW_STICKY_MOUSE_BUTTONS:
-        EnableStickyMouseButtons();
-        break;
-    case GLFW_SYSTEM_KEYS:
-        EnableSystemKeys();
-        break;
-    case GLFW_KEY_REPEAT:
-        EnableKeyRepeat();
-        break;
-    case GLFW_AUTO_POLL_EVENTS:
-        EnableAutoPollEvents();
-        break;
-    default:
-        break;
+        case GLFW_MOUSE_CURSOR:
+            EnableMouseCursor();
+            break;
+        case GLFW_STICKY_KEYS:
+            EnableStickyKeys();
+            break;
+        case GLFW_STICKY_MOUSE_BUTTONS:
+            EnableStickyMouseButtons();
+            break;
+        case GLFW_SYSTEM_KEYS:
+            EnableSystemKeys();
+            break;
+        case GLFW_KEY_REPEAT:
+            EnableKeyRepeat();
+            break;
+        case GLFW_AUTO_POLL_EVENTS:
+            EnableAutoPollEvents();
+            break;
+        default:
+            break;
     }
 }
 
@@ -285,26 +285,26 @@ GLFWAPI void GLFWAPIENTRY glfwDisable( int token )
 
     switch( token )
     {
-    case GLFW_MOUSE_CURSOR:
-        DisableMouseCursor();
-        break;
-    case GLFW_STICKY_KEYS:
-        DisableStickyKeys();
-        break;
-    case GLFW_STICKY_MOUSE_BUTTONS:
-        DisableStickyMouseButtons();
-        break;
-    case GLFW_SYSTEM_KEYS:
-        DisableSystemKeys();
-        break;
-    case GLFW_KEY_REPEAT:
-        DisableKeyRepeat();
-        break;
-    case GLFW_AUTO_POLL_EVENTS:
-        DisableAutoPollEvents();
-        break;
-    default:
-        break;
+        case GLFW_MOUSE_CURSOR:
+            DisableMouseCursor();
+            break;
+        case GLFW_STICKY_KEYS:
+            DisableStickyKeys();
+            break;
+        case GLFW_STICKY_MOUSE_BUTTONS:
+            DisableStickyMouseButtons();
+            break;
+        case GLFW_SYSTEM_KEYS:
+            DisableSystemKeys();
+            break;
+        case GLFW_KEY_REPEAT:
+            DisableKeyRepeat();
+            break;
+        case GLFW_AUTO_POLL_EVENTS:
+            DisableAutoPollEvents();
+            break;
+        default:
+            break;
     }
 }
 
