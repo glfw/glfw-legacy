@@ -60,7 +60,8 @@ static Param parameters[] =
     { GLFW_OPENGL_VERSION_MAJOR, "OpenGL major" },
     { GLFW_OPENGL_VERSION_MINOR, "OpenGL minor" },
     { GLFW_OPENGL_FORWARD_COMPAT, "OpenGL forward compatible" },
-    { GLFW_DEBUG_CONTEXT, "debug context" },
+    { GLFW_OPENGL_DEBUG_CONTEXT, "OpenGL debug context" },
+    { GLFW_OPENGL_PROFILE, "OpenGL profile" },
 };
 
 int main(void)

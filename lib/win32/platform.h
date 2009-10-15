@@ -133,6 +133,8 @@ typedef struct tagKBDLLHOOKSTRUCT {
 #define XBUTTON2 2
 #endif
 
+#ifndef WGL_ARB_pixel_format
+
 // wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
 typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
 // wglChoosePixelFormatARB typedef
@@ -143,8 +145,6 @@ typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, con
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
 // wglGetExtensionStringARB typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
-// wglCreateContextAttribsARB typedef
-typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*);
 
 /* Constants for wglGetPixelFormatAttribivARB */
 #define WGL_NUMBER_PIXEL_FORMATS_ARB    0x2000
@@ -179,14 +179,30 @@ typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*)
 #define WGL_TYPE_RGBA_ARB               0x202B
 #define WGL_TYPE_COLORINDEX_ARB         0x202C
 
-/* Constants for wglCreateContextAttribsARB */
+#endif /*WGL_ARB_pixel_format*/
+
+
+#ifndef WGL_ARB_create_context
+
+/* wglCreateContextAttribsARB */
+typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC, HGLRC, const int *);
+
+/* Tokens for wglCreateContextAttribsARB attributes */
 #define WGL_CONTEXT_MAJOR_VERSION_ARB          0x2091
 #define WGL_CONTEXT_MINOR_VERSION_ARB          0x2092
 #define WGL_CONTEXT_LAYER_PLANE_ARB            0x2093
 #define WGL_CONTEXT_FLAGS_ARB                  0x2094
+#define WGL_CONTEXT_PROFILE_MASK_ARB           0x9126
+
+/* Bits for WGL_CONTEXT_FLAGS_ARB */
 #define WGL_CONTEXT_DEBUG_BIT_ARB              0x0001
 #define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
-#define GL_ERROR_INVALID_VERSION_ARB           0x2095
+
+/* Bits for WGL_CONTEXT_PROFILE_MASK_ARB */
+#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+
+#endif /*WGL_ARB_create_context*/
 
 
 //========================================================================
@@ -300,7 +316,8 @@ struct _GLFWwin_struct {
     // Extensions & OpenGL version
     int       Has_GL_SGIS_generate_mipmap;
     int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor,GLRevision,GLForward,GLDebug;
+    int       GLVerMajor,GLVerMinor,GLRevision;
+    int       GLForward,GLDebug,GLProfile;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
@@ -321,7 +338,7 @@ struct _GLFWwin_struct {
     WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;
-    WGLCREATECONTEXTATTRIBSARB_T   CreateContextAttribsARB;
+    PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContextAttribsARB;
     GLboolean                      has_WGL_ARB_multisample;
 
     // Various platform specific internal variables

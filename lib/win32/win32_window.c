@@ -277,7 +277,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
-    int i = 0, attribs[7];
+    int flags, i = 0, attribs[7];
 
     if( !_glfw_DescribePixelFormat( dc, pixelFormat, sizeof(pfd), &pfd ) )
     {
@@ -293,7 +293,7 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
     {
         // Use the newer wglCreateContextAttribsARB
 
-        if( wndconfig->glMajor != 1 || wndconfig->glMinor != 1 )
+        if( wndconfig->glMajor != 0 || wndconfig->glMinor != 0 )
         {
             // Request an explicitly versioned context
 
@@ -303,12 +303,37 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
             attribs[i++] = wndconfig->glMinor;
         }
 
-        if( wndconfig->glForward )
+        if( wndconfig->glForward || wndconfig->glDebug )
         {
-            // Request a forward-compatible context
+            flags = 0;
+
+            if( wndconfig->glForward )
+            {
+                flags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            }
+
+            if( wndconfig->glDebug )
+            {
+                flags |= WGL_CONTEXT_DEBUG_BIT_ARB;
+            }
 
             attribs[i++] = WGL_CONTEXT_FLAGS_ARB;
-            attribs[i++] = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            attribs[i++] = flags;
+        }
+
+        if( wndconfig->glProfile )
+        {
+            if( wndconfig->glProfile == GLFW_OPENGL_CORE_PROFILE )
+            {
+                flags = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+            }
+            else
+            {
+                flags = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+            }
+
+            attribs[i++] = WGL_CONTEXT_PROFILE_MASK_ARB;
+            attribs[i++] = flags;
         }
 
         attribs[i++] = 0;
@@ -944,9 +969,9 @@ static void initWGLExtensions( void )
         _glfwWin.has_WGL_ARB_multisample = GL_TRUE;
     }
 
-    if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
+    if( _glfwPlatformExtensionSupported( "WGL_ARB_create_context" ) )
     {
-        _glfwWin.CreateContextAttribsARB = (WGLCREATECONTEXTATTRIBSARB_T)
+        _glfwWin.CreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
             wglGetProcAddress( "wglCreateContextAttribsARB" );
     }
     else

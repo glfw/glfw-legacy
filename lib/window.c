@@ -453,6 +453,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     wndconfig.glMinor        = _glfwLibrary.hints.glMinor;
     wndconfig.glForward      = _glfwLibrary.hints.glForward;
     wndconfig.glDebug        = _glfwLibrary.hints.glDebug;
+    wndconfig.glProfile      = _glfwLibrary.hints.glProfile;
 
     // Clear for next open call
     _glfwClearWindowHints();
@@ -588,9 +589,19 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
         case GLFW_OPENGL_FORWARD_COMPAT:
             _glfwLibrary.hints.glForward = hint ? GL_TRUE : GL_FALSE;
             break;
-        case GLFW_DEBUG_CONTEXT:
+        case GLFW_OPENGL_DEBUG_CONTEXT:
             _glfwLibrary.hints.glDebug = hint ? GL_TRUE : GL_FALSE;
             break;
+        case GLFW_OPENGL_PROFILE:
+            if( hint == GLFW_OPENGL_CORE_PROFILE ||
+                hint == GLFW_OPENGL_COMPAT_PROFILE )
+            {
+                _glfwLibrary.hints.glProfile = hint;
+            }
+            else
+            {
+                _glfwLibrary.hints.glProfile = 0;
+            }
         default:
             break;
     }
@@ -849,8 +860,10 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
             return _glfwWin.GLVerMinor;
         case GLFW_OPENGL_FORWARD_COMPAT:
             return _glfwWin.GLForward;
-        case GLFW_DEBUG_CONTEXT:
+        case GLFW_OPENGL_DEBUG_CONTEXT:
             return _glfwWin.GLDebug;
+        case GLFW_OPENGL_PROFILE:
+            return _glfwWin.GLProfile;
         default:
             return 0;
     }

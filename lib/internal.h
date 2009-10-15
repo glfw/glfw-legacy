@@ -80,6 +80,7 @@ typedef struct {
     int         glMinor;
     int         glForward;
     int         glDebug;
+    int         glProfile;
 } _GLFWhints;
 
 
@@ -105,6 +106,7 @@ typedef struct {
     int         glMinor;
     int         glForward;
     int         glDebug;
+    int         glProfile;
 } _GLFWwndconfig;
 
 
