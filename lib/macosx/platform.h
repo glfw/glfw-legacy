@@ -35,8 +35,6 @@
 // This is the Mac OS X version of GLFW
 #define _GLFW_MAC_OS_X
 
-
-// Include files
 #include <Carbon/Carbon.h>
 #include <OpenGL/OpenGL.h>
 #include <AGL/agl.h>
