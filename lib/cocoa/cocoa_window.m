@@ -222,7 +222,7 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
 // Converts a Mac OS X keycode to a GLFW keycode
 //========================================================================
 
-static int _glfwFromMacKeyCode( unsigned int macKeyCode )
+static int convertMacKeyCode( unsigned int macKeyCode )
 {
     if( macKeyCode >= 128 )
     {
@@ -320,7 +320,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyDown:(NSEvent *)event
 {
-    int code = _glfwFromMacKeyCode( [event keyCode] );
+    int code = convertMacKeyCode( [event keyCode] );
 
     if( code != -1 )
     {
@@ -361,7 +361,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyUp:(NSEvent *)event
 {
-    int code = _glfwFromMacKeyCode( [event keyCode] );
+    int code = convertMacKeyCode( [event keyCode] );
     if( code != -1 )
     {
         _glfwInputKey( code, GLFW_RELEASE );
