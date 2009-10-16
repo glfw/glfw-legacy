@@ -35,6 +35,10 @@
 #define GL_CONTEXT_PROFILE_MASK 0x9126
 #endif
 
+#ifndef GL_VERSION_2_0
+#define GL_SHADING_LANGUAGE_VERSION 0x8B8C
+#endif
+
 #ifdef _WIN32
 #define strcasecmp(x, y) stricmp(x, y)
 #endif
@@ -155,6 +159,12 @@ int main(int argc, char** argv)
     printf("OpenGL context version string: \"%s\"\n", glGetString(GL_VERSION));
     printf("OpenGL context renderer string: \"%s\"\n", glGetString(GL_RENDERER));
     printf("OpenGL context vendor string: \"%s\"\n", glGetString(GL_VENDOR));
+
+    if (major > 1)
+    {
+        printf("OpenGL context shading language version: \"%s\"\n",
+               glGetString(GL_SHADING_LANGUAGE_VERSION));
+    }
 
     printf("OpenGL context supported extensions:\n");
 
