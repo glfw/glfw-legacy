@@ -51,7 +51,7 @@ NSString *GLFWNameKeys[] =
 //========================================================================
 // Try to figure out what the calling application is called
 //========================================================================
-static NSString *_glfwFindAppName( void )
+static NSString *findAppName( void )
 {
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
 
@@ -100,9 +100,9 @@ static NSString *_glfwFindAppName( void )
 // localize(d|able), etc.  Loading a nib would save us this horror, but that
 // doesn't seem like a good thing to require of GLFW's clients.
 //========================================================================
-static void _glfwSetUpMenuBar( void )
+static void setUpMenuBar( void )
 {
-    NSString *appName = _glfwFindAppName();
+    NSString *appName = findAppName();
 
     NSMenu *bar = [[NSMenu alloc] init];
     [NSApp setMainMenu:bar];
@@ -164,6 +164,30 @@ static void _glfwSetUpMenuBar( void )
 }
 
 //========================================================================
+// Initialize GLFW thread package
+//========================================================================
+
+static void initThreads( void )
+{
+    // Initialize critical section handle
+    (void) pthread_mutex_init( &_glfwThrd.CriticalSection, NULL );
+
+    // The first thread (the main thread) has ID 0
+    _glfwThrd.NextID = 0;
+
+    // Fill out information about the main thread (this thread)
+    _glfwThrd.First.ID       = _glfwThrd.NextID ++;
+    _glfwThrd.First.Function = NULL;
+    _glfwThrd.First.PosixID  = pthread_self();
+    _glfwThrd.First.Previous = NULL;
+    _glfwThrd.First.Next     = NULL;
+}
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
 // Initialize the GLFW library
 //========================================================================
 
@@ -171,11 +195,15 @@ int _glfwPlatformInit( void )
 {
     _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 
+    // Implicitly create shared NSApplication instance
     [NSApplication sharedApplication];
+
     // Setting up menu bar must go exactly here else weirdness ensues
-    _glfwSetUpMenuBar();
+    setUpMenuBar();
 
     [NSApp finishLaunching];
+
+    initThreads();
 
     _glfwPlatformSetTime( 0.0 );
 
@@ -191,8 +219,11 @@ int _glfwPlatformInit( void )
 
 int _glfwPlatformTerminate( void )
 {
+    // TODO: Fail unless this is the main thread
+
     glfwCloseWindow();
 
+    // TODO: Kill all non-main threads?
     // TODO: Probably other cleanup
 
     [_glfwLibrary.AutoreleasePool release];
