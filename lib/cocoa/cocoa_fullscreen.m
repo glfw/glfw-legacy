@@ -43,8 +43,8 @@ static BOOL modeIsGood( NSDictionary *mode )
     // This seems like a decent compromise, but certain applications may
     // wish to patch this...
     return [[mode objectForKey:(id)kCGDisplayBitsPerPixel] intValue] >= 15 &&
-        [mode objectForKey:(id)kCGDisplayModeIsSafeForHardware] != nil &&
-        [mode objectForKey:(id)kCGDisplayModeIsStretched] == nil;
+           [mode objectForKey:(id)kCGDisplayModeIsSafeForHardware] != nil &&
+           [mode objectForKey:(id)kCGDisplayModeIsStretched] == nil;
 }
 
 //========================================================================
