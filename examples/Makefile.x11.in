@@ -1,7 +1,7 @@
 
 # Default: Build all tests
 all: triangle listmodes mthello pong3d mtbench particles splitview \
-     mipmaps keytest joytest gears boing wave
+     mipmaps joytest gears boing wave
 
 
 # Rule for triangle
@@ -36,10 +36,6 @@ splitview: splitview.c ../lib/x11/libglfw.a
 mipmaps: mipmaps.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o $@
 
-# Rule for keytest
-keytest: keytest.c ../lib/x11/libglfw.a
-	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o $@
-
 # Rule for joytest
 joytest: joytest.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o $@
@@ -58,5 +54,5 @@ wave: wave.c ../lib/x11/libglfw.a
 
 clean:
 	rm -f triangle listmodes mthello pong3d mtbench particles splitview \
-	      mipmaps keytest gears boing wave
+	      mipmaps gears boing wave
 

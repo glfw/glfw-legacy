@@ -12,9 +12,8 @@ LIBDIR = ..\lib
 LIBS = $(LIBDIR)\glfwdll.lib $(LIBDIR)\glu32.lib $(LIBDIR)\opengl32.lib
 
 
-all: boing.exe keytest.exe gears.exe listmodes.exe mipmaps.exe \
-	mthello.exe mtbench.exe particles.exe pong3d.exe splitview.exe \
-	triangle.exe wave.exe
+all: boing.exe gears.exe listmodes.exe mipmaps.exe mthello.exe mtbench.exe \
+     particles.exe pong3d.exe splitview.exe triangle.exe wave.exe
 
 
 clean:
@@ -22,9 +21,6 @@ clean:
 
 
 boing.exe: boing.d
-	$(DC) $(DFLAGS) -of$@ $<d $(LIBS)
-
-keytest.exe: keytest.d
 	$(DC) $(DFLAGS) -of$@ $<d $(LIBS)
 
 gears.exe: gears.d

@@ -181,7 +181,6 @@ IF EXIST .\lib\win32\init.tds             del .\lib\win32\init.tds
 REM Executables and related files
 IF EXIST .\examples\boing.exe             del .\examples\boing.exe
 IF EXIST .\examples\gears.exe             del .\examples\gears.exe
-IF EXIST .\examples\keytest.exe           del .\examples\keytest.exe
 IF EXIST .\examples\listmodes.exe         del .\examples\listmodes.exe
 IF EXIST .\examples\mipmaps.exe           del .\examples\mipmaps.exe
 IF EXIST .\examples\mtbench.exe           del .\examples\mtbench.exe
@@ -194,7 +193,6 @@ IF EXIST .\examples\wave.exe              del .\examples\wave.exe
 
 IF EXIST .\examples\boing.obj             del .\examples\boing.obj
 IF EXIST .\examples\gears.obj             del .\examples\gears.obj
-IF EXIST .\examples\keytest.obj           del .\examples\keytest.obj
 IF EXIST .\examples\listmodes.obj         del .\examples\listmodes.obj
 IF EXIST .\examples\mipmaps.obj           del .\examples\mipmaps.obj
 IF EXIST .\examples\mtbench.obj           del .\examples\mtbench.obj
@@ -207,7 +205,6 @@ IF EXIST .\examples\wave.obj              del .\examples\wave.obj
 
 IF EXIST .\examples\boing.tds             del .\examples\boing.tds
 IF EXIST .\examples\gears.tds             del .\examples\gears.tds
-IF EXIST .\examples\keytest.tds           del .\examples\keytest.tds
 IF EXIST .\examples\listmodes.tds         del .\examples\listmodes.tds
 IF EXIST .\examples\mipmaps.tds           del .\examples\mipmaps.tds
 IF EXIST .\examples\mtbench.tds           del .\examples\mtbench.tds

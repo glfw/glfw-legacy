@@ -22,7 +22,6 @@ all: Triangle.app/Contents/MacOS/Triangle \
      Particles.app/Contents/MacOS/Particles \
      SplitView.app/Contents/MacOS/SplitView \
      Mipmaps.app/Contents/MacOS/Mipmaps \
-     KeyTest.app/Contents/MacOS/KeyTest \
      JoyTest.app/Contents/MacOS/JoyTest \
      Gears.app/Contents/MacOS/Gears \
      Boing.app/Contents/MacOS/Boing \
@@ -70,11 +69,6 @@ Mipmaps.app/Contents/MacOS/GLFWApplication: mipmaps.c
 	cp mipmaps.tga Mipmaps.app/Contents/Resources/
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o Mipmaps.app/Contents/MacOS/Mipmaps
 
-# Rule for keytest
-KeyTest.app/Contents/MacOS/GLFWApplication: keytest.c
-	/bin/sh bundle.sh KeyTest
-	$(CC) $(CFLAGS) keytest.c $(LFLAGS) -o KeyTest.app/Contents/MacOS/KeyTest
-
 # Rule for joytest
 JoyTest.app/Contents/MacOS/GLFWApplication: joytest.c
 	/bin/sh bundle.sh JoyTest
@@ -100,5 +94,5 @@ Wave.app/Contents/MacOS/GLFWApplication: wave.c
 clean:
 	rm -rf JoyTest.app Triangle.app ListModes.app MTHello.app \
 	       Pong3D.app MTBench.app Particles.app SplitView.app \
-	       Mipmaps.app KeyTest.app Gears.app Boing.app Wave.app
+	       Mipmaps.app Gears.app Boing.app Wave.app
 
