@@ -21,10 +21,10 @@ default: libglfw.a libglfw.dylib
 # Compiler settings
 ##########################################################################
 CC           = gcc
-CFLAGS       = -c -I. -I.. -Wall -O2 -fno-common -g
+CFLAGS       = -c -I. -I.. -Wall -O2 -fno-common -g -m32
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common -g
+CFLAGS_SPEED = -c -I. -I.. -Wall -O3 -ffast-math -fno-common -g -m32
 
 
 ##########################################################################
@@ -35,9 +35,9 @@ SED         = sed
 INSTALL     = install
 ARFLAGS     = -rcs
 RANLIB      = ranlib
-DYLIBFLAGS  = -framework Cocoa -framework OpenGL \
+DYLIBFLAGS  = -framework AGL -framework Carbon -framework OpenGL \
               -dynamiclib -Wl,-single_module -compatibility_version 1 \
-              -current_version 1 -install_name @executable_path/libglfw.dylib
+              -current_version 1 -install_name @executable_path/libglfw.dylib -m32
 
 
 ##########################################################################
@@ -147,27 +147,26 @@ time.o: ../time.c ../internal.h platform.h
 window.o: ../window.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ ../window.c
 
-macosx_enable.o: macosx_enable.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_enable.m
+macosx_enable.o: macosx_enable.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_enable.c
 
-macosx_fullscreen.o: macosx_fullscreen.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_fullscreen.m
+macosx_fullscreen.o: macosx_fullscreen.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_fullscreen.c
 
-macosx_glext.o: macosx_glext.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_glext.m
+macosx_glext.o: macosx_glext.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_glext.c
 
-macosx_init.o: macosx_init.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_init.m
+macosx_init.o: macosx_init.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_init.c
 
-macosx_joystick.o: macosx_joystick.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_joystick.m
+macosx_joystick.o: macosx_joystick.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_joystick.c
 
 macosx_thread.o: macosx_thread.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ macosx_thread.c
 
-macosx_time.o: macosx_time.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_time.m
+macosx_time.o: macosx_time.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_time.c
 
-macosx_window.o: macosx_window.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_window.m
-
+macosx_window.o: macosx_window.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ macosx_window.c
