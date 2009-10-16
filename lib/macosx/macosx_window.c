@@ -289,7 +289,7 @@ static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
         case kEventMouseDragged:
         {
             HIPoint mouseLocation;
-            if( _glfwWin.MouseLock )
+            if( _glfwWin.mouseLock )
             {
                 if( GetEventParameter( event,
                                        kEventParamMouseDelta,
@@ -321,7 +321,7 @@ static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
                 _glfwInput.MousePosX = mouseLocation.x;
                 _glfwInput.MousePosY = mouseLocation.y;
 
-                if( !_glfwWin.Fullscreen )
+                if( !_glfwWin.fullscreen )
                 {
                     Rect content;
                     GetWindowBounds( _glfwWin.window,
@@ -389,7 +389,7 @@ static OSStatus commandHandler( EventHandlerCallRef handlerCallRef,
                                 EventRef event,
                                 void *userData )
 {
-    if( _glfwWin.SysKeysDisabled )
+    if( _glfwWin.sysKeysDisabled )
     {
         // TODO: Give adequate UI feedback that this is the case
         return eventNotHandledErr;
@@ -460,16 +460,16 @@ static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
             Rect rect;
             GetWindowPortBounds( window, &rect );
 
-            if( _glfwWin.Width != rect.right ||
-                _glfwWin.Height != rect.bottom )
+            if( _glfwWin.width != rect.right ||
+                _glfwWin.height != rect.bottom )
             {
                 aglUpdateContext( _glfwWin.aglContext );
 
-                _glfwWin.Width  = rect.right;
-                _glfwWin.Height = rect.bottom;
+                _glfwWin.width  = rect.right;
+                _glfwWin.height = rect.bottom;
                 if( _glfwWin.windowSizeCallback )
                 {
-                    _glfwWin.windowSizeCallback( _glfwWin.Width, _glfwWin.Height );
+                    _glfwWin.windowSizeCallback( _glfwWin.width, _glfwWin.height );
                 }
                 // Emulate (force) content invalidation
                 if( _glfwWin.windowRefreshCallback )
@@ -508,13 +508,13 @@ static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
 
         case kEventWindowActivated:
         {
-            _glfwWin.Active = GL_TRUE;
+            _glfwWin.active = GL_TRUE;
             break;
         }
 
         case kEventWindowDeactivated:
         {
-            _glfwWin.Active = GL_FALSE;
+            _glfwWin.active = GL_FALSE;
             _glfwInputDeactivation();
             break;
         }
@@ -615,7 +615,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.cglContext     = NULL;
     _glfwWin.cglPixelFormat = NULL;
 
-    _glfwWin.RefreshRate = wndconfig->refreshRate;
+    _glfwWin.refreshRate = wndconfig->refreshRate;
 
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
@@ -989,7 +989,7 @@ void _glfwPlatformCloseWindow( void )
         _glfwWin.windowUPP = NULL;
     }
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         if( _glfwWin.cglContext != NULL )
         {
@@ -1038,7 +1038,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 {
     CFStringRef windowTitle;
 
-    if( !_glfwWin.Fullscreen )
+    if( !_glfwWin.fullscreen )
     {
         windowTitle = CFStringCreateWithCString( kCFAllocatorDefault,
                                                  title,
@@ -1056,7 +1056,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    if( !_glfwWin.Fullscreen )
+    if( !_glfwWin.fullscreen )
     {
         SizeWindow( _glfwWin.window, width, height, TRUE );
     }
@@ -1068,7 +1068,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    if( !_glfwWin.Fullscreen )
+    if( !_glfwWin.fullscreen )
     {
         MoveWindow( _glfwWin.window, x, y, FALSE );
     }
@@ -1080,7 +1080,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 
 void _glfwPlatformIconifyWindow( void )
 {
-    if( !_glfwWin.Fullscreen )
+    if( !_glfwWin.fullscreen )
     {
         (void)CollapseWindow( _glfwWin.window, TRUE );
     }
@@ -1092,7 +1092,7 @@ void _glfwPlatformIconifyWindow( void )
 
 void _glfwPlatformRestoreWindow( void )
 {
-    if( !_glfwWin.Fullscreen )
+    if( !_glfwWin.fullscreen )
     {
         (void)CollapseWindow( _glfwWin.window, FALSE );
     }
@@ -1104,7 +1104,7 @@ void _glfwPlatformRestoreWindow( void )
 
 void _glfwPlatformSwapBuffers( void )
 {
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         CGLFlushDrawable( _glfwWin.cglContext );
     }
@@ -1125,7 +1125,7 @@ void _glfwPlatformSwapInterval( int interval )
     // CGL doesn't seem to like intervals other than 0 (vsync off) or 1 (vsync on)
     long CGLparameter = ( interval ? 1 : 0 );
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Don't care if we fail here..
         (void)CGLSetParameter( _glfwWin.cglContext,
@@ -1165,15 +1165,15 @@ void _glfwPlatformRefreshWindowParams( void )
     GLint rgbaAccumDepth = 0;
     GLint rgbChannelDepth = 0;
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
-        _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.Accelerated );
-        _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.AlphaBits );
-        _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.DepthBits );
-        _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.StencilBits );
-        _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.AuxBuffers );
-        _getCGLAttribute( kCGLPFAStereo,      _glfwWin.Stereo );
-        _getCGLAttribute( kCGLPFASamples,     _glfwWin.Samples );
+        _getCGLAttribute( kCGLPFAAccelerated, _glfwWin.accelerated );
+        _getCGLAttribute( kCGLPFAAlphaSize,   _glfwWin.alphaBits );
+        _getCGLAttribute( kCGLPFADepthSize,   _glfwWin.depthBits );
+        _getCGLAttribute( kCGLPFAStencilSize, _glfwWin.stencilBits );
+        _getCGLAttribute( kCGLPFAAuxBuffers,  _glfwWin.auxBuffers );
+        _getCGLAttribute( kCGLPFAStereo,      _glfwWin.stereo );
+        _getCGLAttribute( kCGLPFASamples,     _glfwWin.samples );
 
         // Enumerate depth of RGB channels - unlike AGL, CGL works with
         // a single parameter reflecting the full depth of the frame buffer
@@ -1191,9 +1191,9 @@ void _glfwPlatformRefreshWindowParams( void )
             rgbChannelDepth = 5;
         }
 
-        _glfwWin.RedBits   = rgbChannelDepth;
-        _glfwWin.GreenBits = rgbChannelDepth;
-        _glfwWin.BlueBits  = rgbChannelDepth;
+        _glfwWin.redBits   = rgbChannelDepth;
+        _glfwWin.greenBits = rgbChannelDepth;
+        _glfwWin.blueBits  = rgbChannelDepth;
 
         // Get pixel depth of accumulator - I haven't got the slightest idea
         // how this number conforms to any other channel depth than 8 bits,
@@ -1204,27 +1204,27 @@ void _glfwPlatformRefreshWindowParams( void )
             rgbaAccumDepth = 8;
         }
 
-        _glfwWin.AccumRedBits   = rgbaAccumDepth;
-        _glfwWin.AccumGreenBits = rgbaAccumDepth;
-        _glfwWin.AccumBlueBits  = rgbaAccumDepth;
-        _glfwWin.AccumAlphaBits = rgbaAccumDepth;
+        _glfwWin.accumRedBits   = rgbaAccumDepth;
+        _glfwWin.accumGreenBits = rgbaAccumDepth;
+        _glfwWin.accumBlueBits  = rgbaAccumDepth;
+        _glfwWin.accumAlphaBits = rgbaAccumDepth;
     }
     else
     {
-        _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.Accelerated );
-        _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.RedBits );
-        _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.GreenBits );
-        _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.BlueBits );
-        _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.AlphaBits );
-        _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.DepthBits );
-        _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.StencilBits );
-        _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.AccumRedBits );
-        _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.AccumGreenBits );
-        _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.AccumBlueBits );
-        _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.AccumAlphaBits );
-        _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.AuxBuffers );
-        _getAGLAttribute( AGL_STEREO,           _glfwWin.Stereo );
-        _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.Samples );
+        _getAGLAttribute( AGL_ACCELERATED,      _glfwWin.accelerated );
+        _getAGLAttribute( AGL_RED_SIZE,         _glfwWin.redBits );
+        _getAGLAttribute( AGL_GREEN_SIZE,       _glfwWin.greenBits );
+        _getAGLAttribute( AGL_BLUE_SIZE,        _glfwWin.blueBits );
+        _getAGLAttribute( AGL_ALPHA_SIZE,       _glfwWin.alphaBits );
+        _getAGLAttribute( AGL_DEPTH_SIZE,       _glfwWin.depthBits );
+        _getAGLAttribute( AGL_STENCIL_SIZE,     _glfwWin.stencilBits );
+        _getAGLAttribute( AGL_ACCUM_RED_SIZE,   _glfwWin.accumRedBits );
+        _getAGLAttribute( AGL_ACCUM_GREEN_SIZE, _glfwWin.accumGreenBits );
+        _getAGLAttribute( AGL_ACCUM_BLUE_SIZE,  _glfwWin.accumBlueBits );
+        _getAGLAttribute( AGL_ACCUM_ALPHA_SIZE, _glfwWin.accumAlphaBits );
+        _getAGLAttribute( AGL_AUX_BUFFERS,      _glfwWin.auxBuffers );
+        _getAGLAttribute( AGL_STEREO,           _glfwWin.stereo );
+        _getAGLAttribute( AGL_SAMPLES_ARB,      _glfwWin.samples );
     }
 }
 
@@ -1287,7 +1287,7 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
     Rect content;
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         CGDisplayMoveCursorToPoint( kCGDirectMainDisplay,
                                     CGPointMake( x, y ) );

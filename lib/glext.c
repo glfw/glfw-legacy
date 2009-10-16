@@ -134,7 +134,7 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
     GLubyte *where;
 
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GL_FALSE;
     }
@@ -174,7 +174,7 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
 GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return NULL;
     }
@@ -190,22 +190,22 @@ GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )
 GLFWAPI void GLFWAPIENTRY glfwGetGLVersion( int *major, int *minor, int *rev )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     if( major != NULL )
     {
-        *major = _glfwWin.GLVerMajor;
+        *major = _glfwWin.glMajor;
     }
     if( minor != NULL )
     {
-        *minor = _glfwWin.GLVerMinor;
+        *minor = _glfwWin.glMinor;
     }
     if( rev != NULL )
     {
-        *rev = _glfwWin.GLRevision;
+        *rev = _glfwWin.glRevision;
     }
 }
 

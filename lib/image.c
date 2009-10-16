@@ -449,13 +449,13 @@ GLFWAPI int GLFWAPIENTRY glfwLoadTexture2D( const char *name, int flags )
     GLFWimage img;
 
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GL_FALSE;
     }
 
     // Force rescaling if necessary
-    if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
+    if( !_glfwWin.has_GL_ARB_texture_non_power_of_two )
     {
         flags &= (~GLFW_NO_RESCALE_BIT);
     }
@@ -488,13 +488,13 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadMemoryTexture2D( const void *data, long size, 
     GLFWimage img;
 
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GL_FALSE;
     }
 
     // Force rescaling if necessary
-    if( !_glfwWin.Has_GL_ARB_texture_non_power_of_two )
+    if( !_glfwWin.has_GL_ARB_texture_non_power_of_two )
     {
         flags &= (~GLFW_NO_RESCALE_BIT);
     }
@@ -528,7 +528,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
     unsigned char *data, *dataptr;
 
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GL_FALSE;
     }
@@ -538,7 +538,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
     // NOTE: May require box filter downsampling routine.
 
     // Do we need to convert the alpha map to RGBA format (OpenGL 1.0)?
-    if( (_glfwWin.GLVerMajor == 1) && (_glfwWin.GLVerMinor == 0) &&
+    if( (_glfwWin.glMajor == 1) && (_glfwWin.glMinor == 0) &&
         (img->Format == GL_ALPHA) )
     {
         // We go to RGBA representation instead
@@ -576,7 +576,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
 
     // Should we use automatic mipmap generation?
     AutoGen = ( flags & GLFW_BUILD_MIPMAPS_BIT ) &&
-              _glfwWin.Has_GL_SGIS_generate_mipmap;
+              _glfwWin.has_GL_SGIS_generate_mipmap;
 
     // Enable automatic mipmap generation
     if( AutoGen )
@@ -588,7 +588,7 @@ GLFWAPI int  GLFWAPIENTRY glfwLoadTextureImage2D( GLFWimage *img, int flags )
     }
 
     // Format specification is different for OpenGL 1.0
-    if( _glfwWin.GLVerMajor == 1 && _glfwWin.GLVerMinor == 0 )
+    if( _glfwWin.glMajor == 1 && _glfwWin.glMinor == 0 )
     {
         format = img->BytesPerPixel;
     }

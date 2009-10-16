@@ -52,10 +52,10 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
     memset( &_glfwWin, 0, sizeof( _glfwWin ) );
 
     // Window is not yet opened
-    _glfwWin.Opened = GL_FALSE;
+    _glfwWin.opened = GL_FALSE;
 
     // Default enable/disable settings
-    _glfwWin.SysKeysDisabled = GL_FALSE;
+    _glfwWin.sysKeysDisabled = GL_FALSE;
 
     // Clear window hints
     _glfwClearWindowHints();

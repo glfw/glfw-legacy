@@ -200,8 +200,8 @@ void _glfwSetVideoModeMODE( int mode )
     }
 
     // Set the window size to that of the display mode
-    _glfwWin.Width  = dm.dmPelsWidth;
-    _glfwWin.Height = dm.dmPelsHeight;
+    _glfwWin.width  = dm.dmPelsWidth;
+    _glfwWin.height = dm.dmPelsHeight;
 }
 
 

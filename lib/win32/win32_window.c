@@ -604,17 +604,17 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         // Window activate message? (iconification?)
         case WM_ACTIVATE:
         {
-            _glfwWin.Active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE : GL_FALSE;
+            _glfwWin.active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE : GL_FALSE;
 
             Iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
 
             // Were we deactivated/iconified?
-            if( (!_glfwWin.Active || Iconified) && !_glfwWin.Iconified )
+            if( (!_glfwWin.active || Iconified) && !_glfwWin.iconified )
             {
                 _glfwInputDeactivation();
 
                 // If we are in fullscreen mode we need to iconify
-                if( _glfwWin.Opened && _glfwWin.Fullscreen )
+                if( _glfwWin.opened && _glfwWin.fullscreen )
                 {
                     // Do we need to manually iconify?
                     if( !Iconified )
@@ -633,15 +633,15 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 // Unlock mouse
                 if( !_glfwWin.oldMouseLockValid )
                 {
-                    _glfwWin.oldMouseLock = _glfwWin.MouseLock;
+                    _glfwWin.oldMouseLock = _glfwWin.mouseLock;
                     _glfwWin.oldMouseLockValid = GL_TRUE;
                     glfwEnable( GLFW_MOUSE_CURSOR );
                 }
             }
-            else if( _glfwWin.Active || !Iconified )
+            else if( _glfwWin.active || !Iconified )
             {
                 // If we are in fullscreen mode we need to maximize
-                if( _glfwWin.Opened && _glfwWin.Fullscreen && _glfwWin.Iconified )
+                if( _glfwWin.opened && _glfwWin.fullscreen && _glfwWin.iconified )
                 {
                     // Change display settings to the user selected mode
                     _glfwSetVideoModeMODE( _glfwWin.modeID );
@@ -670,7 +670,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 _glfwWin.oldMouseLockValid = GL_FALSE;
             }
 
-            _glfwWin.Iconified = Iconified;
+            _glfwWin.iconified = Iconified;
             return 0;
         }
 
@@ -683,7 +683,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 // powersave?
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER:
-                    if( _glfwWin.Fullscreen )
+                    if( _glfwWin.fullscreen )
                     {
                         return 0;
                     }
@@ -814,7 +814,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             if( NewMouseX != _glfwInput.OldMouseX ||
                 NewMouseY != _glfwInput.OldMouseY )
             {
-                if( _glfwWin.MouseLock )
+                if( _glfwWin.mouseLock )
                 {
                     _glfwInput.MousePosX += NewMouseX -
                                             _glfwInput.OldMouseX;
@@ -861,11 +861,11 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         case WM_SIZE:
         {
             // get the new size
-            _glfwWin.Width  = LOWORD(lParam);
-            _glfwWin.Height = HIWORD(lParam);
+            _glfwWin.width  = LOWORD(lParam);
+            _glfwWin.height = HIWORD(lParam);
 
             // If the mouse is locked, update the clipping rect
-            if( _glfwWin.MouseLock )
+            if( _glfwWin.mouseLock )
             {
                 RECT ClipWindowRect;
                 if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
@@ -887,7 +887,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         case WM_MOVE:
         {
             // If the mouse is locked, update the clipping rect
-            if( _glfwWin.MouseLock )
+            if( _glfwWin.mouseLock )
             {
                 RECT ClipWindowRect;
                 if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
@@ -1096,7 +1096,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     dwExStyle = WS_EX_APPWINDOW;
 
     // Set window style, depending on fullscreen mode
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         dwStyle |= WS_POPUP;
 
@@ -1128,12 +1128,12 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     _glfwWin.dwExStyle = dwExStyle;
 
     // Adjust window size for frame and title bar
-    getFullWindowSize( _glfwWin.Width, _glfwWin.Height, &fullWidth, &fullHeight );
+    getFullWindowSize( _glfwWin.width, _glfwWin.height, &fullWidth, &fullHeight );
 
     // Adjust window position to working area (e.g. if the task bar is at
     // the top of the display). Fullscreen windows are always opened in
     // the upper left corner regardless of the desktop working area.
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         wa.left = wa.top = 0;
     }
@@ -1271,9 +1271,9 @@ int _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
-        _glfwSetVideoMode( &_glfwWin.Width, &_glfwWin.Height,
+        _glfwSetVideoMode( &_glfwWin.width, &_glfwWin.height,
                            fbconfig->redBits, fbconfig->greenBits, fbconfig->blueBits,
                            wndconfig->refreshRate );
     }
@@ -1335,7 +1335,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         }
     }
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Place the window above all topmost windows
         SetWindowPos( _glfwWin.window, HWND_TOPMOST, 0,0,0,0,
@@ -1371,7 +1371,7 @@ void _glfwPlatformCloseWindow( void )
     }
 
     // Are we in fullscreen mode?
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Switch back to desktop resolution
         ChangeDisplaySettings( NULL, CDS_FULLSCREEN );
@@ -1402,7 +1402,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     GLfloat clearcolor[4];
 
     // If we are in fullscreen mode, get some info about the current mode
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         DEVMODE dm;
 
@@ -1431,7 +1431,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     }
 
     // Change window size before changing fullscreen mode?
-    if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
+    if( _glfwWin.fullscreen && (width > _glfwWin.width) )
     {
         SetWindowPos( _glfwWin.window, HWND_TOP, 0, 0, width, height,
                       SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOZORDER );
@@ -1439,7 +1439,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     }
 
     // Change fullscreen video mode?
-    if( _glfwWin.Fullscreen && mode != _glfwWin.modeID )
+    if( _glfwWin.fullscreen && mode != _glfwWin.modeID )
     {
         // Change video mode
         _glfwSetVideoModeMODE( mode );
@@ -1489,10 +1489,10 @@ void _glfwPlatformIconifyWindow( void )
     CloseWindow( _glfwWin.window );
 
     // Window is now iconified
-    _glfwWin.Iconified = GL_TRUE;
+    _glfwWin.iconified = GL_TRUE;
 
     // If we are in fullscreen mode we need to change video modes
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Change display settings to the desktop resolution
         ChangeDisplaySettings( NULL, CDS_FULLSCREEN );
@@ -1501,7 +1501,7 @@ void _glfwPlatformIconifyWindow( void )
     // Unlock mouse
     if( !_glfwWin.oldMouseLockValid )
     {
-        _glfwWin.oldMouseLock = _glfwWin.MouseLock;
+        _glfwWin.oldMouseLock = _glfwWin.mouseLock;
         _glfwWin.oldMouseLockValid = GL_TRUE;
         glfwEnable( GLFW_MOUSE_CURSOR );
     }
@@ -1515,7 +1515,7 @@ void _glfwPlatformIconifyWindow( void )
 void _glfwPlatformRestoreWindow( void )
 {
     // If we are in fullscreen mode we need to change video modes
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Change display settings to the user selected mode
         _glfwSetVideoModeMODE( _glfwWin.modeID );
@@ -1530,7 +1530,7 @@ void _glfwPlatformRestoreWindow( void )
     SetFocus( _glfwWin.window );
 
     // Window is no longer iconified
-    _glfwWin.Iconified = GL_FALSE;
+    _glfwWin.iconified = GL_FALSE;
 
     // Lock mouse, if necessary
     if( _glfwWin.oldMouseLockValid && _glfwWin.oldMouseLock )
@@ -1582,37 +1582,37 @@ void _glfwPlatformRefreshWindowParams( void )
         if( getPixelFormatAttrib( pixelFormat, WGL_ACCELERATION_ARB ) !=
             WGL_NO_ACCELERATION_ARB )
         {
-            _glfwWin.Accelerated = GL_TRUE;
+            _glfwWin.accelerated = GL_TRUE;
         }
         else
         {
-            _glfwWin.Accelerated = GL_FALSE;
+            _glfwWin.accelerated = GL_FALSE;
         }
 
-        _glfwWin.RedBits = getPixelFormatAttrib( pixelFormat, WGL_RED_BITS_ARB );
-        _glfwWin.GreenBits = getPixelFormatAttrib( pixelFormat, WGL_GREEN_BITS_ARB );
-        _glfwWin.BlueBits = getPixelFormatAttrib( pixelFormat, WGL_BLUE_BITS_ARB );
+        _glfwWin.redBits = getPixelFormatAttrib( pixelFormat, WGL_RED_BITS_ARB );
+        _glfwWin.greenBits = getPixelFormatAttrib( pixelFormat, WGL_GREEN_BITS_ARB );
+        _glfwWin.blueBits = getPixelFormatAttrib( pixelFormat, WGL_BLUE_BITS_ARB );
 
-        _glfwWin.AlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ALPHA_BITS_ARB );
-        _glfwWin.DepthBits = getPixelFormatAttrib( pixelFormat, WGL_DEPTH_BITS_ARB );
-        _glfwWin.StencilBits = getPixelFormatAttrib( pixelFormat, WGL_STENCIL_BITS_ARB );
+        _glfwWin.alphaBits = getPixelFormatAttrib( pixelFormat, WGL_ALPHA_BITS_ARB );
+        _glfwWin.depthBits = getPixelFormatAttrib( pixelFormat, WGL_DEPTH_BITS_ARB );
+        _glfwWin.stencilBits = getPixelFormatAttrib( pixelFormat, WGL_STENCIL_BITS_ARB );
 
-        _glfwWin.AccumRedBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_RED_BITS_ARB );
-        _glfwWin.AccumGreenBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_GREEN_BITS_ARB );
-        _glfwWin.AccumBlueBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_BLUE_BITS_ARB );
-        _glfwWin.AccumAlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_ALPHA_BITS_ARB );
+        _glfwWin.accumRedBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_RED_BITS_ARB );
+        _glfwWin.accumGreenBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_GREEN_BITS_ARB );
+        _glfwWin.accumBlueBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_BLUE_BITS_ARB );
+        _glfwWin.accumAlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_ALPHA_BITS_ARB );
 
-        _glfwWin.AuxBuffers = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
-        _glfwWin.Stereo = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
+        _glfwWin.auxBuffers = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
+        _glfwWin.stereo = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
 
         if( _glfwWin.has_WGL_ARB_multisample )
         {
-            _glfwWin.Samples = getPixelFormatAttrib( pixelFormat, WGL_SAMPLES_ARB );
+            _glfwWin.samples = getPixelFormatAttrib( pixelFormat, WGL_SAMPLES_ARB );
             // Should we force 1 to 0 here for consistency, or keep 1 for transparency?
         }
         else
         {
-            _glfwWin.Samples = 0;
+            _glfwWin.samples = 0;
         }
     }
     else
@@ -1621,43 +1621,43 @@ void _glfwPlatformRefreshWindowParams( void )
                                    sizeof(PIXELFORMATDESCRIPTOR), &pfd );
 
         // Is current OpenGL context accelerated?
-        _glfwWin.Accelerated = (pfd.dwFlags & PFD_GENERIC_ACCELERATED) ||
+        _glfwWin.accelerated = (pfd.dwFlags & PFD_GENERIC_ACCELERATED) ||
                                !(pfd.dwFlags & PFD_GENERIC_FORMAT) ? 1 : 0;
 
         // "Standard" window parameters
-        _glfwWin.RedBits        = pfd.cRedBits;
-        _glfwWin.GreenBits      = pfd.cGreenBits;
-        _glfwWin.BlueBits       = pfd.cBlueBits;
-        _glfwWin.AlphaBits      = pfd.cAlphaBits;
-        _glfwWin.DepthBits      = pfd.cDepthBits;
-        _glfwWin.StencilBits    = pfd.cStencilBits;
-        _glfwWin.AccumRedBits   = pfd.cAccumRedBits;
-        _glfwWin.AccumGreenBits = pfd.cAccumGreenBits;
-        _glfwWin.AccumBlueBits  = pfd.cAccumBlueBits;
-        _glfwWin.AccumAlphaBits = pfd.cAccumAlphaBits;
-        _glfwWin.AuxBuffers     = pfd.cAuxBuffers;
-        _glfwWin.Stereo         = pfd.dwFlags & PFD_STEREO ? 1 : 0;
+        _glfwWin.redBits        = pfd.cRedBits;
+        _glfwWin.greenBits      = pfd.cGreenBits;
+        _glfwWin.blueBits       = pfd.cBlueBits;
+        _glfwWin.alphaBits      = pfd.cAlphaBits;
+        _glfwWin.depthBits      = pfd.cDepthBits;
+        _glfwWin.stencilBits    = pfd.cStencilBits;
+        _glfwWin.accumRedBits   = pfd.cAccumRedBits;
+        _glfwWin.accumGreenBits = pfd.cAccumGreenBits;
+        _glfwWin.accumBlueBits  = pfd.cAccumBlueBits;
+        _glfwWin.accumAlphaBits = pfd.cAccumAlphaBits;
+        _glfwWin.auxBuffers     = pfd.cAuxBuffers;
+        _glfwWin.stereo         = pfd.dwFlags & PFD_STEREO ? 1 : 0;
 
         // If we don't have WGL_ARB_pixel_format then we can't have created a
         // multisampling context, so it's safe to hardcode zero here
-        _glfwWin.Samples = 0;
+        _glfwWin.samples = 0;
     }
 
     // Get refresh rate
-    mode = _glfwWin.Fullscreen ? _glfwWin.modeID : ENUM_CURRENT_SETTINGS;
+    mode = _glfwWin.fullscreen ? _glfwWin.modeID : ENUM_CURRENT_SETTINGS;
     dm.dmSize = sizeof( DEVMODE );
 
     if( EnumDisplaySettings( NULL, mode, &dm ) )
     {
-        _glfwWin.RefreshRate = dm.dmDisplayFrequency;
-        if( _glfwWin.RefreshRate <= 1 )
+        _glfwWin.refreshRate = dm.dmDisplayFrequency;
+        if( _glfwWin.refreshRate <= 1 )
         {
-            _glfwWin.RefreshRate = 0;
+            _glfwWin.refreshRate = 0;
         }
     }
     else
     {
-        _glfwWin.RefreshRate = 0;
+        _glfwWin.refreshRate = 0;
     }
 }
 
@@ -1674,10 +1674,10 @@ void _glfwPlatformPollEvents( void )
     // Flag: mouse was not moved (will be changed by _glfwGetNextEvent if
     // there was a mouse move event)
     _glfwInput.MouseMoved = GL_FALSE;
-    if( _glfwWin.MouseLock )
+    if( _glfwWin.mouseLock )
     {
-        _glfwInput.OldMouseX = _glfwWin.Width/2;
-        _glfwInput.OldMouseY = _glfwWin.Height/2;
+        _glfwInput.OldMouseX = _glfwWin.width/2;
+        _glfwInput.OldMouseY = _glfwWin.height/2;
     }
     else
     {
@@ -1727,10 +1727,10 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Did we have mouse movement in locked cursor mode?
-    if( _glfwInput.MouseMoved && _glfwWin.MouseLock )
+    if( _glfwInput.MouseMoved && _glfwWin.mouseLock )
     {
-        _glfwPlatformSetMouseCursorPos( _glfwWin.Width / 2,
-                                        _glfwWin.Height / 2 );
+        _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2,
+                                        _glfwWin.height / 2 );
     }
 
     // Was there a window close request?

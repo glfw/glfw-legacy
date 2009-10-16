@@ -425,7 +425,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _GLFWwndconfig wndconfig;
 
     // Is GLFW initialized?
-    if( !_glfwInitialized || _glfwWin.Opened )
+    if( !_glfwInitialized || _glfwWin.opened )
     {
         return GL_FALSE;
     }
@@ -465,10 +465,10 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Clear GLFW window state
-    _glfwWin.Active         = GL_TRUE;
-    _glfwWin.Iconified      = GL_FALSE;
-    _glfwWin.MouseLock      = GL_FALSE;
-    _glfwWin.AutoPollEvents = GL_TRUE;
+    _glfwWin.active         = GL_TRUE;
+    _glfwWin.iconified      = GL_FALSE;
+    _glfwWin.mouseLock      = GL_FALSE;
+    _glfwWin.autoPollEvents = GL_TRUE;
     _glfwClearInput();
 
     // Unregister all callback functions
@@ -500,9 +500,9 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Remember window settings
-    _glfwWin.Width      = width;
-    _glfwWin.Height     = height;
-    _glfwWin.Fullscreen = (mode == GLFW_FULLSCREEN ? GL_TRUE : GL_FALSE);
+    _glfwWin.width      = width;
+    _glfwWin.height     = height;
+    _glfwWin.fullscreen = (mode == GLFW_FULLSCREEN ? GL_TRUE : GL_FALSE);
 
     // Platform specific window opening routine
     if( !_glfwPlatformOpenWindow( width, height, &wndconfig, &fbconfig ) )
@@ -511,22 +511,22 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Flag that window is now opened
-    _glfwWin.Opened = GL_TRUE;
+    _glfwWin.opened = GL_TRUE;
 
     // Get window parameters (such as color buffer bits etc)
     _glfwPlatformRefreshWindowParams();
 
     // Get OpenGL version
-    _glfwParseGLVersion( &_glfwWin.GLVerMajor, &_glfwWin.GLVerMinor,
-                         &_glfwWin.GLRevision );
+    _glfwParseGLVersion( &_glfwWin.glMajor, &_glfwWin.glMinor,
+                         &_glfwWin.glRevision );
 
     // Do we have non-power-of-two textures?
-    _glfwWin.Has_GL_ARB_texture_non_power_of_two =
+    _glfwWin.has_GL_ARB_texture_non_power_of_two =
         glfwExtensionSupported( "GL_ARB_texture_non_power_of_two" );
 
     // Do we have automatic mipmap generation?
-    _glfwWin.Has_GL_SGIS_generate_mipmap =
-        (_glfwWin.GLVerMajor >= 2) || (_glfwWin.GLVerMinor >= 4) ||
+    _glfwWin.has_GL_SGIS_generate_mipmap =
+        ( _glfwWin.glMajor >= 2 ) || ( _glfwWin.glMinor >= 4 ) ||
         glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
 
     // If full-screen mode was requested, disable mouse cursor
@@ -627,7 +627,7 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
     _glfwPlatformCloseWindow();
 
     // Window is no longer opened
-    _glfwWin.Opened = GL_FALSE;
+    _glfwWin.opened = GL_FALSE;
 }
 
 
@@ -638,7 +638,7 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -656,11 +656,11 @@ GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 {
     if( width != NULL )
     {
-        *width = _glfwWin.Width;
+        *width = _glfwWin.width;
     }
     if( height != NULL )
     {
-        *height = _glfwWin.Height;
+        *height = _glfwWin.height;
     }
 }
 
@@ -672,13 +672,13 @@ GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Iconified )
+    if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.iconified )
     {
         return;
     }
 
     // Don't do anything if the window size did not change
-    if( width == _glfwWin.Width && height == _glfwWin.Height )
+    if( width == _glfwWin.width && height == _glfwWin.height )
     {
         return;
     }
@@ -699,8 +699,8 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Fullscreen ||
-        _glfwWin.Iconified )
+    if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.fullscreen ||
+        _glfwWin.iconified )
     {
         return;
     }
@@ -717,7 +717,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened || _glfwWin.Iconified )
+    if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.iconified )
     {
         return;
     }
@@ -734,7 +734,7 @@ GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened || !_glfwWin.Iconified )
+    if( !_glfwInitialized || !_glfwWin.opened || !_glfwWin.iconified )
     {
         return;
     }
@@ -755,19 +755,19 @@ GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Check for window messages
-    if( _glfwWin.AutoPollEvents )
+    if( _glfwWin.autoPollEvents )
     {
         glfwPollEvents();
     }
 
     // Update display-buffer
-    if( _glfwWin.Opened )
+    if( _glfwWin.opened )
     {
         _glfwPlatformSwapBuffers();
     }
@@ -781,7 +781,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -804,7 +804,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
     }
 
     // Is the window opened?
-    if( !_glfwWin.Opened )
+    if( !_glfwWin.opened )
     {
         if( param == GLFW_OPENED )
         {
@@ -819,51 +819,51 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
         case GLFW_OPENED:
             return GL_TRUE;
         case GLFW_ACTIVE:
-            return _glfwWin.Active;
+            return _glfwWin.active;
         case GLFW_ICONIFIED:
-            return _glfwWin.Iconified;
+            return _glfwWin.iconified;
         case GLFW_ACCELERATED:
-            return _glfwWin.Accelerated;
+            return _glfwWin.accelerated;
         case GLFW_RED_BITS:
-            return _glfwWin.RedBits;
+            return _glfwWin.redBits;
         case GLFW_GREEN_BITS:
-            return _glfwWin.GreenBits;
+            return _glfwWin.greenBits;
         case GLFW_BLUE_BITS:
-            return _glfwWin.BlueBits;
+            return _glfwWin.blueBits;
         case GLFW_ALPHA_BITS:
-            return _glfwWin.AlphaBits;
+            return _glfwWin.alphaBits;
         case GLFW_DEPTH_BITS:
-            return _glfwWin.DepthBits;
+            return _glfwWin.depthBits;
         case GLFW_STENCIL_BITS:
-            return _glfwWin.StencilBits;
+            return _glfwWin.stencilBits;
         case GLFW_ACCUM_RED_BITS:
-            return _glfwWin.AccumRedBits;
+            return _glfwWin.accumRedBits;
         case GLFW_ACCUM_GREEN_BITS:
-            return _glfwWin.AccumGreenBits;
+            return _glfwWin.accumGreenBits;
         case GLFW_ACCUM_BLUE_BITS:
-            return _glfwWin.AccumBlueBits;
+            return _glfwWin.accumBlueBits;
         case GLFW_ACCUM_ALPHA_BITS:
-            return _glfwWin.AccumAlphaBits;
+            return _glfwWin.accumAlphaBits;
         case GLFW_AUX_BUFFERS:
-            return _glfwWin.AuxBuffers;
+            return _glfwWin.auxBuffers;
         case GLFW_STEREO:
-            return _glfwWin.Stereo;
+            return _glfwWin.stereo;
         case GLFW_REFRESH_RATE:
-            return _glfwWin.RefreshRate;
+            return _glfwWin.refreshRate;
         case GLFW_WINDOW_NO_RESIZE:
-            return _glfwWin.WindowNoResize;
+            return _glfwWin.windowNoResize;
         case GLFW_FSAA_SAMPLES:
-            return _glfwWin.Samples;
+            return _glfwWin.samples;
         case GLFW_OPENGL_VERSION_MAJOR:
-            return _glfwWin.GLVerMajor;
+            return _glfwWin.glMajor;
         case GLFW_OPENGL_VERSION_MINOR:
-            return _glfwWin.GLVerMinor;
+            return _glfwWin.glMinor;
         case GLFW_OPENGL_FORWARD_COMPAT:
-            return _glfwWin.GLForward;
+            return _glfwWin.glForward;
         case GLFW_OPENGL_DEBUG_CONTEXT:
-            return _glfwWin.GLDebug;
+            return _glfwWin.glDebug;
         case GLFW_OPENGL_PROFILE:
-            return _glfwWin.GLProfile;
+            return _glfwWin.glProfile;
         default:
             return 0;
     }
@@ -878,7 +878,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -890,7 +890,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
     // window size
     if( cbfun )
     {
-        cbfun( _glfwWin.Width, _glfwWin.Height );
+        cbfun( _glfwWin.width, _glfwWin.height );
     }
 }
 
@@ -902,7 +902,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -920,7 +920,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -937,7 +937,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbf
 GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -954,7 +954,7 @@ GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }

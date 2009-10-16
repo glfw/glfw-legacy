@@ -544,7 +544,7 @@ static int GetNextEvent( void )
             if( event.xmotion.x != _glfwInput.CursorPosX ||
                 event.xmotion.y != _glfwInput.CursorPosY )
             {
-                if( _glfwWin.MouseLock )
+                if( _glfwWin.mouseLock )
                 {
                     _glfwInput.MousePosX += event.xmotion.x -
                                             _glfwInput.CursorPosX;
@@ -573,15 +573,15 @@ static int GetNextEvent( void )
         // Was the window resized?
         case ConfigureNotify:
         {
-            if( event.xconfigure.width != _glfwWin.Width ||
-                event.xconfigure.height != _glfwWin.Height )
+            if( event.xconfigure.width != _glfwWin.width ||
+                event.xconfigure.height != _glfwWin.height )
             {
-                _glfwWin.Width = event.xconfigure.width;
-                _glfwWin.Height = event.xconfigure.height;
+                _glfwWin.width = event.xconfigure.width;
+                _glfwWin.height = event.xconfigure.height;
                 if( _glfwWin.windowSizeCallback )
                 {
-                    _glfwWin.windowSizeCallback( _glfwWin.Width,
-                                                 _glfwWin.Height );
+                    _glfwWin.windowSizeCallback( _glfwWin.width,
+                                                 _glfwWin.height );
                 }
             }
             break;
@@ -967,8 +967,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.OverrideRedirect = GL_FALSE;
     _glfwWin.FS.ModeChanged   = GL_FALSE;
     _glfwWin.Saver.Changed    = GL_FALSE;
-    _glfwWin.RefreshRate      = wndconfig->refreshRate;
-    _glfwWin.WindowNoResize   = wndconfig->windowNoResize;
+    _glfwWin.refreshRate      = wndconfig->refreshRate;
+    _glfwWin.windowNoResize   = wndconfig->windowNoResize;
 
     // As the 2.x API doesn't understand screens, we hardcode this choice and
     // hope for the best
@@ -1000,8 +1000,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         // Change video mode
-        _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
-                           &_glfwWin.Height, &_glfwWin.RefreshRate );
+        _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.width,
+                           &_glfwWin.height, &_glfwWin.refreshRate );
 
         // Remember old screen saver settings
         XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.Timeout,
@@ -1042,7 +1042,7 @@ int _glfwPlatformOpenWindow( int width, int height,
             _glfwLibrary.display,
             RootWindow( _glfwLibrary.display, _glfwWin.screen ),
             0, 0,                            // Upper left corner of this window on root
-            _glfwWin.Width, _glfwWin.Height,
+            _glfwWin.width, _glfwWin.height,
             0,                               // Border width
             _glfwWin.visual->depth,          // Color depth
             InputOutput,
@@ -1088,8 +1088,8 @@ int _glfwPlatformOpenWindow( int width, int height,
         if( wndconfig->windowNoResize )
         {
             sizehints->flags |= (PMinSize | PMaxSize);
-            sizehints->min_width  = sizehints->max_width  = _glfwWin.Width;
-            sizehints->min_height = sizehints->max_height = _glfwWin.Height;
+            sizehints->min_width  = sizehints->max_width  = _glfwWin.width;
+            sizehints->min_height = sizehints->max_height = _glfwWin.height;
         }
 
         if( wndconfig->mode == GLFW_FULLSCREEN )
@@ -1129,8 +1129,8 @@ int _glfwPlatformOpenWindow( int width, int height,
         // Force window position/size (some WMs do their own window
         // geometry, which we want to override)
         XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
-        XResizeWindow( _glfwLibrary.display, _glfwWin.window, _glfwWin.Width,
-                       _glfwWin.Height );
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window, _glfwWin.width,
+                       _glfwWin.height );
 
         if( XGrabKeyboard( _glfwLibrary.display, _glfwWin.window, True,
                            GrabModeAsync, GrabModeAsync, CurrentTime ) ==
@@ -1153,7 +1153,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         // the center) - this works for XFree86
         XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
         XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
-                      _glfwWin.Width/2, _glfwWin.Height/2 );
+                      _glfwWin.width/2, _glfwWin.height/2 );
     }
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
@@ -1304,16 +1304,16 @@ void _glfwPlatformSetWindowSize( int width, int height )
     GLfloat clearcolor[4];
     XSizeHints *sizehints;
 
-    rate = _glfwWin.RefreshRate;
+    rate = _glfwWin.refreshRate;
 
     // If we are in fullscreen mode, get some info about the current mode
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Get closest match for target video mode
         mode = _glfwGetClosestVideoMode( _glfwWin.screen, &width, &height, &rate );
     }
 
-    if( _glfwWin.WindowNoResize )
+    if( _glfwWin.windowNoResize )
     {
         sizehints = XAllocSizeHints();
         sizehints->flags = 0;
@@ -1326,17 +1326,17 @@ void _glfwPlatformSetWindowSize( int width, int height )
     }
 
     // Change window size before changing fullscreen mode?
-    if( _glfwWin.Fullscreen && (width > _glfwWin.Width) )
+    if( _glfwWin.fullscreen && (width > _glfwWin.width) )
     {
         XResizeWindow( _glfwLibrary.display, _glfwWin.window, width, height );
         sizechanged = GL_TRUE;
     }
 
     // Change fullscreen video mode?
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Change video mode (keeping current rate)
-        _glfwSetVideoModeMODE( _glfwWin.screen, mode, _glfwWin.RefreshRate );
+        _glfwSetVideoModeMODE( _glfwWin.screen, mode, _glfwWin.refreshRate );
 
         // Clear the front buffer to black (avoid ugly desktop remains in
         // our OpenGL window)
@@ -1384,7 +1384,7 @@ void _glfwPlatformIconifyWindow( void )
     }
 
     // In fullscreen mode, we need to restore the desktop video mode
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
 #if defined( _GLFW_HAS_XRANDR )
     // TODO: The code.
@@ -1423,7 +1423,7 @@ void _glfwPlatformIconifyWindow( void )
                     _glfwWin.screen );
 
     // Window is now iconified
-    _glfwWin.Iconified = GL_TRUE;
+    _glfwWin.iconified = GL_TRUE;
 }
 
 
@@ -1440,17 +1440,17 @@ void _glfwPlatformRestoreWindow( void )
     }
 
     // In fullscreen mode, change back video mode to user selected mode
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         _glfwSetVideoMode( _glfwWin.screen,
-                       &_glfwWin.Width, &_glfwWin.Height, &_glfwWin.RefreshRate );
+                       &_glfwWin.width, &_glfwWin.height, &_glfwWin.refreshRate );
     }
 
     // Un-iconify window
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // In fullscreen mode...
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         // Make sure window is in upper left corner
         XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
@@ -1461,7 +1461,7 @@ void _glfwPlatformRestoreWindow( void )
     }
 
     // Lock mouse, if necessary
-    if( _glfwWin.MouseLock )
+    if( _glfwWin.mouseLock )
     {
         // Hide cursor
         if( !_glfwWin.PointerHidden )
@@ -1488,7 +1488,7 @@ void _glfwPlatformRestoreWindow( void )
     }
 
     // Window is no longer iconified
-    _glfwWin.Iconified = GL_FALSE;
+    _glfwWin.iconified = GL_FALSE;
 }
 
 
@@ -1549,54 +1549,54 @@ void _glfwPlatformRefreshWindowParams( void )
 
     // There is no clear definition of an "accelerated" context on X11/GLX, and
     // true sounds better than false, so we hardcode true here
-    _glfwWin.Accelerated = GL_TRUE;
+    _glfwWin.accelerated = GL_TRUE;
 
     // "Standard" window parameters
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_RED_SIZE,
-                          &_glfwWin.RedBits );
+                          &_glfwWin.redBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_GREEN_SIZE,
-                          &_glfwWin.GreenBits );
+                          &_glfwWin.greenBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_BLUE_SIZE,
-                          &_glfwWin.BlueBits );
+                          &_glfwWin.blueBits );
 
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_ALPHA_SIZE,
-                          &_glfwWin.AlphaBits );
+                          &_glfwWin.alphaBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_DEPTH_SIZE,
-                          &_glfwWin.DepthBits );
+                          &_glfwWin.depthBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_STENCIL_SIZE,
-                          &_glfwWin.StencilBits );
+                          &_glfwWin.stencilBits );
 
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_ACCUM_RED_SIZE,
-                          &_glfwWin.AccumRedBits );
+                          &_glfwWin.accumRedBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_ACCUM_GREEN_SIZE,
-                          &_glfwWin.AccumGreenBits );
+                          &_glfwWin.accumGreenBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_ACCUM_BLUE_SIZE,
-                          &_glfwWin.AccumBlueBits );
+                          &_glfwWin.accumBlueBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_ACCUM_ALPHA_SIZE,
-                          &_glfwWin.AccumAlphaBits );
+                          &_glfwWin.accumAlphaBits );
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_AUX_BUFFERS,
-                          &_glfwWin.AuxBuffers );
+                          &_glfwWin.auxBuffers );
 
     // Get stereo rendering setting
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_STEREO,
-                          &_glfwWin.Stereo );
-    _glfwWin.Stereo = _glfwWin.Stereo ? 1 : 0;
+                          &_glfwWin.stereo );
+    _glfwWin.stereo = _glfwWin.stereo ? 1 : 0;
 
     // Get multisample buffer samples
     glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_SAMPLE_BUFFERS,
                           &sample_buffers );
     if( sample_buffers == 0 )
     {
-        _glfwWin.Samples = 0;
+        _glfwWin.samples = 0;
     }
     else
     {
         glXGetFBConfigAttrib( _glfwLibrary.display, *fbconfig, GLX_SAMPLES,
-                              &_glfwWin.Samples );
+                              &_glfwWin.samples );
     }
 
     // Default to refresh rate unknown (=0 according to GLFW spec)
-    _glfwWin.RefreshRate = 0;
+    _glfwWin.refreshRate = 0;
 
     // Retrieve refresh rate if possible
 #if defined( _GLFW_HAS_XRANDR )
@@ -1604,7 +1604,7 @@ void _glfwPlatformRefreshWindowParams( void )
     {
         sc = XRRGetScreenInfo( _glfwLibrary.display,
                                RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
-        _glfwWin.RefreshRate = XRRConfigCurrentRate( sc );
+        _glfwWin.refreshRate = XRRConfigCurrentRate( sc );
         XRRFreeScreenConfigInfo( sc );
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
@@ -1615,7 +1615,7 @@ void _glfwPlatformRefreshWindowParams( void )
                                 &dotclock, &modeline );
         pixels_per_second = 1000.0f * (float) dotclock;
         pixels_per_frame  = (float) modeline.htotal * modeline.vtotal;
-        _glfwWin.RefreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
+        _glfwWin.refreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
     }
 #endif
 }
@@ -1654,15 +1654,15 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Did we get mouse movement in locked cursor mode?
-    if( _glfwInput.MouseMoved && _glfwWin.MouseLock )
+    if( _glfwInput.MouseMoved && _glfwWin.mouseLock )
     {
         int maxx, minx, maxy, miny;
 
         // Calculate movement threshold
-        minx = _glfwWin.Width / 4;
-        maxx = (_glfwWin.Width * 3) / 4;
-        miny = _glfwWin.Height / 4;
-        maxy = (_glfwWin.Height * 3) / 4;
+        minx = _glfwWin.width / 4;
+        maxx = (_glfwWin.width * 3) / 4;
+        miny = _glfwWin.height / 4;
+        maxy = (_glfwWin.height * 3) / 4;
 
         // Did the mouse cursor move beyond our movement threshold
         if(_glfwInput.CursorPosX < minx || _glfwInput.CursorPosX > maxx ||
@@ -1670,14 +1670,14 @@ void _glfwPlatformPollEvents( void )
         {
             // Move the mouse pointer back to the window center so that it
             // does not wander off...
-            _glfwPlatformSetMouseCursorPos( _glfwWin.Width/2,
-                                            _glfwWin.Height/2 );
+            _glfwPlatformSetMouseCursorPos( _glfwWin.width/2,
+                                            _glfwWin.height/2 );
             //XSync( _glfwLibrary.display, False );
         }
     }
 
     // Was the window (un)iconified?
-    if( _glfwWin.MapNotifyCount < 0 && !_glfwWin.Iconified )
+    if( _glfwWin.MapNotifyCount < 0 && !_glfwWin.iconified )
     {
         // Show mouse pointer
         if( _glfwWin.PointerHidden )
@@ -1693,16 +1693,16 @@ void _glfwPlatformPollEvents( void )
             _glfwWin.PointerGrabbed = GL_FALSE;
         }
 
-        _glfwWin.Iconified = GL_TRUE;
+        _glfwWin.iconified = GL_TRUE;
     }
-    else if( _glfwWin.MapNotifyCount > 0 && _glfwWin.Iconified )
+    else if( _glfwWin.MapNotifyCount > 0 && _glfwWin.iconified )
     {
         // Restore fullscreen mode properties
-        if( _glfwWin.Fullscreen )
+        if( _glfwWin.fullscreen )
         {
             // Change back video mode to user selected mode
-            _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.Width,
-                               &_glfwWin.Height, &_glfwWin.RefreshRate );
+            _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.width,
+                               &_glfwWin.height, &_glfwWin.refreshRate );
             // Disable window manager decorations
             enableDecorations();
 
@@ -1715,7 +1715,7 @@ void _glfwPlatformPollEvents( void )
         }
 
         // Hide cursor if necessary
-        if( _glfwWin.MouseLock && !_glfwWin.PointerHidden )
+        if( _glfwWin.mouseLock && !_glfwWin.PointerHidden )
         {
             if( !_glfwWin.PointerHidden )
             {
@@ -1728,7 +1728,7 @@ void _glfwPlatformPollEvents( void )
         }
 
         // Grab cursor if necessary
-        if( (_glfwWin.MouseLock || _glfwWin.Fullscreen) &&
+        if( (_glfwWin.mouseLock || _glfwWin.fullscreen) &&
             !_glfwWin.PointerGrabbed )
         {
             if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
@@ -1741,31 +1741,31 @@ void _glfwPlatformPollEvents( void )
             }
         }
 
-        _glfwWin.Iconified = GL_FALSE;
+        _glfwWin.iconified = GL_FALSE;
     }
 
     // Did the window get/lose focus
-    if( _glfwWin.FocusInCount > 0 && !_glfwWin.Active )
+    if( _glfwWin.FocusInCount > 0 && !_glfwWin.active )
     {
         // If we are in fullscreen mode, restore window
-        if( _glfwWin.Fullscreen && _glfwWin.Iconified )
+        if( _glfwWin.fullscreen && _glfwWin.iconified )
         {
             _glfwPlatformRestoreWindow();
         }
 
         // Window is now active
-        _glfwWin.Active = GL_TRUE;
+        _glfwWin.active = GL_TRUE;
     }
-    else if( _glfwWin.FocusInCount < 0 && _glfwWin.Active )
+    else if( _glfwWin.FocusInCount < 0 && _glfwWin.active )
     {
         // If we are in fullscreen mode, iconfify window
-        if( _glfwWin.Fullscreen )
+        if( _glfwWin.fullscreen )
         {
             _glfwPlatformIconifyWindow();
         }
 
         // Window is not active
-        _glfwWin.Active = GL_FALSE;
+        _glfwWin.active = GL_FALSE;
         _glfwInputDeactivation();
     }
 
@@ -1839,7 +1839,7 @@ void _glfwPlatformShowMouseCursor( void )
     // Un-grab cursor (only in windowed mode: in fullscreen mode we still
     // want the mouse grabbed in order to confine the cursor to the window
     // area)
-    if( _glfwWin.PointerGrabbed && !_glfwWin.Fullscreen )
+    if( _glfwWin.PointerGrabbed && !_glfwWin.fullscreen )
     {
         XUngrabPointer( _glfwLibrary.display, CurrentTime );
         _glfwWin.PointerGrabbed = GL_FALSE;

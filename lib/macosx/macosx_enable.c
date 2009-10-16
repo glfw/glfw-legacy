@@ -31,12 +31,12 @@
 void _glfwPlatformEnableSystemKeys( void )
 {
     // Nothing to do; event handling code checks the status of
-    // _glfwWin.SysKeysDisabled to ensure this behavior.
+    // _glfwWin.sysKeysDisabled to ensure this behavior.
 }
 
 void _glfwPlatformDisableSystemKeys( void )
 {
     // Nothing to do; event handling code checks the status of
-    // _glfwWin.SysKeysDisabled to ensure this behavior.
+    // _glfwWin.sysKeysDisabled to ensure this behavior.
 }
 

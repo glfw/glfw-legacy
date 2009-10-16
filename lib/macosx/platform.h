@@ -143,38 +143,40 @@ struct _GLFWwin_struct {
     GLFWcharfun          charCallback;
 
     // User selected window settings
-    int       Fullscreen;      // Fullscreen flag
-    int       MouseLock;       // Mouse-lock flag
-    int       AutoPollEvents;  // Auto polling flag
-    int       SysKeysDisabled; // System keys disabled flag
-    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       fullscreen;      // Fullscreen flag
+    int       mouseLock;       // Mouse-lock flag
+    int       autoPollEvents;  // Auto polling flag
+    int       sysKeysDisabled; // System keys disabled flag
+    int       windowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       refreshRate;     // Vertical monitor refresh rate
 
     // Window status & parameters
-    int       Opened;          // Flag telling if window is opened or not
-    int       Active;          // Application active flag
-    int       Iconified;       // Window iconified flag
-    int       Width, Height;   // Window width and heigth
-    int       Accelerated;     // GL_TRUE if window is HW accelerated
-    int       RedBits;
-    int       GreenBits;
-    int       BlueBits;
-    int       AlphaBits;
-    int       DepthBits;
-    int       StencilBits;
-    int       AccumRedBits;
-    int       AccumGreenBits;
-    int       AccumBlueBits;
-    int       AccumAlphaBits;
-    int       AuxBuffers;
-    int       Stereo;
-    int       RefreshRate;     // Vertical monitor refresh rate
-    int       Samples;
+    int       opened;          // Flag telling if window is opened or not
+    int       active;          // Application active flag
+    int       iconified;       // Window iconified flag
+    int       width, height;   // Window width and heigth
+    int       accelerated;     // GL_TRUE if window is HW accelerated
 
-    // Extensions & OpenGL version
-    int       Has_GL_SGIS_generate_mipmap;
-    int       Has_GL_ARB_texture_non_power_of_two;
-    int       GLVerMajor,GLVerMinor,GLRevision;
-    int       GLForward,GLDebug,GLProfile;
+    // Framebuffer attributes
+    int       redBits;
+    int       greenBits;
+    int       blueBits;
+    int       alphaBits;
+    int       depthBits;
+    int       stencilBits;
+    int       accumRedBits;
+    int       accumGreenBits;
+    int       accumBlueBits;
+    int       accumAlphaBits;
+    int       auxBuffers;
+    int       stereo;
+    int       samples;
+
+    // OpenGL extensions and context attributes
+    int       has_GL_SGIS_generate_mipmap;
+    int       has_GL_ARB_texture_non_power_of_two;
+    int       glMajor, glMinor, glRevision;
+    int       glForward, glDebug, glProfile;
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
