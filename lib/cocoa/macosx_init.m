@@ -54,7 +54,7 @@ NSString *GLFWNameKeys[] =
 static NSString *_glfwFindAppName( void )
 {
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-    
+
     unsigned int i;
     for( i = 0; i < sizeof(GLFWNameKeys) / sizeof(GLFWNameKeys[0]); i++ )
     {
@@ -66,7 +66,7 @@ static NSString *_glfwFindAppName( void )
             return name;
         }
     }
-    
+
     // If we get here, we're unbundled
     if( !_glfwLibrary.Unbundled )
     {
@@ -74,21 +74,21 @@ static NSString *_glfwFindAppName( void )
         // do no harm...
         ProcessSerialNumber psn = { 0, kCurrentProcess };
         TransformProcessType( &psn, kProcessTransformToForegroundApplication );
-        
+
         // Having the app in front of the terminal window is also generally
         // handy.  There is an NSApplication API to do this, but...
         SetFrontProcess( &psn );
-        
+
         _glfwLibrary.Unbundled = GL_TRUE;
     }
-    
+
     char **progname = _NSGetProgname();
     if( progname && *progname )
     {
         // TODO: UTF8?
         return [NSString stringWithUTF8String:*progname];
     }
-    
+
     // Really shouldn't get here
     return @"GLFW Application";
 }
@@ -103,15 +103,15 @@ static NSString *_glfwFindAppName( void )
 static void _glfwSetUpMenuBar( void )
 {
     NSString *appName = _glfwFindAppName();
-    
+
     NSMenu *bar = [[NSMenu alloc] init];
     [NSApp setMainMenu:bar];
-    
+
     NSMenuItem *appMenuItem =
         [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
     NSMenu *appMenu = [[NSMenu alloc] init];
     [appMenuItem setSubmenu:appMenu];
-    
+
     [appMenu addItemWithTitle:[NSString stringWithFormat:@"About %@", appName]
                        action:@selector(orderFrontStandardAboutPanel:)
                 keyEquivalent:@""];
@@ -136,13 +136,13 @@ static void _glfwSetUpMenuBar( void )
     [appMenu addItemWithTitle:[NSString stringWithFormat:@"Quit %@", appName]
                        action:@selector(terminate:)
                 keyEquivalent:@"q"];
-    
+
     NSMenuItem *windowMenuItem =
         [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
     NSMenu *windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     [NSApp setWindowsMenu:windowMenu];
     [windowMenuItem setSubmenu:windowMenu];
-    
+
     [windowMenu addItemWithTitle:@"Miniaturize"
                           action:@selector(performMiniaturize:)
                    keyEquivalent:@"m"];
@@ -153,7 +153,7 @@ static void _glfwSetUpMenuBar( void )
     [windowMenu addItemWithTitle:@"Bring All to Front"
                           action:@selector(arrangeInFront:)
                    keyEquivalent:@""];
-    
+
     // At least guard the call to private API to avoid an exception if it
     // goes away.  Hopefully that means the worst we'll break in future is to
     // look ugly...
@@ -176,12 +176,12 @@ int _glfwPlatformInit( void )
     _glfwSetUpMenuBar();
 
     [NSApp finishLaunching];
-    
+
     _glfwPlatformSetTime( 0.0 );
-    
+
     _glfwLibrary.DesktopMode =
 	(NSDictionary *)CGDisplayCurrentMode( CGMainDisplayID() );
-    
+
     return GL_TRUE;
 }
 

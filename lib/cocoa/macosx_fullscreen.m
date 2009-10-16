@@ -56,7 +56,7 @@ static GLFWvidmode _glfwVidmodeFromCGDisplayMode( NSDictionary *mode )
     unsigned int width = [[mode objectForKey:(id)kCGDisplayWidth] unsignedIntValue];
     unsigned int height = [[mode objectForKey:(id)kCGDisplayHeight] unsignedIntValue];
     unsigned int bps = [[mode objectForKey:(id)kCGDisplayBitsPerSample] unsignedIntValue];
-    
+
     GLFWvidmode result;
     result.Width = width;
     result.Height = height;
@@ -87,7 +87,6 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
         {
             list[j++] = _glfwVidmodeFromCGDisplayMode( mode );
         }
-        
     }
 
     return j;
