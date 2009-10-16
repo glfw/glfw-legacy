@@ -105,7 +105,7 @@ libglfw.dylib: $(OBJS)
 # Rule for cleaning up generated files
 ##########################################################################
 clean:
-	@rm -f *.o libglfw.a libglfw.dylib libglfw.pc
+	rm -f $(OBJS) libglfw.a libglfw.dylib libglfw.pc
 
 
 ##########################################################################
