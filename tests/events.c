@@ -279,6 +279,9 @@ int main(void)
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
 
+    printf("Key repeat should be %s\n", keyrepeat ? "enabled" : "disabled");
+    printf("System keys should be %s\n", systemkeys ? "enabled" : "disabled");
+
     printf("Main loop starting\n");
 
     while (glfwGetWindowParam(GLFW_OPENED) == GL_TRUE)
