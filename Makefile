@@ -35,7 +35,6 @@ default:
 	@echo "  $(MAKE) win32-bcc         for Borland C++ Builder 5.x for Windows"
 	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
 	@echo "  $(MAKE) win32-ow          for OpenWatcom for Windows"
-	@echo "  $(MAKE) win32-pellesc     for Pelles C for Windows"
 	@echo "  $(MAKE) win32-clean       to remove any compiled files for Windows"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) cross-mgw         for MinGW cross-compile to Windows from Unix" 
@@ -126,10 +125,6 @@ win32-msvc:
 # Windows, OpenWatcom
 win32-ow:
 	@.\\compile.bat $(MAKE) ow
-
-# Windows, Pelles C
-win32-pellesc:
-	@.\\compile.bat $(MAKE) pellesc
 
 # Cleanup for Windows
 win32-clean:
