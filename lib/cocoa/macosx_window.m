@@ -42,9 +42,9 @@
 
 - (BOOL)windowShouldClose:(id)window
 {
-    if( _glfwWin.WindowCloseCallback )
+    if( _glfwWin.windowCloseCallback )
     {
-        if( !_glfwWin.WindowCloseCallback() )
+        if( !_glfwWin.windowCloseCallback() )
         {
             return NO;
         }
@@ -59,20 +59,20 @@
 {
     [_glfwWin.context update];
 
-    if( _glfwWin.WindowSizeCallback )
+    if( _glfwWin.windowSizeCallback )
     {
         NSRect contentRect =
             [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
-        _glfwWin.WindowSizeCallback( contentRect.size.width,
+        _glfwWin.windowSizeCallback( contentRect.size.width,
                                      contentRect.size.height );
     }
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
-    if( _glfwWin.WindowCloseCallback )
+    if( _glfwWin.windowCloseCallback )
     {
-        if( !_glfwWin.WindowCloseCallback() )
+        if( !_glfwWin.windowCloseCallback() )
         {
             return NSTerminateCancel;
         }
@@ -282,9 +282,9 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
     _glfwInput.MousePosX = p.x;
     _glfwInput.MousePosY = [[_glfwWin.window contentView] bounds].size.height - p.y;
 
-    if( _glfwWin.MousePosCallback )
+    if( _glfwWin.mousePosCallback )
     {
-        _glfwWin.MousePosCallback( _glfwInput.MousePosX, _glfwInput.MousePosY );
+        _glfwWin.mousePosCallback( _glfwInput.MousePosX, _glfwInput.MousePosY );
     }
 }
 
@@ -328,7 +328,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
         if( [event modifierFlags] & NSCommandKeyMask )
         {
-            if( !_glfwWin.SysKeysDisabled )
+            if( !_glfwWin.sysKeysDisabled )
             {
                 [super keyDown:event];
             }
@@ -385,9 +385,9 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
     _glfwInput.WheelPosFloating += [event deltaY];
     _glfwInput.WheelPos = lrint(_glfwInput.WheelPosFloating);
 
-    if( _glfwWin.MouseWheelCallback )
+    if( _glfwWin.mouseWheelCallback )
     {
-        _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+        _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
     }
 }
 
@@ -585,7 +585,7 @@ void _glfwPlatformCloseWindow( void )
 {
     [_glfwWin.window orderOut:nil];
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
         CGDisplaySwitchToMode( CGMainDisplayID(),
@@ -699,60 +699,60 @@ void _glfwPlatformRefreshWindowParams( void )
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccelerated
                    forVirtualScreen:0];
-    _glfwWin.Accelerated = value;
+    _glfwWin.accelerated = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAlphaSize
                    forVirtualScreen:0];
-    _glfwWin.AlphaBits = value;
+    _glfwWin.alphaBits = value;
 
     // It seems that the color size includes the size of the alpha channel
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAColorSize
                    forVirtualScreen:0];
-    value -= _glfwWin.AlphaBits;
-    _glfwWin.RedBits = value / 3;
-    _glfwWin.GreenBits = value / 3;
-    _glfwWin.BlueBits = value / 3;
+    value -= _glfwWin.alphaBits;
+    _glfwWin.redBits = value / 3;
+    _glfwWin.greenBits = value / 3;
+    _glfwWin.blueBits = value / 3;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFADepthSize
                    forVirtualScreen:0];
-    _glfwWin.DepthBits = value;
+    _glfwWin.depthBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStencilSize
                    forVirtualScreen:0];
-    _glfwWin.StencilBits = value;
+    _glfwWin.stencilBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccumSize
                    forVirtualScreen:0];
-    _glfwWin.AccumRedBits = value / 3;
-    _glfwWin.AccumGreenBits = value / 3;
-    _glfwWin.AccumBlueBits = value / 3;
+    _glfwWin.accumRedBits = value / 3;
+    _glfwWin.accumGreenBits = value / 3;
+    _glfwWin.accumBlueBits = value / 3;
 
     // TODO: Figure out what to set this value to
-    _glfwWin.AccumAlphaBits = 0;
+    _glfwWin.accumAlphaBits = 0;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAuxBuffers
                    forVirtualScreen:0];
-    _glfwWin.AuxBuffers = value;
+    _glfwWin.auxBuffers = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStereo
                    forVirtualScreen:0];
-    _glfwWin.Stereo = value;
+    _glfwWin.stereo = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFASamples
                    forVirtualScreen:0];
-    _glfwWin.Samples = value;
+    _glfwWin.samples = value;
 
-    // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
-    _glfwWin.GLForward = GL_FALSE;
-    _glfwWin.GLDebug = GL_FALSE;
+    // These are forced to false as long as Mac OS X lacks support for OpenGL 3.0+
+    _glfwWin.glForward = GL_FALSE;
+    _glfwWin.glDebug = GL_FALSE;
 }
 
 //========================================================================
