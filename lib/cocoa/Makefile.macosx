@@ -1,8 +1,8 @@
 ##########################################################################
-# Makefile for GLFW on Mac OS X using GCC (Apple SDK).
+# Makefile for GLFW on Cocoa on Mac OS X using Apple GCC
 #-------------------------------------------------------------------------
 # To compile GLFW using this makefile, run:
-#  make -f Makefile.macosx.gcc
+#  make -f Makefile.cocoa
 ##########################################################################
 
 ##########################################################################
@@ -69,14 +69,14 @@ OBJS = \
        thread.o \
        time.o \
        window.o \
-       macosx_enable.o \
-       macosx_fullscreen.o \
-       macosx_glext.o \
-       macosx_init.o \
-       macosx_joystick.o \
-       macosx_thread.o \
-       macosx_time.o \
-       macosx_window.o
+       cocoa_enable.o \
+       cocoa_fullscreen.o \
+       cocoa_glext.o \
+       cocoa_init.o \
+       cocoa_joystick.o \
+       cocoa_thread.o \
+       cocoa_time.o \
+       cocoa_window.o
 
 
 ##########################################################################
@@ -147,27 +147,27 @@ time.o: ../time.c ../internal.h platform.h
 window.o: ../window.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ ../window.c
 
-macosx_enable.o: macosx_enable.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_enable.m
+cocoa_enable.o: cocoa_enable.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_enable.m
 
-macosx_fullscreen.o: macosx_fullscreen.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_fullscreen.m
+cocoa_fullscreen.o: cocoa_fullscreen.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_fullscreen.m
 
-macosx_glext.o: macosx_glext.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_glext.m
+cocoa_glext.o: cocoa_glext.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_glext.m
 
-macosx_init.o: macosx_init.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_init.m
+cocoa_init.o: cocoa_init.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_init.m
 
-macosx_joystick.o: macosx_joystick.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_joystick.m
+cocoa_joystick.o: cocoa_joystick.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_joystick.m
 
-macosx_thread.o: macosx_thread.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_thread.c
+cocoa_thread.o: cocoa_thread.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_thread.c
 
-macosx_time.o: macosx_time.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_time.m
+cocoa_time.o: cocoa_time.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_time.m
 
-macosx_window.o: macosx_window.m ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_window.m
+cocoa_window.o: cocoa_window.m ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ cocoa_window.m
 
