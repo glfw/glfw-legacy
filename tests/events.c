@@ -129,9 +129,24 @@ static const char* get_action_name(int action)
             return "pressed";
         case GLFW_RELEASE:
             return "released";
-        default:
-            return "caused unknown action";
     }
+
+    return "caused unknown action";
+}
+
+static const char* get_button_name(int button)
+{
+    switch (button)
+    {
+        case GLFW_MOUSE_BUTTON_LEFT:
+            return "left";
+        case GLFW_MOUSE_BUTTON_RIGHT:
+            return "right";
+        case GLFW_MOUSE_BUTTON_MIDDLE:
+            return "middle";
+    }
+
+    return NULL;
 }
 
 static void GLFWCALL window_size_callback(int width, int height)
@@ -158,11 +173,24 @@ static void GLFWCALL window_refresh_callback(void)
 
 static void GLFWCALL mouse_button_callback(int button, int action)
 {
-    printf("%08x at %0.3f: Mouse button %i was %s\n",
-           counter++,
-           glfwGetTime(),
-           button,
-           get_action_name(action));
+    const char* name = get_button_name(button);
+    if (name)
+    {
+        printf("%08x at %0.3f: Mouse button %i (%s) was %s\n",
+               counter++,
+               glfwGetTime(),
+               button,
+               name,
+               get_action_name(action));
+    }
+    else
+    {
+        printf("%08x at %0.3f: Mouse button %i was %s\n",
+               counter++,
+               glfwGetTime(),
+               button,
+               get_action_name(action));
+    }
 }
 
 static void GLFWCALL mouse_position_callback(int x, int y)
@@ -185,6 +213,15 @@ static void GLFWCALL key_callback(int key, int action)
                glfwGetTime(),
                key,
                name,
+               get_action_name(action));
+    }
+    else if (isgraph(key))
+    {
+        printf("%08x at %0.3f: Key 0x%04x (%c) was %s\n",
+               counter++,
+               glfwGetTime(),
+               key,
+               key,
                get_action_name(action));
     }
     else
