@@ -14,19 +14,19 @@ CFLAGS   = -I../include $(FATFLAGS)
 LFLAGS = ../lib/macosx/libglfw.a -framework AGL -framework OpenGL -framework Carbon
 
 # Default: Build all tests
-all: Triangle.app/Contents/MacOS/GLFWApplication \
-     ListModes.app/Contents/MacOS/GLFWApplication \
-     MTHello.app/Contents/MacOS/GLFWApplication \
-     Pong3D.app/Contents/MacOS/GLFWApplication \
-     MTBench.app/Contents/MacOS/GLFWApplication \
-     Particles.app/Contents/MacOS/GLFWApplication \
-     SplitView.app/Contents/MacOS/GLFWApplication \
-     Mipmaps.app/Contents/MacOS/GLFWApplication \
-     KeyTest.app/Contents/MacOS/GLFWApplication \
-     JoyTest.app/Contents/MacOS/GLFWApplication \
-     Gears.app/Contents/MacOS/GLFWApplication \
-     Boing.app/Contents/MacOS/GLFWApplication \
-     Wave.app/Contents/MacOS/GLFWApplication
+all: Triangle.app/Contents/MacOS/Triangle \
+     ListModes.app/Contents/MacOS/ListModes \
+     MTHello.app/Contents/MacOS/MTHello \
+     Pong3D.app/Contents/MacOS/Pong3D \
+     MTBench.app/Contents/MacOS/MTBench \
+     Particles.app/Contents/MacOS/Particles \
+     SplitView.app/Contents/MacOS/SplitView \
+     Mipmaps.app/Contents/MacOS/Mipmaps \
+     KeyTest.app/Contents/MacOS/KeyTest \
+     JoyTest.app/Contents/MacOS/JoyTest \
+     Gears.app/Contents/MacOS/Gears \
+     Boing.app/Contents/MacOS/Boing \
+     Wave.app/Contents/MacOS/Wave
 
 # Rule for triangle
 Triangle.app/Contents/MacOS/GLFWApplication: triangle.c
