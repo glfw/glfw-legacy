@@ -86,6 +86,12 @@ void GLFWCALL keyfun( int key, int action )
     case GLFW_KEY_RALT:
         printf( "RALT\n" );
         break;
+    case GLFW_KEY_LSUPER:
+        printf( "LSUPER\n" );
+        break;
+    case GLFW_KEY_RSUPER:
+        printf( "RSUPER\n" );
+        break;
     case GLFW_KEY_TAB:
         printf( "TAB\n" );
         break;
