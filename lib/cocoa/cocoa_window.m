@@ -142,10 +142,10 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 33 */ GLFW_KEY_BACKSPACE,
     /* 34 */ -1,
     /* 35 */ GLFW_KEY_ESC,
-    /* 36 */ -1, // GLFW_KEY_RCOMMAND
-    /* 37 */ -1, // GLFW_KEY_LCOMMAND
+    /* 36 */ GLFW_KEY_RSUPER,
+    /* 37 */ GLFW_KEY_LSUPER,
     /* 38 */ GLFW_KEY_LSHIFT,
-    /* 39 */ -1,
+    /* 39 */ GLFW_KEY_CAPS_LOCK,
     /* 3a */ GLFW_KEY_LALT,
     /* 3b */ GLFW_KEY_LCTRL,
     /* 3c */ GLFW_KEY_RSHIFT,
