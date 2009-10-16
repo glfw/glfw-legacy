@@ -713,7 +713,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                            GLFW_PRESS );
 
             // Translate and report character input
-            if( _glfwWin.CharCallback )
+            if( _glfwWin.charCallback )
             {
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
             }
@@ -738,7 +738,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             }
 
             // Translate and report character input
-            if( _glfwWin.CharCallback )
+            if( _glfwWin.charCallback )
             {
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
             }
@@ -831,9 +831,9 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 _glfwInput.MouseMoved = GL_TRUE;
 
                 // Call user callback function
-                if( _glfwWin.MousePosCallback )
+                if( _glfwWin.mousePosCallback )
                 {
-                    _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                    _glfwWin.mousePosCallback( _glfwInput.MousePosX,
                                                _glfwInput.MousePosY );
                 }
             }
@@ -848,9 +848,9 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             {
                 WheelDelta = (((int)wParam) >> 16) / WHEEL_DELTA;
                 _glfwInput.WheelPos += WheelDelta;
-                if( _glfwWin.MouseWheelCallback )
+                if( _glfwWin.mouseWheelCallback )
                 {
-                    _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
                 }
                 return 0;
             }
@@ -875,9 +875,9 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             }
 
             // Call the user-supplied callback, if it exists
-            if( _glfwWin.WindowSizeCallback )
+            if( _glfwWin.windowSizeCallback )
             {
-                _glfwWin.WindowSizeCallback( LOWORD(lParam),
+                _glfwWin.windowSizeCallback( LOWORD(lParam),
                                              HIWORD(lParam) );
             }
             return 0;
@@ -902,9 +902,9 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         case WM_PAINT:
         {
             // Call user callback function
-            if( _glfwWin.WindowRefreshCallback )
+            if( _glfwWin.windowRefreshCallback )
             {
-                _glfwWin.WindowRefreshCallback();
+                _glfwWin.windowRefreshCallback();
             }
             break;
         }
@@ -1734,10 +1734,10 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Was there a window close request?
-    if( winclosed && _glfwWin.WindowCloseCallback )
+    if( winclosed && _glfwWin.windowCloseCallback )
     {
         // Check if the program wants us to close the window
-        winclosed = _glfwWin.WindowCloseCallback();
+        winclosed = _glfwWin.windowCloseCallback();
     }
     if( winclosed )
     {

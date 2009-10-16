@@ -61,9 +61,9 @@ static void EnableMouseCursor( void )
         _glfwInput.MousePosX = centerPosX;
         _glfwInput.MousePosY = centerPosY;
 
-        if( _glfwWin.MousePosCallback )
+        if( _glfwWin.mousePosCallback )
         {
-            _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+            _glfwWin.mousePosCallback( _glfwInput.MousePosX,
                                        _glfwInput.MousePosY );
         }
     }

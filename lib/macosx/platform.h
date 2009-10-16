@@ -133,14 +133,14 @@ struct _GLFWwin_struct {
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // User callback functions
-    GLFWwindowsizefun    WindowSizeCallback;
-    GLFWwindowclosefun   WindowCloseCallback;
-    GLFWwindowrefreshfun WindowRefreshCallback;
-    GLFWmousebuttonfun   MouseButtonCallback;
-    GLFWmouseposfun      MousePosCallback;
-    GLFWmousewheelfun    MouseWheelCallback;
-    GLFWkeyfun           KeyCallback;
-    GLFWcharfun          CharCallback;
+    GLFWwindowsizefun    windowSizeCallback;
+    GLFWwindowclosefun   windowCloseCallback;
+    GLFWwindowrefreshfun windowRefreshCallback;
+    GLFWmousebuttonfun   mouseButtonCallback;
+    GLFWmouseposfun      mousePosCallback;
+    GLFWmousewheelfun    mouseWheelCallback;
+    GLFWkeyfun           keyCallback;
+    GLFWcharfun          charCallback;
 
     // User selected window settings
     int       Fullscreen;      // Fullscreen flag

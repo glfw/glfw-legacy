@@ -435,7 +435,7 @@ static int GetNextEvent( void )
             _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_PRESS );
 
             // Translate and report character input
-            if( _glfwWin.CharCallback )
+            if( _glfwWin.charCallback )
             {
                 _glfwInputChar( TranslateChar( &event.xkey ), GLFW_PRESS );
             }
@@ -473,7 +473,7 @@ static int GetNextEvent( void )
             _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_RELEASE );
 
             // Translate and report character input
-            if( _glfwWin.CharCallback )
+            if( _glfwWin.charCallback )
             {
                 _glfwInputChar( TranslateChar( &event.xkey ), GLFW_RELEASE );
             }
@@ -501,17 +501,17 @@ static int GetNextEvent( void )
             else if( event.xbutton.button == Button4 )
             {
                 _glfwInput.WheelPos++;  // To verify: is this up or down?
-                if( _glfwWin.MouseWheelCallback )
+                if( _glfwWin.mouseWheelCallback )
                 {
-                    _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
                 }
             }
             else if( event.xbutton.button == Button5 )
             {
                 _glfwInput.WheelPos--;
-                if( _glfwWin.MouseWheelCallback )
+                if( _glfwWin.mouseWheelCallback )
                 {
-                    _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
                 }
             }
             break;
@@ -561,9 +561,9 @@ static int GetNextEvent( void )
                 _glfwInput.MouseMoved = GL_TRUE;
 
                 // Call user callback function
-                if( _glfwWin.MousePosCallback )
+                if( _glfwWin.mousePosCallback )
                 {
-                    _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                    _glfwWin.mousePosCallback( _glfwInput.MousePosX,
                                                _glfwInput.MousePosY );
                 }
             }
@@ -578,9 +578,9 @@ static int GetNextEvent( void )
             {
                 _glfwWin.Width = event.xconfigure.width;
                 _glfwWin.Height = event.xconfigure.height;
-                if( _glfwWin.WindowSizeCallback )
+                if( _glfwWin.windowSizeCallback )
                 {
-                    _glfwWin.WindowSizeCallback( _glfwWin.Width,
+                    _glfwWin.windowSizeCallback( _glfwWin.Width,
                                                  _glfwWin.Height );
                 }
             }
@@ -628,9 +628,9 @@ static int GetNextEvent( void )
         case Expose:
         {
             // Call user callback function
-            if( _glfwWin.WindowRefreshCallback )
+            if( _glfwWin.windowRefreshCallback )
             {
-                _glfwWin.WindowRefreshCallback();
+                _glfwWin.windowRefreshCallback();
             }
             break;
         }
@@ -1770,10 +1770,10 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Was there a window close request?
-    if( winclosed && _glfwWin.WindowCloseCallback )
+    if( winclosed && _glfwWin.windowCloseCallback )
     {
         // Check if the program wants us to close the window
-        winclosed = _glfwWin.WindowCloseCallback();
+        winclosed = _glfwWin.windowCloseCallback();
     }
     if( winclosed )
     {

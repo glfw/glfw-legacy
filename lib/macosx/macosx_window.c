@@ -333,9 +333,9 @@ static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
                 }
             }
 
-            if( _glfwWin.MousePosCallback )
+            if( _glfwWin.mousePosCallback )
             {
-                _glfwWin.MousePosCallback( _glfwInput.MousePosX,
+                _glfwWin.mousePosCallback( _glfwInput.MousePosX,
                                            _glfwInput.MousePosY );
             }
 
@@ -364,9 +364,9 @@ static OSStatus mouseEventHandler( EventHandlerCallRef handlerCallRef,
                                        &wheelDelta ) == noErr )
                 {
                     _glfwInput.WheelPos += wheelDelta;
-                    if( _glfwWin.MouseWheelCallback )
+                    if( _glfwWin.mouseWheelCallback )
                     {
-                        _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+                        _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
                     }
                     return noErr;
                 }
@@ -410,9 +410,9 @@ static OSStatus commandHandler( EventHandlerCallRef handlerCallRef,
             case kHICommandQuit:
             {
                 // Check if the program wants us to close the window
-                if( _glfwWin.WindowCloseCallback )
+                if( _glfwWin.windowCloseCallback )
                 {
-                    if( _glfwWin.WindowCloseCallback() )
+                    if( _glfwWin.windowCloseCallback() )
                     {
                         glfwCloseWindow();
                     }
@@ -467,14 +467,14 @@ static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
 
                 _glfwWin.Width  = rect.right;
                 _glfwWin.Height = rect.bottom;
-                if( _glfwWin.WindowSizeCallback )
+                if( _glfwWin.windowSizeCallback )
                 {
-                    _glfwWin.WindowSizeCallback( _glfwWin.Width, _glfwWin.Height );
+                    _glfwWin.windowSizeCallback( _glfwWin.Width, _glfwWin.Height );
                 }
                 // Emulate (force) content invalidation
-                if( _glfwWin.WindowRefreshCallback )
+                if( _glfwWin.windowRefreshCallback )
                 {
-                        _glfwWin.WindowRefreshCallback();
+                    _glfwWin.windowRefreshCallback();
                 }
             }
             break;
@@ -483,9 +483,9 @@ static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
         case kEventWindowClose:
         {
             // Check if the client wants us to close the window
-            if( _glfwWin.WindowCloseCallback )
+            if( _glfwWin.windowCloseCallback )
             {
-                if( _glfwWin.WindowCloseCallback() )
+                if( _glfwWin.windowCloseCallback() )
                 {
                         glfwCloseWindow();
                 }
@@ -499,9 +499,9 @@ static OSStatus windowEventHandler( EventHandlerCallRef handlerCallRef,
 
         case kEventWindowDrawContent:
         {
-            if( _glfwWin.WindowRefreshCallback )
+            if( _glfwWin.windowRefreshCallback )
             {
-                _glfwWin.WindowRefreshCallback();
+                _glfwWin.windowRefreshCallback();
             }
             break;
         }

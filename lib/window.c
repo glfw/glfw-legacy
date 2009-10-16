@@ -152,9 +152,9 @@ void _glfwInputKey( int key, int action )
     }
 
     // Call user callback function
-    if( _glfwWin.KeyCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
+    if( _glfwWin.keyCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
     {
-        _glfwWin.KeyCallback( key, action );
+        _glfwWin.keyCallback( key, action );
     }
 }
 
@@ -190,9 +190,9 @@ void _glfwInputChar( int character, int action )
     }
 
     // Call user callback function
-    if( _glfwWin.CharCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
+    if( _glfwWin.charCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
     {
-        _glfwWin.CharCallback( character, action );
+        _glfwWin.charCallback( character, action );
     }
 }
 
@@ -216,9 +216,9 @@ void _glfwInputMouseClick( int button, int action )
         }
 
         // Call user callback function
-        if( _glfwWin.MouseButtonCallback )
+        if( _glfwWin.mouseButtonCallback )
         {
-            _glfwWin.MouseButtonCallback( button, action );
+            _glfwWin.mouseButtonCallback( button, action );
         }
     }
 }
@@ -472,14 +472,14 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwClearInput();
 
     // Unregister all callback functions
-    _glfwWin.WindowSizeCallback    = NULL;
-    _glfwWin.WindowCloseCallback   = NULL;
-    _glfwWin.WindowRefreshCallback = NULL;
-    _glfwWin.KeyCallback           = NULL;
-    _glfwWin.CharCallback          = NULL;
-    _glfwWin.MousePosCallback      = NULL;
-    _glfwWin.MouseButtonCallback   = NULL;
-    _glfwWin.MouseWheelCallback    = NULL;
+    _glfwWin.windowSizeCallback    = NULL;
+    _glfwWin.windowCloseCallback   = NULL;
+    _glfwWin.windowRefreshCallback = NULL;
+    _glfwWin.keyCallback           = NULL;
+    _glfwWin.charCallback          = NULL;
+    _glfwWin.mousePosCallback      = NULL;
+    _glfwWin.mouseButtonCallback   = NULL;
+    _glfwWin.mouseWheelCallback    = NULL;
 
     // Check width & height
     if( width > 0 && height <= 0 )
@@ -884,7 +884,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
     }
 
     // Set callback function
-    _glfwWin.WindowSizeCallback = cbfun;
+    _glfwWin.windowSizeCallback = cbfun;
 
     // Call the callback function to let the application know the current
     // window size
@@ -908,7 +908,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
     }
 
     // Set callback function
-    _glfwWin.WindowCloseCallback = cbfun;
+    _glfwWin.windowCloseCallback = cbfun;
 }
 
 
@@ -926,7 +926,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbf
     }
 
     // Set callback function
-    _glfwWin.WindowRefreshCallback = cbfun;
+    _glfwWin.windowRefreshCallback = cbfun;
 }
 
 

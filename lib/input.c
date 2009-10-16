@@ -193,7 +193,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetKeyCallback( GLFWkeyfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.KeyCallback = cbfun;
+    _glfwWin.keyCallback = cbfun;
 }
 
 
@@ -210,7 +210,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetCharCallback( GLFWcharfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.CharCallback = cbfun;
+    _glfwWin.charCallback = cbfun;
 }
 
 
@@ -227,7 +227,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.MouseButtonCallback = cbfun;
+    _glfwWin.mouseButtonCallback = cbfun;
 }
 
 
@@ -244,7 +244,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetMousePosCallback( GLFWmouseposfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.MousePosCallback = cbfun;
+    _glfwWin.mousePosCallback = cbfun;
 
     // Call the callback function to let the application know the current
     // mouse position
@@ -268,7 +268,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun )
     }
 
     // Set callback function
-    _glfwWin.MouseWheelCallback = cbfun;
+    _glfwWin.mouseWheelCallback = cbfun;
 
     // Call the callback function to let the application know the current
     // mouse wheel position
