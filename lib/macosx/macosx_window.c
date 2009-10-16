@@ -620,7 +620,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
     {
-        fprintf( stderr, "OpenGL 3.0+ is not yet supported on Mac OS X" );
+        fprintf( stderr, "OpenGL 3.0+ is not yet supported on Mac OS X\n" );
 
         _glfwPlatformCloseWindow();
         return GL_FALSE;
