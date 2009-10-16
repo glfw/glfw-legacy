@@ -52,6 +52,9 @@ default:
 	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
 	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
+	@echo "  $(MAKE) cocoa             for the Cocoa port on Mac OS X"
+	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
+	@echo "-----------------------------------------------------------------------------"
 
 
 ###########################################################################
@@ -229,4 +232,15 @@ macosx-install: macosx-library
 
 macosx-universal-install: macosx-library-universal
 	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal install
+
+# Cocoa on Mac OS X
+cocoa:
+	cd lib/cocoa; $(MAKE) -f Makefile.cocoa
+	cd examples;  $(MAKE) -f Makefile.cocoa
+	cd tests;     $(MAKE) -f Makefile.cocoa
+
+cocoa-clean:
+	cd lib/cocoa; $(MAKE) -f Makefile.cocoa clean
+	cd examples;  $(MAKE) -f Makefile.cocoa clean
+	cd tests;     $(MAKE) -f Makefile.cocoa clean
 
