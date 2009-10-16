@@ -604,6 +604,7 @@ void _glfwPlatformCloseWindow( void )
 
     [NSOpenGLContext clearCurrentContext];
     [_glfwWin.context release];
+    _glfwWin.context = nil;
 
     [_glfwWin.window setDelegate:nil];
     [NSApp setDelegate:nil];
