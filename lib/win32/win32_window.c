@@ -160,7 +160,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
     *found = 0;
 
-    if( _glfwWin.GetPixelFormatAttribiv )
+    if( _glfwWin.has_WGL_ARB_pixel_format )
     {
         count = getPixelFormatAttrib( 1, WGL_NUMBER_PIXEL_FORMATS_ARB );
     }
@@ -179,7 +179,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
     for( i = 1;  i <= count;  i++ )
     {
-        if( _glfwWin.GetPixelFormatAttribiv )
+        if( _glfwWin.has_WGL_ARB_pixel_format )
         {
             // Get pixel format attributes through WGL_ARB_pixel_format
 
@@ -289,7 +289,7 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
         return NULL;
     }
 
-    if( _glfwWin.CreateContextAttribsARB )
+    if( _glfwWin.has_WGL_ARB_create_context )
     {
         // Use the newer wglCreateContextAttribsARB
 
@@ -964,6 +964,9 @@ static void initWGLExtensions( void )
         }
     }
 
+    // These members are all reset at the start of createWindow, so we don't
+    // need to do anything if the extensions aren't present
+
     if( _glfwPlatformExtensionSupported( "WGL_ARB_multisample" ) )
     {
         _glfwWin.has_WGL_ARB_multisample = GL_TRUE;
@@ -971,35 +974,25 @@ static void initWGLExtensions( void )
 
     if( _glfwPlatformExtensionSupported( "WGL_ARB_create_context" ) )
     {
+        _glfwWin.has_WGL_ARB_create_context = GL_TRUE;
         _glfwWin.CreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
             wglGetProcAddress( "wglCreateContextAttribsARB" );
-    }
-    else
-    {
-        _glfwWin.CreateContextAttribsARB = NULL;
     }
 
     if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
+        _glfwWin.has_WGL_EXT_swap_control = GL_TRUE;
         _glfwWin.SwapInterval = (WGLSWAPINTERVALEXT_T)
             wglGetProcAddress( "wglSwapIntervalEXT" );
-    }
-    else
-    {
-        _glfwWin.SwapInterval = NULL;
     }
 
     if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
+        _glfwWin.has_WGL_ARB_pixel_format = GL_TRUE;
         _glfwWin.ChoosePixelFormat = (WGLCHOOSEPIXELFORMATARB_T)
             wglGetProcAddress( "wglChoosePixelFormatARB" );
         _glfwWin.GetPixelFormatAttribiv = (WGLGETPIXELFORMATATTRIBIVARB_T)
             wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
-    }
-    else
-    {
-        _glfwWin.ChoosePixelFormat = NULL;
-        _glfwWin.GetPixelFormatAttribiv = NULL;
     }
 }
 
@@ -1086,6 +1079,21 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     _glfwWin.context = NULL;
     _glfwWin.window = NULL;
 
+    // This needs to include every function pointer loaded in initWGLExtensions
+    _glfwWin.SwapInterval = NULL;
+    _glfwWin.ChoosePixelFormat = NULL;
+    _glfwWin.GetPixelFormatAttribiv = NULL;
+    _glfwWin.GetExtensionsStringARB = NULL;
+    _glfwWin.GetExtensionsStringEXT = NULL;
+    _glfwWin.CreateContextAttribsARB = NULL;
+
+    // This needs to include every extension used in initWGLExtensions except
+    // for WGL_ARB_extensions_string and WGL_EXT_extensions_string
+    _glfwWin.has_WGL_EXT_swap_control = GL_FALSE;
+    _glfwWin.has_WGL_ARB_pixel_format = GL_FALSE;
+    _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
+    _glfwWin.has_WGL_ARB_create_context = GL_FALSE;
+
     // Set common window styles
     dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
     dwExStyle = WS_EX_APPWINDOW;
@@ -1122,7 +1130,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     _glfwWin.dwStyle   = dwStyle;
     _glfwWin.dwExStyle = dwExStyle;
 
-    // Set window size to true requested size (adjust for window borders)
+    // Adjust window size for frame and title bar
     getFullWindowSize( _glfwWin.Width, _glfwWin.Height, &fullWidth, &fullHeight );
 
     // Adjust window position to working area (e.g. if the task bar is at
@@ -1250,17 +1258,11 @@ int _glfwPlatformOpenWindow( int width, int height,
                              const _GLFWwndconfig *wndconfig,
                              const _GLFWfbconfig *fbconfig )
 {
-    int recreateContext = GL_FALSE;
+    GLboolean recreateContext = GL_FALSE;
 
     // Clear platform specific GLFW window state
     _glfwWin.classAtom         = 0;
     _glfwWin.OldMouseLockValid = GL_FALSE;
-    _glfwWin.ChoosePixelFormat = NULL;
-    _glfwWin.GetPixelFormatAttribiv = NULL;
-    _glfwWin.GetExtensionsStringARB = NULL;
-    _glfwWin.GetExtensionsStringEXT = NULL;
-    _glfwWin.CreateContextAttribsARB = NULL;
-    _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
 
     _glfwWin.DesiredRefreshRate = wndconfig->refreshRate;
 
@@ -1288,7 +1290,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( wndconfig->glMajor > 2 )
     {
-        if( !_glfwWin.CreateContextAttribsARB )
+        if( !_glfwWin.has_WGL_ARB_create_context )
         {
             fprintf( stderr, "OpenGL 3.0+ is not supported\n" );
             _glfwPlatformCloseWindow();
@@ -1302,7 +1304,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         // We want FSAA, but can we get it?
 
-        if( _glfwWin.has_WGL_ARB_multisample && _glfwWin.GetPixelFormatAttribiv )
+        if( _glfwWin.has_WGL_ARB_multisample && _glfwWin.has_WGL_ARB_pixel_format )
         {
             // We appear to have both the FSAA extension and the means to ask for it
             recreateContext = GL_TRUE;
@@ -1558,7 +1560,7 @@ void _glfwPlatformSwapBuffers( void )
 
 void _glfwPlatformSwapInterval( int interval )
 {
-    if( _glfwWin.SwapInterval )
+    if( _glfwWin.has_WGL_EXT_swap_control )
     {
         _glfwWin.SwapInterval( interval );
     }
@@ -1578,7 +1580,7 @@ void _glfwPlatformRefreshWindowParams( void )
     // Obtain a detailed description of current pixel format
     pixelFormat = _glfw_GetPixelFormat( _glfwWin.DC );
 
-    if( _glfwWin.GetPixelFormatAttribiv )
+    if( _glfwWin.has_WGL_ARB_pixel_format )
     {
         if( getPixelFormatAttrib( pixelFormat, WGL_ACCELERATION_ARB ) !=
             WGL_NO_ACCELERATION_ARB )
