@@ -47,7 +47,8 @@
 typedef void *id;
 #endif
 
-// Include files
+#include <pthread.h>
+
 #include "../../include/GL/glfw.h"
 
 //========================================================================
@@ -104,6 +105,15 @@ typedef void *id;
 #define MAC_KEY_KP_EQUAL    0x51
 #define MAC_KEY_KP_ENTER    0x4C
 
+//========================================================================
+// GLFW platform specific types
+//========================================================================
+
+//------------------------------------------------------------------------
+// Pointer length integer
+//------------------------------------------------------------------------
+typedef intptr_t GLFWintptr;
+
 //------------------------------------------------------------------------
 // Window structure
 //------------------------------------------------------------------------
@@ -111,52 +121,56 @@ typedef struct _GLFWwin_struct _GLFWwin;
 
 struct _GLFWwin_struct {
 
-    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // User callback functions
-    GLFWwindowsizefun    WindowSizeCallback;
-    GLFWwindowclosefun   WindowCloseCallback;
-    GLFWwindowrefreshfun WindowRefreshCallback;
-    GLFWmousebuttonfun   MouseButtonCallback;
-    GLFWmouseposfun      MousePosCallback;
-    GLFWmousewheelfun    MouseWheelCallback;
-    GLFWkeyfun           KeyCallback;
-    GLFWcharfun          CharCallback;
+    GLFWwindowsizefun    windowSizeCallback;
+    GLFWwindowclosefun   windowCloseCallback;
+    GLFWwindowrefreshfun windowRefreshCallback;
+    GLFWmousebuttonfun   mouseButtonCallback;
+    GLFWmouseposfun      mousePosCallback;
+    GLFWmousewheelfun    mouseWheelCallback;
+    GLFWkeyfun           keyCallback;
+    GLFWcharfun          charCallback;
 
     // User selected window settings
-    int       Fullscreen;      // Fullscreen flag
-    int       MouseLock;       // Mouse-lock flag
-    int       AutoPollEvents;  // Auto polling flag
-    int       SysKeysDisabled; // System keys disabled flag
-    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       fullscreen;      // Fullscreen flag
+    int       mouseLock;       // Mouse-lock flag
+    int       autoPollEvents;  // Auto polling flag
+    int       sysKeysDisabled; // System keys disabled flag
+    int       windowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       refreshRate;     // Vertical monitor refresh rate
 
     // Window status & parameters
-    int       Opened;          // Flag telling if window is opened or not
-    int       Active;          // Application active flag
-    int       Iconified;       // Window iconified flag
-    int       Width, Height;   // Window width and heigth
-    int       Accelerated;     // GL_TRUE if window is HW accelerated
-    int       RedBits;
-    int       GreenBits;
-    int       BlueBits;
-    int       AlphaBits;
-    int       DepthBits;
-    int       StencilBits;
-    int       AccumRedBits;
-    int       AccumGreenBits;
-    int       AccumBlueBits;
-    int       AccumAlphaBits;
-    int       AuxBuffers;
-    int       Stereo;
-    int       RefreshRate;     // Vertical monitor refresh rate
-    int       Samples;
+    int       opened;          // Flag telling if window is opened or not
+    int       active;          // Application active flag
+    int       iconified;       // Window iconified flag
+    int       width, height;   // Window width and heigth
+    int       accelerated;     // GL_TRUE if window is HW accelerated
 
-    // Extensions & OpenGL version
-    int       GLVerMajor,GLVerMinor,GLForward,GLDebug;
+    // Framebuffer attributes
+    int       redBits;
+    int       greenBits;
+    int       blueBits;
+    int       alphaBits;
+    int       depthBits;
+    int       stencilBits;
+    int       accumRedBits;
+    int       accumGreenBits;
+    int       accumBlueBits;
+    int       accumAlphaBits;
+    int       auxBuffers;
+    int       stereo;
+    int       samples;
 
+    // OpenGL extensions and context attributes
+    int       has_GL_SGIS_generate_mipmap;
+    int       has_GL_ARB_texture_non_power_of_two;
+    int       glMajor, glMinor, glRevision;
+    int       glForward, glDebug, glProfile;
 
-    // ========= PLATFORM SPECIFIC PART ======================================
-    
+// ========= PLATFORM SPECIFIC PART ======================================
+
     id        window;
     id        pixelFormat;
     id	      context;
@@ -172,6 +186,13 @@ GLFWGLOBAL _GLFWwin _glfwWin;
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
 
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+
+    // Window opening hints
+    _GLFWhints      hints;
+
+// ========= PLATFORM SPECIFIC PART ======================================
+
     // Timer data
     struct {
         double t0;
@@ -179,13 +200,13 @@ GLFWGLOBAL struct {
 
     // dlopen handle for dynamically-loading extension function pointers
     void *OpenGLFramework;
-    
+
     int Unbundled;
-    
+
     id DesktopMode;
 
     id AutoreleasePool;
-    
+
 } _glfwLibrary;
 
 
@@ -194,7 +215,7 @@ GLFWGLOBAL struct {
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
 
-    // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
+// ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // Mouse status
     int  MousePosX, MousePosY;
@@ -211,10 +232,72 @@ GLFWGLOBAL struct {
     int  KeyRepeat;
 
 
-    // ========= PLATFORM SPECIFIC PART ======================================
-    
+// ========= PLATFORM SPECIFIC PART ======================================
+
     double WheelPosFloating;
 
 } _glfwInput;
+
+//------------------------------------------------------------------------
+// Thread information
+//------------------------------------------------------------------------
+typedef struct _GLFWthread_struct _GLFWthread;
+
+// Thread record (one for each thread)
+struct _GLFWthread_struct {
+
+    // Pointer to previous and next threads in linked list
+    _GLFWthread   *Previous, *Next;
+
+    // GLFW user side thread information
+    GLFWthread    ID;
+    GLFWthreadfun Function;
+
+    // System side thread information
+    pthread_t     PosixID;
+};
+
+// General thread information
+GLFWGLOBAL struct {
+
+    // Critical section lock
+    pthread_mutex_t  CriticalSection;
+
+    // Next thread ID to use (increments for every created thread)
+    GLFWthread       NextID;
+
+    // First thread in linked list (always the main thread)
+    _GLFWthread      First;
+
+} _glfwThrd;
+
+
+//========================================================================
+// Macros for encapsulating critical code sections (i.e. making parts
+// of GLFW thread safe)
+//========================================================================
+
+// Define so we can use the same thread code as X11
+#define _glfw_numprocessors(n) { \
+    int mib[2], ncpu; \
+    size_t len = 1; \
+    mib[0] = CTL_HW; \
+    mib[1] = HW_NCPU; \
+    n      = 1; \
+    if( sysctl( mib, 2, &ncpu, &len, NULL, 0 ) != -1 ) \
+    { \
+        if( len > 0 ) \
+        { \
+            n = ncpu; \
+        } \
+    } \
+}
+
+// Thread list management
+#define ENTER_THREAD_CRITICAL_SECTION \
+pthread_mutex_lock( &_glfwThrd.CriticalSection );
+#define LEAVE_THREAD_CRITICAL_SECTION \
+pthread_mutex_unlock( &_glfwThrd.CriticalSection );
+
 
 #endif // _platform_h_

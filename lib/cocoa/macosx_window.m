@@ -402,11 +402,12 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 // created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height,
-                             int redbits, int greenbits, int bluebits,
-                             int alphabits, int depthbits, int stencilbits,
-                             int mode, _GLFWhints* hints )
+int  _glfwPlatformOpenWindow( int width, int height,
+                              const _GLFWwndconfig *wndconfig,
+                              const _GLFWfbconfig *fbconfig )
 {
+    int colorBits;
+
     _glfwWin.pixelFormat = nil;
     _glfwWin.window = nil;
     _glfwWin.context = nil;
@@ -422,9 +423,14 @@ int _glfwPlatformOpenWindow( int width, int height,
     [NSApp setDelegate:_glfwWin.delegate];
 
     // Mac OS X needs non-zero color size, so set resonable values
-    if( redbits + greenbits + bluebits < 15 )
+    colorBits = fbconfig->redBits + fbconfig->greenBits + fbconfig->blueBits;
+    if( colorBits == 0 )
     {
-        redbits = greenbits = bluebits = 8;
+        colorBits = 24;
+    }
+    else if( colorBits < 15 )
+    {
+        colorBits = 15;
     }
 
     // Ignored hints:
@@ -437,7 +443,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Aux buffers probably aren't accelerated either
 
     CFDictionaryRef fullscreenMode = NULL;
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         fullscreenMode =
             // I think it's safe to pass 0 to the refresh rate for this function
@@ -445,10 +451,10 @@ int _glfwPlatformOpenWindow( int width, int height,
             // doesn't specify refresh...
             CGDisplayBestModeForParametersAndRefreshRateWithProperty(
             CGMainDisplayID(),
-            redbits + greenbits + bluebits + alphabits,
+            colorBits + fbconfig->alphaBits,
             width,
             height,
-            hints->RefreshRate,
+            wndconfig->refreshRate,
             // Controversial, see macosx_fullscreen.m for discussion
             kCGDisplayModeIsSafeForHardware,
             NULL);
@@ -458,11 +464,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     unsigned int styleMask = 0;
-    if( mode == GLFW_WINDOW )
+    if( wndconfig->mode == GLFW_WINDOW )
     {
         styleMask = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
 
-        if( !hints->WindowNoResize )
+        if( !wndconfig->windowNoResize )
         {
             styleMask |= NSResizableWindowMask;
         }
@@ -482,7 +488,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
     [_glfwWin.window center];
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         CGCaptureAllDisplays();
         CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
@@ -496,7 +502,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     ADD_ATTR( NSOpenGLPFADoubleBuffer );
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         ADD_ATTR( NSOpenGLPFAFullScreen );
         ADD_ATTR( NSOpenGLPFANoRecovery );
@@ -504,45 +510,45 @@ int _glfwPlatformOpenWindow( int width, int height,
                    CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
     }
 
-    ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
+    ADD_ATTR2( NSOpenGLPFAColorSize, colorBits );
 
-    if( alphabits > 0)
+    if( fbconfig->alphaBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAlphaSize, alphabits );
+        ADD_ATTR2( NSOpenGLPFAAlphaSize, fbconfig->alphaBits );
     }
 
-    if( depthbits > 0)
+    if( fbconfig->depthBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFADepthSize, depthbits );
+        ADD_ATTR2( NSOpenGLPFADepthSize, fbconfig->depthBits );
     }
 
-    if( stencilbits > 0)
+    if( fbconfig->stencilBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAStencilSize, stencilbits );
+        ADD_ATTR2( NSOpenGLPFAStencilSize, fbconfig->stencilBits );
     }
 
-    int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
-                    hints->AccumBlueBits + hints->AccumAlphaBits;
+    int accumBits = fbconfig->accumRedBits + fbconfig->accumGreenBits +
+                    fbconfig->accumBlueBits + fbconfig->accumAlphaBits;
 
-    if( accumbits > 0)
+    if( accumBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAccumSize, accumbits );
+        ADD_ATTR2( NSOpenGLPFAAccumSize, accumBits );
     }
 
-    if( hints->AuxBuffers > 0)
+    if( fbconfig->auxBuffers > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAuxBuffers, hints->AuxBuffers );
+        ADD_ATTR2( NSOpenGLPFAAuxBuffers, fbconfig->auxBuffers );
     }
 
-    if( hints->Stereo)
+    if( fbconfig->stereo)
     {
         ADD_ATTR( NSOpenGLPFAStereo );
     }
 
-    if( hints->Samples > 0)
+    if( fbconfig->samples > 0)
     {
         ADD_ATTR2( NSOpenGLPFASampleBuffers, 1 );
-        ADD_ATTR2( NSOpenGLPFASamples, hints->Samples );
+        ADD_ATTR2( NSOpenGLPFASamples, fbconfig->samples );
     }
 
     ADD_ATTR(0);
@@ -565,7 +571,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     [_glfwWin.window makeKeyAndOrderFront:nil];
     [_glfwWin.context setView:[_glfwWin.window contentView]];
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         // TODO: Make this work on pre-Leopard systems
         [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
