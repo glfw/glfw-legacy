@@ -173,24 +173,13 @@ static void GLFWCALL window_refresh_callback(void)
 
 static void GLFWCALL mouse_button_callback(int button, int action)
 {
+    printf("%08x at %0.3f: Mouse button %i", counter++, glfwGetTime(), button);
+
     const char* name = get_button_name(button);
     if (name)
-    {
-        printf("%08x at %0.3f: Mouse button %i (%s) was %s\n",
-               counter++,
-               glfwGetTime(),
-               button,
-               name,
-               get_action_name(action));
-    }
+        printf(" (%s) was %s\n", name, get_action_name(action));
     else
-    {
-        printf("%08x at %0.3f: Mouse button %i was %s\n",
-               counter++,
-               glfwGetTime(),
-               button,
-               get_action_name(action));
-    }
+        printf(" was %s\n", get_action_name(action));
 }
 
 static void GLFWCALL mouse_position_callback(int x, int y)
@@ -205,33 +194,15 @@ static void GLFWCALL mouse_wheel_callback(int position)
 
 static void GLFWCALL key_callback(int key, int action)
 {
+    printf("%08x at %0.3f: Key 0x%04x", counter++, glfwGetTime(), key);
+
     const char* name = get_key_name(key);
     if (name)
-    {
-        printf("%08x at %0.3f: Key 0x%04x (%s) was %s\n",
-               counter++,
-               glfwGetTime(),
-               key,
-               name,
-               get_action_name(action));
-    }
+        printf(" (%s) was %s\n", name, get_action_name(action));
     else if (isgraph(key))
-    {
-        printf("%08x at %0.3f: Key 0x%04x (%c) was %s\n",
-               counter++,
-               glfwGetTime(),
-               key,
-               key,
-               get_action_name(action));
-    }
+        printf(" (%c) was %s\n", key, get_action_name(action));
     else
-    {
-        printf("%08x at %0.3f: Key 0x%04x was %s\n",
-               counter++,
-               glfwGetTime(),
-               key,
-               get_action_name(action));
-    }
+        printf(" was %s\n", get_action_name(action));
 
     if (action != GLFW_PRESS)
         return;
@@ -266,23 +237,12 @@ static void GLFWCALL key_callback(int key, int action)
 
 static void GLFWCALL char_callback(int character, int action)
 {
+    printf("%08x at %0.3f: Character 0x%04x", counter++, glfwGetTime(), character);
+
     if (isgraph(character))
-    {
-        printf("%08x at %0.3f: Character 0x%04x (%c) was %s\n",
-               counter++,
-               glfwGetTime(),
-               character,
-               character,
-               get_action_name(action));
-    }
+        printf(" (%c) was %s\n", character, get_action_name(action));
     else
-    {
-        printf("%08x at %0.3f: Character 0x%04x was %s\n",
-               counter++,
-               glfwGetTime(),
-               character,
-               get_action_name(action));
-    }
+        printf(" was %s\n", get_action_name(action));
 }
 
 int main(void)
