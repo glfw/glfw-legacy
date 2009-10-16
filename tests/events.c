@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+static GLboolean keyrepeat  = 0;
+static GLboolean systemkeys = 1;
 static unsigned int counter = 0;
 
 static const char* get_key_name(int key)
@@ -192,6 +194,36 @@ static void GLFWCALL key_callback(int key, int action)
                glfwGetTime(),
                key,
                get_action_name(action));
+    }
+
+    if (action != GLFW_PRESS)
+        return;
+
+    switch (key)
+    {
+        case 'R':
+        {
+            keyrepeat = !keyrepeat;
+            if (keyrepeat)
+                glfwEnable(GLFW_KEY_REPEAT);
+            else
+                glfwDisable(GLFW_KEY_REPEAT);
+
+            printf("(( key repeat %s ))\n", keyrepeat ? "enabled" : "disabled");
+            break;
+        }
+
+        case 'S':
+        {
+            systemkeys = !systemkeys;
+            if( systemkeys )
+                glfwEnable(GLFW_SYSTEM_KEYS);
+            else
+                glfwDisable(GLFW_SYSTEM_KEYS);
+
+            printf("(( system keys %s ))\n", systemkeys ? "enabled" : "disabled");
+            break;
+        }
     }
 }
 
