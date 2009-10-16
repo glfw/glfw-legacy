@@ -177,10 +177,10 @@ void _glfwSetVideoModeMODE( int mode )
     dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
 
     // Do we have a prefered refresh rate?
-    if( _glfwWin.DesiredRefreshRate > 0 )
+    if( _glfwWin.desiredRefreshRate > 0 )
     {
         dm.dmFields = dm.dmFields | DM_DISPLAYFREQUENCY;
-	dm.dmDisplayFrequency = _glfwWin.DesiredRefreshRate;
+        dm.dmDisplayFrequency = _glfwWin.desiredRefreshRate;
     }
 
     // Change display setting
@@ -191,11 +191,11 @@ void _glfwSetVideoModeMODE( int mode )
     // settings (we'll use the desktop resolution for fullscreen mode)
     if( success == DISP_CHANGE_SUCCESSFUL )
     {
-        _glfwWin.ModeID = mode;
+        _glfwWin.modeID = mode;
     }
     else
     {
-        _glfwWin.ModeID = ENUM_REGISTRY_SETTINGS;
+        _glfwWin.modeID = ENUM_REGISTRY_SETTINGS;
         EnumDisplaySettings( NULL, ENUM_REGISTRY_SETTINGS, &dm );
     }
 

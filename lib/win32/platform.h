@@ -325,8 +325,8 @@ struct _GLFWwin_struct {
     HGLRC     context;         // Permanent rendering context
     HWND      window;          // Window handle
     ATOM      classAtom;       // Window class atom
-    int       ModeID;          // Mode ID for fullscreen mode
-    HHOOK     KeyboardHook;    // Keyboard hook handle
+    int       modeID;          // Mode ID for fullscreen mode
+    HHOOK     keyboardHook;    // Keyboard hook handle
     DWORD     dwStyle;         // Window styles used for window creation
     DWORD     dwExStyle;       // --"--
 
@@ -342,10 +342,10 @@ struct _GLFWwin_struct {
     GLboolean                      has_WGL_ARB_create_context;
 
     // Various platform specific internal variables
-    int       OldMouseLock;    // Old mouse-lock flag (used for remembering
+    int       oldMouseLock;    // Old mouse-lock flag (used for remembering
                                // mouse-lock state when iconifying)
-    int       OldMouseLockValid;
-    int       DesiredRefreshRate; // Desired vertical monitor refresh rate
+    int       oldMouseLockValid;
+    int       desiredRefreshRate; // Desired vertical monitor refresh rate
 
 };
 
@@ -392,7 +392,7 @@ GLFWGLOBAL struct {
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
-  HINSTANCE Instance;        // Instance of the application
+  HINSTANCE instance;        // Instance of the application
 
   // Timer data
   struct {
@@ -404,9 +404,9 @@ GLFWGLOBAL struct {
 
   // System information
   struct {
-      int     WinVer;
-      int     HasUnicode;
-      DWORD   ForegroundLockTimeout;
+      int     winVer;
+      int     hasUnicode;
+      DWORD   foregroundLockTimeout;
   } Sys;
 
 #if !defined(_GLFW_NO_DLOAD_WINMM) || !defined(_GLFW_NO_DLOAD_GDI32)

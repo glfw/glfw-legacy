@@ -95,7 +95,7 @@ static LRESULT CALLBACK keyboardHook( int nCode, WPARAM wParam, LPARAM lParam )
     else
     {
         // It's a harmless key press, let the system deal with it
-        return CallNextHookEx( _glfwWin.KeyboardHook, nCode, wParam, lParam );
+        return CallNextHookEx( _glfwWin.keyboardHook, nCode, wParam, lParam );
     }
 }
 
@@ -114,12 +114,12 @@ void _glfwPlatformEnableSystemKeys( void )
     BOOL dummy;
 
     // Use different methods depending on operating system version
-    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.winVer >= _GLFW_WIN_NT4 )
     {
-        if( _glfwWin.KeyboardHook != NULL )
+        if( _glfwWin.keyboardHook != NULL )
         {
-            UnhookWindowsHookEx( _glfwWin.KeyboardHook );
-            _glfwWin.KeyboardHook = NULL;
+            UnhookWindowsHookEx( _glfwWin.keyboardHook );
+            _glfwWin.keyboardHook = NULL;
         }
     }
     else
@@ -137,12 +137,12 @@ void _glfwPlatformDisableSystemKeys( void )
     BOOL dummy;
 
     // Use different methods depending on operating system version
-    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.winVer >= _GLFW_WIN_NT4 )
     {
         // Under Windows NT, install a low level keyboard hook
-        _glfwWin.KeyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,
+        _glfwWin.keyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,
                                                   keyboardHook,
-                                                  _glfwLibrary.Instance,
+                                                  _glfwLibrary.instance,
                                                   0 );
     }
     else

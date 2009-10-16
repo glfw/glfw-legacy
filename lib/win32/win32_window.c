@@ -502,7 +502,7 @@ static int translateKey( WPARAM wParam, LPARAM lParam )
             wParam = MapVirtualKey( (UINT) wParam, 2 ) & 0x0000FFFF;
 
             // Make sure that the character is uppercase
-            if( _glfwLibrary.Sys.HasUnicode )
+            if( _glfwLibrary.Sys.hasUnicode )
             {
                 wParam = (WPARAM) CharUpperW( (LPWSTR) wParam );
             }
@@ -547,7 +547,7 @@ static void translateChar( DWORD wParam, DWORD lParam, int action )
     }
 
     // Do we have Unicode support?
-    if( _glfwLibrary.Sys.HasUnicode )
+    if( _glfwLibrary.Sys.hasUnicode )
     {
         // Convert to Unicode
         num_chars = ToUnicode(
@@ -631,10 +631,10 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
 
                 // Unlock mouse
-                if( !_glfwWin.OldMouseLockValid )
+                if( !_glfwWin.oldMouseLockValid )
                 {
-                    _glfwWin.OldMouseLock = _glfwWin.MouseLock;
-                    _glfwWin.OldMouseLockValid = GL_TRUE;
+                    _glfwWin.oldMouseLock = _glfwWin.MouseLock;
+                    _glfwWin.oldMouseLockValid = GL_TRUE;
                     glfwEnable( GLFW_MOUSE_CURSOR );
                 }
             }
@@ -644,7 +644,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 if( _glfwWin.Opened && _glfwWin.Fullscreen && _glfwWin.Iconified )
                 {
                     // Change display settings to the user selected mode
-                    _glfwSetVideoModeMODE( _glfwWin.ModeID );
+                    _glfwSetVideoModeMODE( _glfwWin.modeID );
 
                     // Do we need to manually restore window?
                     if( Iconified )
@@ -663,11 +663,11 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
 
                 // Lock mouse, if necessary
-                if( _glfwWin.OldMouseLockValid && _glfwWin.OldMouseLock )
+                if( _glfwWin.oldMouseLockValid && _glfwWin.oldMouseLock )
                 {
                     glfwDisable( GLFW_MOUSE_CURSOR );
                 }
-                _glfwWin.OldMouseLockValid = GL_FALSE;
+                _glfwWin.oldMouseLockValid = GL_FALSE;
             }
 
             _glfwWin.Iconified = Iconified;
@@ -844,7 +844,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         case WM_MOUSEWHEEL:
         {
             // WM_MOUSEWHEEL is not supported under Windows 95
-            if( _glfwLibrary.Sys.WinVer != _GLFW_WIN_95 )
+            if( _glfwLibrary.Sys.winVer != _GLFW_WIN_95 )
             {
                 WheelDelta = (((int)wParam) >> 16) / WHEEL_DELTA;
                 _glfwInput.WheelPos += WheelDelta;
@@ -1008,14 +1008,14 @@ static ATOM registerWindowClass( void )
     wc.lpfnWndProc   = (WNDPROC)windowProc;           // Message handler
     wc.cbClsExtra    = 0;                             // No extra class data
     wc.cbWndExtra    = 0;                             // No extra window data
-    wc.hInstance     = _glfwLibrary.Instance;         // Set instance
+    wc.hInstance     = _glfwLibrary.instance;         // Set instance
     wc.hCursor       = LoadCursor( NULL, IDC_ARROW ); // Load arrow pointer
     wc.hbrBackground = NULL;                          // No background
     wc.lpszMenuName  = NULL;                          // No menu
     wc.lpszClassName = _GLFW_WNDCLASSNAME;            // Set class name
 
     // Load user-provided icon if available
-    wc.hIcon = LoadIcon( _glfwLibrary.Instance, "GLFW_ICON" );
+    wc.hIcon = LoadIcon( _glfwLibrary.instance, "GLFW_ICON" );
     if( !wc.hIcon )
     {
         // Load default icon
@@ -1151,7 +1151,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
                                       fullHeight,            // Decorated window height
                                       NULL,                  // No parent window
                                       NULL,                  // No menu
-                                      _glfwLibrary.Instance, // Instance
+                                      _glfwLibrary.instance, // Instance
                                       NULL );                // Nothing to WM_CREATE
 
     if( !_glfwWin.window )
@@ -1228,7 +1228,7 @@ static void destroyWindow( void )
     if( _glfwWin.window )
     {
         // Destroy the window
-        if( _glfwLibrary.Sys.WinVer <= _GLFW_WIN_NT4 )
+        if( _glfwLibrary.Sys.winVer <= _GLFW_WIN_NT4 )
         {
             // Note: Hiding the window first fixes an annoying W98/NT4
             // remaining icon bug for fullscreen displays
@@ -1259,9 +1259,9 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Clear platform specific GLFW window state
     _glfwWin.classAtom         = 0;
-    _glfwWin.OldMouseLockValid = GL_FALSE;
+    _glfwWin.oldMouseLockValid = GL_FALSE;
 
-    _glfwWin.DesiredRefreshRate = wndconfig->refreshRate;
+    _glfwWin.desiredRefreshRate = wndconfig->refreshRate;
 
     _glfwWin.classAtom = registerWindowClass();
     if( !_glfwWin.classAtom )
@@ -1366,7 +1366,7 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.classAtom )
     {
         // Unregister class
-        UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.Instance );
+        UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.instance );
         _glfwWin.classAtom = 0;
     }
 
@@ -1408,19 +1408,19 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
         // Get current BPP settings
         dm.dmSize = sizeof( DEVMODE );
-        if( EnumDisplaySettings( NULL, _glfwWin.ModeID, &dm ) )
+        if( EnumDisplaySettings( NULL, _glfwWin.modeID, &dm ) )
         {
             // Get bpp
             bpp = dm.dmBitsPerPel;
 
             // Get closest match for target video mode
-            refresh = _glfwWin.DesiredRefreshRate;
+            refresh = _glfwWin.desiredRefreshRate;
             mode = _glfwGetClosestVideoModeBPP( &width, &height, &bpp,
                                                 &refresh );
         }
         else
         {
-            mode = _glfwWin.ModeID;
+            mode = _glfwWin.modeID;
         }
     }
     else
@@ -1439,7 +1439,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     }
 
     // Change fullscreen video mode?
-    if( _glfwWin.Fullscreen && mode != _glfwWin.ModeID )
+    if( _glfwWin.Fullscreen && mode != _glfwWin.modeID )
     {
         // Change video mode
         _glfwSetVideoModeMODE( mode );
@@ -1499,10 +1499,10 @@ void _glfwPlatformIconifyWindow( void )
     }
 
     // Unlock mouse
-    if( !_glfwWin.OldMouseLockValid )
+    if( !_glfwWin.oldMouseLockValid )
     {
-        _glfwWin.OldMouseLock = _glfwWin.MouseLock;
-        _glfwWin.OldMouseLockValid = GL_TRUE;
+        _glfwWin.oldMouseLock = _glfwWin.MouseLock;
+        _glfwWin.oldMouseLockValid = GL_TRUE;
         glfwEnable( GLFW_MOUSE_CURSOR );
     }
 }
@@ -1518,7 +1518,7 @@ void _glfwPlatformRestoreWindow( void )
     if( _glfwWin.Fullscreen )
     {
         // Change display settings to the user selected mode
-        _glfwSetVideoModeMODE( _glfwWin.ModeID );
+        _glfwSetVideoModeMODE( _glfwWin.modeID );
     }
 
     // Un-iconify window
@@ -1533,11 +1533,11 @@ void _glfwPlatformRestoreWindow( void )
     _glfwWin.Iconified = GL_FALSE;
 
     // Lock mouse, if necessary
-    if( _glfwWin.OldMouseLockValid && _glfwWin.OldMouseLock )
+    if( _glfwWin.oldMouseLockValid && _glfwWin.oldMouseLock )
     {
         glfwDisable( GLFW_MOUSE_CURSOR );
     }
-    _glfwWin.OldMouseLockValid = GL_FALSE;
+    _glfwWin.oldMouseLockValid = GL_FALSE;
 }
 
 
@@ -1644,7 +1644,7 @@ void _glfwPlatformRefreshWindowParams( void )
     }
 
     // Get refresh rate
-    mode = _glfwWin.Fullscreen ? _glfwWin.ModeID : ENUM_CURRENT_SETTINGS;
+    mode = _glfwWin.Fullscreen ? _glfwWin.modeID : ENUM_CURRENT_SETTINGS;
     dm.dmSize = sizeof( DEVMODE );
 
     if( EnumDisplaySettings( NULL, mode, &dm ) )
@@ -1706,7 +1706,7 @@ void _glfwPlatformPollEvents( void )
     // This is the only async event handling in GLFW, but it solves some
     // nasty problems.
     // Caveat: Does not work under Win 9x/ME.
-    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.winVer >= _GLFW_WIN_NT4 )
     {
         int lshift_down, rshift_down;
 
