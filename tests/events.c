@@ -126,9 +126,9 @@ static const char* get_action_name(int action)
     switch (action)
     {
         case GLFW_PRESS:
-            return "pressed";
+            return "was pressed";
         case GLFW_RELEASE:
-            return "released";
+            return "was released";
     }
 
     return "caused unknown action";
@@ -240,9 +240,9 @@ static void GLFWCALL char_callback(int character, int action)
     printf("%08x at %0.3f: Character 0x%04x", counter++, glfwGetTime(), character);
 
     if (isgraph(character))
-        printf(" (%c) was %s\n", character, get_action_name(action));
+        printf(" (%c) %s\n", character, get_action_name(action));
     else
-        printf(" was %s\n", get_action_name(action));
+        printf(" %s\n", get_action_name(action));
 }
 
 int main(void)
