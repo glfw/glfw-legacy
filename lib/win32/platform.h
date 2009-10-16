@@ -137,8 +137,6 @@ typedef struct tagKBDLLHOOKSTRUCT {
 
 // wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
 typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
-// wglChoosePixelFormatARB typedef
-typedef BOOL (WINAPI * WGLCHOOSEPIXELFORMATARB_T) (HDC, const int *, const FLOAT *, UINT, int *, UINT *);
 // wglGetPixelFormatAttribivARB typedef
 typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, const int *, int *);
 // wglGetExtensionStringEXT typedef
@@ -334,7 +332,6 @@ struct _GLFWwin_struct {
 
     // Platform specific extensions (context specific)
     WGLSWAPINTERVALEXT_T           SwapInterval;
-    WGLCHOOSEPIXELFORMATARB_T      ChoosePixelFormat;
     WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;

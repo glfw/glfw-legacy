@@ -989,8 +989,6 @@ static void initWGLExtensions( void )
     if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
         _glfwWin.has_WGL_ARB_pixel_format = GL_TRUE;
-        _glfwWin.ChoosePixelFormat = (WGLCHOOSEPIXELFORMATARB_T)
-            wglGetProcAddress( "wglChoosePixelFormatARB" );
         _glfwWin.GetPixelFormatAttribiv = (WGLGETPIXELFORMATATTRIBIVARB_T)
             wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
     }
@@ -1081,7 +1079,6 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
     // This needs to include every function pointer loaded in initWGLExtensions
     _glfwWin.SwapInterval = NULL;
-    _glfwWin.ChoosePixelFormat = NULL;
     _glfwWin.GetPixelFormatAttribiv = NULL;
     _glfwWin.GetExtensionsStringARB = NULL;
     _glfwWin.GetExtensionsStringEXT = NULL;
