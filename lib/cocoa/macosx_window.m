@@ -759,6 +759,7 @@ void _glfwPlatformRefreshWindowParams( void )
     // These are forced to false as long as Mac OS X lacks support for OpenGL 3.0+
     _glfwWin.glForward = GL_FALSE;
     _glfwWin.glDebug = GL_FALSE;
+    _glfwWin.glProfile = 0;
 }
 
 //========================================================================
@@ -811,6 +812,7 @@ void _glfwPlatformWaitEvents( void )
 
 void _glfwPlatformHideMouseCursor( void )
 {
+    // TODO: Implement locked unbounded cursor.
     [NSCursor hide];
 }
 
@@ -820,6 +822,7 @@ void _glfwPlatformHideMouseCursor( void )
 
 void _glfwPlatformShowMouseCursor( void )
 {
+    // TODO: Implement locked unbounded cursor.
     [NSCursor unhide];
 }
 
