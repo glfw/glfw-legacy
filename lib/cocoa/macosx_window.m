@@ -276,11 +276,23 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)mouseMoved:(NSEvent *)event
 {
-    NSPoint p = [event locationInWindow];
+    if( _glfwWin.mouseLock )
+    {
+        CGMouseDelta x, y;
 
-    // Cocoa coordinate system has origin at lower left
-    _glfwInput.MousePosX = p.x;
-    _glfwInput.MousePosY = [[_glfwWin.window contentView] bounds].size.height - p.y;
+        CGGetLastMouseDelta( &x, &y );
+
+        _glfwInput.MousePosX += x;
+        _glfwInput.MousePosY -= y;
+    }
+    else
+    {
+        NSPoint p = [event locationInWindow];
+
+        // Cocoa coordinate system has origin at lower left
+        _glfwInput.MousePosX = p.x;
+        _glfwInput.MousePosY = [[_glfwWin.window contentView] bounds].size.height - p.y;
+    }
 
     if( _glfwWin.MousePosCallback )
     {
@@ -807,6 +819,7 @@ void _glfwPlatformWaitEvents( void )
 void _glfwPlatformHideMouseCursor( void )
 {
     [NSCursor hide];
+    CGAssociateMouseAndMouseCursorPosition( false );
 }
 
 //========================================================================
@@ -816,6 +829,7 @@ void _glfwPlatformHideMouseCursor( void )
 void _glfwPlatformShowMouseCursor( void )
 {
     [NSCursor unhide];
+    CGAssociateMouseAndMouseCursorPosition( true );
 }
 
 //========================================================================
