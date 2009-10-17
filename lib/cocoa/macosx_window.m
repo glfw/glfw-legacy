@@ -58,7 +58,7 @@
 - (void)windowDidResize:(NSNotification *)notification
 {
     [_glfwWin.context update];
-    
+
     if( _glfwWin.WindowSizeCallback )
     {
         NSRect contentRect =
@@ -228,7 +228,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
     {
         return -1;
     }
-    
+
     // This treats keycodes as *positional*; that is, we'll return 'a'
     // for the key left of 's', even on an AZERTY keyboard.  The charInput
     // function should still get 'q' though.
@@ -325,7 +325,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
     if( code != -1 )
     {
         _glfwInputKey( code, GLFW_PRESS );
-        
+
         if( [event modifierFlags] & NSCommandKeyMask )
         {
             if( !_glfwWin.SysKeysDisabled )
@@ -420,22 +420,22 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     [NSApp setDelegate:_glfwWin.delegate];
-    
+
     // Mac OS X needs non-zero color size, so set resonable values
     if( redbits + greenbits + bluebits < 15 )
     {
         redbits = greenbits = bluebits = 8;
     }
-    
+
     // Ignored hints:
     // OpenGLMajor, OpenGLMinor, OpenGLForward:
     //     pending Mac OS X support for OpenGL 3.x
     // OpenGLDebug
     //     pending it meaning anything on Mac OS X
-    
+
     // Don't use accumulation buffer support; it's not accelerated
     // Aux buffers probably aren't accelerated either
-    
+
     CFDictionaryRef fullscreenMode = NULL;
     if( mode == GLFW_FULLSCREEN )
     {
@@ -456,7 +456,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         width = [[(id)fullscreenMode objectForKey:(id)kCGDisplayWidth] intValue];
         height = [[(id)fullscreenMode objectForKey:(id)kCGDisplayHeight] intValue];
     }
-    
+
     unsigned int styleMask = 0;
     if( mode == GLFW_WINDOW )
     {
@@ -481,19 +481,19 @@ int _glfwPlatformOpenWindow( int width, int height,
     [_glfwWin.window setDelegate:_glfwWin.delegate];
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
     [_glfwWin.window center];
-    
+
     if( mode == GLFW_FULLSCREEN )
     {
         CGCaptureAllDisplays();
         CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
     }
-    
+
     unsigned int attribute_count = 0;
 #define ADD_ATTR(x) attributes[attribute_count++] = x
 #define ADD_ATTR2(x, y) (void)({ ADD_ATTR(x); ADD_ATTR(y); })
 #define MAX_ATTRS 24 // urgh
     NSOpenGLPixelFormatAttribute attributes[MAX_ATTRS];
-    
+
     ADD_ATTR( NSOpenGLPFADoubleBuffer );
 
     if( mode == GLFW_FULLSCREEN )
@@ -546,7 +546,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     ADD_ATTR(0);
-    
+
     _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
     if( _glfwWin.pixelFormat == nil )
     {
@@ -561,17 +561,17 @@ int _glfwPlatformOpenWindow( int width, int height,
         _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
-    
+
     [_glfwWin.window makeKeyAndOrderFront:nil];
     [_glfwWin.context setView:[_glfwWin.window contentView]];
-    
+
     if( mode == GLFW_FULLSCREEN )
     {
         // TODO: Make this work on pre-Leopard systems
         [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
                                                withOptions:nil];
     }
-    
+
     [_glfwWin.context makeCurrentContext];
 
     return GL_TRUE;
@@ -584,7 +584,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 void _glfwPlatformCloseWindow( void )
 {
     [_glfwWin.window orderOut:nil];
-    
+
     if( _glfwWin.Fullscreen )
     {
         [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
@@ -827,18 +827,18 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // but obviously it will, and escape the app's window, and activate other apps,
     // and other badness in pain.  I think the API's just silly, but maybe I'm
     // misunderstanding it...
-    
+
     // Also, (x, y) are window coords...
-    
+
     // Also, it doesn't seem possible to write this robustly without
     // calculating the maximum y coordinate of all screens, since Cocoa's
     // "global coordinates" are upside down from CG's...
-    
+
     // Without this (once per app run, but it's convenient to do it here)
     // events will be suppressed for a default of 0.25 seconds after we
     // move the cursor.
     CGSetLocalEventsSuppressionInterval( 0.0 );
-    
+
     NSPoint localPoint = NSMakePoint( x, y );
     NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
     CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
