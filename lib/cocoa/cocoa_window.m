@@ -326,12 +326,8 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 {
     if( _glfwWin.mouseLock )
     {
-        CGMouseDelta x, y;
-
-        CGGetLastMouseDelta( &x, &y );
-
-        _glfwInput.MousePosX += x;
-        _glfwInput.MousePosY -= y;
+        _glfwInput.MousePosX += [event deltaX];
+        _glfwInput.MousePosY -= [event deltaY];
     }
     else
     {
