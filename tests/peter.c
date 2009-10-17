@@ -35,20 +35,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static GLboolean cursor_enabled = GL_TRUE;
+
+static void toggle_mouse_cursor(void)
+{
+    if (cursor_enabled)
+        glfwDisable(GLFW_MOUSE_CURSOR);
+    else
+        glfwEnable(GLFW_MOUSE_CURSOR);
+
+    cursor_enabled = !cursor_enabled;
+}
+
 static void GLFWCALL mouse_button_callback(int button, int pressed)
 {
-    if (button == 0)
-    {
-        if (pressed)
-            glfwDisable(GLFW_MOUSE_CURSOR);
-        else
-            glfwEnable(GLFW_MOUSE_CURSOR);
-    }
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+        toggle_mouse_cursor();
 }
 
 static void GLFWCALL mouse_position_callback(int x, int y)
 {
     printf("%i %i\n", x, y);
+}
+
+static void GLFWCALL key_callback(int key, int action)
+{
+    if (key == GLFW_KEY_SPACE)
+        toggle_mouse_cursor();
 }
 
 static void GLFWCALL window_size_callback(int width, int height)
@@ -77,6 +90,7 @@ int main(void)
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSetMousePosCallback(mouse_position_callback);
     glfwSetMouseButtonCallback(mouse_button_callback);
+    glfwSetKeyCallback(key_callback);
     glfwSwapInterval(1);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
