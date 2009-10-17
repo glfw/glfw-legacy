@@ -40,6 +40,54 @@
 
 @implementation GLFWWindowDelegate
 
+- (void)insertNewline:(id)sender
+{
+    // NOTE: This method is implemented because pressing Return makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
+- (void)insertTab:(id)sender
+{
+    // NOTE: This method is implemented because pressing Tab makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
+- (void)moveUp:(id)sender
+{
+    // NOTE: This method is implemented because pressing Up makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
+- (void)moveDown:(id)sender
+{
+    // NOTE: This method is implemented because pressing Down makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
+- (void)moveLeft:(id)sender
+{
+    // NOTE: This method is implemented because pressing Left makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
+- (void)moveRight:(id)sender
+{
+    // NOTE: This method is implemented because pressing Right makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
 - (BOOL)windowShouldClose:(id)window
 {
     if( _glfwWin.windowCloseCallback )
