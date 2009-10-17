@@ -276,7 +276,7 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)mouseMoved:(NSEvent *)event
 {
-    if( _glfwWin.mouseLock )
+    if( _glfwWin.MouseLock )
     {
         CGMouseDelta x, y;
 
