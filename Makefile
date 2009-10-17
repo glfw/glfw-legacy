@@ -61,8 +61,7 @@ default:
 ###########################################################################
 EXAMPLES = boing \
            gears \
-	   joytest \
-           keytest \
+           joytest \
            listmodes \
            mipmaps \
            mtbench \
