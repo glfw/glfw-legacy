@@ -52,6 +52,7 @@
 static void usage(void)
 {
     printf("version [-h] [-m MAJOR] [-n MINOR] [-d] [-f] [-p PROFILE]\n");
+    printf("available profiles: core compat\n");
 }
 
 int main(int argc, char** argv)
