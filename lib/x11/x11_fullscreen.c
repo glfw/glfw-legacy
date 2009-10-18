@@ -119,7 +119,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
                         bestrate = ratelist[i];
                     }
                 }
-                
+
                 if( bestrate != -1 )
                 {
                     *rate = bestrate;
