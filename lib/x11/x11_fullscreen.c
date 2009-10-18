@@ -30,6 +30,8 @@
 
 #include "internal.h"
 
+#include <limits.h>
+
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
@@ -84,7 +86,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 
         // Find the best matching mode
         bestsize  = -1;
-        bestmatch = 999999;
+        bestmatch = INT_MAX;
         for( i = 0; i < sizecount; i++ )
         {
             match = (*width - sizelist[i].width) *
@@ -109,7 +111,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
                 ratelist = XRRConfigRates( sc, bestsize, &ratecount );
 
                 bestrate = -1;
-                bestmatch = 999999;
+                bestmatch = INT_MAX;
                 for( i = 0; i < ratecount; i++ )
                 {
                     match = abs( ratelist[i] - *rate );
@@ -148,7 +150,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
 
         // Find the best matching mode
         bestmode  = -1;
-        bestmatch = 999999;
+        bestmatch = INT_MAX;
         for( i = 0; i < modecount; i++ )
         {
             match = (*width - modelist[i]->hdisplay) *
