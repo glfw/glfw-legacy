@@ -253,7 +253,7 @@ static void enableDecorations( void )
 // Translates an X Window key to internal coding
 //========================================================================
 
-static int TranslateKey( int keycode )
+static int translateKey( int keycode )
 {
     KeySym key, key_lc, key_uc;
 
@@ -382,7 +382,7 @@ static int TranslateKey( int keycode )
 // Translates an X Window event to Unicode
 //========================================================================
 
-static int TranslateChar( XKeyEvent *event )
+static int translateChar( XKeyEvent *event )
 {
     KeySym keysym;
 
@@ -399,7 +399,7 @@ static int TranslateChar( XKeyEvent *event )
 // Get next X event (called by glfwPollEvents)
 //========================================================================
 
-static int GetNextEvent( void )
+static int getNextEvent( void )
 {
     XEvent event, next_event;
 
@@ -413,12 +413,12 @@ static int GetNextEvent( void )
         case KeyPress:
         {
             // Translate and report key press
-            _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_PRESS );
+            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_PRESS );
 
             // Translate and report character input
             if( _glfwWin.charCallback )
             {
-                _glfwInputChar( TranslateChar( &event.xkey ), GLFW_PRESS );
+                _glfwInputChar( translateChar( &event.xkey ), GLFW_PRESS );
             }
             break;
         }
@@ -451,12 +451,12 @@ static int GetNextEvent( void )
             }
 
             // Translate and report key release
-            _glfwInputKey( TranslateKey( event.xkey.keycode ), GLFW_RELEASE );
+            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_RELEASE );
 
             // Translate and report character input
             if( _glfwWin.charCallback )
             {
-                _glfwInputChar( TranslateChar( &event.xkey ), GLFW_RELEASE );
+                _glfwInputChar( translateChar( &event.xkey ), GLFW_RELEASE );
             }
             break;
         }
@@ -646,7 +646,7 @@ static int GetNextEvent( void )
 // Create a blank cursor (for locked mouse mode)
 //========================================================================
 
-static Cursor CreateNULLCursor( Display *display, Window root )
+static Cursor createNULLCursor( Display *display, Window root )
 {
     Pixmap    cursormask;
     XGCValues xgc;
@@ -696,7 +696,7 @@ static int getFBConfigAttrib( GLXFBConfig fbconfig, int attrib )
 // Return a list of available and usable framebuffer configs
 //========================================================================
 
-static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
+static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 {
     GLXFBConfig *fbconfigs;
     _GLFWfbconfig *result;
@@ -793,11 +793,11 @@ static _GLFWfbconfig *GetFBConfigs( unsigned int *found )
 // Create the OpenGL context
 //========================================================================
 
-#define SetGLXattrib( attribs, index, attribName, attribValue ) \
+#define setGLXattrib( attribs, index, attribName, attribValue ) \
     attribs[index++] = attribName; \
     attribs[index++] = attribValue;
 
-static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfigID )
+static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfigID )
 {
     int attribs[40];
     int flags, dummy, index;
@@ -816,8 +816,8 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     {
         index = 0;
 
-        SetGLXattrib( attribs, index, GLX_FBCONFIG_ID, (int) fbconfigID );
-        SetGLXattrib( attribs, index, None, None );
+        setGLXattrib( attribs, index, GLX_FBCONFIG_ID, (int) fbconfigID );
+        setGLXattrib( attribs, index, None, None );
 
         if( _glfwWin.has_GLX_SGIX_fbconfig )
         {
@@ -864,8 +864,8 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     {
         index = 0;
 
-        SetGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, wndconfig->glMajor );
-        SetGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, wndconfig->glMinor );
+        setGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, wndconfig->glMajor );
+        setGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, wndconfig->glMinor );
 
         if( wndconfig->glForward || wndconfig->glDebug )
         {
@@ -881,10 +881,10 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
                 flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
             }
 
-            SetGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
+            setGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
         }
 
-        SetGLXattrib( attribs, index, None, None );
+        setGLXattrib( attribs, index, None, None );
 
         _glfwWin.context = _glfwWin.CreateContextAttribsARB( _glfwLibrary.display,
                                                              *fbconfig,
@@ -930,7 +930,7 @@ static int CreateContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 // Initialize GLX-specific extensions
 //========================================================================
 
-static void InitGLXExtensions( void )
+static void initGLXExtensions( void )
 {
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
@@ -1014,11 +1014,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     // hope for the best
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
 
-    InitGLXExtensions();
+    initGLXExtensions();
 
     // Choose the best available fbconfig
     {
-        fbconfigs = GetFBConfigs( &fbcount );
+        fbconfigs = getFBConfigs( &fbcount );
         if( !fbconfigs )
         {
             _glfwPlatformCloseWindow();
@@ -1033,7 +1033,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         }
     }
 
-    if( !CreateContext( wndconfig, (GLXFBConfigID) closest->platformID ) )
+    if( !createContext( wndconfig, (GLXFBConfigID) closest->platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -1507,7 +1507,7 @@ void _glfwPlatformRestoreWindow( void )
         if( !_glfwWin.PointerHidden )
         {
             XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                           CreateNULLCursor( _glfwLibrary.display,
+                           createNULLCursor( _glfwLibrary.display,
                                              _glfwWin.window ) );
 
             _glfwWin.PointerHidden = GL_TRUE;
@@ -1683,7 +1683,7 @@ void _glfwPlatformPollEvents( void )
     // Empty the window event queue
     while( XPending( _glfwLibrary.display ) )
     {
-        if( GetNextEvent() )
+        if( getNextEvent() )
         {
             winclosed = GL_TRUE;
         }
@@ -1756,7 +1756,7 @@ void _glfwPlatformPollEvents( void )
             if( !_glfwWin.PointerHidden )
             {
                 XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                               CreateNULLCursor( _glfwLibrary.display,
+                               createNULLCursor( _glfwLibrary.display,
                                                  _glfwWin.window ) );
 
                 _glfwWin.PointerHidden = GL_TRUE;
@@ -1845,7 +1845,7 @@ void _glfwPlatformHideMouseCursor( void )
     if( !_glfwWin.PointerHidden )
     {
         XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                       CreateNULLCursor( _glfwLibrary.display,
+                       createNULLCursor( _glfwLibrary.display,
                                          _glfwWin.window ) );
 
         _glfwWin.PointerHidden = GL_TRUE;
