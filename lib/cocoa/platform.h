@@ -37,12 +37,6 @@
 
 #if defined(__OBJC__)
 #import <Cocoa/Cocoa.h>
-
-// gcc (currently) misdiangoses flow control in @catch-less @try clauses,
-// claiming that the function doesn't always return a value if the @finally
-// clause doesn't contain a return.
-#define DODGE_FINALLY_BUG abort();
-
 #else
 typedef void *id;
 #endif
@@ -50,60 +44,6 @@ typedef void *id;
 #include <pthread.h>
 
 #include "../../include/GL/glfw.h"
-
-//========================================================================
-// Defines
-//========================================================================
-
-#define _GLFW_MAX_PATH_LENGTH PATH_MAX
-
-#define MAC_KEY_ENTER       0x24
-#define MAC_KEY_RETURN      0x34
-#define MAC_KEY_ESC         0x35
-#define MAC_KEY_F1          0x7A
-#define MAC_KEY_F2          0x78
-#define MAC_KEY_F3          0x63
-#define MAC_KEY_F4          0x76
-#define MAC_KEY_F5          0x60
-#define MAC_KEY_F6          0x61
-#define MAC_KEY_F7          0x62
-#define MAC_KEY_F8          0x64
-#define MAC_KEY_F9          0x65
-#define MAC_KEY_F10         0x6D
-#define MAC_KEY_F11         0x67
-#define MAC_KEY_F12         0x6F
-#define MAC_KEY_F13         0x69
-#define MAC_KEY_F14         0x6B
-#define MAC_KEY_F15         0x71
-#define MAC_KEY_UP          0x7E
-#define MAC_KEY_DOWN        0x7D
-#define MAC_KEY_LEFT        0x7B
-#define MAC_KEY_RIGHT       0x7C
-#define MAC_KEY_TAB         0x30
-#define MAC_KEY_BACKSPACE   0x33
-#define MAC_KEY_HELP        0x72
-#define MAC_KEY_DEL         0x75
-#define MAC_KEY_PAGEUP      0x74
-#define MAC_KEY_PAGEDOWN    0x79
-#define MAC_KEY_HOME        0x73
-#define MAC_KEY_END         0x77
-#define MAC_KEY_KP_0        0x52
-#define MAC_KEY_KP_1        0x53
-#define MAC_KEY_KP_2        0x54
-#define MAC_KEY_KP_3        0x55
-#define MAC_KEY_KP_4        0x56
-#define MAC_KEY_KP_5        0x57
-#define MAC_KEY_KP_6        0x58
-#define MAC_KEY_KP_7        0x59
-#define MAC_KEY_KP_8        0x5B
-#define MAC_KEY_KP_9        0x5C
-#define MAC_KEY_KP_DIVIDE   0x4B
-#define MAC_KEY_KP_MULTIPLY 0x43
-#define MAC_KEY_KP_SUBTRACT 0x4E
-#define MAC_KEY_KP_ADD      0x45
-#define MAC_KEY_KP_DECIMAL  0x41
-#define MAC_KEY_KP_EQUAL    0x51
-#define MAC_KEY_KP_ENTER    0x4C
 
 //========================================================================
 // GLFW platform specific types
