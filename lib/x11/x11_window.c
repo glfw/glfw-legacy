@@ -953,6 +953,9 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
 static void initGLXExtensions( void )
 {
+    // These members are all reset at the start of _glfwPlatformOpenWindow, so
+    // we don't need to do anything if the extensions aren't present
+
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
         _glfwWin.SwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)
@@ -1022,15 +1025,18 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.refreshRate      = wndconfig->refreshRate;
     _glfwWin.windowNoResize   = wndconfig->windowNoResize;
 
-    _glfwWin.SwapIntervalSGI = NULL;
-    _glfwWin.GetFBConfigAttribSGIX = NULL;
-    _glfwWin.ChooseFBConfigSGIX = NULL;
+    // This needs to include every function pointer loaded in initGLXExtensions
+    _glfwWin.SwapIntervalSGI             = NULL;
+    _glfwWin.GetFBConfigAttribSGIX       = NULL;
+    _glfwWin.ChooseFBConfigSGIX          = NULL;
     _glfwWin.CreateContextWithConfigSGIX = NULL;
-    _glfwWin.GetVisualFromFBConfigSGIX = NULL;
-    _glfwWin.CreateContextAttribsARB = NULL;
+    _glfwWin.GetVisualFromFBConfigSGIX   = NULL;
+    _glfwWin.CreateContextAttribsARB     = NULL;
+
+    // This needs to include every extension used in initGLXExtensions
     _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
-    _glfwWin.has_GLX_SGIX_fbconfig = GL_FALSE;
-    _glfwWin.has_GLX_SGI_swap_control = GL_FALSE;
+    _glfwWin.has_GLX_SGIX_fbconfig      = GL_FALSE;
+    _glfwWin.has_GLX_SGI_swap_control   = GL_FALSE;
 
     // As the 2.x API doesn't understand screens, we hardcode this choice and
     // hope for the best
