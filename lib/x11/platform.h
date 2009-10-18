@@ -186,20 +186,27 @@ typedef XVisualInfo * ( * PFNGLXGETVISUALFROMFBCONFIGSGIXPROC) (Display *dpy, GL
 #define GLX_CONTEXT_MAJOR_VERSION_ARB           0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB           0x2092
 #define GLX_CONTEXT_FLAGS_ARB                   0x2094
-#define GLX_CONTEXT_PROFILE_MASK_ARB            0x9126
 
 /* Bits for WGL_CONTEXT_FLAGS_ARB */
 #define GLX_CONTEXT_DEBUG_BIT_ARB               0x0001
 #define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB  0x0002
 
-/* BIts for GLX_CONTEXT_PROFILE_MASK_ARB */
-#define GLX_CONTEXT_CORE_PROFILE_BIT_ARB        0x00000001
-#define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-
 /* Prototype for glXCreateContextAttribs */
 typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)( Display *display, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list);
 
 #endif /*GLX_ARB_create_context*/
+
+
+#ifndef GLX_ARB_create_context_profile
+
+/* Tokens for glXCreateContextAttribsARB attributes */
+#define GLX_CONTEXT_PROFILE_MASK_ARB            0x9126
+
+/* BIts for GLX_CONTEXT_PROFILE_MASK_ARB */
+#define GLX_CONTEXT_CORE_PROFILE_BIT_ARB        0x00000001
+#define GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+
+#endif /*GLX_ARB_create_context_profile*/
 
 
 //========================================================================

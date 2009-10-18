@@ -884,6 +884,20 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
             setGLXattrib( attribs, index, GLX_CONTEXT_FLAGS_ARB, flags );
         }
 
+        if( wndconfig->glProfile )
+        {
+            if( wndconfig->glProfile == GLFW_OPENGL_CORE_PROFILE )
+            {
+                flags = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
+            }
+            else
+            {
+                flags = GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+            }
+
+            setGLXattrib( attribs, index, GLX_CONTEXT_PROFILE_MASK_ARB, flags );
+        }
+
         setGLXattrib( attribs, index, None, None );
 
         _glfwWin.context = _glfwWin.CreateContextAttribsARB( _glfwLibrary.display,
