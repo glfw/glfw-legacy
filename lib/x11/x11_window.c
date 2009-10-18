@@ -623,7 +623,7 @@ static int getNextEvent( void )
         default:
         {
 #if defined( _GLFW_HAS_XRANDR )
-            switch( event.type - _glfwLibrary.XRandR.EventBase )
+            switch( event.type - _glfwLibrary.XRandR.eventBase )
             {
                 case RRScreenChangeNotify:
                 {
@@ -1174,7 +1174,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 #if defined( _GLFW_HAS_XRANDR )
         // Request screen change notifications
-        if( _glfwLibrary.XRandR.Available )
+        if( _glfwLibrary.XRandR.available )
         {
             XRRSelectInput( _glfwLibrary.display,
                             _glfwWin.window,
@@ -1288,7 +1288,7 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.FS.modeChanged )
     {
 #if defined( _GLFW_HAS_XRANDR )
-        if( _glfwLibrary.XRandR.Available )
+        if( _glfwLibrary.XRandR.available )
         {
             root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
             sc = XRRGetScreenInfo( _glfwLibrary.display, root );
@@ -1303,7 +1303,7 @@ void _glfwPlatformCloseWindow( void )
             XRRFreeScreenConfigInfo( sc );
         }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-        if( _glfwLibrary.XF86VidMode.Available )
+        if( _glfwLibrary.XF86VidMode.available )
         {
             // Unlock mode switch
             XF86VidModeLockModeSwitch( _glfwLibrary.display,
@@ -1443,7 +1443,7 @@ void _glfwPlatformIconifyWindow( void )
 #if defined( _GLFW_HAS_XRANDR )
     // TODO: The code.
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-        if( _glfwLibrary.XF86VidMode.Available )
+        if( _glfwLibrary.XF86VidMode.available )
         {
             // Unlock mode switch
             XF86VidModeLockModeSwitch( _glfwLibrary.display,
@@ -1650,7 +1650,7 @@ void _glfwPlatformRefreshWindowParams( void )
 
     // Retrieve refresh rate if possible
 #if defined( _GLFW_HAS_XRANDR )
-    if( _glfwLibrary.XRandR.Available )
+    if( _glfwLibrary.XRandR.available )
     {
         sc = XRRGetScreenInfo( _glfwLibrary.display,
                                RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
@@ -1658,7 +1658,7 @@ void _glfwPlatformRefreshWindowParams( void )
         XRRFreeScreenConfigInfo( sc );
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwLibrary.XF86VidMode.Available )
+    if( _glfwLibrary.XF86VidMode.available )
     {
         // Use the XF86VidMode extension to get current video mode
         XF86VidModeGetModeLine( _glfwLibrary.display, _glfwWin.screen,

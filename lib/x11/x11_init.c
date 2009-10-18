@@ -157,22 +157,22 @@ static int InitDisplay( void )
 
     // Check for XF86VidMode extension
 #ifdef _GLFW_HAS_XF86VIDMODE
-    _glfwLibrary.XF86VidMode.Available =
+    _glfwLibrary.XF86VidMode.available =
         XF86VidModeQueryExtension( _glfwLibrary.display,
-                                   &_glfwLibrary.XF86VidMode.EventBase,
-                                   &_glfwLibrary.XF86VidMode.ErrorBase);
+                                   &_glfwLibrary.XF86VidMode.eventBase,
+                                   &_glfwLibrary.XF86VidMode.errorBase);
 #else
-    _glfwLibrary.XF86VidMode.Available = 0;
+    _glfwLibrary.XF86VidMode.available = 0;
 #endif
 
     // Check for XRandR extension
 #ifdef _GLFW_HAS_XRANDR
-    _glfwLibrary.XRandR.Available =
+    _glfwLibrary.XRandR.available =
         XRRQueryExtension( _glfwLibrary.display,
-                           &_glfwLibrary.XRandR.EventBase,
-                           &_glfwLibrary.XRandR.ErrorBase );
+                           &_glfwLibrary.XRandR.eventBase,
+                           &_glfwLibrary.XRandR.errorBase );
 #else
-    _glfwLibrary.XRandR.Available = 0;
+    _glfwLibrary.XRandR.available = 0;
 #endif
 
     // Fullscreen & screen saver settings

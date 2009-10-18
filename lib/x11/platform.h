@@ -375,20 +375,20 @@ GLFWGLOBAL struct {
     int             glxMajor, glxMinor;
 
     struct {
-        int         Available;
-        int         EventBase;
-        int         ErrorBase;
+        int         available;
+        int         eventBase;
+        int         errorBase;
     } XF86VidMode;
 
     struct {
-        int         Available;
-        int         EventBase;
-        int         ErrorBase;
+        int         available;
+        int         eventBase;
+        int         errorBase;
     } XRandR;
 
     // Timer data
     struct {
-        double      Resolution;
+        double      resolution;
         long long   t0;
     } Timer;
 

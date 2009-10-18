@@ -77,7 +77,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
     XRRScreenConfiguration *sc;
     XRRScreenSize *sizelist;
 
-    if( _glfwLibrary.XRandR.Available )
+    if( _glfwLibrary.XRandR.available )
     {
         sc = XRRGetScreenInfo( _glfwLibrary.display,
                                RootWindow( _glfwLibrary.display, screen ) );
@@ -142,7 +142,7 @@ int _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate )
     int modecount, i, bestmode, bestmatch, match;
 
     // Use the XF86VidMode extension to control video resolution
-    if( _glfwLibrary.XF86VidMode.Available )
+    if( _glfwLibrary.XF86VidMode.available )
     {
         // Get a list of all available display modes
         XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
@@ -199,7 +199,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
     XRRScreenConfiguration *sc;
     Window root;
 
-    if( _glfwLibrary.XRandR.Available )
+    if( _glfwLibrary.XRandR.available )
     {
         root = RootWindow( _glfwLibrary.display, screen );
         sc   = XRRGetScreenInfo( _glfwLibrary.display, root );
@@ -243,7 +243,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
     int modecount;
 
     // Use the XF86VidMode extension to control video resolution
-    if( _glfwLibrary.XF86VidMode.Available )
+    if( _glfwLibrary.XF86VidMode.available )
     {
         // Get a list of all available display modes
         XF86VidModeGetAllModeLines( _glfwLibrary.display, screen,
@@ -378,7 +378,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 
     // Build resolution array
 #if defined( _GLFW_HAS_XRANDR )
-    if( _glfwLibrary.XRandR.Available )
+    if( _glfwLibrary.XRandR.available )
     {
         sc = XRRGetScreenInfo( dpy, RootWindow( dpy, screen ) );
         sizelist = XRRConfigSizes( sc, &sizecount );
@@ -395,7 +395,7 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
         XRRFreeScreenConfigInfo( sc );
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwLibrary.XF86VidMode.Available )
+    if( _glfwLibrary.XF86VidMode.available )
     {
         XF86VidModeGetAllModeLines( dpy, screen, &modecount, &modelist );
 
@@ -485,7 +485,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
     BPP2RGB( bpp, &mode->RedBits, &mode->GreenBits, &mode->BlueBits );
 
 #if defined( _GLFW_HAS_XRANDR )
-    if( _glfwLibrary.XRandR.Available )
+    if( _glfwLibrary.XRandR.available )
     {
         if( _glfwWin.FS.modeChanged )
         {
@@ -495,7 +495,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
         }
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwLibrary.XF86VidMode.Available )
+    if( _glfwLibrary.XF86VidMode.available )
     {
         if( _glfwWin.FS.modeChanged )
         {

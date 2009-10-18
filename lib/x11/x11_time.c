@@ -40,7 +40,7 @@ void _glfwInitTimer( void )
     struct timeval  tv;
 
     // "Resolution" is 1 us
-    _glfwLibrary.Timer.Resolution = 1e-6;
+    _glfwLibrary.Timer.resolution = 1e-6;
 
     // Set start-time for timer
     gettimeofday( &tv, NULL );
@@ -66,7 +66,7 @@ double _glfwPlatformGetTime( void )
     t = (long long) tv.tv_sec * (long long) 1000000 +
 	(long long) tv.tv_usec;
 
-    return (double)(t - _glfwLibrary.Timer.t0) * _glfwLibrary.Timer.Resolution;
+    return (double)(t - _glfwLibrary.Timer.t0) * _glfwLibrary.Timer.resolution;
 }
 
 
@@ -84,7 +84,7 @@ void _glfwPlatformSetTime( double t )
 	 (long long) tv.tv_usec;
 
     // Calulate new starting time
-    _glfwLibrary.Timer.t0 = t0 - (long long)(t/_glfwLibrary.Timer.Resolution);
+    _glfwLibrary.Timer.t0 = t0 - (long long)(t/_glfwLibrary.Timer.resolution);
 }
 
 
