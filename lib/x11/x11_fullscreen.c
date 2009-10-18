@@ -203,35 +203,35 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
         sc   = XRRGetScreenInfo( _glfwLibrary.display, root );
 
         // Remember old size and flag that we have changed the mode
-        if( !_glfwWin.FS.ModeChanged )
+        if( !_glfwWin.FS.modeChanged )
         {
-            _glfwWin.FS.OldSizeID = XRRConfigCurrentConfiguration( sc, &_glfwWin.FS.OldRotation );
-            _glfwWin.FS.OldWidth  = DisplayWidth( _glfwLibrary.display, screen );
-            _glfwWin.FS.OldHeight = DisplayHeight( _glfwLibrary.display, screen );
+            _glfwWin.FS.oldSizeID = XRRConfigCurrentConfiguration( sc, &_glfwWin.FS.oldRotation );
+            _glfwWin.FS.oldWidth  = DisplayWidth( _glfwLibrary.display, screen );
+            _glfwWin.FS.oldHeight = DisplayHeight( _glfwLibrary.display, screen );
 
-            _glfwWin.FS.ModeChanged = GL_TRUE;
+            _glfwWin.FS.modeChanged = GL_TRUE;
         }
 
         if( rate > 0 )
         {
             // Set desired configuration
             XRRSetScreenConfigAndRate( _glfwLibrary.display,
-                           sc,
-                           root,
-                           mode,
-                           RR_Rotate_0,
-                           (short) rate,
-                           CurrentTime );
+                                       sc,
+                                       root,
+                                       mode,
+                                       RR_Rotate_0,
+                                       (short) rate,
+                                       CurrentTime );
         }
         else
         {
             // Set desired configuration
             XRRSetScreenConfig( _glfwLibrary.display,
-                    sc,
-                    root,
-                    mode,
-                    RR_Rotate_0,
-                    CurrentTime );
+                                sc,
+                                root,
+                                mode,
+                                RR_Rotate_0,
+                                CurrentTime );
         }
 
         XRRFreeScreenConfigInfo( sc );
@@ -248,7 +248,7 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
                                     &modecount, &modelist );
 
         // Unlock mode switch if necessary
-        if( _glfwWin.FS.ModeChanged )
+        if( _glfwWin.FS.modeChanged )
         {
             XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 0 );
         }
@@ -264,10 +264,10 @@ void _glfwSetVideoModeMODE( int screen, int mode, int rate )
         XF86VidModeLockModeSwitch( _glfwLibrary.display, screen, 1 );
 
         // Remember old mode and flag that we have changed the mode
-        if( !_glfwWin.FS.ModeChanged )
+        if( !_glfwWin.FS.modeChanged )
         {
-            _glfwWin.FS.OldMode = *modelist[ 0 ];
-            _glfwWin.FS.ModeChanged = GL_TRUE;
+            _glfwWin.FS.oldMode = *modelist[ 0 ];
+            _glfwWin.FS.modeChanged = GL_TRUE;
         }
 
         // Free mode list
@@ -485,21 +485,21 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.Available )
     {
-        if( _glfwWin.FS.ModeChanged )
+        if( _glfwWin.FS.modeChanged )
         {
-            mode->Width  = _glfwWin.FS.OldWidth;
-            mode->Height = _glfwWin.FS.OldHeight;
+            mode->Width  = _glfwWin.FS.oldWidth;
+            mode->Height = _glfwWin.FS.oldHeight;
             return;
         }
     }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
     if( _glfwLibrary.XF86VidMode.Available )
     {
-        if( _glfwWin.FS.ModeChanged )
+        if( _glfwWin.FS.modeChanged )
         {
-            // The old (desktop) mode is stored in _glfwWin.FS.OldMode
-            mode->Width  = _glfwWin.FS.OldMode.hdisplay;
-            mode->Height = _glfwWin.FS.OldMode.vdisplay;
+            // The old (desktop) mode is stored in _glfwWin.FS.oldMode
+            mode->Width  = _glfwWin.FS.oldMode.hdisplay;
+            mode->Height = _glfwWin.FS.oldMode.vdisplay;
         }
         else
         {

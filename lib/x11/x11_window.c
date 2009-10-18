@@ -176,7 +176,7 @@ static void disableDecorations( void )
                                  _glfwWin.window,
                                  CWOverrideRedirect,
                                  &attributes );
-        _glfwWin.OverrideRedirect = GL_TRUE;
+        _glfwWin.overrideRedirect = GL_TRUE;
     }
 }
 
@@ -191,7 +191,7 @@ static void enableDecorations( void )
     Atom hintAtom;
 
     // If this is an override redirect window, skip it...
-    if( _glfwWin.OverrideRedirect )
+    if( _glfwWin.overrideRedirect )
     {
         return;
     }
@@ -587,22 +587,22 @@ static int getNextEvent( void )
 
         // Was the window mapped (un-iconified)?
         case MapNotify:
-            _glfwWin.MapNotifyCount++;
+            _glfwWin.mapNotifyCount++;
             break;
 
         // Was the window unmapped (iconified)?
         case UnmapNotify:
-            _glfwWin.MapNotifyCount--;
+            _glfwWin.mapNotifyCount--;
             break;
 
         // Was the window activated?
         case FocusIn:
-            _glfwWin.FocusInCount++;
+            _glfwWin.focusInCount++;
             break;
 
         // Was the window de-activated?
         case FocusOut:
-            _glfwWin.FocusInCount--;
+            _glfwWin.focusInCount--;
             break;
 
         // Was the window contents damaged?
@@ -1006,11 +1006,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.colormap         = (Colormap)0;
     _glfwWin.context          = (GLXContext)NULL;
     _glfwWin.window           = (Window)0;
-    _glfwWin.PointerGrabbed   = GL_FALSE;
-    _glfwWin.KeyboardGrabbed  = GL_FALSE;
-    _glfwWin.OverrideRedirect = GL_FALSE;
-    _glfwWin.FS.ModeChanged   = GL_FALSE;
-    _glfwWin.Saver.Changed    = GL_FALSE;
+    _glfwWin.pointerGrabbed   = GL_FALSE;
+    _glfwWin.keyboardGrabbed  = GL_FALSE;
+    _glfwWin.overrideRedirect = GL_FALSE;
+    _glfwWin.FS.modeChanged   = GL_FALSE;
+    _glfwWin.Saver.changed    = GL_FALSE;
     _glfwWin.refreshRate      = wndconfig->refreshRate;
     _glfwWin.windowNoResize   = wndconfig->windowNoResize;
 
@@ -1060,9 +1060,9 @@ int _glfwPlatformOpenWindow( int width, int height,
                            &_glfwWin.height, &_glfwWin.refreshRate );
 
         // Remember old screen saver settings
-        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.Timeout,
-                         &_glfwWin.Saver.Interval, &_glfwWin.Saver.Blanking,
-                         &_glfwWin.Saver.Exposure );
+        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
+                         &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
+                         &_glfwWin.Saver.exposure );
 
         // Disable screen saver
         XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
@@ -1192,7 +1192,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                            GrabModeAsync, GrabModeAsync, CurrentTime ) ==
             GrabSuccess )
         {
-            _glfwWin.KeyboardGrabbed = GL_TRUE;
+            _glfwWin.keyboardGrabbed = GL_TRUE;
         }
 
         if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
@@ -1201,7 +1201,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                           _glfwWin.window, None, CurrentTime ) ==
             GrabSuccess )
         {
-            _glfwWin.PointerGrabbed = GL_TRUE;
+            _glfwWin.pointerGrabbed = GL_TRUE;
         }
 
         // Try to get window inside viewport (for virtual displays) by
@@ -1256,15 +1256,15 @@ void _glfwPlatformCloseWindow( void )
     }
 
     // Ungrab pointer and/or keyboard?
-    if( _glfwWin.KeyboardGrabbed )
+    if( _glfwWin.keyboardGrabbed )
     {
         XUngrabKeyboard( _glfwLibrary.display, CurrentTime );
-        _glfwWin.KeyboardGrabbed = GL_FALSE;
+        _glfwWin.keyboardGrabbed = GL_FALSE;
     }
-    if( _glfwWin.PointerGrabbed )
+    if( _glfwWin.pointerGrabbed )
     {
         XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.PointerGrabbed = GL_FALSE;
+        _glfwWin.pointerGrabbed = GL_FALSE;
     }
 
     // Do we have a window?
@@ -1285,7 +1285,7 @@ void _glfwPlatformCloseWindow( void )
     }
 
     // Did we change the fullscreen resolution?
-    if( _glfwWin.FS.ModeChanged )
+    if( _glfwWin.FS.modeChanged )
     {
 #if defined( _GLFW_HAS_XRANDR )
         if( _glfwLibrary.XRandR.Available )
@@ -1296,8 +1296,8 @@ void _glfwPlatformCloseWindow( void )
             XRRSetScreenConfig( _glfwLibrary.display,
                                 sc,
                                 root,
-                                _glfwWin.FS.OldSizeID,
-                                _glfwWin.FS.OldRotation,
+                                _glfwWin.FS.oldSizeID,
+                                _glfwWin.FS.oldRotation,
                                 CurrentTime );
 
             XRRFreeScreenConfigInfo( sc );
@@ -1313,22 +1313,22 @@ void _glfwPlatformCloseWindow( void )
             // Change the video mode back to the old mode
             XF86VidModeSwitchToMode( _glfwLibrary.display,
                                      _glfwWin.screen,
-                                     &_glfwWin.FS.OldMode );
+                                     &_glfwWin.FS.oldMode );
         }
 #endif
-        _glfwWin.FS.ModeChanged = GL_FALSE;
+        _glfwWin.FS.modeChanged = GL_FALSE;
     }
 
     // Did we change the screen saver setting?
-    if( _glfwWin.Saver.Changed )
+    if( _glfwWin.Saver.changed )
     {
         // Restore old screen saver settings
         XSetScreenSaver( _glfwLibrary.display,
-                         _glfwWin.Saver.Timeout,
-                         _glfwWin.Saver.Interval,
-                         _glfwWin.Saver.Blanking,
-                         _glfwWin.Saver.Exposure );
-        _glfwWin.Saver.Changed = GL_FALSE;
+                         _glfwWin.Saver.timeout,
+                         _glfwWin.Saver.interval,
+                         _glfwWin.Saver.blanking,
+                         _glfwWin.Saver.exposure );
+        _glfwWin.Saver.changed = GL_FALSE;
     }
 
     //XSync( _glfwLibrary.display, True );
@@ -1353,7 +1353,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    int     mode = 0, rate, sizechanged = GL_FALSE;
+    int     mode = 0, rate, sizeChanged = GL_FALSE;
     GLint   drawbuffer;
     GLfloat clearcolor[4];
     XSizeHints *sizehints;
@@ -1383,7 +1383,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     if( _glfwWin.fullscreen && (width > _glfwWin.width) )
     {
         XResizeWindow( _glfwLibrary.display, _glfwWin.window, width, height );
-        sizechanged = GL_TRUE;
+        sizeChanged = GL_TRUE;
     }
 
     // Change fullscreen video mode?
@@ -1407,7 +1407,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
     }
 
     // Set window size (if not already changed)
-    if( !sizechanged )
+    if( !sizeChanged )
     {
         XResizeWindow( _glfwLibrary.display, _glfwWin.window, width, height );
     }
@@ -1432,7 +1432,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 void _glfwPlatformIconifyWindow( void )
 {
     // We can't do this for override redirect windows
-    if( _glfwWin.OverrideRedirect )
+    if( _glfwWin.overrideRedirect )
     {
         return;
     }
@@ -1452,24 +1452,24 @@ void _glfwPlatformIconifyWindow( void )
 
             // Change the video mode back to the old mode
             XF86VidModeSwitchToMode( _glfwLibrary.display,
-                _glfwWin.screen, &_glfwWin.FS.OldMode );
+                _glfwWin.screen, &_glfwWin.FS.oldMode );
         }
 #endif
-        _glfwWin.FS.ModeChanged = GL_FALSE;
+        _glfwWin.FS.modeChanged = GL_FALSE;
     }
 
     // Show mouse pointer
-    if( _glfwWin.PointerHidden )
+    if( _glfwWin.pointerHidden )
     {
         XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
-        _glfwWin.PointerHidden = GL_FALSE;
+        _glfwWin.pointerHidden = GL_FALSE;
     }
 
     // Un-grab mouse pointer
-    if( _glfwWin.PointerGrabbed )
+    if( _glfwWin.pointerGrabbed )
     {
         XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.PointerGrabbed = GL_FALSE;
+        _glfwWin.pointerGrabbed = GL_FALSE;
     }
 
     // Iconify window
@@ -1488,7 +1488,7 @@ void _glfwPlatformIconifyWindow( void )
 void _glfwPlatformRestoreWindow( void )
 {
     // We can't do this for override redirect windows
-    if( _glfwWin.OverrideRedirect )
+    if( _glfwWin.overrideRedirect )
     {
         return;
     }
@@ -1518,17 +1518,17 @@ void _glfwPlatformRestoreWindow( void )
     if( _glfwWin.mouseLock )
     {
         // Hide cursor
-        if( !_glfwWin.PointerHidden )
+        if( !_glfwWin.pointerHidden )
         {
             XDefineCursor( _glfwLibrary.display, _glfwWin.window,
                            createNULLCursor( _glfwLibrary.display,
                                              _glfwWin.window ) );
 
-            _glfwWin.PointerHidden = GL_TRUE;
+            _glfwWin.pointerHidden = GL_TRUE;
         }
 
         // Grab cursor
-        if( !_glfwWin.PointerGrabbed )
+        if( !_glfwWin.pointerGrabbed )
         {
             if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                               ButtonPressMask | ButtonReleaseMask |
@@ -1536,7 +1536,7 @@ void _glfwPlatformRestoreWindow( void )
                               GrabModeAsync, _glfwWin.window, None,
                               CurrentTime ) == GrabSuccess )
             {
-                _glfwWin.PointerGrabbed = GL_TRUE;
+                _glfwWin.pointerGrabbed = GL_TRUE;
             }
         }
     }
@@ -1683,8 +1683,8 @@ void _glfwPlatformPollEvents( void )
     _glfwInput.MouseMoved = GL_FALSE;
 
     // Clear MapNotify and FocusIn counts
-    _glfwWin.MapNotifyCount = 0;
-    _glfwWin.FocusInCount = 0;
+    _glfwWin.mapNotifyCount = 0;
+    _glfwWin.focusInCount = 0;
 
     // Use XSync to synchronise events to the X display.
     // I don't know if this can have a serious performance impact. My
@@ -1727,25 +1727,25 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Was the window (un)iconified?
-    if( _glfwWin.MapNotifyCount < 0 && !_glfwWin.iconified )
+    if( _glfwWin.mapNotifyCount < 0 && !_glfwWin.iconified )
     {
         // Show mouse pointer
-        if( _glfwWin.PointerHidden )
+        if( _glfwWin.pointerHidden )
         {
             XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
-            _glfwWin.PointerHidden = GL_FALSE;
+            _glfwWin.pointerHidden = GL_FALSE;
         }
 
         // Un-grab mouse pointer
-        if( _glfwWin.PointerGrabbed )
+        if( _glfwWin.pointerGrabbed )
         {
             XUngrabPointer( _glfwLibrary.display, CurrentTime );
-            _glfwWin.PointerGrabbed = GL_FALSE;
+            _glfwWin.pointerGrabbed = GL_FALSE;
         }
 
         _glfwWin.iconified = GL_TRUE;
     }
-    else if( _glfwWin.MapNotifyCount > 0 && _glfwWin.iconified )
+    else if( _glfwWin.mapNotifyCount > 0 && _glfwWin.iconified )
     {
         // Restore fullscreen mode properties
         if( _glfwWin.fullscreen )
@@ -1765,21 +1765,21 @@ void _glfwPlatformPollEvents( void )
         }
 
         // Hide cursor if necessary
-        if( _glfwWin.mouseLock && !_glfwWin.PointerHidden )
+        if( _glfwWin.mouseLock && !_glfwWin.pointerHidden )
         {
-            if( !_glfwWin.PointerHidden )
+            if( !_glfwWin.pointerHidden )
             {
                 XDefineCursor( _glfwLibrary.display, _glfwWin.window,
                                createNULLCursor( _glfwLibrary.display,
                                                  _glfwWin.window ) );
 
-                _glfwWin.PointerHidden = GL_TRUE;
+                _glfwWin.pointerHidden = GL_TRUE;
             }
         }
 
         // Grab cursor if necessary
         if( (_glfwWin.mouseLock || _glfwWin.fullscreen) &&
-            !_glfwWin.PointerGrabbed )
+            !_glfwWin.pointerGrabbed )
         {
             if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                     ButtonPressMask | ButtonReleaseMask |
@@ -1787,7 +1787,7 @@ void _glfwPlatformPollEvents( void )
                     GrabModeAsync, _glfwWin.window, None,
                     CurrentTime ) == GrabSuccess )
             {
-                _glfwWin.PointerGrabbed = GL_TRUE;
+                _glfwWin.pointerGrabbed = GL_TRUE;
             }
         }
 
@@ -1795,7 +1795,7 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Did the window get/lose focus
-    if( _glfwWin.FocusInCount > 0 && !_glfwWin.active )
+    if( _glfwWin.focusInCount > 0 && !_glfwWin.active )
     {
         // If we are in fullscreen mode, restore window
         if( _glfwWin.fullscreen && _glfwWin.iconified )
@@ -1806,7 +1806,7 @@ void _glfwPlatformPollEvents( void )
         // Window is now active
         _glfwWin.active = GL_TRUE;
     }
-    else if( _glfwWin.FocusInCount < 0 && _glfwWin.active )
+    else if( _glfwWin.focusInCount < 0 && _glfwWin.active )
     {
         // If we are in fullscreen mode, iconfify window
         if( _glfwWin.fullscreen )
@@ -1856,17 +1856,17 @@ void _glfwPlatformWaitEvents( void )
 void _glfwPlatformHideMouseCursor( void )
 {
     // Hide cursor
-    if( !_glfwWin.PointerHidden )
+    if( !_glfwWin.pointerHidden )
     {
         XDefineCursor( _glfwLibrary.display, _glfwWin.window,
                        createNULLCursor( _glfwLibrary.display,
                                          _glfwWin.window ) );
 
-        _glfwWin.PointerHidden = GL_TRUE;
+        _glfwWin.pointerHidden = GL_TRUE;
     }
 
     // Grab cursor to user window
-    if( !_glfwWin.PointerGrabbed )
+    if( !_glfwWin.pointerGrabbed )
     {
         if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
                           ButtonPressMask | ButtonReleaseMask |
@@ -1874,7 +1874,7 @@ void _glfwPlatformHideMouseCursor( void )
                           _glfwWin.window, None, CurrentTime ) ==
             GrabSuccess )
         {
-            _glfwWin.PointerGrabbed = GL_TRUE;
+            _glfwWin.pointerGrabbed = GL_TRUE;
         }
     }
 }
@@ -1889,17 +1889,17 @@ void _glfwPlatformShowMouseCursor( void )
     // Un-grab cursor (only in windowed mode: in fullscreen mode we still
     // want the mouse grabbed in order to confine the cursor to the window
     // area)
-    if( _glfwWin.PointerGrabbed && !_glfwWin.fullscreen )
+    if( _glfwWin.pointerGrabbed && !_glfwWin.fullscreen )
     {
         XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.PointerGrabbed = GL_FALSE;
+        _glfwWin.pointerGrabbed = GL_FALSE;
     }
 
     // Show cursor
-    if( _glfwWin.PointerHidden )
+    if( _glfwWin.pointerHidden )
     {
         XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
-        _glfwWin.PointerHidden = GL_FALSE;
+        _glfwWin.pointerHidden = GL_FALSE;
     }
 }
 

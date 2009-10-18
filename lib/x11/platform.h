@@ -293,33 +293,33 @@ struct _GLFWwin_struct {
     GLboolean   has_GLX_SGI_swap_control;
 
     // Various platform specific internal variables
-    int         OverrideRedirect; // True if window is OverrideRedirect
-    int         KeyboardGrabbed; // True if keyboard is currently grabbed
-    int         PointerGrabbed;  // True if pointer is currently grabbed
-    int         PointerHidden;   // True if pointer is currently hidden
-    int         MapNotifyCount;  // Used for during processing
-    int         FocusInCount;    // Used for during processing
+    int         overrideRedirect; // True if window is OverrideRedirect
+    int         keyboardGrabbed; // True if keyboard is currently grabbed
+    int         pointerGrabbed;  // True if pointer is currently grabbed
+    int         pointerHidden;   // True if pointer is currently hidden
+    int         mapNotifyCount;  // Used for during processing
+    int         focusInCount;    // Used for during processing
 
     // Screensaver data
     struct {
-        int     Changed;
-        int     Timeout;
-        int     Interval;
-        int     Blanking;
-        int     Exposure;
+        int     changed;
+        int     timeout;
+        int     interval;
+        int     blanking;
+        int     exposure;
     } Saver;
 
     // Fullscreen data
     struct {
-        int     ModeChanged;
+        int     modeChanged;
 #if defined( _GLFW_HAS_XF86VIDMODE )
-        XF86VidModeModeInfo OldMode;
+        XF86VidModeModeInfo oldMode;
 #endif
 #if defined( _GLFW_HAS_XRANDR )
-        SizeID   OldSizeID;
-        int      OldWidth;
-        int      OldHeight;
-        Rotation OldRotation;
+        SizeID   oldSizeID;
+        int      oldWidth;
+        int      oldHeight;
+        Rotation oldRotation;
 #endif
     } FS;
 };
