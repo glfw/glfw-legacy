@@ -785,6 +785,8 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         (*found)++;
     }
 
+    XFree( fbconfigs );
+
     return result;
 }
 
@@ -1004,7 +1006,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     unsigned long wamask;
     unsigned int fbcount;
     _GLFWfbconfig *fbconfigs;
-    const _GLFWfbconfig *closest;
+    _GLFWfbconfig closest;
+    const _GLFWfbconfig *result;
 
     // Clear platform specific GLFW window state
     _glfwWin.visual           = (XVisualInfo*)NULL;
@@ -1044,15 +1047,19 @@ int _glfwPlatformOpenWindow( int width, int height,
             return GL_FALSE;
         }
 
-        closest = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
-        if( !closest )
+        result = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
+        if( !result )
         {
+            free( fbconfigs );
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
+
+        closest = *result;
+        free( fbconfigs );
     }
 
-    if( !createContext( wndconfig, (GLXFBConfigID) closest->platformID ) )
+    if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
     {
         _glfwPlatformCloseWindow();
         return GL_FALSE;
@@ -1673,6 +1680,8 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.refreshRate = (int)(pixels_per_second/pixels_per_frame+0.5);
     }
 #endif
+
+    XFree( fbconfig );
 }
 
 
