@@ -61,7 +61,7 @@ enum {
 // Checks whether the event is a MapNotify for the specified window
 //========================================================================
 
-static Bool IsMapNotify( Display *d, XEvent *e, char *arg )
+static Bool isMapNotify( Display *d, XEvent *e, char *arg )
 {
     return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
 }
@@ -1174,7 +1174,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
 
     // Wait for map notification
-    XIfEvent( _glfwLibrary.display, &event, IsMapNotify,
+    XIfEvent( _glfwLibrary.display, &event, isMapNotify,
               (char*)_glfwWin.window );
 
     // Make sure that our window ends up on top of things

@@ -505,3 +505,4 @@ int _glfwPlatformGetNumberOfProcessors( void )
     _glfw_numprocessors( n );
     return n;
 }
+

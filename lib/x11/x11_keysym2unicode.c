@@ -828,8 +828,8 @@ static struct codepair {
   { 0x13bc, 0x0152 },
   { 0x13bd, 0x0153 },
   { 0x13be, 0x0178 },
-  { 0x20ac, 0x20ac }, 
-  // Numeric keypad with numlock on 
+  { 0x20ac, 0x20ac },
+  // Numeric keypad with numlock on
   { XK_KP_Space, ' ' },
   { XK_KP_Equal, '=' },
   { XK_KP_Multiply, '*' },
@@ -838,16 +838,16 @@ static struct codepair {
   { XK_KP_Subtract, '-' },
   { XK_KP_Decimal, '.' },
   { XK_KP_Divide, '/' },
-  { XK_KP_0, 0x0030 }, 
-  { XK_KP_1, 0x0031 }, 
-  { XK_KP_2, 0x0032 }, 
-  { XK_KP_3, 0x0033 }, 
-  { XK_KP_4, 0x0034 }, 
-  { XK_KP_5, 0x0035 }, 
-  { XK_KP_6, 0x0036 }, 
-  { XK_KP_7, 0x0037 }, 
-  { XK_KP_8, 0x0038 }, 
-  { XK_KP_9, 0x0039 } 
+  { XK_KP_0, 0x0030 },
+  { XK_KP_1, 0x0031 },
+  { XK_KP_2, 0x0032 },
+  { XK_KP_3, 0x0033 },
+  { XK_KP_4, 0x0034 },
+  { XK_KP_5, 0x0035 },
+  { XK_KP_6, 0x0036 },
+  { XK_KP_7, 0x0037 },
+  { XK_KP_8, 0x0038 },
+  { XK_KP_9, 0x0039 }
 };
 
 
@@ -868,8 +868,7 @@ long _glfwKeySym2Unicode( KeySym keysym )
     /* First check for Latin-1 characters (1:1 mapping) */
     if( (keysym >= 0x0020 && keysym <= 0x007e) ||
         (keysym >= 0x00a0 && keysym <= 0x00ff) )
-    {
-        return keysym;
+    { return keysym;
     }
 
     /* Also check for directly encoded 24-bit UCS characters */
