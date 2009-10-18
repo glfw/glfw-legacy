@@ -40,7 +40,7 @@
 // Initialize GLFW thread package
 //========================================================================
 
-static void InitThreads( void )
+static void initThreads( void )
 {
     // Initialize critical section handle
 #ifdef _GLFW_HAS_PTHREAD
@@ -65,7 +65,7 @@ static void InitThreads( void )
 // Terminate GLFW thread package
 //========================================================================
 
-static void TerminateThreads( void )
+static void terminateThreads( void )
 {
 #ifdef _GLFW_HAS_PTHREAD
 
@@ -106,7 +106,7 @@ static void TerminateThreads( void )
 // Dynamically load libraries
 //========================================================================
 
-static void InitLibraries( void )
+static void initLibraries( void )
 {
 #ifdef _GLFW_DLOPEN_LIBGL
     int i;
@@ -135,7 +135,7 @@ static void InitLibraries( void )
 // Terminate GLFW when exiting application
 //========================================================================
 
-void _glfwTerminate_atexit( void )
+static void glfw_atexit( void )
 {
     glfwTerminate();
 }
@@ -145,7 +145,7 @@ void _glfwTerminate_atexit( void )
 // Initialize X11 display
 //========================================================================
 
-static int InitDisplay( void )
+static int initDisplay( void )
 {
     // Open display
     _glfwLibrary.display = XOpenDisplay( 0 );
@@ -200,7 +200,7 @@ static int InitDisplay( void )
 // Terminate X11 display
 //========================================================================
 
-static void TerminateDisplay( void )
+static void terminateDisplay( void )
 {
     // Open display
     if( _glfwLibrary.display )
@@ -222,19 +222,19 @@ static void TerminateDisplay( void )
 int _glfwPlatformInit( void )
 {
     // Initialize display
-    if( !InitDisplay() )
+    if( !initDisplay() )
     {
         return GL_FALSE;
     }
 
     // Initialize thread package
-    InitThreads();
+    initThreads();
 
     // Try to load libGL.so if necessary
-    InitLibraries();
+    initLibraries();
 
     // Install atexit() routine
-    atexit( _glfwTerminate_atexit );
+    atexit( glfw_atexit );
 
     // Initialize joysticks
     _glfwInitJoysticks();
@@ -264,10 +264,10 @@ int _glfwPlatformTerminate( void )
     glfwCloseWindow();
 
     // Kill thread package
-    TerminateThreads();
+    terminateThreads();
 
     // Terminate display
-    TerminateDisplay();
+    terminateDisplay();
 
     // Terminate joysticks
     _glfwTerminateJoysticks();
