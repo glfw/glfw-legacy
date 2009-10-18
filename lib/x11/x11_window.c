@@ -864,8 +864,13 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     {
         index = 0;
 
-        setGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, wndconfig->glMajor );
-        setGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, wndconfig->glMinor );
+        if( wndconfig->glMajor != 0 || wndconfig->glMinor != 0 )
+        {
+            // Request an explicitly versioned context
+
+            setGLXattrib( attribs, index, GLX_CONTEXT_MAJOR_VERSION_ARB, wndconfig->glMajor );
+            setGLXattrib( attribs, index, GLX_CONTEXT_MINOR_VERSION_ARB, wndconfig->glMinor );
+        }
 
         if( wndconfig->glForward || wndconfig->glDebug )
         {
