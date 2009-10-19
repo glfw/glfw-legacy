@@ -1,7 +1,7 @@
 //========================================================================
 // GLFW - An OpenGL framework
 // File:        glfw.d
-// API version: 2.5
+// API version: 2.7
 // WWW:         http://glfw.sourceforge.net
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2005 Camilla Berglund
@@ -30,10 +30,7 @@
 public import gl, glu;
 
 
-version(Win32)
-   extern(Windows):
-else
-   extern(C):
+extern(System):
 
 
 //========================================================================
@@ -41,7 +38,7 @@ else
 //========================================================================
 
 const int GLFW_VERSION_MAJOR      = 2;
-const int GLFW_VERSION_MINOR      = 5;
+const int GLFW_VERSION_MINOR      = 7;
 const int GLFW_VERSION_REVISION   = 0;
 
 
@@ -121,7 +118,14 @@ const int GLFW_KEY_KP_ADD      = (GLFW_KEY_SPECIAL+59);
 const int GLFW_KEY_KP_DECIMAL  = (GLFW_KEY_SPECIAL+60);
 const int GLFW_KEY_KP_EQUAL    = (GLFW_KEY_SPECIAL+61);
 const int GLFW_KEY_KP_ENTER    = (GLFW_KEY_SPECIAL+62);
-const int GLFW_KEY_LAST        = GLFW_KEY_KP_ENTER;
+const int GLFW_KEY_KP_NUM_LOCK = (GLFW_KEY_SPECIAL+63);
+const int GLFW_KEY_CAPS_LOCK   = (GLFW_KEY_SPECIAL+64);
+const int GLFW_KEY_SCROLL_LOCK = (GLFW_KEY_SPECIAL+65);
+const int GLFW_KEY_PAUSE       = (GLFW_KEY_SPECIAL+66);
+const int GLFW_KEY_LSUPER      = (GLFW_KEY_SPECIAL+67);
+const int GLFW_KEY_RSUPER      = (GLFW_KEY_SPECIAL+68);
+const int GLFW_KEY_MENU        = (GLFW_KEY_SPECIAL+69);
+const int GLFW_KEY_LAST        = GLFW_KEY_MENU;
 
 // Mouse button definitions
 const int GLFW_MOUSE_BUTTON_1      = 0;
@@ -190,6 +194,15 @@ const int GLFW_AUX_BUFFERS          = 0x00020010;
 const int GLFW_STEREO               = 0x00020011;
 const int GLFW_WINDOW_NO_RESIZE     = 0x00020012;
 const int GLFW_FSAA_SAMPLES         = 0x00020013;
+const int GLFW_OPENGL_VERSION_MAJOR = 0x00020014;
+const int GLFW_OPENGL_VERSION_MINOR = 0x00020015;
+const int GLFW_OPENGL_FORWARD_COMPAT = 0x00020016;
+const int GLFW_OPENGL_DEBUG_CONTEXT = 0x00020017;
+const int GLFW_OPENGL_PROFILE       = 0x00020018;
+
+// GLFW_OPENGL_PROFILE tokens
+const int GLFW_OPENGL_CORE_PROFILE  = 0x00050001;
+const int GLFW_OPENGL_COMPAT_PROFILE = 0x00050002;
 
 // glfwEnable/glfwDisable tokens
 const int GLFW_MOUSE_CURSOR         = 0x00030001;
@@ -341,9 +354,9 @@ void  glfwDisable( int token );
 
 // Image/texture I/O support
 int   glfwReadImage( char *name, GLFWimage *img, int flags );
-int   glfwReadMemoryImage( const void *data, long size, GLFWimage *img, int flags );
+int   glfwReadMemoryImage( void *data, long size, GLFWimage *img, int flags );
 void  glfwFreeImage( GLFWimage *img );
 int   glfwLoadTexture2D( char *name, int flags );
-int   glfwLoadMemoryTexture2D( const void *data, long size, int flags );
+int   glfwLoadMemoryTexture2D( void *data, long size, int flags );
 int   glfwLoadTextureImage2D( GLFWimage *img, int flags );
 
