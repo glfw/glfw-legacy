@@ -17,8 +17,7 @@ WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-		   particles.exe splitview.exe mipmaps.exe gears.exe joytest.exe \
-		   boing.exe wave.exe
+		   particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
 
 all: $(BINARIES)
 
@@ -45,9 +44,6 @@ splitview.exe: splitview.c $(LIB)
 
 mipmaps.exe: mipmaps.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) mipmaps.c $(LFLAGS) -lm -o $@
-
-joytest.exe: joytest.c $(LIB)
-	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) joytest.c $(LFLAGS) -lm -o $@
 
 gears.exe: gears.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) gears.c $(LFLAGS) -lm -o $@

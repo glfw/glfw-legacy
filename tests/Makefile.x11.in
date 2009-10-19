@@ -1,4 +1,5 @@
-BINARIES = accuracy defaults events fsaa fullscreen peter reopen tearing version
+BINARIES = accuracy defaults events fsaa fullscreen joysticks peter reopen \
+		   tearing version
 
 all: $(BINARIES)
 
@@ -16,6 +17,9 @@ fsaa: fsaa.c ../lib/x11/libglfw.a
 
 fullscreen: fullscreen.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o $@
+
+joysticks: joysticks.c ../lib/x11/libglfw.a
+	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o $@
 
 peter: peter.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) peter.c $(LFLAGS) -o $@

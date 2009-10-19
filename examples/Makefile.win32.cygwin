@@ -15,8 +15,7 @@ WINDOWS = -mno-cygwin -mwindows -e _mainCRTStartup
 CONSOLE = -mno-cygwin -mconsole
 
 BINARIES = triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-		   particles.exe splitview.exe mipmaps.exe gears.exe joytest.exe \
-		   boing.exe wave.exe
+		   particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
 
 all: $(BINARIES)
 
@@ -43,9 +42,6 @@ splitview.exe: splitview.c $(LIB)
 
 mipmaps.exe: mipmaps.c $(LIB)
 	$(CC) $(CFLAGS) $(WINDOWS) mipmaps.c $(LFLAGS) -o $@
-
-joytest.exe: joytest.c $(LIB)
-	$(CC) $(CFLAGS) $(CONSOLE) joytest.c $(LFLAGS) -o $@
 
 gears.exe: gears.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) gears.c $(LFLAGS) -o $@

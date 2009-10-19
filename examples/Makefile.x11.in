@@ -1,5 +1,5 @@
 BINARIES = triangle listmodes mthello pong3d mtbench particles splitview \
-		   mipmaps joytest gears boing wave  
+		   mipmaps gears boing wave  
 
 all: $(BINARIES)
 
@@ -26,9 +26,6 @@ splitview: splitview.c ../lib/x11/libglfw.a
 
 mipmaps: mipmaps.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) mipmaps.c $(LFLAGS) -o $@
-
-joytest: joytest.c ../lib/x11/libglfw.a
-	$(CC) $(CFLAGS) joytest.c $(LFLAGS) -o $@
 
 gears: gears.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) gears.c $(LFLAGS) -o $@

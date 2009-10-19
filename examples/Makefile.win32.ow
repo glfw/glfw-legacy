@@ -21,8 +21,7 @@ CONSOLE = -"RUNTIME console REFERENCE _cstart_ OPTION { START=_cstart_ quiet sta
 
 # Default: Build all tests
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-	particles.exe splitview.exe mipmaps.exe gears.exe joytest.exe \
-	boing.exe wave.exe
+	particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
 
 
 # Rule for triangle
@@ -56,10 +55,6 @@ splitview.exe: splitview.c
 # Rule for mipmaps
 mipmaps.exe: mipmaps.c
 	$(CC) $(CFLAGS) /Fe$@ mipmaps.c $(LFLAGS) $(WINDOWS)
-
-# Rule for joytest
-joytest.exe: joytest.c
-	$(CC) $(CFLAGS) /Fe$@ joytest.c $(LFLAGS) $(CONSOLE)
 
 # Rule for gears
 gears.exe: gears.c

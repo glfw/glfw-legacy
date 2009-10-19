@@ -19,6 +19,7 @@ all: Accuracy.app/Contents/MacOS/Accuracy \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
      Fullscreen.app/Contents/MacOS/Fullscreen \
+	 Joysticks.app/Contents/MacOS/Joysticks \
      Peter.app/Contents/MacOS/Peter \
      ReOpen.app/Contents/MacOS/ReOpen \
      Tearing.app/Contents/MacOS/Tearing \
@@ -44,6 +45,10 @@ Fullscreen.app/Contents/MacOS/Fullscreen: fullscreen.c $(LIB)
 	/bin/sh bundle.sh Fullscreen
 	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o Fullscreen.app/Contents/MacOS/Fullscreen
 
+Joysticks.app/Contents/MacOS/Joysticks: joysticks.c $(LIB)
+	/bin/sh bundle.sh Joysticks
+	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o Joysticks.app/Contents/MacOS/Joysticks
+
 Peter.app/Contents/MacOS/Peter: peter.c $(LIB)
 	/bin/sh bundle.sh Peter
 	$(CC) $(CFLAGS) peter.c $(LFLAGS) -o Peter.app/Contents/MacOS/Peter
@@ -62,5 +67,5 @@ Version.app/Contents/MacOS/Version: version.c $(LIB)
 
 clean:
 	rm -rf Accuracy.app Defaults.app Events.app FSAA.app Fullscreen.app \
-               Peter.app ReOpen.app Tearing.app Version.app
+           Joysticks.app Peter.app ReOpen.app Tearing.app Version.app
 

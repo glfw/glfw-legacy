@@ -15,7 +15,7 @@ WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fullscreen.exe \
-           peter.exe reopen.exe tearing.exe version.exe
+           joysticks.exe peter.exe reopen.exe tearing.exe version.exe
 
 all: $(BINARIES)
 
@@ -33,6 +33,9 @@ fsaa.exe: fsaa.c $(LIB)
 
 fullscreen.exe: fullscreen.c $(LIB)
 	$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -lm -o $@
+
+joysticks.exe: joysticks.c $(LIB)
+	$(CC) $(CFLAGS) $(WINDOWS) joysticks.c $(LFLAGS) -lm -o $@
 
 peter.exe: peter.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) peter.c $(LFLAGS) -o $@
