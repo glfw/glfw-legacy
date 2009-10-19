@@ -2,8 +2,6 @@
 
 REM **********************************************************************
 REM * compile.bat - MS Windows compilation batch file
-REM * $Date: 2007-10-26 14:34:42 $
-REM * $Revision: 1.4 $
 REM *
 REM * This is a "helper" script for the top-level Makefile for GLFW.
 REM * It was introduced to eliminate incompability issues between
