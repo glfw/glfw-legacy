@@ -255,7 +255,7 @@ int main(void)
 
     printf("Library initialized\n");
 
-    if (!glfwOpenWindow(640, 480, 8, 8, 8, 0, 0, 0, GLFW_WINDOW))
+    if (!glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
     {
         glfwTerminate();
 
@@ -277,8 +277,6 @@ int main(void)
     glfwSetKeyCallback(key_callback);
     glfwSetCharCallback(char_callback);
 
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-
     printf("Key repeat should be %s\n", keyrepeat ? "enabled" : "disabled");
     printf("System keys should be %s\n", systemkeys ? "enabled" : "disabled");
 
@@ -287,6 +285,8 @@ int main(void)
     while (glfwGetWindowParam(GLFW_OPENED) == GL_TRUE)
     {
         glfwWaitEvents();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers();
     }
 
     glfwTerminate();
