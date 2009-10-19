@@ -1,5 +1,6 @@
+BINARIES = accuracy defaults events fsaa fullscreen peter reopen tearing version
 
-all: accuracy defaults events fsaa fullscreen peter reopen tearing version
+all: $(BINARIES)
 
 accuracy: accuracy.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) accuracy.c $(LFLAGS) -o $@
@@ -29,5 +30,5 @@ version: version.c getopt.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) version.c getopt.c $(LFLAGS) -o $@
 
 clean:
-	rm -f accuracy defaults events fsaa fullscreen peter reopen tearing version
+	rm -f $(BINARIES)
 

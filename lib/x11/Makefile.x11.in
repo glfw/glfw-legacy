@@ -19,6 +19,7 @@ LD       = ld
 SED      = sed
 INSTALL  = install
 ARFLAGS  = -rcs
+HEADERS     = ../../include/GL/glfw.h ../internal.h platform.h
 
 
 ##########################################################################
@@ -124,133 +125,133 @@ libglfw.so: $(SHARED_OBJS)
 ##########################################################################
 # Rules for building static library object files
 ##########################################################################
-enable.o: ../enable.c ../internal.h platform.h
+enable.o: ../enable.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../enable.c
 
-fullscreen.o: ../fullscreen.c ../internal.h platform.h
+fullscreen.o: ../fullscreen.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../fullscreen.c
 
-glext.o: ../glext.c ../internal.h platform.h
+glext.o: ../glext.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../glext.c
 
-image.o: ../image.c ../internal.h platform.h
+image.o: ../image.c $(HEADERS)
 	$(CC) $(CFLAGS_SPEED) -o $@ ../image.c
 
-init.o: ../init.c ../internal.h platform.h
+init.o: ../init.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../init.c
 
-input.o: ../input.c ../internal.h platform.h
+input.o: ../input.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../input.c
 
-joystick.o: ../joystick.c ../internal.h platform.h
+joystick.o: ../joystick.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../joystick.c
 
-stream.o: ../stream.c ../internal.h platform.h
+stream.o: ../stream.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../stream.c
 
-tga.o: ../tga.c ../internal.h platform.h
+tga.o: ../tga.c $(HEADERS)
 	$(CC) $(CFLAGS_SPEED) -o $@ ../tga.c
 
-thread.o: ../thread.c ../internal.h platform.h
+thread.o: ../thread.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../thread.c
 
-time.o: ../time.c ../internal.h platform.h
+time.o: ../time.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../time.c
 
-window.o: ../window.c ../internal.h platform.h
+window.o: ../window.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../window.c
 
-x11_enable.o: x11_enable.c ../internal.h platform.h
+x11_enable.o: x11_enable.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_enable.c
 
-x11_fullscreen.o: x11_fullscreen.c ../internal.h platform.h
+x11_fullscreen.o: x11_fullscreen.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_fullscreen.c
 
-x11_glext.o: x11_glext.c ../internal.h platform.h
+x11_glext.o: x11_glext.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_glext.c
 
-x11_init.o: x11_init.c ../internal.h platform.h
+x11_init.o: x11_init.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_init.c
 
-x11_joystick.o: x11_joystick.c ../internal.h platform.h
+x11_joystick.o: x11_joystick.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_joystick.c
 
-x11_thread.o: x11_thread.c ../internal.h platform.h
+x11_thread.o: x11_thread.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_thread.c
 
-x11_time.o: x11_time.c ../internal.h platform.h
+x11_time.o: x11_time.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_time.c
 
-x11_window.o: x11_window.c ../internal.h platform.h
+x11_window.o: x11_window.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_window.c
 
-x11_keysym2unicode.o: x11_keysym2unicode.c ../internal.h platform.h
+x11_keysym2unicode.o: x11_keysym2unicode.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ x11_keysym2unicode.c
 
 
 ##########################################################################
 # Rules for building shared library object files
 ##########################################################################
-so_enable.o: ../enable.c ../internal.h platform.h
+so_enable.o: ../enable.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../enable.c
 
-so_fullscreen.o: ../fullscreen.c ../internal.h platform.h
+so_fullscreen.o: ../fullscreen.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../fullscreen.c
 
-so_glext.o: ../glext.c ../internal.h platform.h
+so_glext.o: ../glext.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../glext.c
 
-so_image.o: ../image.c ../internal.h platform.h
+so_image.o: ../image.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS_SPEED) -o $@ ../image.c
 
-so_init.o: ../init.c ../internal.h platform.h
+so_init.o: ../init.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../init.c
 
-so_input.o: ../input.c ../internal.h platform.h
+so_input.o: ../input.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../input.c
 
-so_joystick.o: ../joystick.c ../internal.h platform.h
+so_joystick.o: ../joystick.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../joystick.c
 
-so_stream.o: ../stream.c ../internal.h platform.h
+so_stream.o: ../stream.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../stream.c
 
-so_tga.o: ../tga.c ../internal.h platform.h
+so_tga.o: ../tga.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS_SPEED) -o $@ ../tga.c
 
-so_thread.o: ../thread.c ../internal.h platform.h
+so_thread.o: ../thread.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../thread.c
 
-so_time.o: ../time.c ../internal.h platform.h
+so_time.o: ../time.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../time.c
 
-so_window.o: ../window.c ../internal.h platform.h
+so_window.o: ../window.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ ../window.c
 
-so_x11_enable.o: x11_enable.c ../internal.h platform.h
+so_x11_enable.o: x11_enable.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_enable.c
 
-so_x11_fullscreen.o: x11_fullscreen.c ../internal.h platform.h
+so_x11_fullscreen.o: x11_fullscreen.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_fullscreen.c
 
-so_x11_glext.o: x11_glext.c ../internal.h platform.h
+so_x11_glext.o: x11_glext.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_glext.c
 
-so_x11_init.o: x11_init.c ../internal.h platform.h
+so_x11_init.o: x11_init.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_init.c
 
-so_x11_joystick.o: x11_joystick.c ../internal.h platform.h
+so_x11_joystick.o: x11_joystick.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_joystick.c
 
-so_x11_thread.o: x11_thread.c ../internal.h platform.h
+so_x11_thread.o: x11_thread.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_thread.c
 
-so_x11_time.o: x11_time.c ../internal.h platform.h
+so_x11_time.o: x11_time.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_time.c
 
-so_x11_window.o: x11_window.c ../internal.h platform.h
+so_x11_window.o: x11_window.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_window.c
 
-so_x11_keysym2unicode.o: x11_keysym2unicode.c ../internal.h platform.h
+so_x11_keysym2unicode.o: x11_keysym2unicode.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_keysym2unicode.c
 
