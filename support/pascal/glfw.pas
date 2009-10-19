@@ -301,7 +301,7 @@ const
     {$IFDEF DARWIN}
     DLLNAME = 'libglfw.dylib';
     {$ELSE}
-    DLLNAME = 'libglfw.so.2';
+    DLLNAME = 'libglfw.so';
     {$ENDIF}
   {$ENDIF}
 {$ENDIF}
