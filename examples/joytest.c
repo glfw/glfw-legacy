@@ -7,8 +7,8 @@
 #include <math.h>
 #include <GL/glfw.h>
 
-#define MAX_AXES     10 
-#define MAX_BUTTONS  30 
+#define MAX_AXES     10
+#define MAX_BUTTONS  30
 
 struct JoystickState
 {
@@ -47,7 +47,7 @@ void keyfun( int key, int action )
 }
 
 /*========================================================================
- * Retrieve joystick states 
+ * Retrieve joystick states
  *========================================================================*/
 void updateJoysticksState( void )
 {
@@ -62,16 +62,16 @@ void updateJoysticksState( void )
             states[joy].num_buttons = glfwGetJoystickButtons(joy, states[joy].buttons, MAX_BUTTONS);
         }
     }
-} 
+}
 
 /*========================================================================
- * Print out the state of all joysticks on the standard output 
+ * Print out the state of all joysticks on the standard output
  *========================================================================*/
 void displayJoysticksState( void )
 {
     int joy;
     int i;
-    for ( joy = GLFW_JOYSTICK_1 ; joy < GLFW_JOYSTICK_LAST + 1 ; ++joy ) 
+    for ( joy = GLFW_JOYSTICK_1 ; joy < GLFW_JOYSTICK_LAST + 1 ; ++joy )
     {
         printf( "Joystick %d: %s\n", joy, (states[joy].present == GL_TRUE ? "present" : "not connected"));
         if (states[joy].present == GL_TRUE)
@@ -85,7 +85,7 @@ void displayJoysticksState( void )
                 }
                 printf( "\n" );
             }
-            else 
+            else
             {
                 printf( "  axes: none\n" );
             }
@@ -99,7 +99,7 @@ void displayJoysticksState( void )
                 }
                 printf( "\n" );
             }
-            else 
+            else
             {
                 printf( "  buttons: none\n" );
             }
@@ -125,7 +125,7 @@ int main( void )
     start = glfwGetTime();
     update = start;
 
-    /* print the initial state of all joysticks */ 
+    /* print the initial state of all joysticks */
     updateJoysticksState();
     printf( "\n" );
     displayJoysticksState();
@@ -138,8 +138,8 @@ int main( void )
         /* Get time */
         t = glfwGetTime();
 
-        /* Display the state of all connected joysticks every secons */ 
-        if ( ( t - update ) > 1.0 ) 
+        /* Display the state of all connected joysticks every secons */
+        if ( ( t - update ) > 1.0 )
         {
             update = t;
             printf( "\n" );
@@ -149,7 +149,7 @@ int main( void )
         }
 
         /* Check if the window was closed */
-        if ( ( t - start ) > 20.0 ) 
+        if ( ( t - start ) > 20.0 )
         {
             running = GL_FALSE;
         }
