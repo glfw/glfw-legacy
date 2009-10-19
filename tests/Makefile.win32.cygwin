@@ -5,50 +5,47 @@
 #  make -f Makefile.win32.cygwin
 ##########################################################################
 
-# Compiler settings
 CC     = gcc
 CFLAGS = -I../include -Wall -O3 -ffast-math
 
-# Linker settings
-LFLAGS = -L../lib/win32 -lglfw -lglu32 -lopengl32 
+LIB    = ../lib/win32/libglfw.a
+LFLAGS = $(LIB) -lglu32 -lopengl32 
 
-# Subsystem settings
 WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fullscreen.exe \
            peter.exe reopen.exe tearing.exe version.exe
 
-# Default: Build all tests
 all: $(BINARIES)
 
-clean:
-	@rm -f $(BINARIES)
-
-accuracy.exe: accuracy.c
+accuracy.exe: accuracy.c $(LIB)
 	$(CC) $(CFLAGS) $(WINDOWS) accuracy.c $(LFLAGS) -o $@
 
-defaults.exe: defaults.c
+defaults.exe: defaults.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) defaults.c $(LFLAGS) -o $@
 
-events.exe: events.c
+events.exe: events.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) events.c $(LFLAGS) -o $@
 
-fsaa.exe: fsaa.c
+fsaa.exe: fsaa.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) fsaa.c $(LFLAGS) -lm -o $@
 
-fullscreen.exe: fullscreen.c
+fullscreen.exe: fullscreen.c $(LIB)
 	$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -lm -o $@
 
-peter.exe: peter.c
+peter.exe: peter.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) peter.c $(LFLAGS) -o $@
 
-reopen.exe: reopen.c
+reopen.exe: reopen.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) reopen.c $(LFLAGS) -lm -o $@
 
-tearing.exe: tearing.c
+tearing.exe: tearing.c $(LIB)
 	$(CC) $(CFLAGS) $(WINDOWS) tearing.c $(LFLAGS) -lm -o $@
 
-version.exe: version.c getopt.c
+version.exe: version.c getopt.c $(LIB)
 	$(CC) $(CFLAGS) $(CONSOLE) version.c getopt.c $(LFLAGS) -lm -o $@
+
+clean:
+	rm -f $(BINARIES)
 

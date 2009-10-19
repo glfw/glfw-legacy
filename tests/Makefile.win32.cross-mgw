@@ -7,26 +7,19 @@
 
 TARGET ?= i586-mingw32msvc-
 
-# Compiler settings
 CC     = gcc
 CFLAGS = -I../include -Wall -O3 -ffast-math
 
-# Linker settings
 LIB    = ../lib/win32/libglfw.a
 LFLAGS = $(LIB) -lglu32 -lopengl32 
 
-# Subsystem settings
 WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fullscreen.exe \
            peter.exe reopen.exe tearing.exe version.exe
 
-# Default: Build all tests
 all: $(BINARIES)
-
-clean:
-	@rm -f $(BINARIES)
 
 accuracy.exe: accuracy.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) accuracy.c $(LFLAGS) -o $@
@@ -52,6 +45,9 @@ reopen.exe: reopen.c $(LIB)
 tearing.exe: tearing.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) tearing.c $(LFLAGS) -lm -o $@
 
-version.exe: version.c $(LIB)
-	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) version.c $(LFLAGS) -lm -o $@
+version.exe: version.c getopt.c $(LIB)
+	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) version.c getopt.c $(LFLAGS) -lm -o $@
+
+clean:
+	rm -f $(BINARIES)
 
