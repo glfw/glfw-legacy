@@ -934,6 +934,20 @@ static void getFullWindowSize( int clientWidth, int clientHeight,
 
 static void initWGLExtensions( void )
 {
+    // This needs to include every function pointer loaded below
+    _glfwWin.SwapIntervalEXT = NULL;
+    _glfwWin.GetPixelFormatAttribivARB = NULL;
+    _glfwWin.GetExtensionsStringARB = NULL;
+    _glfwWin.GetExtensionsStringEXT = NULL;
+    _glfwWin.CreateContextAttribsARB = NULL;
+
+    // This needs to include every extension used below except for
+    // WGL_ARB_extensions_string and WGL_EXT_extensions_string
+    _glfwWin.has_WGL_EXT_swap_control = GL_FALSE;
+    _glfwWin.has_WGL_ARB_pixel_format = GL_FALSE;
+    _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
+    _glfwWin.has_WGL_ARB_create_context = GL_FALSE;
+
     _glfwWin.GetExtensionsStringEXT = (WGLGETEXTENSIONSSTRINGEXT_T)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
@@ -1058,20 +1072,6 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     _glfwWin.DC  = NULL;
     _glfwWin.context = NULL;
     _glfwWin.window = NULL;
-
-    // This needs to include every function pointer loaded in initWGLExtensions
-    _glfwWin.SwapIntervalEXT = NULL;
-    _glfwWin.GetPixelFormatAttribivARB = NULL;
-    _glfwWin.GetExtensionsStringARB = NULL;
-    _glfwWin.GetExtensionsStringEXT = NULL;
-    _glfwWin.CreateContextAttribsARB = NULL;
-
-    // This needs to include every extension used in initWGLExtensions except
-    // for WGL_ARB_extensions_string and WGL_EXT_extensions_string
-    _glfwWin.has_WGL_EXT_swap_control = GL_FALSE;
-    _glfwWin.has_WGL_ARB_pixel_format = GL_FALSE;
-    _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
-    _glfwWin.has_WGL_ARB_create_context = GL_FALSE;
 
     // Set common window styles
     dwStyle   = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
@@ -1259,6 +1259,8 @@ int _glfwPlatformOpenWindow( int width, int height,
                            fbconfig->redBits, fbconfig->greenBits, fbconfig->blueBits,
                            wndconfig->refreshRate );
     }
+
+    initWGLExtensions();
 
     if( !createWindow( wndconfig, fbconfig ) )
     {
