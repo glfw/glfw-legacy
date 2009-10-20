@@ -536,7 +536,6 @@ static void translateChar( DWORD wParam, DWORD lParam, int action )
     UINT  scan_code;
     int   i, num_chars, unicode;
 
-    // Get keyboard state
     GetKeyboardState( keyboard_state );
 
     // Derive scan code from lParam and action
@@ -546,10 +545,8 @@ static void translateChar( DWORD wParam, DWORD lParam, int action )
         scan_code |= 0x8000000;
     }
 
-    // Do we have Unicode support?
     if( _glfwLibrary.Sys.hasUnicode )
     {
-        // Convert to Unicode
         num_chars = ToUnicode(
             wParam,          // virtual-key code
             scan_code,       // scan code
@@ -620,7 +617,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     {
                         // Minimize window
                         CloseWindow( _glfwWin.window );
-
                         iconified = GL_TRUE;
                     }
 
@@ -649,7 +645,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     {
                         // Restore window
                         OpenIcon( _glfwWin.window );
-
                         iconified = GL_FALSE;
 
                         // Activate window
