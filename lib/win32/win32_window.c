@@ -1347,18 +1347,15 @@ void _glfwPlatformCloseWindow( void )
 {
     destroyWindow();
 
-    // Do we have an instance?
     if( _glfwWin.classAtom )
     {
-        // Unregister class
         UnregisterClass( _GLFW_WNDCLASSNAME, _glfwLibrary.instance );
         _glfwWin.classAtom = 0;
     }
 
-    // Are we in fullscreen mode?
     if( _glfwWin.fullscreen )
     {
-        // Switch back to desktop resolution
+        // Restore original desktop resolution
         ChangeDisplaySettings( NULL, CDS_FULLSCREEN );
     }
 }
@@ -1370,7 +1367,6 @@ void _glfwPlatformCloseWindow( void )
 
 void _glfwPlatformSetWindowTitle( const char *title )
 {
-    // Set window title
     (void) SetWindowText( _glfwWin.window, title );
 }
 
@@ -1386,9 +1382,10 @@ void _glfwPlatformSetWindowSize( int width, int height )
     GLint   drawbuffer;
     GLfloat clearcolor[4];
 
-    // If we are in fullscreen mode, get some info about the current mode
     if( _glfwWin.fullscreen )
     {
+        // Get some info about the current mode
+
         DEVMODE dm;
 
         // Get current BPP settings
@@ -1426,7 +1423,6 @@ void _glfwPlatformSetWindowSize( int width, int height )
     // Change fullscreen video mode?
     if( _glfwWin.fullscreen && mode != _glfwWin.modeID )
     {
-        // Change video mode
         _glfwSetVideoModeMODE( mode );
 
         // Clear the front buffer to black (avoid ugly desktop remains in
@@ -1458,7 +1454,6 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    // Set window position
     (void) SetWindowPos( _glfwWin.window, HWND_TOP, x, y, 0, 0,
                          SWP_NOOWNERZORDER | SWP_NOSIZE | SWP_NOZORDER );
 }
@@ -1472,8 +1467,6 @@ void _glfwPlatformIconifyWindow( void )
 {
     // Iconify window
     CloseWindow( _glfwWin.window );
-
-    // Window is now iconified
     _glfwWin.iconified = GL_TRUE;
 
     // If we are in fullscreen mode we need to change video modes
@@ -1737,10 +1730,8 @@ void _glfwPlatformPollEvents( void )
 
 void _glfwPlatformWaitEvents( void )
 {
-    // Wait for new events
     WaitMessage();
 
-    // Poll new events
     _glfwPlatformPollEvents();
 }
 
@@ -1753,7 +1744,6 @@ void _glfwPlatformHideMouseCursor( void )
 {
     RECT ClipWindowRect;
 
-    // Hide cursor
     ShowCursor( FALSE );
 
     // Clip cursor to the window
@@ -1776,10 +1766,9 @@ void _glfwPlatformShowMouseCursor( void )
     // Un-capture cursor
     ReleaseCapture();
 
-    // Disable cursor clipping
+    // Release the cursor from the window
     ClipCursor( NULL );
 
-    // Show cursor
     ShowCursor( TRUE );
 }
 
@@ -1797,7 +1786,6 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     pos.y = y;
     ClientToScreen( _glfwWin.window, &pos );
 
-    // Change cursor position
     SetCursorPos( pos.x, pos.y );
 }
 
