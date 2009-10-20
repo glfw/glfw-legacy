@@ -66,7 +66,9 @@ static void GLFWCALL key_callback(int key, int action)
     {
         case GLFW_KEY_SPACE:
         {
-            toggle_mouse_cursor();
+            if (action == GLFW_PRESS)
+                toggle_mouse_cursor();
+
             break;
         }
 
