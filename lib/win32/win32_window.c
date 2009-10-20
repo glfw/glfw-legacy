@@ -964,9 +964,6 @@ static void initWGLExtensions( void )
         }
     }
 
-    // These members are all reset at the start of createWindow, so we don't
-    // need to do anything if the extensions aren't present
-
     if( _glfwPlatformExtensionSupported( "WGL_ARB_multisample" ) )
     {
         _glfwWin.has_WGL_ARB_multisample = GL_TRUE;
