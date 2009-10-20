@@ -522,6 +522,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 
     // Do we have non-power-of-two textures?
     _glfwWin.has_GL_ARB_texture_non_power_of_two =
+        ( _glfwWin.glMajor >= 2 ) ||
         glfwExtensionSupported( "GL_ARB_texture_non_power_of_two" );
 
     // Do we have automatic mipmap generation?
