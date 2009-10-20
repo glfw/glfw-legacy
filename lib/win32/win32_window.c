@@ -596,9 +596,8 @@ static void translateChar( DWORD wParam, DWORD lParam, int action )
 static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                                     WPARAM wParam, LPARAM lParam )
 {
-    int WheelDelta, Iconified;
+    int wheelDelta, iconified;
 
-    // Handle certain window messages
     switch( uMsg )
     {
         // Window activate message? (iconification?)
@@ -606,10 +605,10 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         {
             _glfwWin.active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE : GL_FALSE;
 
-            Iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
+            iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
 
             // Were we deactivated/iconified?
-            if( (!_glfwWin.active || Iconified) && !_glfwWin.iconified )
+            if( (!_glfwWin.active || iconified) && !_glfwWin.iconified )
             {
                 _glfwInputDeactivation();
 
@@ -617,20 +616,19 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 if( _glfwWin.opened && _glfwWin.fullscreen )
                 {
                     // Do we need to manually iconify?
-                    if( !Iconified )
+                    if( !iconified )
                     {
                         // Minimize window
                         CloseWindow( _glfwWin.window );
 
-                        // The window is now iconified
-                        Iconified = GL_TRUE;
+                        iconified = GL_TRUE;
                     }
 
-                    // Change display settings to the desktop resolution
+                    // Restore the original desktop resolution
                     ChangeDisplaySettings( NULL, CDS_FULLSCREEN );
                 }
 
-                // Unlock mouse
+                // Unlock mouse if locked
                 if( !_glfwWin.oldMouseLockValid )
                 {
                     _glfwWin.oldMouseLock = _glfwWin.mouseLock;
@@ -638,7 +636,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     glfwEnable( GLFW_MOUSE_CURSOR );
                 }
             }
-            else if( _glfwWin.active || !Iconified )
+            else if( _glfwWin.active || !iconified )
             {
                 // If we are in fullscreen mode we need to maximize
                 if( _glfwWin.opened && _glfwWin.fullscreen && _glfwWin.iconified )
@@ -647,13 +645,12 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     _glfwSetVideoModeMODE( _glfwWin.modeID );
 
                     // Do we need to manually restore window?
-                    if( Iconified )
+                    if( iconified )
                     {
                         // Restore window
                         OpenIcon( _glfwWin.window );
 
-                        // The window is no longer iconified
-                        Iconified = GL_FALSE;
+                        iconified = GL_FALSE;
 
                         // Activate window
                         ShowWindow( hWnd, SW_SHOW );
@@ -670,27 +667,28 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 _glfwWin.oldMouseLockValid = GL_FALSE;
             }
 
-            _glfwWin.iconified = Iconified;
+            _glfwWin.iconified = iconified;
             return 0;
         }
 
-        // Intercept system commands (forbid certain actions/events)
         case WM_SYSCOMMAND:
         {
             switch( wParam & 0xfff0 )
             {
-                // Screensaver trying to start or monitor trying to enter
-                // powersave?
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER:
+                {
                     if( _glfwWin.fullscreen )
                     {
+                        // Disallow screen saver and screen blanking if we are
+                        // running in fullscreen mode
                         return 0;
                     }
                     else
                     {
                         break;
                     }
+                }
 
                 // User trying to access application menu using ALT?
                 case SC_KEYMENU:
@@ -699,20 +697,19 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             break;
         }
 
-        // Did we receive a close message?
         case WM_CLOSE:
+        {
+            // Translate this to WM_QUIT so that we can handle all cases in the
+            // same place
             PostQuitMessage( 0 );
             return 0;
+        }
 
-        // Is a key being pressed?
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
         {
-            // Translate and report key press
-            _glfwInputKey( translateKey( wParam, lParam ),
-                           GLFW_PRESS );
+            _glfwInputKey( translateKey( wParam, lParam ), GLFW_PRESS );
 
-            // Translate and report character input
             if( _glfwWin.charCallback )
             {
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
@@ -720,7 +717,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             return 0;
           }
 
-        // Is a key being released?
         case WM_KEYUP:
         case WM_SYSKEYUP:
         {
@@ -732,12 +728,9 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             }
             else
             {
-                // Translate and report key release
-                _glfwInputKey( translateKey( wParam, lParam ),
-                               GLFW_RELEASE );
+                _glfwInputKey( translateKey( wParam, lParam ), GLFW_RELEASE );
             }
 
-            // Translate and report character input
             if( _glfwWin.charCallback )
             {
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
@@ -746,7 +739,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             return 0;
         }
 
-        // Were any of the mouse-buttons pressed?
         case WM_LBUTTONDOWN:
             SetCapture(hWnd);
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
@@ -774,7 +766,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             return 1;
         }
 
-        // Were any of the mouse-buttons released?
         case WM_LBUTTONUP:
             ReleaseCapture();
             _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE );
@@ -802,7 +793,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             return 1;
         }
 
-        // Did the mouse move?
         case WM_MOUSEMOVE:
         {
             int NewMouseX, NewMouseY;
@@ -830,7 +820,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 _glfwInput.OldMouseY = NewMouseY;
                 _glfwInput.MouseMoved = GL_TRUE;
 
-                // Call user callback function
                 if( _glfwWin.mousePosCallback )
                 {
                     _glfwWin.mousePosCallback( _glfwInput.MousePosX,
@@ -840,14 +829,13 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             return 0;
         }
 
-        // Mouse wheel action?
         case WM_MOUSEWHEEL:
         {
             // WM_MOUSEWHEEL is not supported under Windows 95
             if( _glfwLibrary.Sys.winVer != _GLFW_WIN_95 )
             {
-                WheelDelta = (((int)wParam) >> 16) / WHEEL_DELTA;
-                _glfwInput.WheelPos += WheelDelta;
+                wheelDelta = (((int)wParam) >> 16) / WHEEL_DELTA;
+                _glfwInput.WheelPos += wheelDelta;
                 if( _glfwWin.mouseWheelCallback )
                 {
                     _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
@@ -857,10 +845,8 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             break;
         }
 
-        // Resize the window?
         case WM_SIZE:
         {
-            // get the new size
             _glfwWin.width  = LOWORD(lParam);
             _glfwWin.height = HIWORD(lParam);
 
@@ -874,16 +860,13 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
             }
 
-            // Call the user-supplied callback, if it exists
             if( _glfwWin.windowSizeCallback )
             {
-                _glfwWin.windowSizeCallback( LOWORD(lParam),
-                                             HIWORD(lParam) );
+                _glfwWin.windowSizeCallback( LOWORD(lParam), HIWORD(lParam) );
             }
             return 0;
         }
 
-        // Move the window?
         case WM_MOVE:
         {
             // If the mouse is locked, update the clipping rect
@@ -901,7 +884,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
         // Was the window contents damaged?
         case WM_PAINT:
         {
-            // Call user callback function
             if( _glfwWin.windowRefreshCallback )
             {
                 _glfwWin.windowRefreshCallback();
