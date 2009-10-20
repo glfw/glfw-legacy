@@ -930,6 +930,10 @@ static void getFullWindowSize( int clientWidth, int clientHeight,
 
 //========================================================================
 // Initialize WGL-specific extensions
+// This function is called once before initial context creation, i.e. before
+// any WGL extensions could be present.  This is done in order to have both
+// extension variable clearing and loading in the same place, hopefully
+// decreasing the possibility of forgetting to add one without the other.
 //========================================================================
 
 static void initWGLExtensions( void )
