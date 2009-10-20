@@ -23,10 +23,10 @@
 //
 //========================================================================
 //
-// This test came about as the result of bugs #1262764 and #1726540, both
-// reported by the user peterpp, hence the name
+// This test came about as the result of bugs #1262764, #1726540 and
+// #1726592, all reported by the user peterpp, hence the name
 //
-// The utility of this test outside of the (now fixed) bugs is uncertain
+// The utility of this test outside of these bugs is uncertain
 //
 //========================================================================
 
@@ -36,6 +36,8 @@
 #include <stdlib.h>
 
 static GLboolean cursor_enabled = GL_TRUE;
+
+static GLboolean open_window(void);
 
 static void toggle_mouse_cursor(void)
 {
@@ -55,18 +57,57 @@ static void GLFWCALL mouse_button_callback(int button, int pressed)
 
 static void GLFWCALL mouse_position_callback(int x, int y)
 {
-    printf("%i %i\n", x, y);
+    printf("Mouse moved to: %i %i\n", x, y);
 }
 
 static void GLFWCALL key_callback(int key, int action)
 {
-    if (key == GLFW_KEY_SPACE)
-        toggle_mouse_cursor();
+    switch (key)
+    {
+        case GLFW_KEY_SPACE:
+        {
+            toggle_mouse_cursor();
+            break;
+        }
+
+        case 'R':
+        {
+            if (action == GLFW_PRESS)
+            {
+                glfwCloseWindow();
+                open_window();
+            }
+
+            break;
+        }
+    }
 }
 
 static void GLFWCALL window_size_callback(int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+static GLboolean open_window(void)
+{
+    int x, y;
+
+    if (!glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
+        return GL_FALSE;
+
+    glfwSetWindowTitle("Peter Detector");
+    glfwDisable(GLFW_AUTO_POLL_EVENTS);
+    glfwSetWindowSizeCallback(window_size_callback);
+    glfwSetMousePosCallback(mouse_position_callback);
+    glfwSetMouseButtonCallback(mouse_button_callback);
+    glfwSetKeyCallback(key_callback);
+    glfwSwapInterval(1);
+
+    glfwGetMousePos(&x, &y);
+
+    printf("Mouse position: %i %i\n", x, y);
+
+    return GL_TRUE;
 }
 
 int main(void)
@@ -77,21 +118,13 @@ int main(void)
         exit(1);
     }
 
-    if (!glfwOpenWindow(640, 480, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
+    if (!open_window())
     {
         glfwTerminate();
 
         fprintf(stderr, "Failed to open GLFW window\n");
         exit(1);
     }
-
-    glfwSetWindowTitle("Peter Detector");
-    glfwDisable(GLFW_AUTO_POLL_EVENTS);
-    glfwSetWindowSizeCallback(window_size_callback);
-    glfwSetMousePosCallback(mouse_position_callback);
-    glfwSetMouseButtonCallback(mouse_button_callback);
-    glfwSetKeyCallback(key_callback);
-    glfwSwapInterval(1);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
 
