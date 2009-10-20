@@ -953,8 +953,18 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
 static void initGLXExtensions( void )
 {
-    // These members are all reset at the start of _glfwPlatformOpenWindow, so
-    // we don't need to do anything if the extensions aren't present
+    // This needs to include every function pointer loaded below
+    _glfwWin.SwapIntervalSGI             = NULL;
+    _glfwWin.GetFBConfigAttribSGIX       = NULL;
+    _glfwWin.ChooseFBConfigSGIX          = NULL;
+    _glfwWin.CreateContextWithConfigSGIX = NULL;
+    _glfwWin.GetVisualFromFBConfigSGIX   = NULL;
+    _glfwWin.CreateContextAttribsARB     = NULL;
+
+    // This needs to include every extension used below
+    _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
+    _glfwWin.has_GLX_SGIX_fbconfig      = GL_FALSE;
+    _glfwWin.has_GLX_SGI_swap_control   = GL_FALSE;
 
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
@@ -1024,19 +1034,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.Saver.changed    = GL_FALSE;
     _glfwWin.refreshRate      = wndconfig->refreshRate;
     _glfwWin.windowNoResize   = wndconfig->windowNoResize;
-
-    // This needs to include every function pointer loaded in initGLXExtensions
-    _glfwWin.SwapIntervalSGI             = NULL;
-    _glfwWin.GetFBConfigAttribSGIX       = NULL;
-    _glfwWin.ChooseFBConfigSGIX          = NULL;
-    _glfwWin.CreateContextWithConfigSGIX = NULL;
-    _glfwWin.GetVisualFromFBConfigSGIX   = NULL;
-    _glfwWin.CreateContextAttribsARB     = NULL;
-
-    // This needs to include every extension used in initGLXExtensions
-    _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
-    _glfwWin.has_GLX_SGIX_fbconfig      = GL_FALSE;
-    _glfwWin.has_GLX_SGI_swap_control   = GL_FALSE;
 
     // As the 2.x API doesn't understand screens, we hardcode this choice and
     // hope for the best
