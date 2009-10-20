@@ -46,12 +46,7 @@ default:
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
 	@echo "  $(MAKE) x11-distro-install  for a distro to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) macosx            for Apple GCC on Mac OS X"
-	@echo "  $(MAKE) macosx-universal  for Universal Binaries with GCC on Mac OS X"
-	@echo "  $(MAKE) macosx-clean      to remove any compiled files for Mac OS X"
-	@echo "  $(MAKE) macosx-install    to install the GLFW library and header"
-	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) cocoa             for the Cocoa port on Mac OS X"
+	@echo "  $(MAKE) cocoa             for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
 	@echo "-----------------------------------------------------------------------------"
 
@@ -185,48 +180,9 @@ x11-distro-install: x11
 
 
 ###########################################################################
-# Mac OS X
+# Cocoa on Mac OS X
 ###########################################################################
 
-# Cleanup for Mac OS X
-macosx-clean:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx clean
-	cd examples;   $(MAKE) -f Makefile.macosx clean
-	cd tests;      $(MAKE) -f Makefile.macosx clean
-
-# Backward compatibility
-macosx-gcc: macosx
-
-# Mac OS X, GCC
-macosx: macosx-library macosx-examples macosx-tests
-macosx-universal: macosx-universal-library macosx-examples-universal macosx-tests-universal
-
-macosx-library:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx
-
-macosx-universal-library:
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal
-
-macosx-examples:
-	cd examples;   $(MAKE) -f Makefile.macosx
-
-macosx-examples-universal:
-	cd examples;   $(MAKE) -f Makefile.macosx.universal
-
-macosx-tests:
-	cd tests;      $(MAKE) -f Makefile.macosx
-
-macosx-tests-universal:
-	cd tests;      $(MAKE) -f Makefile.macosx.universal
-
-# Mac OS X, GCC install
-macosx-install: macosx-library
-	cd lib/macosx; $(MAKE) -f Makefile.macosx install
-
-macosx-universal-install: macosx-library-universal
-	cd lib/macosx; $(MAKE) -f Makefile.macosx.universal install
-
-# Cocoa on Mac OS X
 cocoa:
 	cd lib/cocoa; $(MAKE) -f Makefile.cocoa
 	cd examples;  $(MAKE) -f Makefile.cocoa
