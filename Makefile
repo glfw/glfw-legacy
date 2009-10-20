@@ -32,7 +32,6 @@ default:
 	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header into Cygwin"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) win32-lcc         for LCC-Win32 for Windows"
-	@echo "  $(MAKE) win32-bcc         for Borland C++ Builder 5.x for Windows"
 	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
 	@echo "  $(MAKE) win32-ow          for OpenWatcom for Windows"
 	@echo "  $(MAKE) win32-clean       to remove any compiled files for Windows"
@@ -106,10 +105,6 @@ cygwin-clean:
 # Windows, LCC-Win32
 win32-lcc:
 	@.\\compile.bat $(MAKE) lcc
-
-# Windows, Borland C++ Builder Compiler 5.x
-win32-bcc:
-	@.\\compile.bat $(MAKE) bcc
 
 # Windows, Microsoft Visual C++
 win32-msvc:
