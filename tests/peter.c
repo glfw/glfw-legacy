@@ -1,5 +1,5 @@
 //========================================================================
-// Mouse cursor disabling (grabbing, locking) test
+// Mouse cursor bug test
 // Copyright (c) Camilla Berglund <elmindreda@users.sourceforge.net>
 //
 // This software is provided 'as-is', without any express or implied
