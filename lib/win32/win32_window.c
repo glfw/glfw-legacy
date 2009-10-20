@@ -1188,29 +1188,21 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
 
 static void destroyWindow( void )
 {
-    // Do we have a rendering context?
     if( _glfwWin.context )
     {
-        // Release the DC and RC contexts
         wglMakeCurrent( NULL, NULL );
-
-        // Delete the rendering context
         wglDeleteContext( _glfwWin.context );
         _glfwWin.context = NULL;
     }
 
-    // Do we have a device context?
     if( _glfwWin.DC )
     {
-        // Release the device context
         ReleaseDC( _glfwWin.window, _glfwWin.DC );
         _glfwWin.DC = NULL;
     }
 
-    // Do we have a window?
     if( _glfwWin.window )
     {
-        // Destroy the window
         if( _glfwLibrary.Sys.winVer <= _GLFW_WIN_NT4 )
         {
             // Note: Hiding the window first fixes an annoying W98/NT4
@@ -1285,6 +1277,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( fbconfig->samples > 0 )
     {
         // We want FSAA, but can we get it?
+        // FSAA is not a hard constraint, so otherwise we just don't care
 
         if( _glfwWin.has_WGL_ARB_multisample && _glfwWin.has_WGL_ARB_pixel_format )
         {
