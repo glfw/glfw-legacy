@@ -138,7 +138,7 @@ static int getPixelFormatAttrib(int pixelFormat, int attrib)
 {
     int value;
 
-    if( !_glfwWin.GetPixelFormatAttribiv( _glfwWin.DC, pixelFormat, 0, 1, &attrib, &value) )
+    if( !_glfwWin.GetPixelFormatAttribivARB( _glfwWin.DC, pixelFormat, 0, 1, &attrib, &value) )
     {
         // NOTE: We should probably handle this error somehow
         return 0;
@@ -964,14 +964,14 @@ static void initWGLExtensions( void )
     if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
         _glfwWin.has_WGL_EXT_swap_control = GL_TRUE;
-        _glfwWin.SwapInterval = (WGLSWAPINTERVALEXT_T)
+        _glfwWin.SwapIntervalEXT = (WGLSWAPINTERVALEXT_T)
             wglGetProcAddress( "wglSwapIntervalEXT" );
     }
 
     if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
         _glfwWin.has_WGL_ARB_pixel_format = GL_TRUE;
-        _glfwWin.GetPixelFormatAttribiv = (WGLGETPIXELFORMATATTRIBIVARB_T)
+        _glfwWin.GetPixelFormatAttribivARB = (WGLGETPIXELFORMATATTRIBIVARB_T)
             wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
     }
 }
@@ -1060,8 +1060,8 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
     _glfwWin.window = NULL;
 
     // This needs to include every function pointer loaded in initWGLExtensions
-    _glfwWin.SwapInterval = NULL;
-    _glfwWin.GetPixelFormatAttribiv = NULL;
+    _glfwWin.SwapIntervalEXT = NULL;
+    _glfwWin.GetPixelFormatAttribivARB = NULL;
     _glfwWin.GetExtensionsStringARB = NULL;
     _glfwWin.GetExtensionsStringEXT = NULL;
     _glfwWin.CreateContextAttribsARB = NULL;
@@ -1541,7 +1541,7 @@ void _glfwPlatformSwapInterval( int interval )
 {
     if( _glfwWin.has_WGL_EXT_swap_control )
     {
-        _glfwWin.SwapInterval( interval );
+        _glfwWin.SwapIntervalEXT( interval );
     }
 }
 

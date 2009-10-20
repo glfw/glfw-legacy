@@ -333,8 +333,8 @@ struct _GLFWwin_struct {
     DWORD     dwExStyle;       // --"--
 
     // Platform specific extensions (context specific)
-    WGLSWAPINTERVALEXT_T           SwapInterval;
-    WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
+    WGLSWAPINTERVALEXT_T           SwapIntervalEXT;
+    WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribivARB;
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;
     PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContextAttribsARB;
