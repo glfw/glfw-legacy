@@ -610,12 +610,11 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
 
 
 //========================================================================
-// glfwCloseWindow() - Properly kill the window / video display
+// Properly kill the window / video display
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized )
     {
         return;
@@ -624,10 +623,9 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
     // Show mouse pointer again (if hidden)
     glfwEnable( GLFW_MOUSE_CURSOR );
 
-    // Close window
     _glfwPlatformCloseWindow();
 
-    // Window is no longer opened
+    memset( &_glfwWin, 0, sizeof(_glfwWin) );
     _glfwWin.opened = GL_FALSE;
 }
 
