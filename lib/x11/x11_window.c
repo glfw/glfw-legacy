@@ -903,7 +903,8 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
         {
             if( !_glfwWin.has_GLX_ARB_create_context_profile )
             {
-                fprintf( stderr, "OpenGL profile requested but GLX_ARB_create_context_profile is unavailable\n" );
+                fprintf( stderr, "OpenGL profile requested but GLX_ARB_create_context_profile "
+                                 "is unavailable\n" );
                 return GL_FALSE;
             }
 
