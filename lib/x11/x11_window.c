@@ -1131,10 +1131,12 @@ int _glfwPlatformOpenWindow( int width, int height,
                              const _GLFWwndconfig* wndconfig,
                              const _GLFWfbconfig* fbconfig )
 {
-    unsigned int fbcount;
+    unsigned int mask, fbcount;
     _GLFWfbconfig *fbconfigs;
     _GLFWfbconfig closest;
     const _GLFWfbconfig *result;
+    Window window, root;
+    int windowX, windowY, rootX, rootY;
 
     // Clear platform specific GLFW window state
     _glfwWin.visual           = (XVisualInfo*)NULL;
@@ -1247,6 +1249,22 @@ int _glfwPlatformOpenWindow( int width, int height,
         XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
         XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
                       _glfwWin.width/2, _glfwWin.height/2 );
+    }
+
+    // Retrieve and set initial cursor position
+    {
+        XQueryPointer( _glfwLibrary.display,
+                       _glfwWin.window,
+                       &root,
+                       &window,
+                       &rootX, &rootY,
+                       &windowX, &windowY,
+                       &mask );
+
+        // TODO: Probably check for some corner cases here.
+
+        _glfwInput.MousePosX = windowX;
+        _glfwInput.MousePosY = windowY;
     }
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
