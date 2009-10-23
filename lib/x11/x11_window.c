@@ -901,6 +901,12 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
         if( wndconfig->glProfile )
         {
+            if( !_glfwWin.has_GLX_ARB_create_context_profile )
+            {
+                fprintf( stderr, "OpenGL profile requested but GLX_ARB_create_context_profile is unavailable\n" );
+                return GL_FALSE;
+            }
+
             if( wndconfig->glProfile == GLFW_OPENGL_CORE_PROFILE )
             {
                 flags = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
@@ -970,10 +976,11 @@ static void initGLXExtensions( void )
     _glfwWin.CreateContextAttribsARB     = NULL;
 
     // This needs to include every extension used below
-    _glfwWin.has_GLX_SGIX_fbconfig      = GL_FALSE;
-    _glfwWin.has_GLX_SGI_swap_control   = GL_FALSE;
-    _glfwWin.has_GLX_ARB_multisample    = GL_FALSE;
-    _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
+    _glfwWin.has_GLX_SGIX_fbconfig              = GL_FALSE;
+    _glfwWin.has_GLX_SGI_swap_control           = GL_FALSE;
+    _glfwWin.has_GLX_ARB_multisample            = GL_FALSE;
+    _glfwWin.has_GLX_ARB_create_context         = GL_FALSE;
+    _glfwWin.has_GLX_ARB_create_context_profile = GL_FALSE;
 
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
@@ -1008,6 +1015,11 @@ static void initGLXExtensions( void )
             _glfw_glXGetProcAddress( (GLubyte*) "glXCreateContextAttribsARB" );
 
         _glfwWin.has_GLX_ARB_create_context = GL_TRUE;
+    }
+
+    if( _glfwPlatformExtensionSupported( "GLX_ARB_create_context_profile" ) )
+    {
+        _glfwWin.has_GLX_ARB_create_context_profile = GL_TRUE;
     }
 }
 
