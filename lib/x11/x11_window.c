@@ -778,7 +778,15 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
         result[*found].auxBuffers = getFBConfigAttrib( fbconfigs[i], GLX_AUX_BUFFERS );
         result[*found].stereo = getFBConfigAttrib( fbconfigs[i], GLX_STEREO );
-        result[*found].samples = getFBConfigAttrib( fbconfigs[i], GLX_SAMPLES );
+
+        if( _glfwWin.has_GLX_ARB_multisample )
+        {
+            result[*found].samples = getFBConfigAttrib( fbconfigs[i], GLX_SAMPLES );
+        }
+        else
+        {
+            result[*found].samples = 0;
+        }
 
         result[*found].platformID = (GLFWintptr) getFBConfigAttrib( fbconfigs[i], GLX_FBCONFIG_ID );
 
@@ -962,9 +970,10 @@ static void initGLXExtensions( void )
     _glfwWin.CreateContextAttribsARB     = NULL;
 
     // This needs to include every extension used below
-    _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
     _glfwWin.has_GLX_SGIX_fbconfig      = GL_FALSE;
     _glfwWin.has_GLX_SGI_swap_control   = GL_FALSE;
+    _glfwWin.has_GLX_ARB_multisample    = GL_FALSE;
+    _glfwWin.has_GLX_ARB_create_context = GL_FALSE;
 
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
@@ -986,6 +995,11 @@ static void initGLXExtensions( void )
             _glfw_glXGetProcAddress( (GLubyte*) "glXGetVisualFromFBConfigSGIX" );
 
         _glfwWin.has_GLX_SGIX_fbconfig = GL_TRUE;
+    }
+
+    if( _glfwPlatformExtensionSupported( "GLX_ARB_multisample" ) )
+    {
+        _glfwWin.has_GLX_ARB_multisample = GL_TRUE;
     }
 
     if( _glfwPlatformExtensionSupported( "GLX_ARB_create_context" ) )
@@ -1691,13 +1705,13 @@ void _glfwPlatformRefreshWindowParams( void )
     _glfwWin.stereo = getFBConfigAttrib( *fbconfig, GLX_STEREO ) ? 1 : 0;
 
     // Get multisample buffer samples
-    if( getFBConfigAttrib( *fbconfig, GLX_SAMPLE_BUFFERS ) == 0 )
+    if( _glfwWin.has_GLX_ARB_multisample )
     {
-        _glfwWin.samples = 0;
+        _glfwWin.samples = getFBConfigAttrib( *fbconfig, GLX_SAMPLES );
     }
     else
     {
-        _glfwWin.samples = getFBConfigAttrib( *fbconfig, GLX_SAMPLES );
+        _glfwWin.samples = 0;
     }
 
     // Default to refresh rate unknown (=0 according to GLFW spec)

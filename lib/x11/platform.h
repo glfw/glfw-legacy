@@ -288,9 +288,10 @@ struct _GLFWwin_struct {
     PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC CreateContextWithConfigSGIX;
     PFNGLXGETVISUALFROMFBCONFIGSGIXPROC   GetVisualFromFBConfigSGIX;
     PFNGLXCREATECONTEXTATTRIBSARBPROC     CreateContextAttribsARB;
-    GLboolean   has_GLX_ARB_create_context;
     GLboolean   has_GLX_SGIX_fbconfig;
     GLboolean   has_GLX_SGI_swap_control;
+    GLboolean   has_GLX_ARB_multisample;
+    GLboolean   has_GLX_ARB_create_context;
 
     // Various platform specific internal variables
     int         overrideRedirect; // True if window is OverrideRedirect
