@@ -998,91 +998,21 @@ static void initGLXExtensions( void )
 }
 
 
-
-//************************************************************************
-//****               Platform implementation functions                ****
-//************************************************************************
-
 //========================================================================
-// Here is where the window is created, and
-// the OpenGL rendering context is created
+// Create the X11 window (and its colormap)
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height,
-                             const _GLFWwndconfig* wndconfig,
-                             const _GLFWfbconfig* fbconfig )
+static GLboolean createWindow( int width, int height,
+                               const _GLFWwndconfig *wndconfig )
 {
-    XSetWindowAttributes wa;
-    XEvent      event;
+    XEvent event;
     Atom protocols[2];
     XSizeHints *sizehints;
     unsigned long wamask;
-    unsigned int fbcount;
-    _GLFWfbconfig *fbconfigs;
-    _GLFWfbconfig closest;
-    const _GLFWfbconfig *result;
+    XSetWindowAttributes wa;
 
-    // Clear platform specific GLFW window state
-    _glfwWin.visual           = (XVisualInfo*)NULL;
-    _glfwWin.colormap         = (Colormap)0;
-    _glfwWin.context          = (GLXContext)NULL;
-    _glfwWin.window           = (Window)0;
-    _glfwWin.pointerGrabbed   = GL_FALSE;
-    _glfwWin.keyboardGrabbed  = GL_FALSE;
-    _glfwWin.overrideRedirect = GL_FALSE;
-    _glfwWin.FS.modeChanged   = GL_FALSE;
-    _glfwWin.Saver.changed    = GL_FALSE;
-    _glfwWin.refreshRate      = wndconfig->refreshRate;
-    _glfwWin.windowNoResize   = wndconfig->windowNoResize;
-
-    // As the 2.x API doesn't understand screens, we hardcode this choice and
-    // hope for the best
-    _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
-
-    initGLXExtensions();
-
-    // Choose the best available fbconfig
-    {
-        fbconfigs = getFBConfigs( &fbcount );
-        if( !fbconfigs )
-        {
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-
-        result = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
-        if( !result )
-        {
-            free( fbconfigs );
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-
-        closest = *result;
-        free( fbconfigs );
-    }
-
-    if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
-    {
-        _glfwPlatformCloseWindow();
-        return GL_FALSE;
-    }
-
-    if( wndconfig->mode == GLFW_FULLSCREEN )
-    {
-        // Change video mode
-        _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.width,
-                           &_glfwWin.height, &_glfwWin.refreshRate );
-
-        // Remember old screen saver settings
-        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
-                         &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
-                         &_glfwWin.Saver.exposure );
-
-        // Disable screen saver
-        XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
-                         DefaultExposures );
-    }
+    // Every window needs a colormap
+    // We create one based on the visual used by the current context
 
     _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
                                          RootWindow( _glfwLibrary.display,
@@ -1090,7 +1020,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                                          _glfwWin.visual->visual,
                                          AllocNone );
 
-    // Create the window
+    // Create the actual window
     {
         wamask = CWBorderPixel | CWColormap | CWEventMask;
 
@@ -1151,7 +1081,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         disableDecorations();
     }
 
-    // Set window size hints
+    // Set window position and size WM hints
     {
         sizehints = XAllocSizeHints();
         sizehints->flags = 0;
@@ -1182,6 +1112,98 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Make sure that our window ends up on top of things
     XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
+
+    return GL_TRUE;
+}
+
+
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
+// Here is where the window is created, and
+// the OpenGL rendering context is created
+//========================================================================
+
+int _glfwPlatformOpenWindow( int width, int height,
+                             const _GLFWwndconfig* wndconfig,
+                             const _GLFWfbconfig* fbconfig )
+{
+    unsigned int fbcount;
+    _GLFWfbconfig *fbconfigs;
+    _GLFWfbconfig closest;
+    const _GLFWfbconfig *result;
+
+    // Clear platform specific GLFW window state
+    _glfwWin.visual           = (XVisualInfo*)NULL;
+    _glfwWin.colormap         = (Colormap)0;
+    _glfwWin.context          = (GLXContext)NULL;
+    _glfwWin.window           = (Window)0;
+    _glfwWin.pointerGrabbed   = GL_FALSE;
+    _glfwWin.pointerHidden    = GL_FALSE;
+    _glfwWin.keyboardGrabbed  = GL_FALSE;
+    _glfwWin.overrideRedirect = GL_FALSE;
+    _glfwWin.FS.modeChanged   = GL_FALSE;
+    _glfwWin.Saver.changed    = GL_FALSE;
+    _glfwWin.refreshRate      = wndconfig->refreshRate;
+    _glfwWin.windowNoResize   = wndconfig->windowNoResize;
+
+    // As the 2.x API doesn't understand screens, we hardcode this choice and
+    // hope for the best
+    _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
+
+    initGLXExtensions();
+
+    // Choose the best available fbconfig
+    {
+        fbconfigs = getFBConfigs( &fbcount );
+        if( !fbconfigs )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        result = _glfwChooseFBConfig( fbconfig, fbconfigs, fbcount );
+        if( !result )
+        {
+            free( fbconfigs );
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        closest = *result;
+        free( fbconfigs );
+    }
+
+    if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
+
+    if( wndconfig->mode == GLFW_FULLSCREEN )
+    {
+        // Change video mode
+        _glfwSetVideoMode( _glfwWin.screen, &_glfwWin.width,
+                           &_glfwWin.height, &_glfwWin.refreshRate );
+
+        // Remember old screen saver settings
+        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
+                         &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
+                         &_glfwWin.Saver.exposure );
+
+        // Disable screen saver
+        XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
+                         DefaultExposures );
+    }
+
+    if( !createWindow( width, height, wndconfig ) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
 
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
