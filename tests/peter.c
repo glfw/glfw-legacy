@@ -98,16 +98,16 @@ static GLboolean open_window(void)
         return GL_FALSE;
 
     glfwSetWindowTitle("Peter Detector");
+
+    glfwGetMousePos(&x, &y);
+    printf("Mouse position: %i %i\n", x, y);
+
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSetMousePosCallback(mouse_position_callback);
     glfwSetMouseButtonCallback(mouse_button_callback);
     glfwSetKeyCallback(key_callback);
     glfwSwapInterval(1);
-
-    glfwGetMousePos(&x, &y);
-
-    printf("Mouse position: %i %i\n", x, y);
 
     return GL_TRUE;
 }
