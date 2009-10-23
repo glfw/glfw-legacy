@@ -119,7 +119,7 @@ X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
 IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
 Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
 Mac OS\textsuperscript{\textregistered} X.
-\item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Support for joysticks missing at the time of writing.}
+\item Mac OS\textsuperscript{\textregistered} X (Cocoa)\footnote{Support for joysticks missing at the time of writing.}
 \end{itemize}
 
 
@@ -430,12 +430,15 @@ GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hl
 GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
 GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized (not used for fullscreen windows).\\ \hline
 GLFW\_FSAA\_SAMPLES      & 0                & Number of samples to use for the multisampling buffer. Zero disables multisampling.\\ \hline
-GLFW\_OPENGL\_VERSION\_MAJOR & 0	    & Major number of the desired OpenGL version.
+GLFW\_OPENGL\_VERSION\_MAJOR & 0	        & Major number of the desired OpenGL version.
                                               The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
-GLFW\_OPENGL\_VERSION\_MINOR & 0	    & Minor number of the desired OpenGL version.
+GLFW\_OPENGL\_VERSION\_MINOR & 0	        & Minor number of the desired OpenGL version.
                                               The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
 GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_FALSE   & Specify whether the OpenGL context should be forward compatible (i.e. disallow legacy functionality).
                                               This hint is ignored for OpenGL version 2.1 and below.\\ \hline
+GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_FALSE    & Specify whether a debug context should be created.\\ \hline
+GLFW\_OPENGL\_PROFILE    & 0                & The OpenGL profile the context should implement, or zero to disable profile selection.
+                                              Available profiles are GLFW\_OPENGL\_CORE\_PROFILE and GLFW\_OPENGL\_COMPAT\_PROFILE.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Targets for \textbf{glfwOpenWindowHint}}
@@ -824,7 +827,9 @@ GLFW\_FSAA\_SAMPLES      & Number of multisampling buffer samples. Zero indicate
 GLFW\_OPENGL\_VERSION\_MAJOR & Major number of the desired OpenGL version.\\ \hline
 GLFW\_OPENGL\_VERSION\_MINOR & Minor number of the desired OpenGL version.\\ \hline
 GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_TRUE if the OpenGL context is forward compatible (i.e. disallows legacy functionality), else GL\_FALSE.
-This is always GL\_FALSE for OpenGL version 2.1 and below.\\ \hline
+                                This is always GL\_FALSE for OpenGL version 2.1 and below.\\ \hline
+GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_TRUE if the OpenGL context is a debug context.\\ \hline
+GLFW\_OPENGL\_PROFILE    & The OpenGL profile implemented by the context, or zero.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Window parameters for \textbf{glfwGetWindowParam}}
@@ -864,6 +869,9 @@ always return GL\_TRUE. Under Windows, GLFW\_ACCELERATED means that the
 \OpenGL\ renderer is a 3rd party renderer, rather than the fallback
 Microsoft software \OpenGL\ renderer. In other words, it is not a real
 guarantee that the \OpenGL\ renderer is actually hardware accelerated.
+
+GLFW\_OPENGL\_VERSION\_MAJOR and GLFW\_OPENGL\_VERSION\_MINOR always return the
+same values as those returned by \textbf{glfwGetGLVersion}.
 \end{refnotes}
 
 
