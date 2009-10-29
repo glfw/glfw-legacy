@@ -92,6 +92,7 @@ cygwin-install: win32-cygwin
 win32-cygwin:
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin
 	cd examples  && $(MAKE) -f Makefile.win32.cygwin
+	cd tests     && $(MAKE) -f Makefile.win32.cygwin
 
 cygwin-clean:
 	cd lib/win32 && $(MAKE) -f Makefile.win32.cygwin clean
