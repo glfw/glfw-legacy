@@ -6,10 +6,10 @@
 ##########################################################################
 
 CC     = gcc
-CFLAGS = -I../include -Wall -O3 -ffast-math -mno-cygwin
+CFLAGS = -I../include -Wall -O3 -ffast-math -mwin32 -mno-cygwin
 
 LIB    = ../lib/win32/libglfw.a
-LFLAGS = $(LIB) -lglu32 -lopengl32 
+LFLAGS = -mno-cygwin $(LIB) -lglu32 -lopengl32 
 
 WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole

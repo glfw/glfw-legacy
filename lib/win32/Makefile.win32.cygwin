@@ -18,11 +18,11 @@ VERMINOR = 7
 # Compiler settings
 ##########################################################################
 CC         = gcc
-CFLAGS     = -c -I. -I.. -Wall -mno-cygwin -mwin32 -Os
+CFLAGS     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -Os
 CFLAGS_DLL = $(CFLAGS) -mdll -DGLFW_BUILD_DLL
 
 # Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED     = -c -I. -I.. -Wall -mwin32 -O3 -ffast-math
+CFLAGS_SPEED     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -O3 -ffast-math
 CFLAGS_SPEED_DLL = $(CFLAGS_SPEED) -mdll -DGLFW_BUILD_DLL
 
 HEADERS = ../../include/GL/glfw.h ../internal.h platform.h
@@ -36,7 +36,7 @@ LIBFLAGS = -rcs
 
 # DLL
 LINK      = gcc
-LINKFLAGS = -shared -s -Wl,--kill-at,--major-image-version,$(VERMAJOR),--minor-image-version,$(VERMINOR)
+LINKFLAGS = -shared -s -mno-cygwin -Wl,--kill-at,--major-image-version,$(VERMAJOR),--minor-image-version,$(VERMINOR)
 LINKLIBS  = -lopengl32
 
 SED         = sed
