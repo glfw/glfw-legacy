@@ -241,3 +241,4 @@ win32_time_dll.o: win32_time.c ..\\internal.h platform.h
 
 win32_window_dll.o: win32_window.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) -o $@ win32_window.c
+

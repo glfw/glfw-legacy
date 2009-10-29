@@ -23,6 +23,9 @@ default:
 	@echo "This is the makefile for the GLFW link library and example programs."
 	@echo "Type one of the following:"
 	@echo "-----------------------------------------------------------------------------"
+	@echo "  $(MAKE) win32-mingw       for bare MinGW on Windows"
+	@echo "  $(MAKE) mingw-clean       to clean the GLFW library and header"
+	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) win32-msys        for MinGW/MSYS on Windows"
 	@echo "  $(MAKE) msys-clean        to clean the GLFW library and header"
 	@echo "  $(MAKE) msys-install      to install the GLFW library and header into MinGW/MSYS"
@@ -64,6 +67,17 @@ EXAMPLES = boing \
            splitview \
            triangle \
            wave
+
+
+###########################################################################
+# Bare MinGW on Windows
+###########################################################################
+
+win32-mingw:
+	@.\\compile.bat $(MAKE) mingw
+
+mingw-clean:
+	@.\\compile.bat CLEAN
 
 
 ###########################################################################
