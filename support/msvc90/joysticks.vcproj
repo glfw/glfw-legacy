@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="joytest"
+	Name="joysticks"
 	ProjectGUID="{EE473E21-BCE8-44F1-AC1B-86B7AEF9937F}"
-	RootNamespace="joytest"
+	RootNamespace="joysticks"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\examples"
+			OutputDirectory="$(SolutionDir)..\..\tests"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -92,7 +92,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\examples"
+			OutputDirectory="$(SolutionDir)..\..\tests"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -176,7 +176,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\examples\joytest.c"
+				RelativePath="..\..\tests\joysticks.c"
 				>
 			</File>
 		</Filter>
