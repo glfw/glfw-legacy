@@ -64,6 +64,14 @@ cd ..\..\examples
 
 
 REM ----------------------------------------------------------------------
+REM Build test programs
+REM ----------------------------------------------------------------------
+
+cd ..\..\tests
+%1 -f Makefile.win32.%2
+
+
+REM ----------------------------------------------------------------------
 REM Return to root directory
 REM ----------------------------------------------------------------------
 
@@ -213,4 +221,16 @@ IF EXIST .\examples\splitview.tds         del .\examples\splitview.tds
 IF EXIST .\examples\triangle.tds          del .\examples\triangle.tds
 IF EXIST .\examples\wave.tds              del .\examples\wave.tds
 
+IF EXIST .\tests\accuracy.exe             del .\tests\accuracy.exe
+IF EXIST .\tests\defaults.exe             del .\tests\defaults.exe
+IF EXIST .\tests\events.exe               del .\tests\events.exe
+IF EXIST .\tests\fsaa.exe                 del .\tests\fsaa.exe
+IF EXIST .\tests\fullscreen.exe           del .\tests\fullscreen.exe
+IF EXIST .\tests\joysticks.exe            del .\tests\joysticks.exe
+IF EXIST .\tests\peter.exe                del .\tests\peter.exe
+IF EXIST .\tests\reopen.exe               del .\tests\reopen.exe
+IF EXIST .\tests\tearing.exe              del .\tests\tearing.exe
+IF EXIST .\tests\version.exe              del .\tests\version.exe
+
 :End
+
