@@ -56,17 +56,15 @@ default:
 ###########################################################################
 # List of example programs (used for cleanup)
 ###########################################################################
-EXAMPLES = boing \
-           gears \
-           listmodes \
-           mipmaps \
-           mtbench \
-           mthello \
-           particles \
-           pong3d \
-           splitview \
-           triangle \
-           wave
+EXAMPLES = boing gears listmodes mipmaps mtbench mthello particles \
+           pong3d splitview triangle wave
+
+
+###########################################################################
+# List of test programs (used for cleanup)
+###########################################################################
+TESTS = accuracy defaults events fsaa fullscreen joysticks peter reopen \
+	tearing version
 
 
 ###########################################################################
@@ -169,6 +167,7 @@ x11-clean:
 	rm -f lib/x11/libglfw.pc
 	rm -f lib/x11/libglfw.pc.in
 	cd examples; rm -f $(EXAMPLES)
+	cd tests; rm -f $(TESTS)
 
 # Auto configuration for X11
 $(MAKEFILES_X11) : compile.sh $(MAKEFILES_X11_IN)
