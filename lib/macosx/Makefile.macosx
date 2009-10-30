@@ -2,7 +2,7 @@
 # Makefile for GLFW on Mac OS X using GCC (Apple SDK).
 #-------------------------------------------------------------------------
 # To compile GLFW using this makefile, run:
-#  make -f Makefile.macosx.gcc
+#  make -f Makefile.macosx
 ##########################################################################
 
 ##########################################################################

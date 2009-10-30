@@ -2,7 +2,7 @@
 # Makefile for GLFW test programs on Windows using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  make -f Makefile.macosx.gcc
+#  make -f Makefile.macosx
 ##########################################################################
 
 # Compiler settings
