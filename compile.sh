@@ -542,7 +542,7 @@ else
   GLFW_BIN_CFLAGS="$INCS -O"
 fi
 GLFW_BIN_CFLAGS="-I../include $GLFW_BIN_CFLAGS"
-LFLAGS_LINK="../lib/x11/libglfw.a $LFLAGS -lGLU $LIBS -lm"
+GLFW_BIN_LFLAGS="$LFLAGS -lGLU $LIBS -lm"
 
 
 ##########################################################################
@@ -590,7 +590,9 @@ cat > "$MKNAME" <<EOF
 ##########################################################################
 CC     = $CC
 CFLAGS = $GLFW_BIN_CFLAGS
-LFLAGS = $LFLAGS_LINK
+
+LIB    = ../lib/x11/libglfw.a
+LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS
 
 EOF
 cat './examples/Makefile.x11.in' >>$MKNAME
@@ -612,7 +614,9 @@ cat > "$MKNAME" <<EOF
 ##########################################################################
 CC     = $CC
 CFLAGS = $GLFW_BIN_CFLAGS
-LFLAGS = $LFLAGS_LINK
+
+LIB    = ../lib/x11/libglfw.a
+LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS
 
 EOF
 cat './tests/Makefile.x11.in' >>$MKNAME
