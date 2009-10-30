@@ -63,6 +63,8 @@ fi
 
 # These will contain flags shared between the GLFW library and binaries
 # They are also used by the compile and link tests below
+# Note that CFLAGS and LFLAGS remain unmodified and are checked again
+# before file generation
 GLFW_CFLAGS="$CFLAGS"
 GLFW_LFLAGS="$LFLAGS"
 
