@@ -39,8 +39,6 @@ self=$0
 # 0 standard input
 # 1 file creation
 # 2 errors and warnings
-# 3 some systems may open it to /dev/tty
-# 4 used on the Kubota Titan
 # 5 compiler messages saved in config.log
 # 6 checking for... messages and results
 exec 5>./config.log
