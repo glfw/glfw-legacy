@@ -321,18 +321,24 @@ static void init(int argc, char *argv[])
 /* program entry */
 int main(int argc, char *argv[])
 {
-    // Init GLFW and open window
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n");
+        exit(1);
+    }
+
     if( !glfwOpenWindow( 300,300, 0,0,0,0, 16,0, GLFW_WINDOW ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n");
         glfwTerminate();
-        return 0;
+        exit(1);
     }
+
     glfwSetWindowTitle( "Gears" );
     glfwEnable( GLFW_KEY_REPEAT );
     glfwSwapInterval( 1 );
 
-    // Special args?
+    // Parse command-line options
     init(argc, argv);
 
     // Set callback functions
@@ -362,6 +368,6 @@ int main(int argc, char *argv[])
     glfwTerminate();
 
     // Exit program
-    return 0;
+    exit(0);
 }
 
