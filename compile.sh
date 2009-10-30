@@ -61,31 +61,43 @@ if [ "x$CC" = x ]; then
   CC=cc
 fi
 
-GLFW_CFLAGS=$CFLAGS
-LFLAGS=
-LDFLAGS=
-INCS=
+# These will contain flags shared between the GLFW library and binaries
+# They are also used by the compile and link tests below
+GLFW_CFLAGS="$CFLAGS"
+GLFW_LFLAGS="$LFLAGS"
+
+# These will contain all flags needed by the GLFW library
+GLFW_LIB_CFLAGS=
+GLFW_LIB_LFLAGS=
+
+# These will contain all flags needed by binaries
+GLFW_BIN_CFLAGS=
+GLFW_BIN_LFLAGS=
+
+# This will contain platform-specific flags for the GLFW shared library
+SOFLAGS=
+
+# This will contain all the libraries needed by GLFW
 LIBS="-lGL -lX11"
 
 
 ##########################################################################
-# Check on what system we are running
+# Add system-specific flags
 ##########################################################################
 echo "Checking what kind of system this is... " 1>&6
 
 case "x`uname 2> /dev/null`" in
 xLinux)
-  GLFW_CFLAGS="$GLFW_CFLAGS -D_GLFW_USE_LINUX_JOYSTICKS"
-  LDFLAGS="-shared -Wl,-soname,libglfw.so.2"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_USE_LINUX_JOYSTICKS"
+  SOFLAGS="-shared -Wl,-soname,libglfw.so.2"
   echo " Linux" 1>&6
   ;;
 xDarwin)
-  GLFW_CFLAGS="$GLFW_CFLAGS"
-  LDFLAGS="-flat_namespace -undefined suppress"
+  SOFLAGS="-flat_namespace -undefined suppress"
   echo " Mac OS X" 1>&6
   ;;
 *)
-  LDFLAGS="-shared -soname libglfw.so.2"
+  SOFLAGS="-shared -soname libglfw.so.2"
   echo " Generic Unix" 1>&6
   ;;
 esac
@@ -94,53 +106,47 @@ echo " " 1>&6
 
 
 ##########################################################################
-# Check for X11 libs/include directories
+# Check for X11 library directory
 ##########################################################################
 echo "Checking for X11 libraries location... " 1>&6
 
-# X11R6 in /usr/X11/lib ?
 if [ -r "/usr/X11/lib" ]; then
-  LFLAGS="$LFLAGS -L/usr/X11/lib"
-  INCS="-I/usr/X11/include"
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11/lib"
+  GLFW_CFLAGS="-I/usr/X11/include $GLFW_CFLAGS"
   echo " X11 libraries location: /usr/X11/lib" 1>&6
-# X11R/ in /usr/X11R7/lib ?
 elif [ -r "/usr/X11R7/lib" ]; then
-  LFLAGS="$LFLAGS -L/usr/X11R7/lib"
-  INCS="-I/usr/X11R7/include"
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R7/lib"
+  GLFW_CFLAGS="-I/usr/X11R7/include $GLFW_CFLAGS"
   echo " X11 libraries location: /usr/X11R7/lib" 1>&6
-# X11R6 in /usr/X11R6/lib ?
 elif [ -r "/usr/X11R6/lib" ]; then
-  LFLAGS="$LFLAGS -L/usr/X11R6/lib"
-  INCS="-I/usr/X11R6/include"
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R6/lib"
+  GLFW_CFLAGS="-I/usr/X11R6/include $GLFW_CFLAGS"
   echo " X11 libraries location: /usr/X11R6/lib" 1>&6
-# X11R5 in /usr/X11R5/lib ?
 elif [ -r "/usr/X11R5/lib" ]; then
-  LFLAGS="$LFLAGS -L/usr/X11R5/lib"
-  INCS="-I/usr/X11R5/include"
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R5/lib"
+  GLFW_CFLAGS="-I/usr/X11R5/include $GLFW_CFLAGS"
   echo " X11 libraries location: /usr/X11R5/lib" 1>&6
-# X11R6 in /opt/X11R6/lib (e.g. QNX)?
 elif [ -r "/opt/X11R6/lib" ]; then
-  LFLAGS="$LFLAGS -L/opt/X11R6/lib"
-  INCS="-I/opt/X11R6/include"
+  # This location is used on QNX
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/opt/X11R6/lib"
+  GLFW_CFLAGS="-I/opt/X11R6/include $GLFW_CFLAGS"
   echo " X11 libraries location: /opt/X11R6/lib" 1>&6
-# X11R6 in /usr/X/lib ?
 elif [ -r "/usr/X/lib" ]; then
-  LFLAGS="$LFLAGS -L/usr/X/lib"
-  INCS="-I/usr/X/include"
+  GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X/lib"
+  GLFW_CFLAGS="-I/usr/X/include $GLFW_CFLAGS"
   echo " X11 libraries location: /usr/X/lib" 1>&6
 else
   # TODO: Detect and report X11R7 in /usr/lib
   echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
 fi
 echo " " 1>&6
-GLFW_LIB_CFLAGS="$GLFW_CFLAGS $INCS"
 
 
 ##########################################################################
 # Compilation commands
 ##########################################################################
 compile='$CC -c $GLFW_CFLAGS conftest.c 1>&5'
-link='$CC -o conftest $GLFW_CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
+link='$CC -o conftest $GLFW_CFLAGS $GLFW_LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
@@ -251,25 +257,35 @@ cat > conftest.c <<EOF
 int main() {pthread_t posixID; posixID=pthread_self(); return 0;}
 EOF
 
-# Try -pthread (most systems)
-CFLAGS_THREAD="-pthread"
-CFLAGS_OLD="$CFLAGS"
-GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS $CFLAGS_THREAD"
+# Save original values
+CFLAGS_OLD="$GLFW_CFLAGS"
 LIBS_OLD="$LIBS"
-LIBS="$LIBS -pthread"
-if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_pthread=yes
-else
-  echo "$self: failed program was:" >&5
-  cat conftest.c >&5
+
+# These will contain the extra flags, if any
+CFLAGS_THREAD=
+LIBS_THREAD=
+
+# Try -pthread (most systems)
+if [ "x$has_pthread" = xno ]; then
+  CFLAGS_THREAD="-pthread"
+  LIBS_THREAD="-pthread"
+  GLFW_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD"
+  LIBS="$LIBS_OLD $LIBS_THREAD"
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_pthread=yes
+  else
+    echo "$self: failed program was:" >&5
+    cat conftest.c >&5
+  fi
 fi
 
 # Try -lpthread 
 if [ "x$has_pthread" = xno ]; then
   CFLAGS_THREAD="-D_REENTRANT"
-  GLFW_LIB_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
-  LIBS="$LIBS_OLD -lpthread"
+  LIBS_THREAD="-lpthread"
+  GLFW_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
+  LIBS="$LIBS_OLD $LIBS_THREAD"
   if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_pthread=yes
@@ -281,8 +297,10 @@ fi
 
 # Try -lsocket (e.g. QNX)
 if [ "x$has_pthread" = xno ]; then
-  GLFW_LIB_CFLAGS="$CFLAGS_OLD" 
-  LIBS="$LIBS_OLD -lsocket"
+  CFLAGS_THREAD=
+  LIBS_THREAD="-lsocket"
+  GLFW_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
+  LIBS="$LIBS_OLD $LIBS_THREAD"
   if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_pthread=yes
@@ -292,11 +310,15 @@ if [ "x$has_pthread" = xno ]; then
   fi
 fi
 
+# Restore original values
+GLFW_CFLAGS="$CFLAGS_OLD"
+LIBS="$LIBS_OLD"
+
 echo " pthread support: ""$has_pthread" 1>&6
 if [ "x$has_pthread" = xyes ]; then
+  GLFW_CFLAGS="$GLFW_CFLAGS $CFLAGS_THREAD"
+  LIBS="$LIBS $LIBS_THREAD"
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_PTHREAD"
-else
-  LIBS="$LIBS_OLD"
 fi
 echo " " 1>&6
 
@@ -351,6 +373,7 @@ fi
 ##########################################################################
 echo "Checking for glXGetProcAddress support... " 1>&6
 echo "$self: Checking for glXGetProcAddress support" >&5
+
 has_glXGetProcAddress=no
 has_glXGetProcAddressARB=no
 has_glXGetProcAddressEXT=no
@@ -406,9 +429,9 @@ else
 fi
 rm -f conftest*
 
-echo " glXGetProcAddress extension:    ""$has_glXGetProcAddress" 1>&6
-echo " glXGetProcAddressARB extension: ""$has_glXGetProcAddressARB" 1>&6
-echo " glXGetProcAddressEXT extension: ""$has_glXGetProcAddressEXT" 1>&6
+echo " glXGetProcAddress function:    ""$has_glXGetProcAddress" 1>&6
+echo " glXGetProcAddressARB function: ""$has_glXGetProcAddressARB" 1>&6
+echo " glXGetProcAddressEXT function: ""$has_glXGetProcAddressEXT" 1>&6
 if [ "x$has_glXGetProcAddress" = xyes ]; then
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
 fi
@@ -532,15 +555,18 @@ echo " " 1>&6
 # Last chance to change the flags before file generation
 ##########################################################################
 
-if [ "x$use_gcc" = xyes ]; then
-  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -O2 -Wall"
-  GLFW_BIN_CFLAGS="$INCS -O2 -Wall"
-else
-  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -O"
-  GLFW_BIN_CFLAGS="$INCS -O"
-fi
+GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS"
 GLFW_BIN_CFLAGS="-I../include $GLFW_BIN_CFLAGS"
-GLFW_BIN_LFLAGS="$LFLAGS -lGLU $LIBS -lm"
+
+if [ "x$CFLAGS" = x ]; then
+  if [ "x$use_gcc" = xyes ]; then
+    GLFW_CFLAGS="$GLFW_CFLAGS -O2 -Wall"
+  else
+    GLFW_CFLAGS="$GLFW_CFLAGS -O"
+  fi
+fi
+
+GLFW_BIN_LFLAGS="-lGLU $LIBS -lm"
 
 
 ##########################################################################
@@ -563,9 +589,9 @@ cat > "$MKNAME" <<EOF
 # Automatically generated Makefile for GLFW
 ##########################################################################
 CC           = $CC
-CFLAGS       = $GLFW_LIB_CFLAGS
-LDFLAGS      = $LDFLAGS
-LFLAGS       = $LFLAGS
+CFLAGS       = $GLFW_LIB_CFLAGS $GLFW_CFLAGS
+SOFLAGS      = $SOFLAGS
+LFLAGS       = $GLFW_LIB_LFLAGS $GLFW_LFLAGS
 LIBS         = $LIBS
 
 EOF
@@ -587,10 +613,10 @@ cat > "$MKNAME" <<EOF
 # Makefile for GLFW example programs on X11 (generated by compile.sh)
 ##########################################################################
 CC     = $CC
-CFLAGS = $GLFW_BIN_CFLAGS
+CFLAGS = $GLFW_BIN_CFLAGS $GLFW_CFLAGS
 
 LIB    = ../lib/x11/libglfw.a
-LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS
+LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS $GLFW_LFLAGS
 
 EOF
 cat './examples/Makefile.x11.in' >>$MKNAME
@@ -611,10 +637,10 @@ cat > "$MKNAME" <<EOF
 # Makefile for GLFW test programs on X11 (generated by compile.sh)
 ##########################################################################
 CC     = $CC
-CFLAGS = $GLFW_BIN_CFLAGS
+CFLAGS = $GLFW_BIN_CFLAGS $GLFW_CFLAGS
 
 LIB    = ../lib/x11/libglfw.a
-LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS
+LFLAGS = \$(LIB) $GLFW_BIN_LFLAGS $GLFW_LFLAGS
 
 EOF
 cat './tests/Makefile.x11.in' >>$MKNAME
@@ -640,7 +666,7 @@ Name: GLFW
 Description: A portable framework for OpenGL development
 Version: 2.7
 URL: http://glfw.sourceforge.net/
-Libs: -L\${libdir} -lglfw $LFLAGS $LIBS -lm
+Libs: -L\${libdir} -lglfw $GLFW_LFLAGS $LIBS -lm
 Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF
 

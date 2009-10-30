@@ -119,7 +119,7 @@ libglfw.a: $(STATIC_OBJS)
 # Rule for building shared library
 ##########################################################################
 libglfw.so: $(SHARED_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(SHARED_OBJS) $(LFLAGS) $(LIBS)
+	$(CC) $(SOFLAGS) -o $@ $(SHARED_OBJS) $(LFLAGS) $(LIBS)
 
 
 ##########################################################################
