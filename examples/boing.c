@@ -27,6 +27,7 @@
  * a hidden computer or VCR.
  *****************************************************************************/
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <GL/glfw.h>
@@ -567,12 +568,19 @@ int main( void )
    int running;
 
    /* Init GLFW */
-   glfwInit();
+   if( !glfwInit() )
+   {
+      fprintf( stderr, "Failed to initialize GLFW\n" );
+      exit( EXIT_FAILURE );
+   }
+
    if( !glfwOpenWindow( 400,400, 0,0,0,0, 16,0, GLFW_WINDOW ) )
    {
+       fprintf( stderr, "Failed to open GLFW window\n" );
        glfwTerminate();
-       return 0;
+       exit( EXIT_FAILURE );
    }
+
    glfwSetWindowTitle( "Boing (classic Amiga demo)" );
    glfwSetWindowSizeCallback( reshape );
    glfwEnable( GLFW_STICKY_KEYS );
@@ -602,5 +610,6 @@ int main( void )
    while( running );
 
    glfwTerminate();
-   return 0;
+   exit( EXIT_SUCCESS );
 }
+
