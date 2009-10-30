@@ -54,20 +54,6 @@ default:
 
 
 ###########################################################################
-# List of example programs (used for cleanup)
-###########################################################################
-EXAMPLES = boing gears listmodes mipmaps mtbench mthello particles \
-           pong3d splitview triangle wave
-
-
-###########################################################################
-# List of test programs (used for cleanup)
-###########################################################################
-TESTS = accuracy defaults events fsaa fullscreen joysticks peter reopen \
-	tearing version
-
-
-###########################################################################
 # Bare MinGW on Windows
 ###########################################################################
 
@@ -154,8 +140,18 @@ cross-mgw-clean:
 # X11 on Unix-like systems
 ###########################################################################
 
-MAKEFILES_X11_IN  = lib/x11/Makefile.x11.in  examples/Makefile.x11.in
-MAKEFILES_X11     = lib/x11/Makefile.x11     examples/Makefile.x11
+# List of example programs (used by clean target)
+EXAMPLES = boing gears listmodes mipmaps mtbench mthello particles \
+           pong3d splitview triangle wave
+
+# List of test programs (used by clean target)
+TESTS = accuracy defaults events fsaa fullscreen joysticks peter reopen \
+	tearing version
+
+MAKEFILES_X11_IN = lib/x11/Makefile.x11.in examples/Makefile.x11.in \
+		   tests/Makefile.x11.in
+
+MAKEFILES_X11 = lib/x11/Makefile.x11 examples/Makefile.x11 tests/Makefile.x11
 
 # Cleanup for X11 (must be here due to generated makefile)
 x11-clean:
