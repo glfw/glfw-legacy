@@ -86,62 +86,59 @@ LIBS="-lGL -lX11"
 ##########################################################################
 # Add system-specific flags
 ##########################################################################
-echo "Checking what kind of system this is... " 1>&6
+echo -n "Checking what kind of system this is... " 1>&6
 
 case "x`uname 2> /dev/null`" in
 xLinux)
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_USE_LINUX_JOYSTICKS"
   SOFLAGS="-shared -Wl,-soname,libglfw.so.2"
-  echo " Linux" 1>&6
+  echo "Linux" 1>&6
   ;;
 xDarwin)
   SOFLAGS="-flat_namespace -undefined suppress"
-  echo " Mac OS X" 1>&6
+  echo "Mac OS X" 1>&6
   ;;
 *)
   SOFLAGS="-shared -soname libglfw.so.2"
-  echo " Generic Unix" 1>&6
+  echo "Generic Unix" 1>&6
   ;;
 esac
-
-echo " " 1>&6
 
 
 ##########################################################################
 # Check for X11 library directory
 ##########################################################################
-echo "Checking for X11 libraries location... " 1>&6
+echo -n "Checking for X11 libraries location... " 1>&6
 
 if [ -r "/usr/X11/lib" ]; then
   GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11/lib"
   GLFW_CFLAGS="-I/usr/X11/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /usr/X11/lib" 1>&6
+  echo "/usr/X11/lib" 1>&6
 elif [ -r "/usr/X11R7/lib" ]; then
   GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R7/lib"
   GLFW_CFLAGS="-I/usr/X11R7/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /usr/X11R7/lib" 1>&6
+  echo "/usr/X11R7/lib" 1>&6
 elif [ -r "/usr/X11R6/lib" ]; then
   GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R6/lib"
   GLFW_CFLAGS="-I/usr/X11R6/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /usr/X11R6/lib" 1>&6
+  echo "/usr/X11R6/lib" 1>&6
 elif [ -r "/usr/X11R5/lib" ]; then
   GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X11R5/lib"
   GLFW_CFLAGS="-I/usr/X11R5/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /usr/X11R5/lib" 1>&6
+  echo "/usr/X11R5/lib" 1>&6
 elif [ -r "/opt/X11R6/lib" ]; then
   # This location is used on QNX
   GLFW_LFLAGS="$GLFW_LFLAGS -L/opt/X11R6/lib"
   GLFW_CFLAGS="-I/opt/X11R6/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /opt/X11R6/lib" 1>&6
+  echo "/opt/X11R6/lib" 1>&6
 elif [ -r "/usr/X/lib" ]; then
   GLFW_LFLAGS="$GLFW_LFLAGS -L/usr/X/lib"
   GLFW_CFLAGS="-I/usr/X/include $GLFW_CFLAGS"
-  echo " X11 libraries location: /usr/X/lib" 1>&6
+  echo "/usr/X/lib" 1>&6
 else
   # TODO: Detect and report X11R7 in /usr/lib
-  echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
+  echo "unknown (assuming linker will find them)" 1>&6
 fi
-echo " " 1>&6
 
 
 ##########################################################################
@@ -154,7 +151,7 @@ link='$CC -o conftest $GLFW_CFLAGS $GLFW_LFLAGS conftest.c $LIBS 1>&5'
 ##########################################################################
 # Check if we are using GNU C
 ##########################################################################
-echo "Checking whether we are using GNU C... " 1>&6
+echo -n "Checking whether we are using GNU C... " 1>&6
 echo "$self: checking whether we are using GNU C" >&5
 
 cat > conftest.c <<EOF
@@ -170,17 +167,17 @@ else
 fi
 rm -f conftest*
 
-echo " Using GNU C: ""$use_gcc" 1>&6
+echo "$use_gcc" 1>&6
+
 if [ "x$use_gcc" = xyes ]; then
   CC=gcc
 fi
-echo " " 1>&6
 
 
 ##########################################################################
 # Check for X11 RandR availability
 ##########################################################################
-echo "Checking for X11 RandR support... " 1>&6
+echo -n "Checking for X11 RandR support... " 1>&6
 echo "$self: Checking for X11 RandR support" >&5
 has_xrandr=no
 
@@ -200,12 +197,12 @@ else
 fi
 rm -f conftest*
 
-echo " X11 RandR extension: ""$has_xrandr" 1>&6
+echo "$has_xrandr" 1>&6
+
 if [ "x$has_xrandr" = xyes ]; then
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_XRANDR"
   LIBS="$LIBS -lXrandr"
 fi
-echo " " 1>&6
 
 
 ##########################################################################
@@ -213,7 +210,7 @@ echo " " 1>&6
 ##########################################################################
 if [ "x$has_xrandr" != xyes ]; then
 
-  echo "Checking for X11 VidMode support... " 1>&6
+  echo -n "Checking for X11 VidMode support... " 1>&6
   echo "$self: Checking for X11 VidMode support" >&5
   has_xf86vm=no
 
@@ -237,12 +234,12 @@ EOF
   fi
   rm -f conftest*
 
-  echo " X11 VidMode extension: ""$has_xf86vm" 1>&6
+  echo "$has_xf86vm" 1>&6
+
   if [ "x$has_xf86vm" = xyes ]; then
     GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_XF86VIDMODE"
     LIBS="$LIBS -lXxf86vm -lXext"
   fi
-  echo " " 1>&6
 
 fi
 
@@ -250,7 +247,7 @@ fi
 ##########################################################################
 # Check for pthread support
 ##########################################################################
-echo "Checking for pthread support... " 1>&6
+echo -n "Checking for pthread support... " 1>&6
 echo "$self: Checking for pthread support" >&5
 has_pthread=no
 
@@ -316,13 +313,13 @@ fi
 GLFW_CFLAGS="$CFLAGS_OLD"
 LIBS="$LIBS_OLD"
 
-echo " pthread support: ""$has_pthread" 1>&6
+echo "$has_pthread" 1>&6
+
 if [ "x$has_pthread" = xyes ]; then
   GLFW_CFLAGS="$GLFW_CFLAGS $CFLAGS_THREAD"
   LIBS="$LIBS $LIBS_THREAD"
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_PTHREAD"
 fi
-echo " " 1>&6
 
 
 ##########################################################################
@@ -330,8 +327,8 @@ echo " " 1>&6
 ##########################################################################
 if [ "x$has_pthread" = xyes ]; then
 
-  echo "Checking for sched_yield support... " 1>&6
-  echo "$self: Checking for sched_yield support" >&5
+  echo -n "Checking for sched_yield... " 1>&6
+  echo "$self: Checking for sched_yield" >&5
   has_sched_yield=no
 
   LIBS_OLD="$LIBS"
@@ -361,11 +358,11 @@ EOF
 
   rm -f conftest*
 
-  echo " sched_yield: ""$has_sched_yield" 1>&6
+  echo "$has_sched_yield" 1>&6
+
   if [ "x$has_sched_yield" = xyes ]; then
     GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SCHED_YIELD"
   fi
-  echo " " 1>&6
 
 fi
 
@@ -373,84 +370,95 @@ fi
 ##########################################################################
 # Check for glXGetProcAddressXXX availability
 ##########################################################################
-echo "Checking for glXGetProcAddress support... " 1>&6
-echo "$self: Checking for glXGetProcAddress support" >&5
+echo -n "Checking for glXGetProcAddress variants... " 1>&6
+echo "$self: Checking for glXGetProcAddress variants" >&5
 
 has_glXGetProcAddress=no
-has_glXGetProcAddressARB=no
-has_glXGetProcAddressEXT=no
 
-# glXGetProcAddress check
-cat > conftest.c <<EOF
+if [ "x$has_glXGetProcAddress" = xno ]; then
+
+  # Check for plain glXGetProcAddress
+  cat > conftest.c <<EOF
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
 int main() {void *ptr=(void*)glXGetProcAddress("glFun"); return 0;}
 EOF
 
-if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_glXGetProcAddress=yes
-else
-  echo "$self: failed program was:" >&5
-  cat conftest.c >&5
-fi
-rm -f conftest*
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_glXGetProcAddress=yes
+  else
+    echo "$self: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+  rm -f conftest*
 
-# glXGetProcAddressARB check
-cat > conftest.c <<EOF
+  if [ "x$has_glXGetProcAddress" = xyes ]; then
+    echo "glXGetProcAddress" 1>&6
+    GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
+  fi
+fi
+
+if [ "x$has_glXGetProcAddress" = xno ]; then
+
+  # Check for glXGetProcAddressARB
+  cat > conftest.c <<EOF
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
 int main() {void *ptr=(void*)glXGetProcAddressARB("glFun"); return 0;}
 EOF
 
-if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_glXGetProcAddressARB=yes
-else
-  echo "$self: failed program was:" >&5
-  cat conftest.c >&5
-fi
-rm -f conftest*
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_glXGetProcAddress=yes
+  else
+    echo "$self: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+  rm -f conftest*
 
-# glXGetProcAddressEXT check
-cat > conftest.c <<EOF
+  if [ "x$has_glXGetProcAddress" = xyes ]; then
+    echo "glXGetProcAddressARB" 1>&6
+    GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
+  fi
+fi
+
+if [ "x$has_glXGetProcAddress" = xno ]; then
+  # Check for glXGetProcAddressEXT
+  cat > conftest.c <<EOF
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
 int main() {void *ptr=(void*)glXGetProcAddressEXT("glFun"); return 0;}
 EOF
 
-if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
-  rm -rf conftest*
-  has_glXGetProcAddressEXT=yes
-else
-  echo "$self: failed program was:" >&5
-  cat conftest.c >&5
-fi
-rm -f conftest*
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -rf conftest*
+    has_glXGetProcAddress=yes
+  else
+    echo "$self: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+  rm -f conftest*
 
-echo " glXGetProcAddress function:    ""$has_glXGetProcAddress" 1>&6
-echo " glXGetProcAddressARB function: ""$has_glXGetProcAddressARB" 1>&6
-echo " glXGetProcAddressEXT function: ""$has_glXGetProcAddressEXT" 1>&6
-if [ "x$has_glXGetProcAddress" = xyes ]; then
-  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
+  if [ "x$has_glXGetProcAddress" = xyes ]; then
+    echo "glXGetProcAddressEXT" 1>&6
+    GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
+  fi
 fi
-if [ "x$has_glXGetProcAddressARB" = xyes ]; then
-  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
+
+if [ "x$has_glXGetProcAddress" = xno ]; then
+  echo "no" 1>&6
 fi
-if [ "x$has_glXGetProcAddressEXT" = xyes ]; then
-  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
-fi
-echo " " 1>&6
 
 
 ##########################################################################
 # Check for dlopen support
 ##########################################################################
-echo "Checking for dlopen support... " 1>&6
-echo "$self: Checking for dlopen support" >&5
+echo -n "Checking for dlopen... " 1>&6
+echo "$self: Checking for dlopen" >&5
 has_dlopen=no
 
 cat > conftest.c <<EOF
@@ -484,18 +492,18 @@ if [ "x$has_dlopen" = xno ]; then
 fi
 rm -f conftest*
 
-echo " dlopen support: ""$has_dlopen" 1>&6
+echo "$has_dlopen" 1>&6
+
 if [ "x$has_dlopen" = xyes ]; then
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_DLOPEN"
 fi
-echo " " 1>&6
 
 
 ##########################################################################
 # Check for sysconf support
 ##########################################################################
-echo "Checking for sysconf support... " 1>&6
-echo "$self: Checking for sysconf support" >&5
+echo -n "Checking for sysconf... " 1>&6
+echo "$self: Checking for sysconf" >&5
 has_sysconf=no
 
 cat > conftest.c <<EOF
@@ -517,17 +525,17 @@ else
 fi
 rm -f conftest*
 
-echo " sysconf support: ""$has_sysconf" 1>&6
+echo "$has_sysconf" 1>&6
+
 if [ "x$has_sysconf" = xyes ]; then
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SYSCONF"
 fi
-echo " " 1>&6
 
 
 ##########################################################################
 # Check for sysctl support
 ##########################################################################
-echo "Checking for sysctl support... " 1>&6
+echo -n "Checking for sysctl support... " 1>&6
 echo "$self: Checking for sysctl support" >&5
 has_sysctl=no
 
@@ -546,11 +554,11 @@ if { ac_try='$CC -E conftest.c'; { (eval echo $self: \"$ac_try\") 1>&5; (eval $a
 fi
 rm -f conftest*
 
-echo " sysctl support: ""$has_sysctl" 1>&6
+echo "$has_sysctl" 1>&6
+
 if [ "x$has_sysctl" = xyes ]; then
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SYSCTL"
 fi
-echo " " 1>&6
 
 
 ##########################################################################
@@ -582,7 +590,6 @@ GLFW_BIN_LFLAGS="-lGLU $LIBS -lm"
 MKNAME='./lib/x11/Makefile.x11'
 
 echo "Creating ""$MKNAME""..." 1>&6
-echo " " 1>&6
 
 echo "$self: Creating ""$MKNAME""..." >&5
 
@@ -606,7 +613,6 @@ cat './lib/x11/Makefile.x11.in' >>$MKNAME
 MKNAME='./examples/Makefile.x11'
 
 echo "Creating ""$MKNAME""..." 1>&6
-echo " " 1>&6
 
 echo "$self: Creating ""$MKNAME""..." >&5
 
@@ -630,7 +636,6 @@ cat './examples/Makefile.x11.in' >>$MKNAME
 MKNAME='./tests/Makefile.x11'
 
 echo "Creating ""$MKNAME""..." 1>&6
-echo " " 1>&6
 
 echo "$self: Creating ""$MKNAME""..." >&5
 
@@ -654,7 +659,6 @@ cat './tests/Makefile.x11.in' >>$MKNAME
 MKNAME="./lib/x11/libglfw.pc.in"
 
 echo "Creating ""$MKNAME""..." 1>&6
-echo " " 1>&6
 
 echo "$self: Creating ""$MKNAME""..." >&5
 
