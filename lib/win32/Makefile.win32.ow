@@ -25,10 +25,6 @@ CC         = cl386
 CFLAGS     = /nologo /c /O1sgiy /Gs /W3 /I. /I..
 CFLAGS_DLL = $(CFLAGS) /DGLFW_BUILD_DLL
 
-# Some modules should be optimized for speed (image decoding)
-CFLAGS_SPEED     = /nologo /c /O2tgiy /Gs /W3 /I. /I..
-CFLAGS_SPEED_DLL = $(CFLAGS_SPEED) /DGLFW_BUILD_DLL
-
 
 ##########################################################################
 # Library builder settings
@@ -124,7 +120,7 @@ glext.obj: ..\\glext.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) /Fo$@ ..\\glext.c
 
 image.obj: ..\\image.c ..\\internal.h platform.h
-	$(CC) $(CFLAGS_SPEED) /Fo$@ ..\\image.c
+	$(CC) $(CFLAGS) /Fo$@ ..\\image.c
 
 init.obj: ..\\init.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) /Fo$@ ..\\init.c
@@ -139,7 +135,7 @@ stream.obj: ..\\stream.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) /Fo$@ ..\\stream.c
 
 tga.obj: ..\\tga.c ..\\internal.h platform.h
-	$(CC) $(CFLAGS_SPEED) /Fo$@ ..\\tga.c
+	$(CC) $(CFLAGS) /Fo$@ ..\\tga.c
 
 thread.obj: ..\\thread.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS) /Fo$@ ..\\thread.c
@@ -188,7 +184,7 @@ glext_dll.obj: ..\\glext.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\glext.c
 
 image_dll.obj: ..\\image.c ..\\internal.h platform.h
-	$(CC) $(CFLAGS_SPEED_DLL) /Fo$@ ..\\image.c
+	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\image.c
 
 init_dll.obj: ..\\init.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\init.c
@@ -203,7 +199,7 @@ stream_dll.obj: ..\\stream.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\stream.c
 
 tga_dll.obj: ..\\tga.c ..\\internal.h platform.h
-	$(CC) $(CFLAGS_SPEED_DLL) /Fo$@ ..\\tga.c
+	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\tga.c
 
 thread_dll.obj: ..\\thread.c ..\\internal.h platform.h
 	$(CC) $(CFLAGS_DLL) /Fo$@ ..\\thread.c

@@ -534,11 +534,9 @@ echo " " 1>&6
 # Post fixups
 ##########################################################################
 if [ "x$use_gcc" = xyes ]; then
-  GLFW_LIB_CFLAGS_SPEED="-c -I. -I.. $GLFW_LIB_CFLAGS -O3 -ffast-math -Wall"
-  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -Os -Wall"
-  CFLAGS_LINK="$INCS -O3 -ffast-math -Wall"
+  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -O2 -Wall"
+  CFLAGS_LINK="$INCS -O2 -Wall"
 else
-  GLFW_LIB_CFLAGS_SPEED="-c -I. -I.. $GLFW_LIB_CFLAGS -O"
   GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -O"
   CFLAGS_LINK="$INCS -O"
 fi
@@ -560,7 +558,6 @@ echo "# Automatically generated Makefile for GLFW" >>$MKNAME
 echo "##########################################################################" >>$MKNAME
 echo "CC           = $CC" >>$MKNAME
 echo "CFLAGS       = $GLFW_LIB_CFLAGS" >>$MKNAME
-echo "CFLAGS_SPEED = $GLFW_LIB_CFLAGS_SPEED" >>$MKNAME
 echo "LDFLAGS      = $LDFLAGS" >>$MKNAME
 echo "LFLAGS       = $LFLAGS" >>$MKNAME
 echo "LIBS         = $LIBS" >>$MKNAME

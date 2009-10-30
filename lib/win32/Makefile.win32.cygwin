@@ -21,10 +21,6 @@ CC         = gcc
 CFLAGS     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -Os
 CFLAGS_DLL = $(CFLAGS) -mdll -DGLFW_BUILD_DLL
 
-# Some modules should be optimized for speed (e.g. image decoding)
-CFLAGS_SPEED     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -O3 -ffast-math
-CFLAGS_SPEED_DLL = $(CFLAGS_SPEED) -mdll -DGLFW_BUILD_DLL
-
 HEADERS = ../../include/GL/glfw.h ../internal.h platform.h
 
 ##########################################################################
@@ -156,7 +152,7 @@ glext.o: ../glext.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../glext.c
 
 image.o: ../image.c $(HEADERS)
-	$(CC) $(CFLAGS_SPEED) -o $@ ../image.c
+	$(CC) $(CFLAGS) -o $@ ../image.c
 
 init.o: ../init.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../init.c
@@ -171,7 +167,7 @@ stream.o: ../stream.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../stream.c
 
 tga.o: ../tga.c $(HEADERS)
-	$(CC) $(CFLAGS_SPEED) -o $@ ../tga.c
+	$(CC) $(CFLAGS) -o $@ ../tga.c
 
 thread.o: ../thread.c $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ ../thread.c
@@ -220,7 +216,7 @@ glext_dll.o: ../glext.c $(HEADERS)
 	$(CC) $(CFLAGS_DLL) -o $@ ../glext.c
 
 image_dll.o: ../image.c $(HEADERS)
-	$(CC) $(CFLAGS_SPEED_DLL) -o $@ ../image.c
+	$(CC) $(CFLAGS_DLL) -o $@ ../image.c
 
 init_dll.o: ../init.c $(HEADERS)
 	$(CC) $(CFLAGS_DLL) -o $@ ../init.c
@@ -235,7 +231,7 @@ stream_dll.o: ../stream.c $(HEADERS)
 	$(CC) $(CFLAGS_DLL) -o $@ ../stream.c
 
 tga_dll.o: ../tga.c $(HEADERS)
-	$(CC) $(CFLAGS_SPEED_DLL) -o $@ ../tga.c
+	$(CC) $(CFLAGS_DLL) -o $@ ../tga.c
 
 thread_dll.o: ../thread.c $(HEADERS)
 	$(CC) $(CFLAGS_DLL) -o $@ ../thread.c
