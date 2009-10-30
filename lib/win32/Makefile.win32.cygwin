@@ -18,7 +18,7 @@ VERMINOR = 7
 # Compiler settings
 ##########################################################################
 CC         = gcc
-CFLAGS     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -Os
+CFLAGS     = -c -I. -I.. -Wall -mwin32 -mno-cygwin -O2
 CFLAGS_DLL = $(CFLAGS) -mdll -DGLFW_BUILD_DLL
 
 HEADERS = ../../include/GL/glfw.h ../internal.h platform.h

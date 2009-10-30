@@ -8,7 +8,7 @@
 TARGET ?= i586-mingw32msvc-
 
 CC     = gcc
-CFLAGS = -I../include -Wall -O3 -ffast-math
+CFLAGS = -I../include -Wall -O2
 
 LIB    = ../lib/win32/libglfw.a
 LFLAGS = $(LIB) -lglu32 -lopengl32 

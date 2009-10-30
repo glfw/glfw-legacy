@@ -6,7 +6,7 @@
 ##########################################################################
 
 CC     = gcc
-CFLAGS = -I../include -Wall -O3 -ffast-math -mwin32 -mno-cygwin
+CFLAGS = -I../include -Wall -O2 -mwin32 -mno-cygwin
 
 LIB    = ../lib/win32/libglfw.a
 LFLAGS = -mno-cygwin $(LIB) -lglu32 -lopengl32
