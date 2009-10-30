@@ -13,6 +13,12 @@
  *   - Conversion to GLFW
  *   - Time based rendering (frame rate independent)
  *   - Slightly modified camera that should work better for stereo viewing
+ *
+ *
+ * Camilla Berglund:
+ *   - Removed FPS counter (this is not a benchmark)
+ *   - Added a few comments
+ *   - Enabled vsync
  */
 
 
@@ -26,12 +32,12 @@
 #define M_PI 3.141592654
 #endif
 
+/* The program exits when this is zero.
+ */
 static int running = 1;
-static double t0 = 0.0;
-static double t;
-static double dt;
 
-static int Frames = 0;
+/* If non-zero, the program exits after that many seconds
+ */
 static int autoexit = 0;
 
 /**
@@ -41,8 +47,7 @@ static int autoexit = 0;
 
   Input:  inner_radius - radius of hole at center
           outer_radius - radius at center of teeth
-          width - width of gear
-          teeth - number of teeth
+          width - width of gear teeth - number of teeth
           tooth_depth - depth of tooth
 
  **/
@@ -199,34 +204,13 @@ static void draw(void)
     glPopMatrix();
 
   glPopMatrix();
-
-  Frames++;
-
-  {
-     double t_new = glfwGetTime();
-     dt = t_new - t;
-     t = t_new;
-
-     if (t - t0 >= 5.0)
-     {
-        double seconds = t - t0;
-        double fps = Frames / seconds;
-        printf("%d frames in %6.3f seconds = %6.3f FPS\n", Frames, seconds, fps);
-        t0 = t;
-        Frames = 0;
-        if ((t >= 0.999 * autoexit) && (autoexit))
-        {
-           running = 0;
-        }
-     }
-  }
 }
 
 
 /* update animation parameters */
 static void animate(void)
 {
-  angle += 100.0*dt;
+  angle = 100.0 * glfwGetTime();
 }
 
 
@@ -346,7 +330,7 @@ int main(int argc, char *argv[])
     }
     glfwSetWindowTitle( "Gears" );
     glfwEnable( GLFW_KEY_REPEAT );
-    glfwSwapInterval( 0 );
+    glfwSwapInterval( 1 );
 
     // Special args?
     init(argc, argv);
@@ -380,3 +364,4 @@ int main(int argc, char *argv[])
     // Exit program
     return 0;
 }
+
