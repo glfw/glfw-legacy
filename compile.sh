@@ -82,7 +82,7 @@ echo "Checking what kind of system this is... " 1>&6
 
 case "x`uname 2> /dev/null`" in
 xLinux)
-  GLFW_CFLAGS="$GLFW_CFLAGS -Dlinux"
+  GLFW_CFLAGS="$GLFW_CFLAGS -D_GLFW_USE_LINUX_JOYSTICKS"
   LDFLAGS="-shared"
   echo " Linux" 1>&6
   ;;

@@ -36,11 +36,6 @@
 // systems will behave as if there are no joysticks connected.
 //========================================================================
 
-#ifdef linux
-#define _GLFW_USE_LINUX_JOYSTICKS
-#endif // linux
-
-
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
