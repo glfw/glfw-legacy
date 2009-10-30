@@ -63,7 +63,7 @@ if [ "x$CC" = x ]; then
   CC=cc
 fi
 
-CFLAGS=
+GLFW_CFLAGS=$CFLAGS
 LFLAGS=
 LDFLAGS=
 INCS=
@@ -73,8 +73,8 @@ LIBS="-lGL -lX11"
 ##########################################################################
 # Compilation commands
 ##########################################################################
-compile='$CC -c $CFLAGS conftest.c 1>&5'
-link='$CC -o conftest $CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
+compile='$CC -c $GLFW_CFLAGS conftest.c 1>&5'
+link='$CC -o conftest $GLFW_CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
@@ -84,12 +84,12 @@ echo "Checking what kind of system this is... " 1>&6
 
 case "x`uname 2> /dev/null`" in
 xLinux)
-  CFLAGS="$CFLAGS -Dlinux"
+  GLFW_CFLAGS="$GLFW_CFLAGS -Dlinux"
   LDFLAGS="-shared"
   echo " Linux" 1>&6
   ;;
 xDarwin)
-  CFLAGS="$CFLAGS"
+  GLFW_CFLAGS="$GLFW_CFLAGS"
   LDFLAGS="-flat_namespace -undefined suppress"
   echo " Mac OS X" 1>&6
   ;;
@@ -142,7 +142,7 @@ else
   echo " X11 libraries location: Unknown (assuming linker will find them)" 1>&6
 fi
 echo " " 1>&6
-CFLAGS="$CFLAGS $INCS"
+GLFW_LIB_CFLAGS="$GLFW_CFLAGS $INCS"
 
 
 ##########################################################################
@@ -196,7 +196,7 @@ rm -f conftest*
 
 echo " X11 RandR extension: ""$has_xrandr" 1>&6
 if [ "x$has_xrandr" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_XRANDR"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_XRANDR"
   LIBS="$LIBS -lXrandr"
 fi
 echo " " 1>&6
@@ -233,7 +233,7 @@ EOF
 
   echo " X11 VidMode extension: ""$has_xf86vm" 1>&6
   if [ "x$has_xf86vm" = xyes ]; then
-    CFLAGS="$CFLAGS -D_GLFW_HAS_XF86VIDMODE"
+    GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_XF86VIDMODE"
     LIBS="$LIBS -lXxf86vm -lXext"
   fi
   echo " " 1>&6
@@ -256,7 +256,7 @@ EOF
 # Try -pthread (most systems)
 CFLAGS_THREAD="-pthread"
 CFLAGS_OLD="$CFLAGS"
-CFLAGS="$CFLAGS $CFLAGS_THREAD"
+GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS $CFLAGS_THREAD"
 LIBS_OLD="$LIBS"
 LIBS="$LIBS -pthread"
 if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
@@ -270,7 +270,7 @@ fi
 # Try -lpthread 
 if [ "x$has_pthread" = xno ]; then
   CFLAGS_THREAD="-D_REENTRANT"
-  CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
+  GLFW_LIB_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
   LIBS="$LIBS_OLD -lpthread"
   if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
@@ -283,7 +283,7 @@ fi
 
 # Try -lsocket (e.g. QNX)
 if [ "x$has_pthread" = xno ]; then
-  CFLAGS="$CFLAGS_OLD" 
+  GLFW_LIB_CFLAGS="$CFLAGS_OLD" 
   LIBS="$LIBS_OLD -lsocket"
   if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
@@ -296,7 +296,7 @@ fi
 
 echo " pthread support: ""$has_pthread" 1>&6
 if [ "x$has_pthread" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_PTHREAD"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_PTHREAD"
 else
   LIBS="$LIBS_OLD"
 fi
@@ -341,7 +341,7 @@ EOF
 
   echo " sched_yield: ""$has_sched_yield" 1>&6
   if [ "x$has_sched_yield" = xyes ]; then
-    CFLAGS="$CFLAGS -D_GLFW_HAS_SCHED_YIELD"
+    GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SCHED_YIELD"
   fi
   echo " " 1>&6
 
@@ -412,13 +412,13 @@ echo " glXGetProcAddress extension:    ""$has_glXGetProcAddress" 1>&6
 echo " glXGetProcAddressARB extension: ""$has_glXGetProcAddressARB" 1>&6
 echo " glXGetProcAddressEXT extension: ""$has_glXGetProcAddressEXT" 1>&6
 if [ "x$has_glXGetProcAddress" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESS"
 fi
 if [ "x$has_glXGetProcAddressARB" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSARB"
 fi
 if [ "x$has_glXGetProcAddressEXT" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_GLXGETPROCADDRESSEXT"
 fi
 echo " " 1>&6
 
@@ -463,7 +463,7 @@ rm -f conftest*
 
 echo " dlopen support: ""$has_dlopen" 1>&6
 if [ "x$has_dlopen" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_DLOPEN"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_DLOPEN"
 fi
 echo " " 1>&6
 
@@ -496,7 +496,7 @@ rm -f conftest*
 
 echo " sysconf support: ""$has_sysconf" 1>&6
 if [ "x$has_sysconf" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCONF"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SYSCONF"
 fi
 echo " " 1>&6
 
@@ -525,7 +525,7 @@ rm -f conftest*
 
 echo " sysctl support: ""$has_sysctl" 1>&6
 if [ "x$has_sysctl" = xyes ]; then
-  CFLAGS="$CFLAGS -D_GLFW_HAS_SYSCTL"
+  GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SYSCTL"
 fi
 echo " " 1>&6
 
@@ -534,12 +534,12 @@ echo " " 1>&6
 # Post fixups
 ##########################################################################
 if [ "x$use_gcc" = xyes ]; then
-  CFLAGS_SPEED="-c -I. -I.. $CFLAGS -O3 -ffast-math -Wall"
-  CFLAGS="-c -I. -I.. $CFLAGS -Os -Wall"
+  GLFW_LIB_CFLAGS_SPEED="-c -I. -I.. $GLFW_LIB_CFLAGS -O3 -ffast-math -Wall"
+  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -Os -Wall"
   CFLAGS_LINK="$INCS -O3 -ffast-math -Wall"
 else
-  CFLAGS_SPEED="-c -I. -I.. $CFLAGS -O"
-  CFLAGS="-c -I. -I.. $CFLAGS -O"
+  GLFW_LIB_CFLAGS_SPEED="-c -I. -I.. $GLFW_LIB_CFLAGS -O"
+  GLFW_LIB_CFLAGS="-c -I. -I.. $GLFW_LIB_CFLAGS -O"
   CFLAGS_LINK="$INCS -O"
 fi
 CFLAGS_LINK="-I../include $CFLAGS_LINK"
@@ -559,8 +559,8 @@ echo "##########################################################################
 echo "# Automatically generated Makefile for GLFW" >>$MKNAME
 echo "##########################################################################" >>$MKNAME
 echo "CC           = $CC" >>$MKNAME
-echo "CFLAGS       = $CFLAGS" >>$MKNAME
-echo "CFLAGS_SPEED = $CFLAGS_SPEED" >>$MKNAME
+echo "CFLAGS       = $GLFW_LIB_CFLAGS" >>$MKNAME
+echo "CFLAGS_SPEED = $GLFW_LIB_CFLAGS_SPEED" >>$MKNAME
 echo "LDFLAGS      = $LDFLAGS" >>$MKNAME
 echo "LFLAGS       = $LFLAGS" >>$MKNAME
 echo "LIBS         = $LIBS" >>$MKNAME
