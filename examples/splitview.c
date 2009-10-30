@@ -1,5 +1,6 @@
 //========================================================================
-// This is a small test application for GLFW.
+// This is an example program for the GLFW library
+//
 // The program uses a "split window" view, rendering four views of the
 // same scene in one window (e.g. uesful for 3D modelling software). This
 // demo uses scissors to separete the four different rendering areas from
@@ -11,9 +12,11 @@
 
 #include <GL/glfw.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#ifndef PI
-#define PI 3.14159265358979323846
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
 #endif
 
 
@@ -22,24 +25,24 @@
 //========================================================================
 
 // Mouse position
-int xpos = 0, ypos = 0;
+static int xpos = 0, ypos = 0;
 
 // Window size
-int width, height;
+static int width, height;
 
 // Active view: 0 = none, 1 = upper left, 2 = upper right, 3 = lower left,
 // 4 = lower right
-int active_view = 0;
+static int active_view = 0;
 
 // Rotation around each axis
-int rot_x = 0, rot_y = 0, rot_z = 0;
+static int rot_x = 0, rot_y = 0, rot_z = 0;
 
 // Do redraw?
-int do_redraw = 1;
+static int do_redraw = 1;
 
 
 //========================================================================
-// DrawTorus() - Draw a solid torus (use a display list for the model)
+// Draw a solid torus (use a display list for the model)
 //========================================================================
 
 #define TORUS_MAJOR     1.5
@@ -47,7 +50,7 @@ int do_redraw = 1;
 #define TORUS_MAJOR_RES 32
 #define TORUS_MINOR_RES 32
 
-void DrawTorus( void )
+static void DrawTorus( void )
 {
     static GLuint torus_list = 0;
     int    i, j, k;
@@ -60,7 +63,7 @@ void DrawTorus( void )
         glNewList( torus_list, GL_COMPILE_AND_EXECUTE );
 
         // Draw torus
-        twopi = 2.0 * PI;
+        twopi = 2.0 * M_PI;
         for( i = 0; i < TORUS_MINOR_RES; i++ )
         {
             glBegin( GL_QUAD_STRIP );
@@ -104,10 +107,10 @@ void DrawTorus( void )
 
 
 //========================================================================
-// DrawScene() - Draw the scene (a rotating torus)
+// Draw the scene (a rotating torus)
 //========================================================================
 
-void DrawScene( void )
+static void DrawScene( void )
 {
     const GLfloat model_diffuse[4]  = {1.0f, 0.8f, 0.8f, 1.0f};
     const GLfloat model_specular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
@@ -136,10 +139,10 @@ void DrawScene( void )
 
 
 //========================================================================
-// DrawGrid() - Draw a 2D grid (used for orthogonal views)
+// Draw a 2D grid (used for orthogonal views)
 //========================================================================
 
-void DrawGrid( float scale, int steps )
+static void DrawGrid( float scale, int steps )
 {
     int   i;
     float x, y;
@@ -194,10 +197,10 @@ void DrawGrid( float scale, int steps )
 
 
 //========================================================================
-// DrawAllViews()
+// Draw all views
 //========================================================================
 
-void DrawAllViews( void )
+static void DrawAllViews( void )
 {
     const GLfloat light_position[4] = {0.0f, 8.0f, 8.0f, 1.0f};
     const GLfloat light_diffuse[4]  = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -351,10 +354,10 @@ void DrawAllViews( void )
 
 
 //========================================================================
-// WindowSizeFun() - Window size callback function
+// Window size callback function
 //========================================================================
 
-void GLFWCALL WindowSizeFun( int w, int h )
+static void GLFWCALL WindowSizeFun( int w, int h )
 {
     width  = w;
     height = h > 0 ? h : 1;
@@ -363,20 +366,20 @@ void GLFWCALL WindowSizeFun( int w, int h )
 
 
 //========================================================================
-// WindowRefreshFun() - Window refresh callback function
+// Window refresh callback function
 //========================================================================
 
-void GLFWCALL WindowRefreshFun( void )
+static void GLFWCALL WindowRefreshFun( void )
 {
     do_redraw = 1;
 }
 
 
 //========================================================================
-// MousePosFun() - Mouse position callback function
+// Mouse position callback function
 //========================================================================
 
-void GLFWCALL MousePosFun( int x, int y )
+static void GLFWCALL MousePosFun( int x, int y )
 {
     // Depending on which view was selected, rotate around different axes
     switch( active_view )
@@ -408,10 +411,10 @@ void GLFWCALL MousePosFun( int x, int y )
 
 
 //========================================================================
-// MouseButtonFun() - Mouse button callback function
+// Mouse button callback function
 //========================================================================
 
-void GLFWCALL MouseButtonFun( int button, int action )
+static void GLFWCALL MouseButtonFun( int button, int action )
 {
     // Button clicked?
     if( ( button == GLFW_MOUSE_BUTTON_LEFT ) && action == GLFW_PRESS )
@@ -445,17 +448,25 @@ void GLFWCALL MouseButtonFun( int button, int action )
 
 int main( void )
 {
-    int     running;
+    int running;
 
     // Initialise GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n");
+        exit( 1 );
+    }
 
     // Open OpenGL window
     if( !glfwOpenWindow( 500, 500, 0,0,0,0, 16,0, GLFW_WINDOW ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n");
         glfwTerminate();
-        return 0;
+        exit( 1 );
     }
+
+    // Enable vsync
+    glfwSwapInterval( 1 );
 
     // Set window title
     glfwSetWindowTitle( "Split view demo" );
@@ -502,5 +513,6 @@ int main( void )
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
-    return 0;
+    exit( 0 );
 }
+
