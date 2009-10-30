@@ -17,9 +17,8 @@
 
 int main( void )
 {
-    int     width, height, running, frames, x, y;
-    double  t, t0, fps;
-    char    titlestr[ 200 ];
+    int     width, height, running, x;
+    double  t;
 
     // Initialise GLFW
     if( !glfwInit() )
@@ -37,32 +36,21 @@ int main( void )
         exit(1);
     }
 
+    glfwSetWindowTitle( "Spinning Triangle" );
+
     // Enable sticky keys
     glfwEnable( GLFW_STICKY_KEYS );
 
-    // Disable vertical sync (on cards that support it)
-    glfwSwapInterval( 0 );
+    // Enable vertical sync (on cards that support it)
+    glfwSwapInterval( 1 );
 
     // Main loop
     running = GL_TRUE;
-    frames = 0;
-    t0 = glfwGetTime();
     while( running )
     {
         // Get time and mouse position
         t = glfwGetTime();
-        glfwGetMousePos( &x, &y );
-
-        // Calculate and display FPS (frames per second)
-        if( (t-t0) > 1.0 || frames == 0 )
-        {
-            fps = (double)frames / (t-t0);
-            sprintf( titlestr, "Spinning Triangle (%.1f FPS)", fps );
-            glfwSetWindowTitle( titlestr );
-            t0 = t;
-            frames = 0;
-        }
-        frames ++;
+        glfwGetMousePos( &x, NULL );
 
         // Get window size (may be different than the requested size)
         glfwGetWindowSize( &width, &height );
@@ -112,3 +100,4 @@ int main( void )
 
     return 0;
 }
+
