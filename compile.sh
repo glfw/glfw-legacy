@@ -33,7 +33,7 @@ done;
 # Misc.
 ##########################################################################
 
-config_script=$0
+self=$0
 
 # File descriptor usage:
 # 0 standard input
@@ -52,7 +52,7 @@ fi
 
 echo "\
 This file contains any messages produced by compilers while
-running $config_script, to aid debugging if $config_script makes a mistake.
+running $self, to aid debugging if $self makes a mistake.
 " 1>&5
 
 
@@ -149,7 +149,7 @@ GLFW_LIB_CFLAGS="$GLFW_CFLAGS $INCS"
 # Check if we are using GNU C
 ##########################################################################
 echo "Checking whether we are using GNU C... " 1>&6
-echo "$config_script: checking whether we are using GNU C" >&5
+echo "$self: checking whether we are using GNU C" >&5
 
 cat > conftest.c <<EOF
 #ifdef __GNUC__
@@ -157,7 +157,7 @@ cat > conftest.c <<EOF
 #endif
 EOF
 
-if { ac_try='$CC -E conftest.c'; { (eval echo $config_script: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='$CC -E conftest.c'; { (eval echo $self: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   use_gcc=yes
 else
   use_gcc=no
@@ -175,7 +175,7 @@ echo " " 1>&6
 # Check for X11 RandR availability
 ##########################################################################
 echo "Checking for X11 RandR support... " 1>&6
-echo "$config_script: Checking for X11 RandR support" >&5
+echo "$self: Checking for X11 RandR support" >&5
 has_xrandr=no
 
 cat > conftest.c <<EOF
@@ -185,11 +185,11 @@ cat > conftest.c <<EOF
 int main() {; return 0;}
 EOF
 
-if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+if { (eval echo $self: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
   rm -rf conftest*
   has_xrandr=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 rm -f conftest*
@@ -208,7 +208,7 @@ echo " " 1>&6
 if [ "x$has_xrandr" != xyes ]; then
 
   echo "Checking for X11 VidMode support... " 1>&6
-  echo "$config_script: Checking for X11 VidMode support" >&5
+  echo "$self: Checking for X11 VidMode support" >&5
   has_xf86vm=no
 
   cat > conftest.c <<EOF
@@ -222,11 +222,11 @@ if [ "x$has_xrandr" != xyes ]; then
 int main() {; return 0;}
 EOF
 
-  if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+  if { (eval echo $self: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
     rm -rf conftest*
     has_xf86vm=yes
   else
-    echo "$config_script: failed program was:" >&5
+    echo "$self: failed program was:" >&5
     cat conftest.c >&5
   fi
   rm -f conftest*
@@ -245,7 +245,7 @@ fi
 # Check for pthread support
 ##########################################################################
 echo "Checking for pthread support... " 1>&6
-echo "$config_script: Checking for pthread support" >&5
+echo "$self: Checking for pthread support" >&5
 has_pthread=no
 
 cat > conftest.c <<EOF
@@ -259,11 +259,11 @@ CFLAGS_OLD="$CFLAGS"
 GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS $CFLAGS_THREAD"
 LIBS_OLD="$LIBS"
 LIBS="$LIBS -pthread"
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_pthread=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 
@@ -272,11 +272,11 @@ if [ "x$has_pthread" = xno ]; then
   CFLAGS_THREAD="-D_REENTRANT"
   GLFW_LIB_CFLAGS="$CFLAGS_OLD $CFLAGS_THREAD" 
   LIBS="$LIBS_OLD -lpthread"
-  if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_pthread=yes
   else
-    echo "$config_script: failed program was:" >&5
+    echo "$self: failed program was:" >&5
     cat conftest.c >&5
   fi
 fi
@@ -285,11 +285,11 @@ fi
 if [ "x$has_pthread" = xno ]; then
   GLFW_LIB_CFLAGS="$CFLAGS_OLD" 
   LIBS="$LIBS_OLD -lsocket"
-  if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_pthread=yes
   else
-    echo "$config_script: failed program was:" >&5
+    echo "$self: failed program was:" >&5
     cat conftest.c >&5
   fi
 fi
@@ -309,7 +309,7 @@ echo " " 1>&6
 if [ "x$has_pthread" = xyes ]; then
 
   echo "Checking for sched_yield support... " 1>&6
-  echo "$config_script: Checking for sched_yield support" >&5
+  echo "$self: Checking for sched_yield support" >&5
   has_sched_yield=no
 
   LIBS_OLD="$LIBS"
@@ -319,19 +319,19 @@ if [ "x$has_pthread" = xyes ]; then
 int main() {sched_yield(); return 0;}
 EOF
 
-  if { (eval echo $config_script: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+  if { (eval echo $self: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
     has_sched_yield=yes
   else
-    echo "$config_script: failed program was:" >&5
+    echo "$self: failed program was:" >&5
     cat conftest.c >&5
   fi
 
   if [ "x$has_sched_yield" = xno ]; then
     LIBS="$LIBS_OLD -lrt"
-    if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
       has_sched_yield=yes
     else
-      echo "$config_script: failed program was:" >&5
+      echo "$self: failed program was:" >&5
       cat conftest.c >&5
       LIBS="$LIBS_OLD"
     fi
@@ -352,7 +352,7 @@ fi
 # Check for glXGetProcAddressXXX availability
 ##########################################################################
 echo "Checking for glXGetProcAddress support... " 1>&6
-echo "$config_script: Checking for glXGetProcAddress support" >&5
+echo "$self: Checking for glXGetProcAddress support" >&5
 has_glXGetProcAddress=no
 has_glXGetProcAddressARB=no
 has_glXGetProcAddressEXT=no
@@ -365,11 +365,11 @@ cat > conftest.c <<EOF
 int main() {void *ptr=(void*)glXGetProcAddress("glFun"); return 0;}
 EOF
 
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_glXGetProcAddress=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 rm -f conftest*
@@ -382,11 +382,11 @@ cat > conftest.c <<EOF
 int main() {void *ptr=(void*)glXGetProcAddressARB("glFun"); return 0;}
 EOF
 
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_glXGetProcAddressARB=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 rm -f conftest*
@@ -399,11 +399,11 @@ cat > conftest.c <<EOF
 int main() {void *ptr=(void*)glXGetProcAddressEXT("glFun"); return 0;}
 EOF
 
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_glXGetProcAddressEXT=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 rm -f conftest*
@@ -427,7 +427,7 @@ echo " " 1>&6
 # Check for dlopen support
 ##########################################################################
 echo "Checking for dlopen support... " 1>&6
-echo "$config_script: Checking for dlopen support" >&5
+echo "$self: Checking for dlopen support" >&5
 has_dlopen=no
 
 cat > conftest.c <<EOF
@@ -436,11 +436,11 @@ int main() {void *l=dlopen("libGL.so",RTLD_LAZY|RTLD_GLOBAL); return 0;}
 EOF
 
 # First try without -ldl
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_dlopen=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 
@@ -448,11 +448,11 @@ fi
 if [ "x$has_dlopen" = xno ]; then
   LIBS_OLD="$LIBS"
   LIBS="$LIBS -ldl"
-  if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -rf conftest*
     has_dlopen=yes
   else
-    echo "$config_script: failed program was:" >&5
+    echo "$self: failed program was:" >&5
     cat conftest.c >&5
   fi
   if [ "x$has_dlopen" = xno ]; then
@@ -472,7 +472,7 @@ echo " " 1>&6
 # Check for sysconf support
 ##########################################################################
 echo "Checking for sysconf support... " 1>&6
-echo "$config_script: Checking for sysconf support" >&5
+echo "$self: Checking for sysconf support" >&5
 has_sysconf=no
 
 cat > conftest.c <<EOF
@@ -485,11 +485,11 @@ cat > conftest.c <<EOF
 int main() {long x=sysconf(_SC_ARG_MAX); return 0; }
 EOF
 
-if { (eval echo $config_script: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -rf conftest*
   has_sysconf=yes
 else
-  echo "$config_script: failed program was:" >&5
+  echo "$self: failed program was:" >&5
   cat conftest.c >&5
 fi
 rm -f conftest*
@@ -505,7 +505,7 @@ echo " " 1>&6
 # Check for sysctl support
 ##########################################################################
 echo "Checking for sysctl support... " 1>&6
-echo "$config_script: Checking for sysctl support" >&5
+echo "$self: Checking for sysctl support" >&5
 has_sysctl=no
 
 cat > conftest.c <<EOF
@@ -518,7 +518,7 @@ cat > conftest.c <<EOF
 #endif
 EOF
 
-if { ac_try='$CC -E conftest.c'; { (eval echo $config_script: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='$CC -E conftest.c'; { (eval echo $self: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   has_sysctl=yes
 fi
 rm -f conftest*
@@ -558,7 +558,7 @@ MKNAME='./lib/x11/Makefile.x11'
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 
-echo "$config_script: Creating ""$MKNAME""..." >&5
+echo "$self: Creating ""$MKNAME""..." >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -582,7 +582,7 @@ MKNAME='./examples/Makefile.x11'
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 
-echo "$config_script: Creating ""$MKNAME""..." >&5
+echo "$self: Creating ""$MKNAME""..." >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -606,7 +606,7 @@ MKNAME='./tests/Makefile.x11'
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 
-echo "$config_script: Creating ""$MKNAME""..." >&5
+echo "$self: Creating ""$MKNAME""..." >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -630,7 +630,7 @@ MKNAME="./lib/x11/libglfw.pc.in"
 echo "Creating ""$MKNAME""..." 1>&6
 echo " " 1>&6
 
-echo "$config_script: Creating ""$MKNAME""..." >&5
+echo "$self: Creating ""$MKNAME""..." >&5
 
 cat > "$MKNAME" <<EOF
 prefix=@PREFIX@
