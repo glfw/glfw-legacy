@@ -46,7 +46,7 @@ default:
 	@echo "  $(MAKE) x11               for X11 on Unix-like systems (auto-configuring)"
 	@echo "  $(MAKE) x11-clean         to remove any compiled files for Unix/X11"
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
-	@echo "  $(MAKE) x11-distro-install  for a distro to install the GLFW libraries and header"
+	@echo "  $(MAKE) x11-dist-install  for a dist to install the GLFW libraries and header"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) cocoa             for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
@@ -183,9 +183,9 @@ x11: $(MAKEFILES_X11)
 x11-install: x11
 	cd lib/x11;  $(MAKE) -f Makefile.x11 install
 
-# X11 distro install
-x11-distro-install: x11
-	cd lib/x11;  $(MAKE) -f Makefile.x11 distro-install
+# X11 dist install
+x11-dist-install: x11
+	cd lib/x11;  $(MAKE) -f Makefile.x11 dist-install
 
 
 ###########################################################################
