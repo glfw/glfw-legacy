@@ -1070,8 +1070,6 @@ int main( int argc, char **argv )
                   0, GL_LUMINANCE, GL_UNSIGNED_BYTE, floor_texture );
 
     // Check if we have GL_EXT_separate_specular_color, and if so use it
-    // (This extension should ALWAYS be used when OpenGL lighting is used
-    // together with texturing, since it gives more realistic results)
     if( glfwExtensionSupported( "GL_EXT_separate_specular_color" ) )
     {
         glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL_EXT,
