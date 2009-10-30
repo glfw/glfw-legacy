@@ -69,13 +69,6 @@ LIBS="-lGL -lX11"
 
 
 ##########################################################################
-# Compilation commands
-##########################################################################
-compile='$CC -c $GLFW_CFLAGS conftest.c 1>&5'
-link='$CC -o conftest $GLFW_CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
-
-
-##########################################################################
 # Check on what system we are running
 ##########################################################################
 echo "Checking what kind of system this is... " 1>&6
@@ -141,6 +134,13 @@ else
 fi
 echo " " 1>&6
 GLFW_LIB_CFLAGS="$GLFW_CFLAGS $INCS"
+
+
+##########################################################################
+# Compilation commands
+##########################################################################
+compile='$CC -c $GLFW_CFLAGS conftest.c 1>&5'
+link='$CC -o conftest $GLFW_CFLAGS $LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
