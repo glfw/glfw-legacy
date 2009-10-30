@@ -344,6 +344,8 @@ int main(int argc, char* argv[])
   /* Set title */
   glfwSetWindowTitle( "Wave Simulation" );
 
+  glfwSwapInterval( 1 );
+
   /* Keyboard handler */
   glfwSetKeyCallback( handle_key_down );
   glfwEnable( GLFW_KEY_REPEAT );
