@@ -45,8 +45,9 @@ default:
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) x11               for X11 on Unix-like systems (auto-configuring)"
 	@echo "  $(MAKE) x11-clean         to remove any compiled files for Unix/X11"
+	@echo "  $(MAKE) x11-dist-clean    to also removed the generated build files"
 	@echo "  $(MAKE) x11-install       to install the GLFW library and header"
-	@echo "  $(MAKE) x11-dist-install  for a dist to install the GLFW libraries and header"
+	@echo "  $(MAKE) x11-dist-install  to also install the GLFW shared library"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) cocoa             for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
@@ -155,15 +156,17 @@ MAKEFILES_X11 = lib/x11/Makefile.x11 examples/Makefile.x11 tests/Makefile.x11
 
 # Cleanup for X11 (must be here due to generated makefile)
 x11-clean:
-	rm -f $(MAKEFILES_X11)
-	rm -f config.log
 	rm -f lib/x11/*.o
 	rm -f lib/x11/libglfw.a
 	rm -f lib/x11/libglfw.so
 	rm -f lib/x11/libglfw.pc
-	rm -f lib/x11/libglfw.pc.in
 	cd examples; rm -f $(EXAMPLES)
 	cd tests; rm -f $(TESTS)
+
+x11-dist-clean: x11-clean
+	rm -f config.log
+	rm -f $(MAKEFILES_X11)
+	rm -f lib/x11/libglfw.pc.in
 
 # Auto configuration for X11
 $(MAKEFILES_X11) : compile.sh $(MAKEFILES_X11_IN)
