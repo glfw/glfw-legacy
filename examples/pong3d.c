@@ -137,7 +137,7 @@ const GLfloat floor_ambient[4]   = {0.3f,0.3f,0.3f,1.0f};
 // LoadTextures() - Load textures from disk and upload to OpenGL card
 //========================================================================
 
-void LoadTextures( void )
+GLboolean LoadTextures( void )
 {
     int  i;
 
@@ -157,8 +157,14 @@ void LoadTextures( void )
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
         // Upload texture from file to texture memory
-        glfwLoadTexture2D( tex_name[ i ], 0 );
+        if( !glfwLoadTexture2D( tex_name[ i ], 0 ) )
+        {
+            fprintf( stderr, "Failed to load texture %s\n", tex_name[ i ] );
+            return GL_FALSE;
+        }
     }
+
+    return GL_TRUE;
 }
 
 
@@ -799,18 +805,26 @@ int main( void )
     // Initialize GLFW
     if( !glfwInit() )
     {
-        exit( 0 );
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
     }
 
     // Open OpenGL window
     if( !glfwOpenWindow( WIDTH, HEIGHT, 0,0,0,0, 16,0, GLFW_FULLSCREEN ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit( 0 );
+        exit( EXIT_FAILURE );
     }
 
+    glfwSwapInterval( 1 );
+
     // Load all textures
-    LoadTextures();
+    if( !LoadTextures() )
+    {
+        glfwTerminate();
+        exit( EXIT_FAILURE );
+    }
 
     // Main loop
     do
@@ -835,5 +849,6 @@ int main( void )
     // Terminate GLFW
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
+
