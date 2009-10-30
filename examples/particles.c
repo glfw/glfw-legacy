@@ -1021,13 +1021,18 @@ int main( int argc, char **argv )
     }
 
     // Initialize GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
+    }
 
     // Open OpenGL fullscreen window
     if( !glfwOpenWindow( WIDTH, HEIGHT, 5,6,5,0, 16,0, GLFW_FULLSCREEN ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit( 0 );
+        exit( EXIT_FAILURE );
     }
 
     // Set window title
@@ -1144,5 +1149,6 @@ int main( int argc, char **argv )
     // Terminate OpenGL
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
+
