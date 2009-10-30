@@ -1,36 +1,38 @@
 BINARIES = accuracy defaults events fsaa fullscreen joysticks peter reopen \
 		   tearing version
 
+HEADER = ../include/GL/glfw.h
+
 all: $(BINARIES)
 
-accuracy: accuracy.c ../lib/x11/libglfw.a
+accuracy: accuracy.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) accuracy.c $(LFLAGS) -o $@
 
-defaults: defaults.c ../lib/x11/libglfw.a
+defaults: defaults.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) defaults.c $(LFLAGS) -o $@
 
-events: events.c ../lib/x11/libglfw.a
+events: events.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) events.c $(LFLAGS) -o $@
 
-fsaa: fsaa.c ../lib/x11/libglfw.a
+fsaa: fsaa.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) fsaa.c $(LFLAGS) -o $@
 
-fullscreen: fullscreen.c ../lib/x11/libglfw.a
+fullscreen: fullscreen.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o $@
 
-joysticks: joysticks.c ../lib/x11/libglfw.a
+joysticks: joysticks.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o $@
 
-peter: peter.c ../lib/x11/libglfw.a
+peter: peter.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) peter.c $(LFLAGS) -o $@
 
-reopen: reopen.c ../lib/x11/libglfw.a
+reopen: reopen.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) reopen.c $(LFLAGS) -o $@
 
-tearing: tearing.c ../lib/x11/libglfw.a
+tearing: tearing.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) tearing.c $(LFLAGS) -o $@
 
-version: version.c getopt.c ../lib/x11/libglfw.a
+version: version.c getopt.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) version.c getopt.c $(LFLAGS) -o $@
 
 clean:
