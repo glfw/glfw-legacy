@@ -23,17 +23,17 @@ int main( void )
     // Initialise GLFW
     if( !glfwInit() )
     {
-        fprintf(stderr, "Failed to initialize GLFW\n");
-        exit(1);
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
     }
 
     // Open OpenGL window
     if( !glfwOpenWindow( 640, 480, 0,0,0,0, 0,0, GLFW_WINDOW ) )
     {
-        fprintf(stderr, "Failed to open GLFW window\n");
+        fprintf( stderr, "Failed to open GLFW window\n" );
 
         glfwTerminate();
-        exit(1);
+        exit( EXIT_FAILURE );
     }
 
     glfwSetWindowTitle( "Spinning Triangle" );
@@ -98,6 +98,6 @@ int main( void )
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
 
