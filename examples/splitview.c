@@ -453,14 +453,14 @@ int main( void )
     // Initialise GLFW
     if( !glfwInit() )
     {
-        fprintf( stderr, "Failed to initialize GLFW\n");
+        fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( 1 );
     }
 
     // Open OpenGL window
     if( !glfwOpenWindow( 500, 500, 0,0,0,0, 16,0, GLFW_WINDOW ) )
     {
-        fprintf( stderr, "Failed to open GLFW window\n");
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
         exit( 1 );
     }
