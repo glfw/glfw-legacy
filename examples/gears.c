@@ -323,15 +323,15 @@ int main(int argc, char *argv[])
 {
     if( !glfwInit() )
     {
-        fprintf( stderr, "Failed to initialize GLFW\n");
-        exit(1);
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
     }
 
     if( !glfwOpenWindow( 300,300, 0,0,0,0, 16,0, GLFW_WINDOW ) )
     {
-        fprintf( stderr, "Failed to open GLFW window\n");
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit(1);
+        exit( EXIT_FAILURE );
     }
 
     glfwSetWindowTitle( "Gears" );
@@ -368,6 +368,6 @@ int main(int argc, char *argv[])
     glfwTerminate();
 
     // Exit program
-    exit(0);
+    exit( EXIT_SUCCESS );
 }
 
