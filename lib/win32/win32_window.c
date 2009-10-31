@@ -176,6 +176,11 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
     }
 
     result = (_GLFWfbconfig*) malloc( sizeof( _GLFWfbconfig ) * count );
+    if( !result )
+    {
+        fprintf(stderr, "Out of memory");
+        return NULL;
+    }
 
     for( i = 1;  i <= count;  i++ )
     {
@@ -1052,6 +1057,7 @@ static int choosePixelFormat( const _GLFWfbconfig *fbconfig )
 
     free( fbconfigs );
     fbconfigs = NULL;
+    closest = NULL;
 
     return pixelFormat;
 }

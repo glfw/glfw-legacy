@@ -736,6 +736,11 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
     }
 
     result = (_GLFWfbconfig*) malloc(sizeof(_GLFWfbconfig) * count);
+    if( !result )
+    {
+        fprintf(stderr, "Out of memory");
+        return NULL;
+    }
 
     for( i = 0;  i < count;  i++ )
     {
@@ -1199,6 +1204,8 @@ int _glfwPlatformOpenWindow( int width, int height,
 
         closest = *result;
         free( fbconfigs );
+        fbconfigs = NULL;
+        result = NULL;
     }
 
     if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
