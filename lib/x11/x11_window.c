@@ -739,27 +739,22 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
     for( i = 0;  i < count;  i++ )
     {
-        if( !getFBConfigAttrib( fbconfigs[i], GLX_DOUBLEBUFFER ) )
+        if( !getFBConfigAttrib( fbconfigs[i], GLX_DOUBLEBUFFER ) ||
+            !getFBConfigAttrib( fbconfigs[i], GLX_VISUAL_ID ) )
         {
-            // Only consider doublebuffered GLXFBConfigs
+            // Only consider doublebuffered GLXFBConfigs with associated visuals
             continue;
         }
 
-        if( !( getFBConfigAttrib( fbconfigs[i], GLX_RENDER_TYPE ) & GLX_RGBA_BIT )  )
+        if( !( getFBConfigAttrib( fbconfigs[i], GLX_RENDER_TYPE ) & GLX_RGBA_BIT ) )
         {
             // Only consider RGBA GLXFBConfigs
             continue;
         }
 
-        if( !( getFBConfigAttrib( fbconfigs[i], GLX_DRAWABLE_TYPE ) & GLX_WINDOW_BIT )  )
+        if( !( getFBConfigAttrib( fbconfigs[i], GLX_DRAWABLE_TYPE ) & GLX_WINDOW_BIT ) )
         {
             // Only consider window GLXFBConfigs
-            continue;
-        }
-
-        if( !getFBConfigAttrib( fbconfigs[i], GLX_VISUAL_ID ) )
-        {
-            // Only consider GLXFBConfigs with associated visuals
             continue;
         }
 
