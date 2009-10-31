@@ -217,6 +217,10 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
             {
                 result[*found].samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
             }
+            else
+            {
+                result[*found].samples = 0;
+            }
         }
         else
         {
