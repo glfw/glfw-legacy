@@ -85,7 +85,7 @@
 
 @end
 
-// todo need to find mappings for F13-F15, volume down/up/mute, and eject.
+// TODO: Need to find mappings for F13-F15, volume down/up/mute, and eject.
 static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
 {
     /* 00 */ 'A',
