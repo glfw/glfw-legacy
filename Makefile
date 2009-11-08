@@ -142,27 +142,16 @@ cross-mgw-clean:
 # X11 on Unix-like systems
 ###########################################################################
 
-# List of example programs (used by clean target)
-EXAMPLES = boing gears listmodes mipmaps mtbench mthello particles \
-           pong3d splitview triangle wave
-
-# List of test programs (used by clean target)
-TESTS = accuracy defaults events fsaa fsinput joysticks peter reopen \
-	tearing version
-
 MAKEFILES_X11_IN = lib/x11/Makefile.x11.in examples/Makefile.x11.in \
 		   tests/Makefile.x11.in
 
 MAKEFILES_X11 = lib/x11/Makefile.x11 examples/Makefile.x11 tests/Makefile.x11
 
 # Cleanup for X11 (must be here due to generated makefile)
-x11-clean:
-	rm -f lib/x11/*.o
-	rm -f lib/x11/libglfw.a
-	rm -f lib/x11/libglfw.so
-	rm -f lib/x11/libglfw.pc
-	cd examples; rm -f $(EXAMPLES)
-	cd tests; rm -f $(TESTS)
+x11-clean: $(MAKEFILES_X11)
+	cd lib/x11;  $(MAKE) -f Makefile.x11 clean
+	cd examples; $(MAKE) -f Makefile.x11 clean
+	cd tests;    $(MAKE) -f Makefile.x11 clean
 
 x11-dist-clean: x11-clean
 	rm -f config.log

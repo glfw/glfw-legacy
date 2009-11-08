@@ -255,3 +255,11 @@ so_x11_window.o: x11_window.c $(HEADERS)
 so_x11_keysym2unicode.o: x11_keysym2unicode.c $(HEADERS)
 	$(CC) -fPIC $(CFLAGS) -o $@ x11_keysym2unicode.c
 
+
+##########################################################################
+# Clean
+##########################################################################
+
+clean:
+	rm -f $(STATIC_OBJS) $(SHARED_OBJS) libglfw.a libglfw.so libglfw.pc
+
