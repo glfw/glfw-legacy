@@ -16,7 +16,7 @@ LFLAGS = $(LIB) -lglu32 -lopengl32
 WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
-BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fullscreen.exe \
+BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fsinput.exe \
            joysticks.exe peter.exe reopen.exe tearing.exe version.exe
 
 HEADER = ../include/GL/glfw.h
@@ -35,8 +35,8 @@ events.exe: events.c $(LIB) $(HEADER)
 fsaa.exe: fsaa.c $(LIB) $(HEADER)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) fsaa.c $(LFLAGS) -o $@
 
-fullscreen.exe: fullscreen.c $(LIB) $(HEADER)
-	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -o $@
+fsinput.exe: fsinput.c $(LIB) $(HEADER)
+	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) fsinput.c $(LFLAGS) -o $@
 
 joysticks.exe: joysticks.c $(LIB) $(HEADER)
 	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) joysticks.c $(LFLAGS) -o $@

@@ -1,4 +1,4 @@
-BINARIES = accuracy defaults events fsaa fullscreen joysticks peter reopen \
+BINARIES = accuracy defaults events fsaa fsinput joysticks peter reopen \
 		   tearing version
 
 HEADER = ../include/GL/glfw.h
@@ -17,8 +17,8 @@ events: events.c $(LIB) $(HEADER)
 fsaa: fsaa.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) fsaa.c $(LFLAGS) -o $@
 
-fullscreen: fullscreen.c $(LIB) $(HEADER)
-	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o $@
+fsinput: fsinput.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) fsinput.c $(LFLAGS) -o $@
 
 joysticks: joysticks.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o $@

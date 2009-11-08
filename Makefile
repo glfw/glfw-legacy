@@ -146,7 +146,7 @@ EXAMPLES = boing gears listmodes mipmaps mtbench mthello particles \
            pong3d splitview triangle wave
 
 # List of test programs (used by clean target)
-TESTS = accuracy defaults events fsaa fullscreen joysticks peter reopen \
+TESTS = accuracy defaults events fsaa fsinput joysticks peter reopen \
 	tearing version
 
 MAKEFILES_X11_IN = lib/x11/Makefile.x11.in examples/Makefile.x11.in \

@@ -16,7 +16,7 @@ CONSOLE = -mconsole
 
 HEADER = ../include/GL/glfw.h
 
-all: accuracy.exe defaults.exe events.exe fsaa.exe fullscreen.exe \
+all: accuracy.exe defaults.exe events.exe fsaa.exe fsinput.exe \
      joysticks.exe peter.exe reopen.exe tearing.exe version.exe
 
 accuracy.exe: accuracy.c $(LIB) $(HEADER)
@@ -31,8 +31,8 @@ events.exe: events.c $(LIB) $(HEADER)
 fsaa.exe: fsaa.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(CONSOLE) fsaa.c $(LFLAGS) -o $@
 
-fullscreen.exe: fullscreen.c $(LIB) $(HEADER)
-	$(CC) $(CFLAGS) $(WINDOWS) fullscreen.c $(LFLAGS) -o $@
+fsinput.exe: fsinput.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) $(WINDOWS) fsinput.c $(LFLAGS) -o $@
 
 joysticks.exe: joysticks.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(CONSOLE) joysticks.c $(LFLAGS) -o $@

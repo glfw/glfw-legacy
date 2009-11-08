@@ -225,7 +225,7 @@ IF EXIST .\tests\accuracy.exe             del .\tests\accuracy.exe
 IF EXIST .\tests\defaults.exe             del .\tests\defaults.exe
 IF EXIST .\tests\events.exe               del .\tests\events.exe
 IF EXIST .\tests\fsaa.exe                 del .\tests\fsaa.exe
-IF EXIST .\tests\fullscreen.exe           del .\tests\fullscreen.exe
+IF EXIST .\tests\fsinput.exe              del .\tests\fsinput.exe
 IF EXIST .\tests\joysticks.exe            del .\tests\joysticks.exe
 IF EXIST .\tests\peter.exe                del .\tests\peter.exe
 IF EXIST .\tests\reopen.exe               del .\tests\reopen.exe

@@ -18,8 +18,8 @@ all: Accuracy.app/Contents/MacOS/Accuracy \
      Defaults.app/Contents/MacOS/Defaults \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
-     Fullscreen.app/Contents/MacOS/Fullscreen \
-	 Joysticks.app/Contents/MacOS/Joysticks \
+     FSInput.app/Contents/MacOS/FSInput \
+     Joysticks.app/Contents/MacOS/Joysticks \
      Peter.app/Contents/MacOS/Peter \
      ReOpen.app/Contents/MacOS/ReOpen \
      Tearing.app/Contents/MacOS/Tearing \
@@ -41,9 +41,9 @@ FSAA.app/Contents/MacOS/FSAA: fsaa.c $(LIB)
 	/bin/sh bundle.sh FSAA
 	$(CC) $(CFLAGS) fsaa.c $(LFLAGS) -o FSAA.app/Contents/MacOS/FSAA
 
-Fullscreen.app/Contents/MacOS/Fullscreen: fullscreen.c $(LIB)
-	/bin/sh bundle.sh Fullscreen
-	$(CC) $(CFLAGS) fullscreen.c $(LFLAGS) -o Fullscreen.app/Contents/MacOS/Fullscreen
+FSInput.app/Contents/MacOS/FSInput: fsinput.c $(LIB)
+	/bin/sh bundle.sh FSInput
+	$(CC) $(CFLAGS) fsinput.c $(LFLAGS) -o FSInput.app/Contents/MacOS/FSInput
 
 Joysticks.app/Contents/MacOS/Joysticks: joysticks.c $(LIB)
 	/bin/sh bundle.sh Joysticks
@@ -66,6 +66,6 @@ Version.app/Contents/MacOS/Version: version.c $(LIB)
 	$(CC) $(CFLAGS) version.c $(LFLAGS) -o Version.app/Contents/MacOS/Version
 
 clean:
-	rm -rf Accuracy.app Defaults.app Events.app FSAA.app Fullscreen.app \
+	rm -rf Accuracy.app Defaults.app Events.app FSAA.app FSInput.app \
            Joysticks.app Peter.app ReOpen.app Tearing.app Version.app
 
