@@ -198,6 +198,13 @@ int _glfwPlatformInit( void )
     // Implicitly create shared NSApplication instance
     [NSApplication sharedApplication];
 
+    NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
+
+    if( access([resourcePath cString], R_OK) == 0 )
+    {
+        chdir( [resourcePath cString] );
+    }
+
     // Setting up menu bar must go exactly here else weirdness ensues
     setUpMenuBar();
 
