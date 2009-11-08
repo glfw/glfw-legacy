@@ -160,7 +160,7 @@ void _glfwInputKey( int key, int action )
 
 
 //========================================================================
-// _glfwInputChar() - Register (keyboard) character activity
+// Register (keyboard) character activity
 //========================================================================
 
 void _glfwInputChar( int character, int action )
@@ -191,17 +191,22 @@ void _glfwInputChar( int character, int action )
 
     if( action != GLFW_PRESS )
     {
-        // This intentionally breaks release notifications for Unicode characters
-        // It will remain broken until its removal in the 3.0 API, or until
-        // someone explains, in a way that makes sense to people outside the
-        // US and Scandinavia, what "Unicode character up" means
+        // This intentionally breaks release notifications for Unicode
+        // characters, partly to see if anyone cares but mostly because it's
+        // a nonsensical concept to begin with
         //
-        // If your particular application uses this for... something, please feel
-        // free to re-enable it by removing this if-statement
+        // It will remain broken either until its removal in the 3.0 API or
+        // until someone explains, in a way that makes sense to people outside
+        // the US and Scandinavia, what "Unicode character up" actually means
+        //
+        // If what you want is "physical key up" then you should be using the
+        // key functions and/or the key callback, NOT the Unicode input
+        //
+        // However, if your particular application uses this misfeature for...
+        // something, you can re-enable it by removing this if-statement
         return;
     }
 
-    // Call user callback function
     if( _glfwWin.charCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
     {
         _glfwWin.charCallback( character, action );
