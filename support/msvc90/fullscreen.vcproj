@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="fullscreen"
-	ProjectGUID="{588AFBF8-66B7-40C1-A8F8-0441074CB8FD}"
+	ProjectGUID="{1D71F54A-26A9-4BE8-9B1A-E6027252D8FF}"
 	RootNamespace="fullscreen"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

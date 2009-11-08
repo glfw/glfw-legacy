@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="events"
-	ProjectGUID="{236D76D6-11EE-4A7A-9866-5F54D167F0BB}"
+	ProjectGUID="{C0288A9D-6997-45DA-87E1-D3FC3D0A5CD4}"
 	RootNamespace="events"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

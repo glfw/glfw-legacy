@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="reopen"
-	ProjectGUID="{236D76D6-11EE-4A7A-9866-5F54D167F0BB}"
+	ProjectGUID="{E2A77601-A969-4178-AE56-EFC8023FE12D}"
 	RootNamespace="reopen"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

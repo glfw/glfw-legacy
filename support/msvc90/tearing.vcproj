@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="tearing"
-	ProjectGUID="{588AFBF8-66B7-40C1-A8F8-0441074CB8FD}"
+	ProjectGUID="{D397257E-F80A-49B0-9C42-9EE4271463D7}"
 	RootNamespace="tearing"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
