@@ -4,7 +4,7 @@
 # To compile GLFW using this makefile, run:
 #  make -f Makefile.win32.mgw
 ##########################################################################
-PREFIX ?= /usr/local
+PREFIX ?= /usr/i586-mingw32msvc
 TARGET ?= i586-mingw32msvc-
 
 ##########################################################################
