@@ -22,7 +22,6 @@ all: Triangle.app/Contents/MacOS/Triangle \
      Particles.app/Contents/MacOS/Particles \
      SplitView.app/Contents/MacOS/SplitView \
      Mipmaps.app/Contents/MacOS/Mipmaps \
-     JoyTest.app/Contents/MacOS/JoyTest \
      Gears.app/Contents/MacOS/Gears \
      Boing.app/Contents/MacOS/Boing \
      Wave.app/Contents/MacOS/Wave
@@ -74,7 +73,6 @@ Wave.app/Contents/MacOS/Wave: wave.c $(LIB)
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o Wave.app/Contents/MacOS/Wave
 
 clean:
-	rm -rf JoyTest.app Triangle.app ListModes.app MTHello.app \
-	       Pong3D.app MTBench.app Particles.app SplitView.app \
-	       Mipmaps.app Gears.app Boing.app Wave.app
+	rm -rf Triangle.app ListModes.app MTHello.app Pong3D.app MTBench.app \
+		   Particles.app SplitView.app Mipmaps.app Gears.app Boing.app Wave.app
 
