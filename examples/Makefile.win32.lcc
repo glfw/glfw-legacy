@@ -58,7 +58,7 @@ mipmaps.exe: mipmaps.c
 
 # Rule for gears
 gears.exe: gears.c
-	$(CC) $(CFLAGS) gears.c $(LFLAGS)  -o $@ -s $(CONSOLE)
+	$(CC) $(CFLAGS) gears.c $(LFLAGS)  -o $@ -s $(WINDOWS)
 
 # Rule for boing
 boing.exe: boing.c
@@ -67,3 +67,4 @@ boing.exe: boing.c
 # Rule for wave
 wave.exe: wave.c
 	$(CC) $(CFLAGS) wave.c $(LFLAGS)  -o $@ -s $(WINDOWS)
+

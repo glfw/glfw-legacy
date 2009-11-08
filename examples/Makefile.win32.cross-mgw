@@ -46,7 +46,7 @@ mipmaps.exe: mipmaps.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) mipmaps.c $(LFLAGS) -lm -o $@
 
 gears.exe: gears.c $(LIB)
-	$(TARGET)$(CC) $(CFLAGS) $(CONSOLE) gears.c $(LFLAGS) -lm -o $@
+	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) gears.c $(LFLAGS) -lm -o $@
 
 boing.exe: boing.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) boing.c $(LFLAGS) -lm -o $@
