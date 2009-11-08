@@ -40,7 +40,7 @@ install: libglfw.a libglfw.pc
 dist-install: libglfw.a libglfw.so libglfw.pc
 	$(INSTALL) -d $(PREFIX)/lib
 	$(INSTALL) -c -m 644 libglfw.a $(PREFIX)/lib/libglfw.a
-	$(INSTALL) -c -m 644 libglfw.so $(PREFIX)/lib/libglfw.so.2
+	$(INSTALL) -c -m 644 libglfw.so $(PREFIX)/lib/libglfw.so
 	$(INSTALL) -d $(PREFIX)/include/GL
 	$(INSTALL) -c -m 644 ../../include/GL/glfw.h $(PREFIX)/include/GL/glfw.h
 	$(INSTALL) -d $(PREFIX)/lib/pkgconfig

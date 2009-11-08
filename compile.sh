@@ -91,7 +91,7 @@ echo -n "Checking what kind of system this is... " 1>&6
 case "x`uname 2> /dev/null`" in
 xLinux)
   GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_USE_LINUX_JOYSTICKS"
-  SOFLAGS="-shared -Wl,-soname,libglfw.so.2"
+  SOFLAGS="-shared -Wl,-soname,libglfw.so"
   echo "Linux" 1>&6
   ;;
 xDarwin)
@@ -99,7 +99,7 @@ xDarwin)
   echo "Mac OS X" 1>&6
   ;;
 *)
-  SOFLAGS="-shared -soname libglfw.so.2"
+  SOFLAGS="-shared -soname libglfw.so"
   echo "Generic Unix" 1>&6
   ;;
 esac
