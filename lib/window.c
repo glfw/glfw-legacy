@@ -189,6 +189,18 @@ void _glfwInputChar( int character, int action )
         _glfwInput.LastChar = 0;
     }
 
+    if( action != GLFW_PRESS )
+    {
+        // This intentionally breaks release notifications for Unicode characters
+        // It will remain broken until its removal in the 3.0 API, or until
+        // someone explains, in a way that makes sense to people outside the
+        // US and Scandinavia, what "Unicode character up" means
+        //
+        // If your particular application uses this for... something, please feel
+        // free to re-enable it by removing this if-statement
+        return;
+    }
+
     // Call user callback function
     if( _glfwWin.charCallback && (_glfwInput.KeyRepeat || !keyrepeat) )
     {
