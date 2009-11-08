@@ -94,7 +94,7 @@ int main( void )
                    0.0f,  1.0f,   0.0f );  // Up-vector
 
         // Draw a textured quad
-        glRotatef( 0.05 * (GLfloat)x + (GLfloat)time * 5.0f, 0.0f, 1.0f, 0.0f );
+        glRotatef( 0.05f * (GLfloat)x + (GLfloat)time * 5.0f, 0.0f, 1.0f, 0.0f );
         glBegin( GL_QUADS );
           glTexCoord2f( -20.0f,  20.0f );
           glVertex3f( -50.0f, 0.0f, -50.0f );

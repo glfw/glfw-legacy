@@ -88,10 +88,10 @@ int main(void)
         glColor3f(1.f, 1.f, 1.f);
 
         glBegin(GL_LINES);
-        glVertex2f(0.f, window_height - cursor_y);
-        glVertex2f(window_width, window_height - cursor_y);
-        glVertex2f(cursor_x, 0.f);
-        glVertex2f(cursor_x, window_height);
+        glVertex2f(0.f, (GLfloat) window_height - cursor_y);
+        glVertex2f((GLfloat) window_width, (GLfloat) window_height - cursor_y);
+        glVertex2f((GLfloat) cursor_x, 0.f);
+        glVertex2f((GLfloat) cursor_x, (GLfloat) window_height);
         glEnd();
 
         glfwSwapBuffers();

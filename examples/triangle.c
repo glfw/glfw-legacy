@@ -77,7 +77,7 @@ int main( void )
 
         // Draw a rotating colorful triangle
         glTranslatef( 0.0f, 14.0f, 0.0f );
-        glRotatef( 0.3*(GLfloat)x + (GLfloat)t*100.0f, 0.0f, 0.0f, 1.0f );
+        glRotatef( 0.3f*(GLfloat)x + (GLfloat)t*100.0f, 0.0f, 0.0f, 1.0f );
         glBegin( GL_TRIANGLES );
           glColor3f( 1.0f, 0.0f, 0.0f );
           glVertex3f( -5.0f, 0.0f, -4.0f );

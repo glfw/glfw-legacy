@@ -271,7 +271,7 @@ void DrawBoingBall( void )
        dt2 = dt_total > MAX_DELTA_T ? MAX_DELTA_T : dt_total;
        dt_total -= dt2;
        BounceBall( dt2 );
-       deg_rot_y = TruncateDeg( deg_rot_y + deg_rot_y_inc*(dt2*ANIMATION_SPEED) );
+       deg_rot_y = TruncateDeg( deg_rot_y + deg_rot_y_inc*((float)dt2*ANIMATION_SPEED) );
    }
 
    /* Set ball position */
@@ -348,16 +348,16 @@ void BounceBall( double dt )
    /* Bounce on floor / roof */
    if ( ball_y >  BOUNCE_HEIGHT/2      )
    {
-      ball_y_inc = -0.75 - 1.0 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_y_inc = -0.75f - 1.f * (GLfloat)rand() / (GLfloat)RAND_MAX;
    }
    if ( ball_y < -BOUNCE_HEIGHT/2*0.85 )
    {
-      ball_y_inc =  0.75 + 1.0 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_y_inc =  0.75f + 1.f * (GLfloat)rand() / (GLfloat)RAND_MAX;
    }
 
    /* Update ball position */
-   ball_x += ball_x_inc * (dt*ANIMATION_SPEED);
-   ball_y += ball_y_inc * (dt*ANIMATION_SPEED);
+   ball_x += ball_x_inc * ((float)dt*ANIMATION_SPEED);
+   ball_y += ball_y_inc * ((float)dt*ANIMATION_SPEED);
 
   /*
    * Simulate the effects of gravity on Y movement.
@@ -368,7 +368,7 @@ void BounceBall( double dt )
    if ( deg > 80 ) deg = 80;
    if ( deg < 10 ) deg = 10;
 
-   ball_y_inc = sign * 4.0 * sin_deg( deg );
+   ball_y_inc = sign * 4.f * (float) sin_deg( deg );
 }
 
 
@@ -422,23 +422,23 @@ void DrawBoingBallBand( GLfloat long_lo,
      /*
       * Assign each Y.
       */
-      vert_ne.y = vert_nw.y = cos_deg(long_hi) * RADIUS;
-      vert_sw.y = vert_se.y = cos_deg(long_lo) * RADIUS;
+      vert_ne.y = vert_nw.y = (float) cos_deg(long_hi) * RADIUS;
+      vert_sw.y = vert_se.y = (float) cos_deg(long_lo) * RADIUS;
 
      /*
       * Assign each X,Z with sin,cos values scaled by latitude radius indexed by longitude.
       * Eg, long=0 and long=180 are at the poles, so zero scale is sin(longitude),
       * while long=90 (sin(90)=1) is at equator.
       */
-      vert_ne.x = cos_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_se.x = cos_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo                  ));
-      vert_nw.x = cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_sw.x = cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo                  ));
+      vert_ne.x = (float) cos_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_se.x = (float) cos_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo                  ));
+      vert_nw.x = (float) cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_sw.x = (float) cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo                  ));
 
-      vert_ne.z = sin_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_se.z = sin_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo                  ));
-      vert_nw.z = sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_sw.z = sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo                  ));
+      vert_ne.z = (float) sin_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_se.z = (float) sin_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo                  ));
+      vert_nw.z = (float) sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_sw.z = (float) sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo                  ));
 
      /*
       * Draw the facet.

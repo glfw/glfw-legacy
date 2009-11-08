@@ -341,7 +341,7 @@ static void DrawAllViews( void )
         glMatrixMode( GL_MODELVIEW );
         glLoadIdentity();
         glColor3f( 1.0f, 1.0f, 0.6f );
-        glTranslatef( (active_view-1)&1, 1-(active_view-1)/2, 0.0f );
+        glTranslatef( (GLfloat) ((active_view - 1) & 1), (GLfloat) (1 - (active_view - 1) / 2), 0.0f );
         glBegin( GL_LINE_STRIP );
           glVertex2i( 0, 0 );
           glVertex2i( 1, 0 );
