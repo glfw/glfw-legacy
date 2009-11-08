@@ -143,7 +143,7 @@ int main(int argc, char** argv)
             glClear(GL_COLOR_BUFFER_BIT);
 
             glPushMatrix();
-            glRotatef(glfwGetTime() * 100.f, 0.f, 0.f, 1.f);
+            glRotatef((GLfloat) glfwGetTime() * 100.f, 0.f, 0.f, 1.f);
             glRectf(-0.5f, -0.5f, 1.f, 1.f);
             glPopMatrix();
 

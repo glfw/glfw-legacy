@@ -108,7 +108,7 @@ int main(void)
 
     while (running)
     {
-        glClearColor(fabs(cos(glfwGetTime() * 4.f)), 0, 0, 0);
+        glClearColor((GLclampf) fabs(cos(glfwGetTime() * 4.f)), 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glfwSwapBuffers();

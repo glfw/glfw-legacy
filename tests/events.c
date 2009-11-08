@@ -173,9 +173,10 @@ static void GLFWCALL window_refresh_callback(void)
 
 static void GLFWCALL mouse_button_callback(int button, int action)
 {
+    const char* name = get_button_name(button);
+
     printf("%08x at %0.3f: Mouse button %i", counter++, glfwGetTime(), button);
 
-    const char* name = get_button_name(button);
     if (name)
         printf(" (%s) was %s\n", name, get_action_name(action));
     else
@@ -194,9 +195,10 @@ static void GLFWCALL mouse_wheel_callback(int position)
 
 static void GLFWCALL key_callback(int key, int action)
 {
+    const char* name = get_key_name(key);
+
     printf("%08x at %0.3f: Key 0x%04x", counter++, glfwGetTime(), key);
 
-    const char* name = get_key_name(key);
     if (name)
         printf(" (%s) was %s\n", name, get_action_name(action));
     else if (isgraph(key))

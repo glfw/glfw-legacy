@@ -39,8 +39,8 @@
 #define GL_SHADING_LANGUAGE_VERSION 0x8B8C
 #endif
 
-#ifdef _WIN32
-#define strcasecmp(x, y) stricmp(x, y)
+#ifdef _MSC_VER
+#define strcasecmp(x, y) _stricmp(x, y)
 #endif
 
 #include <stdio.h>

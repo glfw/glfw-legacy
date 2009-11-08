@@ -78,7 +78,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         glLoadIdentity();
-        glRotatef(glfwGetTime(), 0.f, 0.f, 1.f);
+        glRotatef((GLfloat) glfwGetTime(), 0.f, 0.f, 1.f);
 
         glBegin(GL_QUADS);
         glColor3f(1.f, 1.f, 1.f);
