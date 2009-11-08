@@ -40,62 +40,6 @@
 
 @implementation GLFWWindowDelegate
 
-- (void)insertNewline:(id)sender
-{
-    // NOTE: This method is implemented because pressing Return makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)insertTab:(id)sender
-{
-    // NOTE: This method is implemented because pressing Tab makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveUp:(id)sender
-{
-    // NOTE: This method is implemented because pressing Up makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveDown:(id)sender
-{
-    // NOTE: This method is implemented because pressing Down makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)cancel:(id)sender
-{
-    // NOTE: This method is implemented because pressing Escape makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveLeft:(id)sender
-{
-    // NOTE: This method is implemented because pressing Left makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveRight:(id)sender
-{
-    // NOTE: This method is implemented because pressing Right makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
 - (BOOL)windowShouldClose:(id)window
 {
     if( _glfwWin.windowCloseCallback )
@@ -384,7 +328,9 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyDown:(NSEvent *)event
 {
-    int code = convertMacKeyCode( [event keyCode] );
+    NSUInteger length;
+    NSString* characters;
+    int i, code = convertMacKeyCode( [event keyCode] );
 
     if( code != -1 )
     {
@@ -399,8 +345,13 @@ static int convertMacKeyCode( unsigned int macKeyCode )
         }
         else
         {
-            // This eventually calls through to -insertText:
-            [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+            characters = [event characters];
+            length = [characters length];
+
+            for( i = 0;  i < length;  i++ )
+            {
+                _glfwInputChar( [characters characterAtIndex:i], GLFW_PRESS );
+            }
         }
     }
 }
@@ -425,21 +376,21 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyUp:(NSEvent *)event
 {
-    int code = convertMacKeyCode( [event keyCode] );
+    NSUInteger length;
+    NSString* characters;
+    int i, code = convertMacKeyCode( [event keyCode] );
+
     if( code != -1 )
     {
         _glfwInputKey( code, GLFW_RELEASE );
-    }
-}
 
-- (void)insertText:(id)string
-{
-    unsigned int i, n = [string length];
+        characters = [event characters];
+        length = [characters length];
 
-    for( i = 0; i < n; i++ )
-    {
-        _glfwInputChar( [string characterAtIndex:i], GLFW_PRESS );
-        _glfwInputChar( [string characterAtIndex:i], GLFW_RELEASE );
+        for( i = 0;  i < length;  i++ )
+        {
+            _glfwInputChar( [characters characterAtIndex:i], GLFW_RELEASE );
+        }
     }
 }
 
