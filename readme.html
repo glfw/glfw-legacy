@@ -69,7 +69,7 @@ DLL will also be compiled.</p>
 </ol>
 
 <p>If your compiler/system is not in the list, you may have to create new
-makefiles in the <b>lib\win32</b>, <b>lib/x11</b> or <b>lib/macosx</b>
+makefiles in the <b>lib\win32</b>, <b>lib/x11</b> or <b>lib/cocoa</b>
 directory, and in the <b>examples</b> directory. If you have any problems,
 please use our support forum and bug tracker on
 <a href="http://sourceforge.net/projects/glfw/">SourceForge.net</a>. We would
@@ -169,7 +169,7 @@ the top level Makefile.</p>
 subsystem and the Developer Tools, which can be found on your Mac OS X CD:s.
 When they are installed, simply open Terminal and go to the root GLFW
 directory. From there, you can build the library and all the examples by
-running make, i.e. <b>make macosx</b>.</p>
+running make, i.e. <b>make cocoa</b>.</p>
 
 
 
@@ -235,13 +235,13 @@ use the <b>x11-distro-install</b> make target.</p>
 
 <p>After compiling GLFW, three files named <b>libglfw.pc.in</b>,
 <b>libglfw.a</b> and <b>libglfw.dylib</b> should appear in the
-<b>lib/macosx</b> directory. This is the pkgconfig template file, the GLFW
+<b>lib/cocoa</b> directory. This is the pkgconfig template file, the GLFW
 static link library and the GLFW dynamic library, respectively.</p>
 
 <p>To install GLFW onto your system, run make with sudo and the
-<b>macosx-install</b> build target, i.e.:</p>
+<b>cocoa-install</b> build target, i.e.:</p>
 
-<p>&nbsp;&nbsp;<b>sudo make macosx-install</b>
+<p>&nbsp;&nbsp;<b>sudo make cocoa-install</b>
 
 <p>This will install the pkgconfig file, the
 static library and the header. By default, the files will be installed under
@@ -428,33 +428,47 @@ version of GLFW.</p>
   <li>Added <code>GLFW_OPENGL_VERSION_MAJOR</code> and <code>GLFW_OPENGL_VERSION_MINOR</code>
       hints for versioned context creation</li>
   <li>Added <code>GLFW_OPENGL_FORWARD_COMPAT</code> hint for forward compatible context creation</li>
-  <li>Added <code>GLFW_DEBUG_CONTEXT</code> hint for debug context creation</li>
-  <li>Added <code>GLFW_NO_GLU</code> macro for disabling the inclusion of the GLU header</li>
-  <li>Added a rudimentary joystick API testing example</li>
+  <li>Added <code>GLFW_OPENGL_DEBUG_CONTEXT</code> hint for debug context creation</li>
+  <li>Added <code>GLFW_OPENL_PROFILE</code> hint for context creation using profiles</li>
+  <li>Added <code>GLFW_NO_GLU</code> macro for disabling the inclusion of the GLU header by the GLFW header</li>
   <li>Added platform-independent pixel format selection (not used Mac OS X)</li>
-  <li>Added a number of test programs</li>
+  <li>Added support and symbols for several additional keys, including Windows/Command keys, pause, caps lock and menu</li>
+  <li>Added value clamping to <code>glfwOpenWindowHint</code></li>
+  <li>Added a number of test programs mostly useful to developers of GLFW</li>
+  <li>Added error messages and graceful failure to example programs</li>
+  <li>Added Cocoa port for Mac OS X</li>
+  <li>Added vsync to all relevant example programs</li>
+  <li>Updated Pascal (formerly Delphi) bindings to support more compilers</li>
+  <li>OpenGL version is now only parsed once, at window creation time</li>
   <li>Changed all comments in public header file to plain C style</li>
   <li>Removed the keytest example program, which was superceded by the events test</li>
-  <li>Removed all deprecated platforms</li>
-  <li>Removed all unsupported language bindings</li>
-  <li>[X11] Added <code>x11-distro-install</code> install target, intended for packagers</li>
+  <li>Removed deprecated AmigaOS and DOS ports</li>
+  <li>Removed all FPS counters from example programs</li>
+  <li>Removed all unmaintained language bindings</li>
+  <li>[X11] Added <code>x11-dist-install</code> install target, intended for packagers</li>
+  <li>[X11] Added <code>x11-dist-clean</code> build target, intended for developers</li>
+  <li>[X11] Added support for <code>GLX_SGIX_fbconfig</code></li>
+  <li>[X11] Improved configuration and makefile creation logic</li>
   <li>[X11] Removed support for GLX version 1.3 and below</li>
   <li>[X11] Removed unnecessary calls to XSync</li>
+  <li>[X11] Bugfix: Repeated keys would sometimes leak through despite key repeat being disabled</li>
+  <li>[X11] Bugfix: AltGr was not reported as right Alt</li>
+  <li>[X11] Bugfix: Window colormap was not freed</li>
   <li>[X11] Bugfix: Close callback was called for glfwCloseWindow</li>
   <li>[X11] Bugfix: Misspelt struct member in XF86VidMode code path</li>
   <li>[X11] Bugfix: Window decorations would not appear using Compiz on Intel hardware</li>
-  <li>[MacOSX] Added Cocoa port</li>
-  <li>[MacOSX] Added Universal Binary build targets for all examples</li>
-  <li>[MacOSX] Bugfix: Using the Dock or menu Quit command did not call the close callback</li>
-  <li>[MacOSX] Bugfix: Key repeat events were not caught on 10.5 Leopard</li>
-  <li>[Win32] Added Visual C++ project files for all examples</li>
-  <li>[Win32] Added the proper DEF file to the Visual C++ DLL project file</li>
-  <li>[Win32] Replaced the MinGW build path with a MinGW/MSYS path</li>
-  <li>[Win32] Replaced the MinGW build path with a MinGW/MSYS path</li>
+  <li>[Carbon] Added Universal Binary build targets for all examples</li>
+  <li>[Carbon] Renamed MacOSX port to Carbon</li>
+  <li>[Carbon] Deprecated Carbon port</li>
+  <li>[Carbon] Bugfix: Using the Dock or menu Quit command did not call the close callback</li>
+  <li>[Carbon] Bugfix: Key repeat events were not caught on 10.5 Leopard</li>
+  <li>[Win32] Added Visual C++ project files for all examples and text programs</li>
+  <li>[Win32] Bugfix: The Visual C++ GLFW DLL project file did not use the correct DEF file</li>
+  <li>[Win32] Bugfix: WGL extensions were not detected and/or used correctly</li>
   <li>[Win32] Bugfix: Improper use of wParam for <code>WM_SYSCOMMAND</code></li>
-  <li>[Win32] Bugfix: Derivatives of stream.c not cleaned up by compile.bat</li>
+  <li>[Win32] Bugfix: Derivatives of stream.c were not cleaned up by compile.bat</li>
   <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initalised</li>
-  <li>[Win32] Bugfix: Updated API version in makefiles</li>
+  <li>[Win32] Bugfix: Makefiles contained the wrong GLFW API version</li>
 </ul>
 
 <h3>v2.6</h3>
@@ -827,12 +841,14 @@ version of GLFW.</p>
 <tr valign="top"><td><b>include</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;GL</b></td><td>&nbsp;</td><td>Here is the GLFW C/C++ include file</td></tr>
 <tr valign="top"><td><b>lib</b></td><td>&nbsp;</td><td>The source code for GLFW</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;macosx</b></td><td>&nbsp;</td><td>Mac OS X specific implementation</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;cocoa</b></td><td>&nbsp;</td><td>Mac OS X/Cocoa specific implementation</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;win32</b></td><td>&nbsp;</td><td>Windows specific implementation</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;x11</b></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
 <tr valign="top"><td><b>support</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;d</b></td><td>&nbsp;</td><td>D support</td></tr>
 <tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;msvc90</b></td><td>&nbsp;</td><td>Project files for Visual C++ 9.0</td></tr>
+<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;pascal</b></td><td>&nbsp;</td><td>Pascal support</td></tr>
+<tr valign="top"><td><b>tests</b></td><td>&nbsp;</td><td>Several test programs in C</td></tr>
 </table>
 
 
