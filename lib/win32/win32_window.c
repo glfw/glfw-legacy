@@ -136,7 +136,7 @@ static void setForegroundWindow( HWND hWnd )
 
 static int getPixelFormatAttrib(int pixelFormat, int attrib)
 {
-    int value;
+    int value = 0;
 
     if( !_glfwWin.GetPixelFormatAttribivARB( _glfwWin.DC, pixelFormat, 0, 1, &attrib, &value) )
     {
@@ -1579,7 +1579,7 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.accumAlphaBits = getPixelFormatAttrib( pixelFormat, WGL_ACCUM_ALPHA_BITS_ARB );
 
         _glfwWin.auxBuffers = getPixelFormatAttrib( pixelFormat, WGL_AUX_BUFFERS_ARB );
-        _glfwWin.stereo = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB );
+        _glfwWin.stereo = getPixelFormatAttrib( pixelFormat, WGL_STEREO_ARB ) ? GL_TRUE : GL_FALSE;
 
         if( _glfwWin.has_WGL_ARB_multisample )
         {
@@ -1612,7 +1612,7 @@ void _glfwPlatformRefreshWindowParams( void )
         _glfwWin.accumBlueBits  = pfd.cAccumBlueBits;
         _glfwWin.accumAlphaBits = pfd.cAccumAlphaBits;
         _glfwWin.auxBuffers     = pfd.cAuxBuffers;
-        _glfwWin.stereo         = pfd.dwFlags & PFD_STEREO ? 1 : 0;
+        _glfwWin.stereo         = (pfd.dwFlags & PFD_STEREO) ? GL_TRUE : GL_FALSE;
 
         // If we don't have WGL_ARB_pixel_format then we can't have created a
         // multisampling context, so it's safe to hardcode zero here
