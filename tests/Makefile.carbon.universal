@@ -2,7 +2,7 @@
 # Makefile for GLFW test programs on Windows using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  make -f Makefile.macosx.universal
+#  make -f Makefile.carbon.universal
 ##########################################################################
 
 # Compiler settings
@@ -11,7 +11,7 @@ FATFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386
 CFLAGS   = -I../include $(FATFLAGS)
 
 # Linker settings
-LFLAGS = ../lib/macosx/libglfw.a -framework AGL -framework OpenGL -framework Carbon
+LFLAGS = ../lib/carbon/libglfw.a -framework AGL -framework OpenGL -framework Carbon
 
 # Default: Build all tests
 all: Triangle.app/Contents/MacOS/GLFWApplication \

@@ -2,7 +2,7 @@
 # Makefile for GLFW on Mac OS X using GCC (Apple SDK).
 #-------------------------------------------------------------------------
 # To compile GLFW using this makefile, run:
-#  make -f Makefile.macosx.gcc.universal
+#  make -f Makefile.carbon.universal
 ##########################################################################
 
 ##########################################################################
@@ -71,14 +71,14 @@ OBJS = \
        thread.o \
        time.o \
        window.o \
-       macosx_enable.o \
-       macosx_fullscreen.o \
-       macosx_glext.o \
-       macosx_init.o \
-       macosx_joystick.o \
-       macosx_thread.o \
-       macosx_time.o \
-       macosx_window.o
+       carbon_enable.o \
+       carbon_fullscreen.o \
+       carbon_glext.o \
+       carbon_init.o \
+       carbon_joystick.o \
+       carbon_thread.o \
+       carbon_time.o \
+       carbon_window.o
 
 
 ##########################################################################
@@ -136,27 +136,27 @@ time.o: ../time.c ../internal.h platform.h
 window.o: ../window.c ../internal.h platform.h
 	$(CC) $(CFLAGS) -o $@ ../window.c
 
-macosx_enable.o: macosx_enable.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_enable.c
+carbon_enable.o: carbon_enable.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_enable.c
 
-macosx_fullscreen.o: macosx_fullscreen.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_fullscreen.c
+carbon_fullscreen.o: carbon_fullscreen.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_fullscreen.c
 
-macosx_glext.o: macosx_glext.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_glext.c
+carbon_glext.o: carbon_glext.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_glext.c
 
-macosx_init.o: macosx_init.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_init.c
+carbon_init.o: carbon_init.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_init.c
 
-macosx_joystick.o: macosx_joystick.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_joystick.c
+carbon_joystick.o: carbon_joystick.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_joystick.c
 
-macosx_thread.o: macosx_thread.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_thread.c
+carbon_thread.o: carbon_thread.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_thread.c
 
-macosx_time.o: macosx_time.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_time.c
+carbon_time.o: carbon_time.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_time.c
 
-macosx_window.o: macosx_window.c ../internal.h platform.h
-	$(CC) $(CFLAGS) -o $@ macosx_window.c
+carbon_window.o: carbon_window.c ../internal.h platform.h
+	$(CC) $(CFLAGS) -o $@ carbon_window.c
 

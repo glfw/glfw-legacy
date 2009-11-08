@@ -2,7 +2,7 @@
 # Makefile for GLFW test programs on Windows using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
-#  make -f Makefile.macosx
+#  make -f Makefile.carbon
 ##########################################################################
 
 # Compiler settings
@@ -10,7 +10,7 @@ CC     = gcc
 CFLAGS = -I../include -m32
 
 # Linker settings
-LIB = ../lib/macosx/libglfw.a
+LIB = ../lib/carbon/libglfw.a
 HEADER = ../include/GL/glfw.h
 LFLAGS = $(LIB) -framework AGL -framework OpenGL -framework Carbon -m32
 
