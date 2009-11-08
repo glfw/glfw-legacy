@@ -384,8 +384,7 @@ compile time.</p>
 <h4>4.2.5 Mac OS X static library</h4>
 
 <p>When compiling and linking a program under Mac OS X that uses GLFW, you
-must also link with the following frameworks: <b>Carbon.framework</b>,
-<b>AGL.framework</b> and <b>OpenGL.framework</b>.
+must also link with <b>Cocoa.framework</b> and <b>OpenGL.framework</b>.
 
 <p>If you are using Xcode, you simply add the GLFW library <b>libglfw.a</b> and
 these frameworks to your project. If, however, you are building your program
@@ -407,7 +406,7 @@ the command line for compiling and linking your program is:</p>
 frameworks and libraries to your command line using the <b>-l</b> and
 <b>-framework</b> switches, i.e.:</p>
 
-<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -lglfw -framework Carbon -framework AGL -framework OpenGL</b>
+<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL</b>
 
 <p>Note that you do not add the .framework extension to a framework when adding
 it from the command line.</p>
