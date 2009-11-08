@@ -439,8 +439,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
     for( i = 0; i < n; i++ )
     {
         _glfwInputChar( [string characterAtIndex:i], GLFW_PRESS );
-
-        // TODO: Immediately release it too?  What does the mode even mean?
+        _glfwInputChar( [string characterAtIndex:i], GLFW_RELEASE );
     }
 }
 
