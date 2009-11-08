@@ -26,13 +26,9 @@ default:
 	@echo "  $(MAKE) win32-mingw       for bare MinGW on Windows"
 	@echo "  $(MAKE) mingw-clean       to clean the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) win32-msys        for MinGW/MSYS on Windows"
-	@echo "  $(MAKE) msys-clean        to clean the GLFW library and header"
-	@echo "  $(MAKE) msys-install      to install the GLFW library and header into MinGW/MSYS"
-	@echo "-----------------------------------------------------------------------------"
-	@echo "  $(MAKE) win32-cygwin      for Windows native (no Cygwin dependency) on Cygwin"
-	@echo "  $(MAKE) cygwin-clean      to remove any compiled files for Cygwin/Windows"
-	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header into Cygwin"
+	@echo "  $(MAKE) win32-cygwin      for Windows native on Cygwin/MSYS"
+	@echo "  $(MAKE) cygwin-clean      to remove any compiled files for Cygwin/MSYS"
+	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) win32-lcc         for LCC-Win32 for Windows"
 	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
@@ -63,22 +59,6 @@ win32-mingw:
 
 mingw-clean:
 	@.\\compile.bat CLEAN
-
-
-###########################################################################
-# MinGW/MSYS on Windows
-###########################################################################
-
-msys-install: win32-msys
-	cd lib/win32 && $(MAKE) -f Makefile.win32.msys install
-
-win32-msys:
-	cd lib/win32 && $(MAKE) -f Makefile.win32.msys
-	cd examples  && $(MAKE) -f Makefile.win32.msys
-
-msys-clean:
-	cd lib/win32 && $(MAKE) -f Makefile.win32.msys clean
-	cd examples  && $(MAKE) -f Makefile.win32.msys clean
 
 
 ###########################################################################
