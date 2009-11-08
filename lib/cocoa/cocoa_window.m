@@ -72,6 +72,14 @@
     // This is a hack and should be removed once a saner solution has been found
 }
 
+- (void)cancel:(id)sender
+{
+    // NOTE: This method is implemented because pressing Escape makes
+    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
+    // we don't care about
+    // This is a hack and should be removed once a saner solution has been found
+}
+
 - (void)moveLeft:(id)sender
 {
     // NOTE: This method is implemented because pressing Left makes
