@@ -115,7 +115,7 @@ install: glfw.dll libglfw.a libglfw.pc
 ##########################################################################
 clean:
 	rm -f $(OBJS) $(DLLOBJS)
-	rm -f libglfw.a glfw.dll libglfw.pc
+	rm -f libglfw.a libglfwdll.a glfw.dll libglfw.pc
 
 ##########################################################################
 # Rule for building static library
