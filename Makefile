@@ -48,6 +48,8 @@ default:
 	@echo "  $(MAKE) cocoa             for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
 	@echo "-----------------------------------------------------------------------------"
+	@echo " There are also Visual Studio 2008 project files available in support/msvc80"
+	@echo "-----------------------------------------------------------------------------"
 
 
 ###########################################################################
