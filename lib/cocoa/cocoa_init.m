@@ -200,9 +200,9 @@ int _glfwPlatformInit( void )
 
     NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
 
-    if( access([resourcePath cString], R_OK) == 0 )
+    if( access( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding], R_OK ) == 0 )
     {
-        chdir( [resourcePath cString] );
+        chdir( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding] );
     }
 
     // Setting up menu bar must go exactly here else weirdness ensues
