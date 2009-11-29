@@ -7,7 +7,7 @@
 
 # Compiler settings
 CC     = gcc
-CFLAGS = -I../include -m32
+CFLAGS = -I../include
 
 # Linker settings
 LIB    = ../lib/cocoa/libglfw.a
