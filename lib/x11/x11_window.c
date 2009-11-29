@@ -986,23 +986,32 @@ static void initGLXExtensions( void )
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
         _glfwWin.SwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXSwapIntervalSGI" );
+            _glfwPlatformGetProcAddress( "glXSwapIntervalSGI" );
 
-        _glfwWin.has_GLX_SGI_swap_control = GL_TRUE;
+        if( _glfwWin.SwapIntervalSGI )
+        {
+            _glfwWin.has_GLX_SGI_swap_control = GL_TRUE;
+        }
     }
 
     if( _glfwPlatformExtensionSupported( "GLX_SGIX_fbconfig" ) )
     {
         _glfwWin.GetFBConfigAttribSGIX = (PFNGLXGETFBCONFIGATTRIBSGIXPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXGetFBConfigAttribSGIX" );
+            _glfwPlatformGetProcAddress( "glXGetFBConfigAttribSGIX" );
         _glfwWin.ChooseFBConfigSGIX = (PFNGLXCHOOSEFBCONFIGSGIXPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXChooseFBConfigSGIX" );
+            _glfwPlatformGetProcAddress( "glXChooseFBConfigSGIX" );
         _glfwWin.CreateContextWithConfigSGIX = (PFNGLXCREATECONTEXTWITHCONFIGSGIXPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXCreateContextWithConfigSGIX" );
+            _glfwPlatformGetProcAddress( "glXCreateContextWithConfigSGIX" );
         _glfwWin.GetVisualFromFBConfigSGIX = (PFNGLXGETVISUALFROMFBCONFIGSGIXPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXGetVisualFromFBConfigSGIX" );
+            _glfwPlatformGetProcAddress( "glXGetVisualFromFBConfigSGIX" );
 
-        _glfwWin.has_GLX_SGIX_fbconfig = GL_TRUE;
+        if( _glfwWin.GetFBConfigAttribSGIX &&
+            _glfwWin.ChooseFBConfigSGIX &&
+            _glfwWin.CreateContextWithConfigSGIX &&
+            _glfwWin.GetVisualFromFBConfigSGIX )
+        {
+            _glfwWin.has_GLX_SGIX_fbconfig = GL_TRUE;
+        }
     }
 
     if( _glfwPlatformExtensionSupported( "GLX_ARB_multisample" ) )
@@ -1013,9 +1022,12 @@ static void initGLXExtensions( void )
     if( _glfwPlatformExtensionSupported( "GLX_ARB_create_context" ) )
     {
         _glfwWin.CreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
-            _glfw_glXGetProcAddress( (GLubyte*) "glXCreateContextAttribsARB" );
+            _glfwPlatformGetProcAddress( "glXCreateContextAttribsARB" );
 
-        _glfwWin.has_GLX_ARB_create_context = GL_TRUE;
+        if( _glfwWin.CreateContextAttribsARB )
+        {
+            _glfwWin.has_GLX_ARB_create_context = GL_TRUE;
+        }
     }
 
     if( _glfwPlatformExtensionSupported( "GLX_ARB_create_context_profile" ) )
