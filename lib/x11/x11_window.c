@@ -1426,8 +1426,6 @@ void _glfwPlatformCloseWindow( void )
                          _glfwWin.Saver.exposure );
         _glfwWin.Saver.changed = GL_FALSE;
     }
-
-    //XSync( _glfwLibrary.display, True );
 }
 
 
@@ -1772,14 +1770,6 @@ void _glfwPlatformPollEvents( void )
     _glfwWin.mapNotifyCount = 0;
     _glfwWin.focusInCount = 0;
 
-    // Use XSync to synchronise events to the X display.
-    // I don't know if this can have a serious performance impact. My
-    // benchmarks with a GeForce card under Linux shows no difference with
-    // or without XSync, but when the GL window is rendered over a slow
-    // network I have noticed bad event syncronisation problems when XSync
-    // is not used, so I decided to use it.
-    //XSync( _glfwLibrary.display, False );
-
     // Empty the window event queue
     while( XPending( _glfwLibrary.display ) )
     {
@@ -1808,7 +1798,6 @@ void _glfwPlatformPollEvents( void )
             // does not wander off...
             _glfwPlatformSetMouseCursorPos( _glfwWin.width/2,
                                             _glfwWin.height/2 );
-            //XSync( _glfwLibrary.display, False );
         }
     }
 
