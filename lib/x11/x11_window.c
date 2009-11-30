@@ -1450,8 +1450,6 @@ void _glfwPlatformSetWindowTitle( const char *title )
 void _glfwPlatformSetWindowSize( int width, int height )
 {
     int     mode = 0, rate, sizeChanged = GL_FALSE;
-    GLint   drawbuffer;
-    GLfloat clearcolor[4];
     XSizeHints *sizehints;
 
     rate = _glfwWin.refreshRate;
@@ -1524,7 +1522,10 @@ void _glfwPlatformIconifyWindow( void )
     if( _glfwWin.fullscreen )
     {
 #if defined( _GLFW_HAS_XRANDR )
-    // TODO: The code.
+        if( _glfwLibrary.XRandR.available )
+        {
+            // TODO: The code.
+        }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
         if( _glfwLibrary.XF86VidMode.available )
         {
