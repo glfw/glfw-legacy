@@ -62,7 +62,6 @@ DLL will also be compiled.</p>
   <li>Microsoft Visual C++ 6.x for Windows</li>
   <li>MinGW with MSYS for Windows</li>
   <li>OpenWatcom for Windows</li>
-  <li>Pelles C for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
   <li>Apple GCC on Mac OS X</li>
@@ -145,15 +144,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 (e.g. C:\Watcom).</p>
 
 
-<h3>2.6 Pelles C on Windows</h3>
-
-<p>To build GLFW with Pelles C, you need at lest version 2.80.3 of Pelles C
-(POCC and POLINK).</p>
-
-<p>Type 'pomake win32-pellesc' to build GLFW.</p>
-
-
-<h3>2.7 X11 on Unix-like systems</h3>
+<h3>2.6 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has been tested under Linux Mandrake 10.1, Mac OS
@@ -163,7 +154,7 @@ Makefiles. You do not have to run the script manually, since it is called from
 the top level Makefile.</p>
 
 
-<h3>2.8 Apple GCC on Mac OS X</h3>
+<h3>2.7 Apple GCC on Mac OS X</h3>
 
 <p>To compile GLFW for Mac OS X, you will need to have installed the BSD
 subsystem and the Developer Tools, which can be found on your Mac OS X CD:s.
@@ -328,7 +319,6 @@ want to add other libraries as well, such as <b>glu32</b>):</p>
 <tr><td>Microsoft Visual C++</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfw -lopengl32</td></tr>
 <tr><td>OpenWatcom</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
-<tr><td>Pelles C</td><td>glfw.lib opengl32.lib user32.lib kernel32.lib</td></tr>
 </table>
 
 
@@ -358,7 +348,6 @@ such as <b>opengl32</b> and <b>glu32</b>):</p>
 <tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
 <tr><td>MinGW32</td><td>-lglfwdll</td></tr>
 <tr><td>OpenWatcom</td><td>glfwdll.lib</td></tr>
-<tr><td>Pelles C</td><td>glfwdll.lib</td></tr>
 </table>
 
 
@@ -445,6 +434,7 @@ version of GLFW.</p>
   <li>Removed deprecated AmigaOS and DOS ports</li>
   <li>Removed all FPS counters from example programs</li>
   <li>Removed all unmaintained language bindings</li>
+  <li>Removed support for Pelles C</li>
   <li>[X11] Added <code>x11-dist-install</code> install target, intended for packagers</li>
   <li>[X11] Added <code>x11-dist-clean</code> build target, intended for developers</li>
   <li>[X11] Added support for <code>GLX_SGIX_fbconfig</code></li>
