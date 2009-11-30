@@ -1487,19 +1487,6 @@ void _glfwPlatformSetWindowSize( int width, int height )
     {
         // Change video mode (keeping current rate)
         _glfwSetVideoModeMODE( _glfwWin.screen, mode, _glfwWin.refreshRate );
-
-        // Clear the front buffer to black (avoid ugly desktop remains in
-        // our OpenGL window)
-        glGetIntegerv( GL_DRAW_BUFFER, &drawbuffer );
-        glGetFloatv( GL_COLOR_CLEAR_VALUE, clearcolor );
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
-        if( drawbuffer == GL_BACK )
-        {
-            glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
-        }
-        glClearColor( clearcolor[0], clearcolor[1], clearcolor[2],
-                      clearcolor[3] );
     }
 
     // Set window size (if not already changed)
