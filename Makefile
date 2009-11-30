@@ -31,7 +31,6 @@ default:
 	@echo "  $(MAKE) cygwin-install    to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) win32-lcc         for LCC-Win32 for Windows"
-	@echo "  $(MAKE) win32-msvc        for MS Visual C++ 6.x for Windows"
 	@echo "  $(MAKE) win32-ow          for OpenWatcom for Windows"
 	@echo "  $(MAKE) win32-clean       to remove any compiled files for above compilers"
 	@echo "-----------------------------------------------------------------------------"
@@ -88,10 +87,6 @@ cygwin-clean:
 # Windows, LCC-Win32
 win32-lcc:
 	@.\\compile.bat $(MAKE) lcc
-
-# Windows, Microsoft Visual C++
-win32-msvc:
-	@.\\compile.bat $(MAKE) msvc
 
 # Windows, OpenWatcom
 win32-ow:

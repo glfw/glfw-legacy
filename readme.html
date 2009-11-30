@@ -59,13 +59,15 @@ DLL will also be compiled.</p>
   <li>Borland C++ Builder compiler 5.x for Windows</li>
   <li>Cygwin (GCC) for Windows</li>
   <li>LCC-Win32 for Windows</li>
-  <li>Microsoft Visual C++ 6.x for Windows</li>
   <li>MinGW with MSYS for Windows</li>
   <li>OpenWatcom for Windows</li>
   <li>Unix or Unix-like systems running the X Window System (auto detect
       compiler, or force GCC)</li>
   <li>Apple GCC on Mac OS X</li>
 </ol>
+
+<p>There are also project files available for Microsoft Visual C++ 9.0 in the
+<b>support/msvc90</b> directory.</p>
 
 <p>If your compiler/system is not in the list, you may have to create new
 makefiles in the <b>lib\win32</b>, <b>lib/x11</b> or <b>lib/cocoa</b>
@@ -81,40 +83,10 @@ compile successfully, we would very much like to know what you had to do.</p>
 
 <p>Project files for both the static and dynamic versions of the GLFW library
 are provided in the <b>support/msvc90</b> directory, as well as project files
-for all example programs.</p>
+for all example and test programs.</p>
 
 
-<h3>2.2 Older versions of Microsoft Visual C++</h3>
-
-<p>When MSVC is installed, you are asked if it should be possible to access the
-compiler from the command line. For some strange reason, the default answer to
-this question is NO. If you answered no to this question you will have to run a
-file named <b>VCVARS32.BAT</b>, which is located in the <b>bin</b> directory of
-your Visual C++ folder, before you can use the compiler from the command
-line.</p>
-
-<p>Note that <b>VCVARS32.BAT</b> must be run from the same shell as you intend
-to use for compiling GLFW (simply clicking on the file from the explorer will
-<i>not</i> work).</p>
-
-<p>After that is done, it is possible to compile GLFW by entering the GLFW root
-directory and issuing <b>nmake win32-msvc</b>.</p>
-
-<p>For instance, if MSVC is installed in the directory 'C:\Program
-Files\Microsoft Developer Studio\VC98', then you should be able to compile GLFW
-with this procedure:</p>
-
-<ol>
-  <li>Start a command prompt (cmd.exe)</li>
-  <li>"CD" to the directory where you unzipped the GLFW source
-      distribution (where this readme file is located)</li>
-  <li>Type <b>&quot;C:\Program Files\Microsoft Developer
-      Studio\VC98\BIN\VCVARS32&quot;</b> (with quotation marks)</li>
-  <li>Type <b>nmake win32-msvc</b></li>
-</ol>
-
-
-<h3>2.3 MinGW/MSYS on Windows</h3>
+<h3>2.2 MinGW/MSYS on Windows</h3>
 
 <p>Use the MSYS shell and make for compiling GLFW.</p>
 
@@ -124,7 +96,7 @@ level Makefile that says MAKE = make (possibly replacing make with some other
 name, e.g. mingw32-make).</p>
 
 
-<h3>2.4 Cygwin on Windows</h3>
+<h3>2.3 Cygwin on Windows</h3>
 
 <p>The Cygwin makefile was designed to run from a Cygwin bash shell.  You
 can <i>not</i> use an MS-DOS prompt (or NT cmd prompt) to compile GLFW with the
@@ -132,7 +104,7 @@ win32-cygwin option. Similarly, the win32-clean option will not work from a
 Cygwin shell, which is why there is a special cygwin-clean option.</p>
 
 
-<h3>2.5 OpenWatcom on Windows</h3>
+<h3>2.4 OpenWatcom on Windows</h3>
 
 <p>In order to compile GLFW successfully with OpenWatcom (for Windows),
 execute "nmake MAKE=nmake win32-ow" in the GLFW root directory. Also make
@@ -144,7 +116,7 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 (e.g. C:\Watcom).</p>
 
 
-<h3>2.6 X11 on Unix-like systems</h3>
+<h3>2.5 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <b>compile.sh</b>. It has been tested under Linux Mandrake 10.1, Mac OS
@@ -154,7 +126,7 @@ Makefiles. You do not have to run the script manually, since it is called from
 the top level Makefile.</p>
 
 
-<h3>2.7 Apple GCC on Mac OS X</h3>
+<h3>2.6 Apple GCC on Mac OS X</h3>
 
 <p>To compile GLFW for Mac OS X, you will need to have installed the BSD
 subsystem and the Developer Tools, which can be found on your Mac OS X CD:s.
@@ -435,6 +407,7 @@ version of GLFW.</p>
   <li>Removed all FPS counters from example programs</li>
   <li>Removed all unmaintained language bindings</li>
   <li>Removed support for Pelles C</li>
+  <li>Removed broken Microsoft Visual C++ 6.0 build path</li>
   <li>[X11] Added <code>x11-dist-install</code> install target, intended for packagers</li>
   <li>[X11] Added <code>x11-dist-clean</code> build target, intended for developers</li>
   <li>[X11] Added support for <code>GLX_SGIX_fbconfig</code></li>
