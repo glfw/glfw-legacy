@@ -59,12 +59,14 @@
 {
     [_glfwWin.context update];
 
+    NSRect contentRect =
+        [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
+    _glfwWin.Width = contentRect.size.width;
+    _glfwWin.Height = contentRect.size.height;
+
     if( _glfwWin.windowSizeCallback )
     {
-        NSRect contentRect =
-            [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
-        _glfwWin.windowSizeCallback( contentRect.size.width,
-                                     contentRect.size.height );
+        _glfwWin.windowSizeCallback( _glfwWin.Width, _glfwWin.Height );
     }
 }
 
