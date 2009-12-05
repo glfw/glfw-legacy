@@ -596,6 +596,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     [_glfwWin.context makeCurrentContext];
 
+    NSPoint point = [[NSCursor currentCursor] hotSpot];
+    _glfwInput.MousePosX = point.x;
+    _glfwInput.MousePosY = point.y;
+
     return GL_TRUE;
 }
 
