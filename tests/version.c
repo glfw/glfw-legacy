@@ -32,8 +32,15 @@
 #include <GL/glfw.h>
 
 #ifndef GL_VERSION_3_2
-#define GL_CONTEXT_PROFILE_MASK 0x9126
+#define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
+#define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
+#define GL_CONTEXT_PROFILE_MASK           0x9126
+#define GL_NUM_EXTENSIONS                 0x821D
+#define GL_CONTEXT_FLAGS                  0x821E
+#define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x0001
 #endif
+
+typedef const GLubyte * (APIENTRY *PFNGLGETSTRINGI) (GLenum, GLuint);
 
 #ifndef GL_VERSION_2_0
 #define GL_SHADING_LANGUAGE_VERSION 0x8B8C
@@ -55,12 +62,22 @@ static void usage(void)
     printf("available profiles: core compat\n");
 }
 
+static const char* get_profile_name(GLint mask)
+{
+  if (mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
+    return "compatibility";
+  if (mask & GL_CONTEXT_CORE_PROFILE_BIT)
+    return "core";
+
+  return "unknown";
+}
+
 int main(int argc, char** argv)
 {
     const GLubyte* extensions;
-    int ch, profile = 0, major = 0, minor = 0, revision;
+    int i, ch, profile = 0, major = 0, minor = 0, revision;
     GLboolean debug = GL_FALSE, forward = GL_FALSE;
-    GLint mask;
+    GLint count, flags, mask;
 
     while ((ch = getopt(argc, argv, "dfhm:n:p:")) != -1)
     {
@@ -151,10 +168,21 @@ int main(int argc, char** argv)
 
     printf("OpenGL context version parsed by GLFW: %u.%u.%u\n", major, minor, revision);
 
+    if (major >= 3)
+    {
+        glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        printf("OpenGL context flags:");
+
+        if (flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)
+          printf(" forward-compatible");
+
+        putchar('\n');
+    }
+
     if (major > 3 || (major == 3 && minor >= 2))
     {
         glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
-        printf("OpenGL profile mask: 0x%08x\n", mask);
+        printf("OpenGL profile mask: 0x%08x (%s)\n", mask, get_profile_name(mask));
     }
 
     printf("OpenGL context version string: \"%s\"\n", glGetString(GL_VERSION));
@@ -169,15 +197,32 @@ int main(int argc, char** argv)
 
     printf("OpenGL context supported extensions:\n");
 
-    extensions = glGetString(GL_EXTENSIONS);
-    while (*extensions != '\0')
+    if (major > 2)
     {
-        if (*extensions == ' ')
-            putchar('\n');
-        else
-            putchar(*extensions);
+      PFNGLGETSTRINGI glGetStringi = (PFNGLGETSTRINGI) glfwGetProcAddress("glGetStringi");
+      if (!glGetStringi)
+      {
+        fprintf(stderr, "Failed to retrieve glGetStringi entry point");
+        exit(EXIT_FAILURE);
+      }
 
-        extensions++;
+      glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+
+      for (i = 0;  i < count;  i++)
+        puts((const char*) glGetStringi(GL_EXTENSIONS, i));
+    }
+    else
+    {
+      extensions = glGetString(GL_EXTENSIONS);
+      while (*extensions != '\0')
+      {
+          if (*extensions == ' ')
+              putchar('\n');
+          else
+              putchar(*extensions);
+
+          extensions++;
+      }
     }
 
     putchar('\n');
