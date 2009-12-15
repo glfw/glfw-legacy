@@ -174,7 +174,7 @@ int main(int argc, char** argv)
         printf("OpenGL context flags:");
 
         if (flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)
-          printf(" forward-compatible");
+            printf(" forward-compatible");
 
         putchar('\n');
     }
@@ -199,30 +199,30 @@ int main(int argc, char** argv)
 
     if (major > 2)
     {
-      PFNGLGETSTRINGI glGetStringi = (PFNGLGETSTRINGI) glfwGetProcAddress("glGetStringi");
-      if (!glGetStringi)
-      {
-        fprintf(stderr, "Failed to retrieve glGetStringi entry point");
-        exit(EXIT_FAILURE);
-      }
+        PFNGLGETSTRINGI glGetStringi = (PFNGLGETSTRINGI) glfwGetProcAddress("glGetStringi");
+        if (!glGetStringi)
+        {
+            fprintf(stderr, "Failed to retrieve glGetStringi entry point");
+            exit(EXIT_FAILURE);
+        }
 
-      glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+        glGetIntegerv(GL_NUM_EXTENSIONS, &count);
 
-      for (i = 0;  i < count;  i++)
-        puts((const char*) glGetStringi(GL_EXTENSIONS, i));
+        for (i = 0;  i < count;  i++)
+            puts((const char*) glGetStringi(GL_EXTENSIONS, i));
     }
     else
     {
-      extensions = glGetString(GL_EXTENSIONS);
-      while (*extensions != '\0')
-      {
-          if (*extensions == ' ')
-              putchar('\n');
-          else
-              putchar(*extensions);
+        extensions = glGetString(GL_EXTENSIONS);
+        while (*extensions != '\0')
+        {
+            if (*extensions == ' ')
+                putchar('\n');
+            else
+                putchar(*extensions);
 
-          extensions++;
-      }
+            extensions++;
+        }
     }
 
     putchar('\n');
