@@ -60,7 +60,7 @@ int main(void)
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     if (!glfwOpenWindow(window_width, window_height, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
@@ -68,7 +68,7 @@ int main(void)
         glfwTerminate();
 
         fprintf(stderr, "Failed to open GLFW window\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     glfwSetWindowTitle("Cursor Inaccuracy Detector");
@@ -98,6 +98,6 @@ int main(void)
     }
 
     glfwTerminate();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
