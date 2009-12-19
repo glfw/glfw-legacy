@@ -150,6 +150,8 @@ int main(int argc, char** argv)
         exit(1);
     }
 
+    // Report GLFW version
+
     glfwGetVersion(&major, &minor, &revision);
 
     printf("GLFW header version: %u.%u.%u\n",
@@ -164,9 +166,15 @@ int main(int argc, char** argv)
         revision != GLFW_VERSION_REVISION)
         printf("*** WARNING: GLFW version mismatch! ***\n");
 
+    // Report OpenGL version
+
+    printf("OpenGL context version string: \"%s\"\n", glGetString(GL_VERSION));
+
     glfwGetGLVersion(&major, &minor, &revision);
 
     printf("OpenGL context version parsed by GLFW: %u.%u.%u\n", major, minor, revision);
+
+    // Report OpenGL context properties
 
     if (major >= 3)
     {
@@ -185,15 +193,16 @@ int main(int argc, char** argv)
         printf("OpenGL profile mask: 0x%08x (%s)\n", mask, get_profile_name(mask));
     }
 
-    printf("OpenGL context version string: \"%s\"\n", glGetString(GL_VERSION));
     printf("OpenGL context renderer string: \"%s\"\n", glGetString(GL_RENDERER));
     printf("OpenGL context vendor string: \"%s\"\n", glGetString(GL_VENDOR));
 
     if (major > 1)
     {
         printf("OpenGL context shading language version: \"%s\"\n",
-               glGetString(GL_SHADING_LANGUAGE_VERSION));
+            glGetString(GL_SHADING_LANGUAGE_VERSION));
     }
+
+    // Report OpenGL extensions
 
     printf("OpenGL context supported extensions:\n");
 
