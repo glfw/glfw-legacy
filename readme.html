@@ -99,7 +99,7 @@ name, e.g. mingw32-make).</p>
 <h3>2.3 Cygwin on Windows</h3>
 
 <p>The Cygwin makefile was designed to run from a Cygwin bash shell.  You
-can <i>not</i> use an MS-DOS prompt (or NT cmd prompt) to compile GLFW with the
+<em>cannot</em> use an MS-DOS prompt (or NT cmd prompt) to compile GLFW with the
 win32-cygwin option. Similarly, the win32-clean option will not work from a
 Cygwin shell, which is why there is a special cygwin-clean option.</p>
 
@@ -119,20 +119,81 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 <h3>2.5 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <b>compile.sh</b>. It has been tested under Linux Mandrake 10.1, Mac OS
-X 10.2, SunOS 5.6 (GCC), IRIX 5.3, FreeBSD 5.0 and QNX, but should hopefully
-run on the majority of available Unix/Unix-like systems and generate functional
-Makefiles. You do not have to run the script manually, since it is called from
-the top level Makefile.</p>
+called <b>compile.sh</b>.  It has been tested under Ubuntu Linux, Slackware
+Linux, Debian GNU/Linux and others, but should hopefully run on the majority of
+available Unix-like systems and generate functional Makefiles.  You do not have
+to run the script manually, since it is called from the top level Makefile.</p>
+
+<p>If you are making your own build setup for GLFW, you need to be aware of the
+various preprocessor symbols that the bundled makefiles use to enable various
+features and code paths.  They need to be defined either on the command line or
+at the very beginning for each GLFW source file with an <code>x11_</code>
+prefix.</p>
+
+<table border=1>
+  <tr>
+    <td>_GLFW_USE_LINUX_JOYSTICKS</td>
+    <td>Use the Linux joystick API. This is the only supported API for the X11
+        port. Without it, joystick input will be unavailable.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_XRANDR</td>
+    <td>Use the X Resize and Rotate extension for display mode changes. This is
+        the preferred method.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_XF86VIDMODE</td>
+    <td>Use the Xf86VidMode extension for display mode changes. This is a
+        fallback method.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_PTHREAD</td>
+    <td>Use the POSIX Threads API for threading. This is the only supported API
+        for the X11 port. Without it, threading will be disabled.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_SCHED_YIELD</td>
+    <td>Call the <code>sched_yield</code> function inside <code>glfwPlatformSleep</code>.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_GLXGETPROCADDRESS</td>
+    <td>Use the <code>glXGetProcAddress</code> function to retrieve OpenGL
+        entry point addresses.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_GLXGETPROCADDRESSARB</td>
+    <td>Use the <code>glXGetProcAddressARB</code> function to retrieve OpenGL
+        entry point addresses.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_GLXGETPROCADDRESSEXT</td>
+    <td>Use the <code>glXGetProcAddressEXT</code> function to retrieve OpenGL
+        entry point addresses.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_DLOPEN</td>
+    <td>Use <code>dlopen</code> on the OpenGL shared library to retrieve OpenGL
+        entry point addresses.  This is a fallback method.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_SYSCONF</td>
+    <td>Use the sysconf API to find the number of processors.</td>
+  </tr>
+  <tr>
+    <td>_GLFW_HAS_SYSCTL</td>
+    <td>Use the sysctl API to find the number of processors.</td>
+  </tr>
+</table>
 
 
 <h3>2.6 Apple GCC on Mac OS X</h3>
 
-<p>To compile GLFW for Mac OS X, you will need to have installed the BSD
-subsystem and the Developer Tools, which can be found on your Mac OS X CD:s.
-When they are installed, simply open Terminal and go to the root GLFW
-directory. From there, you can build the library and all the examples by
-running make, i.e. <b>make cocoa</b>.</p>
+<p>To compile GLFW for Mac OS X, you will need to have installed the Developer
+Tools.  A version of these tools can be found on your Mac OS X disc, with newer
+versions available from the Apple Developer Connection site.  When they are
+installed, simply open Terminal and go to the root GLFW directory.  From there,
+you can build the library and all the examples by running make with the
+appropriate target, i.e. <b>make cocoa</b>.</p>
 
 
 
