@@ -50,6 +50,7 @@ static int Max(int a, int b)
 void _glfwClearWindowHints( void )
 {
     memset( &_glfwLibrary.hints, 0, sizeof( _glfwLibrary.hints ) );
+    _glfwLibrary.hints.glMajor = 1;
 }
 
 
@@ -472,6 +473,32 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     wndconfig.glDebug        = _glfwLibrary.hints.glDebug;
     wndconfig.glProfile      = _glfwLibrary.hints.glProfile;
 
+    if( wndconfig.glMajor == 1 && wndconfig.glMinor > 5 )
+    {
+        // OpenGL 1.x series ended with version 1.5
+        return GL_FALSE;
+    }
+    else if( wndconfig.glMajor == 2 && wndconfig.glMinor > 1 )
+    {
+        // OpenGL 2.x series ended with version 2.1
+        return GL_FALSE;
+    }
+    else if( wndconfig.glMajor == 3 && wndconfig.glMinor > 3 )
+    {
+        // OpenGL 3.x series ended with version 3.3
+        return GL_FALSE;
+    }
+    else
+    {
+        // For now, let everything else through
+    }
+
+    if( wndconfig.glForward && wndconfig.glMajor < 3 )
+    {
+        // Forward-compatible contexts are only defined for version 3.0 and above
+        return GL_FALSE;
+    }
+
     // Clear for next open call
     _glfwClearWindowHints();
 
@@ -537,12 +564,12 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _glfwParseGLVersion( &_glfwWin.glMajor, &_glfwWin.glMinor,
                          &_glfwWin.glRevision );
 
-    // Do we have non-power-of-two textures?
+    // Do we have non-power-of-two textures (added to core in version 2.0)?
     _glfwWin.has_GL_ARB_texture_non_power_of_two =
         ( _glfwWin.glMajor >= 2 ) ||
         glfwExtensionSupported( "GL_ARB_texture_non_power_of_two" );
 
-    // Do we have automatic mipmap generation?
+    // Do we have automatic mipmap generation (added to core in version 1.4)?
     _glfwWin.has_GL_SGIS_generate_mipmap =
         ( _glfwWin.glMajor >= 2 ) || ( _glfwWin.glMinor >= 4 ) ||
         glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
@@ -599,7 +626,7 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
             _glfwLibrary.hints.samples = Max(hint, 0);
             break;
         case GLFW_OPENGL_VERSION_MAJOR:
-            _glfwLibrary.hints.glMajor = Max(hint, 0);
+            _glfwLibrary.hints.glMajor = Max(hint, 1);
             break;
         case GLFW_OPENGL_VERSION_MINOR:
             _glfwLibrary.hints.glMinor = Max(hint, 0);
