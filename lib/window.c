@@ -449,28 +449,28 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     // Set up desired framebuffer config
-    fbconfig.redBits        = redbits;
-    fbconfig.greenBits      = greenbits;
-    fbconfig.blueBits       = bluebits;
-    fbconfig.alphaBits      = alphabits;
-    fbconfig.depthBits      = depthbits;
-    fbconfig.stencilBits    = stencilbits;
-    fbconfig.accumRedBits   = _glfwLibrary.hints.accumRedBits;
-    fbconfig.accumGreenBits = _glfwLibrary.hints.accumGreenBits;
-    fbconfig.accumBlueBits  = _glfwLibrary.hints.accumBlueBits;
-    fbconfig.accumAlphaBits = _glfwLibrary.hints.accumAlphaBits;
-    fbconfig.auxBuffers     = _glfwLibrary.hints.auxBuffers;
-    fbconfig.stereo         = _glfwLibrary.hints.stereo;
-    fbconfig.samples        = _glfwLibrary.hints.samples;
+    fbconfig.redBits        = Max( redbits, 0 );
+    fbconfig.greenBits      = Max( greenbits, 0 );
+    fbconfig.blueBits       = Max( bluebits, 0 );
+    fbconfig.alphaBits      = Max( alphabits, 0 );
+    fbconfig.depthBits      = Max( depthbits, 0 );
+    fbconfig.stencilBits    = Max( stencilbits, 0 );
+    fbconfig.accumRedBits   = Max( _glfwLibrary.hints.accumRedBits, 0 );
+    fbconfig.accumGreenBits = Max( _glfwLibrary.hints.accumGreenBits, 0 );
+    fbconfig.accumBlueBits  = Max( _glfwLibrary.hints.accumBlueBits, 0 );
+    fbconfig.accumAlphaBits = Max( _glfwLibrary.hints.accumAlphaBits, 0 );
+    fbconfig.auxBuffers     = Max( _glfwLibrary.hints.auxBuffers, 0 );
+    fbconfig.stereo         = _glfwLibrary.hints.stereo ? GL_TRUE : GL_FALSE;
+    fbconfig.samples        = Max( _glfwLibrary.hints.samples, 0 );
 
     // Set up desired window config
     wndconfig.mode           = mode;
-    wndconfig.refreshRate    = _glfwLibrary.hints.refreshRate;
-    wndconfig.windowNoResize = _glfwLibrary.hints.windowNoResize;
-    wndconfig.glMajor        = _glfwLibrary.hints.glMajor;
-    wndconfig.glMinor        = _glfwLibrary.hints.glMinor;
-    wndconfig.glForward      = _glfwLibrary.hints.glForward;
-    wndconfig.glDebug        = _glfwLibrary.hints.glDebug;
+    wndconfig.refreshRate    = Max( _glfwLibrary.hints.refreshRate, 0 );
+    wndconfig.windowNoResize = _glfwLibrary.hints.windowNoResize ? GL_TRUE : GL_FALSE;
+    wndconfig.glMajor        = Max( _glfwLibrary.hints.glMajor, 0 );
+    wndconfig.glMinor        = Max( _glfwLibrary.hints.glMinor, 0 );
+    wndconfig.glForward      = _glfwLibrary.hints.glForward ? GL_TRUE : GL_FALSE;
+    wndconfig.glDebug        = _glfwLibrary.hints.glDebug ? GL_TRUE : GL_FALSE;
     wndconfig.glProfile      = _glfwLibrary.hints.glProfile;
 
     if( wndconfig.glMajor == 1 && wndconfig.glMinor > 5 )
@@ -599,54 +599,47 @@ GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
     switch( target )
     {
         case GLFW_REFRESH_RATE:
-            _glfwLibrary.hints.refreshRate = Max(hint, 0);
+            _glfwLibrary.hints.refreshRate = hint;
             break;
         case GLFW_ACCUM_RED_BITS:
-            _glfwLibrary.hints.accumRedBits = Max(hint, 0);
+            _glfwLibrary.hints.accumRedBits = hint;
             break;
         case GLFW_ACCUM_GREEN_BITS:
-            _glfwLibrary.hints.accumGreenBits = Max(hint, 0);
+            _glfwLibrary.hints.accumGreenBits = hint;
             break;
         case GLFW_ACCUM_BLUE_BITS:
-            _glfwLibrary.hints.accumBlueBits = Max(hint, 0);
+            _glfwLibrary.hints.accumBlueBits = hint;
             break;
         case GLFW_ACCUM_ALPHA_BITS:
-            _glfwLibrary.hints.accumAlphaBits = Max(hint, 0);
+            _glfwLibrary.hints.accumAlphaBits = hint;
             break;
         case GLFW_AUX_BUFFERS:
-            _glfwLibrary.hints.auxBuffers = Max(hint, 0);
+            _glfwLibrary.hints.auxBuffers = hint;
             break;
         case GLFW_STEREO:
-            _glfwLibrary.hints.stereo = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.stereo = hint;
             break;
         case GLFW_WINDOW_NO_RESIZE:
-            _glfwLibrary.hints.windowNoResize = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.windowNoResize = hint;
             break;
         case GLFW_FSAA_SAMPLES:
-            _glfwLibrary.hints.samples = Max(hint, 0);
+            _glfwLibrary.hints.samples = hint;
             break;
         case GLFW_OPENGL_VERSION_MAJOR:
-            _glfwLibrary.hints.glMajor = Max(hint, 1);
+            _glfwLibrary.hints.glMajor = hint;
             break;
         case GLFW_OPENGL_VERSION_MINOR:
-            _glfwLibrary.hints.glMinor = Max(hint, 0);
+            _glfwLibrary.hints.glMinor = hint;
             break;
         case GLFW_OPENGL_FORWARD_COMPAT:
-            _glfwLibrary.hints.glForward = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.glForward = hint;
             break;
         case GLFW_OPENGL_DEBUG_CONTEXT:
-            _glfwLibrary.hints.glDebug = hint ? GL_TRUE : GL_FALSE;
+            _glfwLibrary.hints.glDebug = hint;
             break;
         case GLFW_OPENGL_PROFILE:
-            if( hint == GLFW_OPENGL_CORE_PROFILE ||
-                hint == GLFW_OPENGL_COMPAT_PROFILE )
-            {
-                _glfwLibrary.hints.glProfile = hint;
-            }
-            else
-            {
-                _glfwLibrary.hints.glProfile = 0;
-            }
+            _glfwLibrary.hints.glProfile = hint;
+            break;
         default:
             break;
     }
