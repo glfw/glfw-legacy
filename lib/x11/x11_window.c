@@ -813,15 +813,6 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     int flags, dummy, index;
     GLXFBConfig *fbconfig;
 
-    if( wndconfig->glMajor > 2 )
-    {
-        if( !_glfwWin.has_GLX_ARB_create_context )
-        {
-            fprintf(stderr, "GLX_ARB_create_context extension not found\n");
-            return GL_FALSE;
-        }
-    }
-
     // Retrieve the previously selected GLXFBConfig
     {
         index = 0;
@@ -874,7 +865,7 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
     {
         index = 0;
 
-        if( wndconfig->glMajor != 0 || wndconfig->glMinor != 0 )
+        if( wndconfig->glMajor != 1 || wndconfig->glMinor != 0 )
         {
             // Request an explicitly versioned context
 
@@ -960,6 +951,8 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
     return GL_TRUE;
 }
+
+#undef setGLXattrib
 
 
 //========================================================================

@@ -467,7 +467,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     wndconfig.mode           = mode;
     wndconfig.refreshRate    = Max( _glfwLibrary.hints.refreshRate, 0 );
     wndconfig.windowNoResize = _glfwLibrary.hints.windowNoResize ? GL_TRUE : GL_FALSE;
-    wndconfig.glMajor        = Max( _glfwLibrary.hints.glMajor, 0 );
+    wndconfig.glMajor        = Max( _glfwLibrary.hints.glMajor, 1 );
     wndconfig.glMinor        = Max( _glfwLibrary.hints.glMinor, 0 );
     wndconfig.glForward      = _glfwLibrary.hints.glForward ? GL_TRUE : GL_FALSE;
     wndconfig.glDebug        = _glfwLibrary.hints.glDebug ? GL_TRUE : GL_FALSE;
@@ -563,6 +563,14 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     // Get OpenGL version
     _glfwParseGLVersion( &_glfwWin.glMajor, &_glfwWin.glMinor,
                          &_glfwWin.glRevision );
+
+    if( _glfwWin.glMajor < wndconfig.glMajor ||
+        ( _glfwWin.glMajor == wndconfig.glMajor &&
+          _glfwWin.glMinor < wndconfig.glMinor ) )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
 
     // Do we have non-power-of-two textures (added to core in version 2.0)?
     _glfwWin.has_GL_ARB_texture_non_power_of_two =
