@@ -582,6 +582,16 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         ( _glfwWin.glMajor >= 2 ) || ( _glfwWin.glMinor >= 4 ) ||
         glfwExtensionSupported( "GL_SGIS_generate_mipmap" );
 
+    if( _glfwWin.glMajor > 2 )
+    {
+        _glfwWin.GetStringi = (PFNGLGETSTRINGIPROC) glfwGetProcAddress( "glGetStringi" );
+        if( !_glfwWin.GetStringi )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+    }
+
     // If full-screen mode was requested, disable mouse cursor
     if( mode == GLFW_FULLSCREEN )
     {
