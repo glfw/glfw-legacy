@@ -72,14 +72,52 @@ static const char* get_profile_name(GLint mask)
   return "unknown";
 }
 
+static void list_extensions(int major, int minor)
+{
+    int i;
+    GLint count;
+    const GLubyte* extensions;
+
+    printf("OpenGL context supported extensions:\n");
+
+    if (major > 2)
+    {
+        PFNGLGETSTRINGI glGetStringi = (PFNGLGETSTRINGI) glfwGetProcAddress("glGetStringi");
+        if (!glGetStringi)
+        {
+            fprintf(stderr, "Failed to retrieve glGetStringi entry point");
+            exit(EXIT_FAILURE);
+        }
+
+        glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+
+        for (i = 0;  i < count;  i++)
+            puts((const char*) glGetStringi(GL_EXTENSIONS, i));
+    }
+    else
+    {
+        extensions = glGetString(GL_EXTENSIONS);
+        while (*extensions != '\0')
+        {
+            if (*extensions == ' ')
+                putchar('\n');
+            else
+                putchar(*extensions);
+
+            extensions++;
+        }
+    }
+
+    putchar('\n');
+}
+
 int main(int argc, char** argv)
 {
-    const GLubyte* extensions;
-    int i, ch, profile = 0, major = 0, minor = 0, revision;
-    GLboolean debug = GL_FALSE, forward = GL_FALSE;
-    GLint count, flags, mask;
+    int ch, profile = 0, major = 1, minor = 0, revision;
+    GLboolean debug = GL_FALSE, forward = GL_FALSE, list = GL_FALSE;
+    GLint flags, mask;
 
-    while ((ch = getopt(argc, argv, "dfhm:n:p:")) != -1)
+    while ((ch = getopt(argc, argv, "dfhlm:n:p:")) != -1)
     {
         switch (ch)
         {
@@ -92,6 +130,9 @@ int main(int argc, char** argv)
             case 'h':
                 usage();
                 exit(0);
+            case 'l':
+                list = GL_TRUE;
+                break;
             case 'm':
                 major = atoi(optarg);
                 break;
@@ -124,7 +165,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    if (major > 0)
+    if (major > 1)
         glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, major);
 
     if (minor > 0)
@@ -182,9 +223,9 @@ int main(int argc, char** argv)
         printf("OpenGL context flags:");
 
         if (flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)
-            printf(" forward-compatible");
-
-        putchar('\n');
+            puts(" forward-compatible");
+        else
+            puts(" none");
     }
 
     if (major > 3 || (major == 3 && minor >= 2))
@@ -203,38 +244,8 @@ int main(int argc, char** argv)
     }
 
     // Report OpenGL extensions
-
-    printf("OpenGL context supported extensions:\n");
-
-    if (major > 2)
-    {
-        PFNGLGETSTRINGI glGetStringi = (PFNGLGETSTRINGI) glfwGetProcAddress("glGetStringi");
-        if (!glGetStringi)
-        {
-            fprintf(stderr, "Failed to retrieve glGetStringi entry point");
-            exit(EXIT_FAILURE);
-        }
-
-        glGetIntegerv(GL_NUM_EXTENSIONS, &count);
-
-        for (i = 0;  i < count;  i++)
-            puts((const char*) glGetStringi(GL_EXTENSIONS, i));
-    }
-    else
-    {
-        extensions = glGetString(GL_EXTENSIONS);
-        while (*extensions != '\0')
-        {
-            if (*extensions == ' ')
-                putchar('\n');
-            else
-                putchar(*extensions);
-
-            extensions++;
-        }
-    }
-
-    putchar('\n');
+    if (list)
+        list_extensions(major, minor);
 
     glfwTerminate();
     exit(0);
