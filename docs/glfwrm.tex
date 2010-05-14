@@ -96,30 +96,30 @@ to set up and manage an \OpenGL\ window are quite the opposite. \GLFW\ tries
 to remedy this by providing the following functionality:
 
 \begin{itemize}
-\item Opening and managing an \OpenGL\ window.
+\item Opening and managing an \OpenGL\ context and its associated window.
 \item Keyboard, mouse and joystick input.
 \item A high precision timer.
 \item Multi-threading support.
 \item Support for querying and using \OpenGL\ extensions.
-\item Image file loading support.
+\item Basic Targa image loading support.
 \end{itemize}
 \vspace{18pt}
 
 All this functionality is implemented as a set of easy-to-use functions,
 which makes it possible to write an \OpenGL\ application framework in just a
-few lines of code. The \GLFW\ API is completely operating system and
-platform independent, which makes it very simple to port \GLFW\ based \OpenGL\
-applications to a variety of platforms.
+few lines of code. The \GLFW\ API looks and behaves the same on all supported
+platforms, making it very simple to port \GLFW\ based \OpenGL\ applications to
+a variety of platforms.
 
 Currently supported platforms are:
 \begin{itemize}
-\item Microsoft Windows\textsuperscript{\textregistered} 95/98/ME/NT/2000/XP/Vista.
+\item Microsoft Windows\textsuperscript{\textregistered} (32-bit only).
 \item Unix\textsuperscript{\textregistered} or Unix­-like systems running the
 X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
 IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
 Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
 Mac OS\textsuperscript{\textregistered} X.
-\item Mac OS\textsuperscript{\textregistered} X (Cocoa)\footnote{Support for joysticks missing at the time of writing.}
+\item Mac OS\textsuperscript{\textregistered} X, using Cocoa\footnote{Support for joysticks missing at the time of writing.}
 \end{itemize}
 
 
@@ -133,27 +133,26 @@ Mac OS\textsuperscript{\textregistered} X.
 
 %-------------------------------------------------------------------------
 \section{The GLFW Window}
-\GLFW\ only supports one opened window at a time. The window can be either
+\GLFW\ only supports having one window open at a time. The window can be either
 a normal desktop window or a fullscreen window. The latter is completely
-undecorated, without window borders, and covers the entire monitor. With
-a fullscreen window, it is also possible to select which video mode to use.
+undecorated, without window borders, and covers the entire monitor. With a
+fullscreen window, it is also possible to select which video mode to use.
 
 When a window is opened, an \OpenGL\ rendering context is created and
 attached to the entire client area of the window. When the window is closed,
 the \OpenGL\ rendering context is detached and destroyed.
 
 Through a window it is possible to receive user input in the form of
-keyboard and mouse input. User input is exposed through the \GLFW\ API via
-callback functions. There are different callback functions for dealing with
-different kinds of user input. Also, \GLFW\ stores most user input as
-internal state that can be queried through different \GLFW\ API functions
-(for instance it is possible to query the position of the mouse cursor
-with the \textbf{glfwGetMousePos} function).
+keyboard and mouse input. User input is exposed through the \GLFW\ API
+primarily via a set of callback functions. Also, \GLFW\ stores most user input
+as internal state that can be queried through different \GLFW\ API functions
+(for instance it is possible to query the position of the mouse cursor with the
+\textbf{glfwGetMousePos} function).
 
 As for user input, it is possible to receive information about window
 state changes, such as window resize or close events, through callback
-functions. It is also possible to query different kinds of window
-information through different \GLFW\ API functions.
+functions. It is also possible to query some kinds of information about the
+window information using \GLFW\ API functions.
 
 
 %-------------------------------------------------------------------------
@@ -161,10 +160,10 @@ information through different \GLFW\ API functions.
 The \GLFW\ event loop is an open loop, which means that it is up to the
 programmer to design the loop. Events are processed by calling specific
 \GLFW\ functions, which in turn query the system for new input and window
-events, and reports these events back to the program through callback
+events and reports these events back to the program through callback
 functions.
 
-The programmer decides when to call the event processing functions, and
+The programmer decides when to call the event processing functions and
 when to abort the event loop.
 
 In pseudo language, a typical event loop might look like this:
@@ -181,8 +180,8 @@ There are two ways to handle events in \GLFW :
 
 \begin{itemize}
   \item Block the event loop while waiting for new events.
-  \item Poll for new events, and continue the loop regardless if there are
-        any new events or not.
+  \item Poll for new events and continue the loop regardless of whether there
+        are any new events or not.
 \end{itemize}
 
 The first method is useful for interactive applications that do not
@@ -217,21 +216,21 @@ main application event loop, not from any of the \GLFW\ callback
 functions. Also, the only \GLFW\ functions that may be safely called from
 callback functions are the different Get functions (e.g.
 \textbf{glfwGetKey}, \textbf{glfwGetTime}, \textbf{glfwGetWindowParam}
-etc).
+etc.).
 
 
 %-------------------------------------------------------------------------
 \section{Threads}
 \GLFW\ has functions for creating threads, which means that it is possible
-to make multi threaded applications with \GLFW . The thread that calls
-glfwInit becomes the main thread, and it is recommended that all
+to make multi-threaded applications with \GLFW . The thread that calls
+\textbf{glfwInit} becomes the main thread, and it is recommended that all
 \GLFW\ and \OpenGL\ functions are called from the main thread. Additional
 threads should primarily be used for CPU heavy tasks or for managing
-other resources, such as file or sound I/O.
+other resources such as file or sound I/O.
 
 It should be noted that the current implementation of \GLFW\ is not thread
 safe, so you should never call \GLFW\ functions from different threads.
-\footnote{Of course, all thread managing functions are thread safe.}
+\footnote{The thread management functions are of course thread safe.}
 
 
 %-------------------------------------------------------------------------
@@ -242,9 +241,9 @@ safe, so you should never call \GLFW\ functions from different threads.
 
 %-------------------------------------------------------------------------
 \section{GLFW Initialization and Termination}
-Before any \GLFW\ functions can be used, \GLFW\ must be initialized to
-ensure proper functionality, and before a program terminates, \GLFW\ has to
-be terminated in order to free up resources etc.
+Before any other \GLFW\ functions can be used, \GLFW\ must be initialized to
+ensure proper functionality, and before a program terminates \GLFW\ should be
+terminated in order to free allocated resources, memory, etc.
 
 
 %-------------------------------------------------------------------------
@@ -266,7 +265,7 @@ If the function fails, GL\_FALSE is returned.
 
 \begin{refdescription}
 The glfwInit function initializes \GLFW. No other \GLFW\ functions may be
-used before this function has been called.
+called before this function has succeeded.
 \end{refdescription}
 
 \begin{refnotes}
@@ -292,9 +291,9 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function terminates \GLFW. Among other things it closes the window,
-if it is opened, and kills any running threads. This function must be
-called before a program exits.
+This function terminates \GLFW. Among other things it closes the window, if
+open, and kills any running threads. This function should be called before a
+program exits.
 \end{refdescription}
 
 
@@ -323,16 +322,16 @@ for the currently linked \GLFW\ library.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the \GLFW\ library version.
+This function returns the \GLFW\ library version.
 \end{refdescription}
 
 
 %-------------------------------------------------------------------------
 \pagebreak
 \section{Window Handling}
-The main functionality of \GLFW\ is to provide a simple interface to
-\OpenGL\ window management. \GLFW\ can open one window, which can be
-either a normal desktop window or a fullscreen window.
+The primary purpose of \GLFW\ is to provide a simple interface to
+\OpenGL\ context creation and window management. \GLFW\ supports one window at
+a time, which can be either a normal desktop window or a fullscreen window.
 
 
 %-------------------------------------------------------------------------
@@ -350,21 +349,21 @@ int glfwOpenWindow( int width, int height, int redbits,
 \item [\textit{width}]\ \\
   The width of the window. If \textit{width} is zero, it will be
   calculated as ${width=\frac{4}{3}height}$, if \textit{height} is not
-  zero. If both \textit{width} and \textit{height} are zero, then
+  zero. If both \textit{width} and \textit{height} are zero,
   \textit{width} will be set to 640.
 \item [\textit{height}]\ \\
   The height of the window. If \textit{height} is zero, it will be
   calculated as ${height=\frac{3}{4}width}$, if \textit{width} is not
-  zero. If both \textit{width} and \textit{height} are zero, then
+  zero. If both \textit{width} and \textit{height} are zero,
   \textit{height} will be set to 480.
 \item [\textit{redbits, greenbits, bluebits}]\ \\
   The number of bits to use for each color component of the color buffer
   (0 means default color depth). For instance, setting \textit{redbits=5,
-  greenbits=6, and bluebits=5} will generate a 16-­bit color buffer, if
+  greenbits=6 and bluebits=5} will create a 16-­bit color buffer, if
   possible.
 \item [\textit{alphabits}]\ \\
-  The number of bits to use for the alpha buffer (0 means no alpha
-  buffer).
+  The number of bits to use for the alpha channel of the color buffer (0 means
+  no alpha channel).
 \item [\textit{depthbits}]\ \\
   The number of bits to use for the depth buffer (0 means no depth
   buffer).
@@ -372,7 +371,7 @@ int glfwOpenWindow( int width, int height, int redbits,
   The number of bits to use for the stencil buffer (0 means no stencil
   buffer).
 \item [\textit{mode}]\ \\
-  Selects which type of \OpenGL\ window to use. \textit{mode} can be
+  Selects which type of \OpenGL\ window to use. \textit{mode} must be
   either GLFW\_WINDOW, which will generate a normal desktop window, or
   GLFW\_FULLSCREEN, which will generate a window which covers the entire
   screen. When GLFW\_FULLSCREEN is selected, the video mode will be
@@ -391,17 +390,17 @@ The function opens a window that best matches the parameters given to the
 function. How well the resulting window matches the desired window depends
 mostly on the available hardware and \OpenGL\ drivers. In general,
 selecting a fullscreen mode has better chances of generating a close match
-than does a normal desktop window, since \GLFW\ can freely select from all
-the available video modes. A desktop window is normally restricted to the
-video mode of the desktop.
+of buffers and channel sizes than does a normal desktop window, since \GLFW\
+can freely select from all the available video modes. A desktop window is
+normally restricted to the video mode of the desktop.
 \end{refdescription}
 
 \begin{refnotes}
 For additional control of window properties, see
 \textbf{glfwOpenWindowHint}.
 
-In fullscreen mode the mouse cursor is hidden by default, and any system
-screensavers are prohibited from starting. In windowed mode the mouse
+In fullscreen mode the mouse cursor is hidden by default and the
+screensaver is prohibited from starting. In windowed mode the mouse
 cursor is visible, and screensavers are allowed to start. To change the
 visibility of the mouse cursor, use \textbf{glfwEnable} or
 \textbf{glfwDisable} with the argument GLFW\_MOUSE\_CURSOR.
