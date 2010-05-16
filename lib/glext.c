@@ -128,8 +128,7 @@ int _glfwStringInExtensionString( const char *string,
 //************************************************************************
 
 //========================================================================
-// glfwExtensionSupported() - Check if an OpenGL extension is available
-// at runtime
+// Check if an OpenGL extension is available at runtime
 //========================================================================
 
 GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
@@ -154,7 +153,8 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
 
     if( _glfwWin.glMajor < 3 )
     {
-        // Check if extension is in the standard OpenGL extensions string
+        // Check if extension is in the old style OpenGL extensions string
+
         extensions = glGetString( GL_EXTENSIONS );
         if( extensions != NULL )
         {
@@ -163,15 +163,11 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
                 return GL_TRUE;
             }
         }
-
-        // Additional platform specific extension checking (e.g. WGL)
-        if( _glfwPlatformExtensionSupported( extension ) )
-        {
-            return GL_TRUE;
-        }
     }
     else
     {
+        // Check if extension is in the modern OpenGL extensions string list
+
         glGetIntegerv( GL_NUM_EXTENSIONS, &count );
 
         for( i = 0;  i < count;  i++ )
@@ -182,6 +178,12 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
                  return GL_TRUE;
              }
         }
+    }
+
+    // Additional platform specific extension checking (e.g. WGL)
+    if( _glfwPlatformExtensionSupported( extension ) )
+    {
+        return GL_TRUE;
     }
 
     return GL_FALSE;
