@@ -421,10 +421,10 @@ icon is present, the \textbf{IDI\_WINLOGO} icon will be used instead.
 \begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
 GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows). Zero means system default.\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
 GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized (not used for fullscreen windows).\\ \hline
@@ -811,10 +811,10 @@ GLFW\_ALPHA\_BITS        & Number of bits for the alpha buffer.\\ \hline
 GLFW\_DEPTH\_BITS        & Number of bits for the depth buffer.\\ \hline
 GLFW\_STENCIL\_BITS      & Number of bits for the stencil buffer.\\ \hline
 GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz. Zero indicates an unknown or a default refresh rate.\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
 GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized, else GL\_FALSE.\\ \hline
