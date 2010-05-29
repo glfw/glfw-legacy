@@ -1,5 +1,5 @@
 ##########################################################################
-# Makefile for GLFW test programs on Windows using Apple GCC.
+# Makefile for GLFW test programs on Mac OS X using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
 #  make -f Makefile.carbon
@@ -16,14 +16,13 @@ LFLAGS = $(LIB) -framework AGL -framework OpenGL -framework Carbon -m32
 
 # Default: Build all tests
 all: Triangle.app/Contents/MacOS/Triangle \
-     ListModes.app/Contents/MacOS/ListModes \
-     MTHello.app/Contents/MacOS/MTHello \
+     listmodes \
+     mthello \
      Pong3D.app/Contents/MacOS/Pong3D \
-     MTBench.app/Contents/MacOS/MTBench \
+     mtbench \
      Particles.app/Contents/MacOS/Particles \
      SplitView.app/Contents/MacOS/SplitView \
      Mipmaps.app/Contents/MacOS/Mipmaps \
-     JoyTest.app/Contents/MacOS/JoyTest \
      Gears.app/Contents/MacOS/Gears \
      Boing.app/Contents/MacOS/Boing \
      Wave.app/Contents/MacOS/Wave
@@ -32,22 +31,19 @@ Triangle.app/Contents/MacOS/Triangle: triangle.c $(LIB) $(HEADER)
 	/bin/sh bundle.sh Triangle
 	$(CC) $(CFLAGS) triangle.c $(LFLAGS) -o Triangle.app/Contents/MacOS/Triangle
 
-ListModes.app/Contents/MacOS/ListModes: listmodes.c $(LIB) $(HEADER)
-	/bin/sh bundle.sh ListModes
-	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o ListModes.app/Contents/MacOS/ListModes
+listmodes: listmodes.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) listmodes.c $(LFLAGS) -o listmodes
 
-MTHello.app/Contents/MacOS/MTHello: mthello.c $(LIB) $(HEADER)
-	/bin/sh bundle.sh MTHello
-	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o MTHello.app/Contents/MacOS/MTHello
+mthello: mthello.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) mthello.c $(LFLAGS) -o mthello
 
 Pong3D.app/Contents/MacOS/Pong3D: pong3d.c $(LIB) $(HEADER)
 	/bin/sh bundle.sh Pong3D
 	cp pong3d_*.tga Pong3D.app/Contents/Resources/
 	$(CC) $(CFLAGS) pong3d.c $(LFLAGS) -o Pong3D.app/Contents/MacOS/Pong3D
 
-MTBench.app/Contents/MacOS/MTBench: mtbench.c $(LIB) $(HEADER)
-	/bin/sh bundle.sh MTBench
-	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o MTBench.app/Contents/MacOS/MTBench
+mtbench: mtbench.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) mtbench.c $(LFLAGS) -o mtbench
 
 Particles.app/Contents/MacOS/Particles: particles.c $(LIB) $(HEADER)
 	/bin/sh bundle.sh Particles
@@ -75,7 +71,6 @@ Wave.app/Contents/MacOS/Wave: wave.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o Wave.app/Contents/MacOS/Wave
 
 clean:
-	rm -rf JoyTest.app Triangle.app ListModes.app MTHello.app \
-	       Pong3D.app MTBench.app Particles.app SplitView.app \
-	       Mipmaps.app Gears.app Boing.app Wave.app
+	rm -rf Triangle.app listmodes mthello Pong3D.app mtbench Particles.app \
+		   SplitView.app Mipmaps.app Gears.app Boing.app Wave.app
 

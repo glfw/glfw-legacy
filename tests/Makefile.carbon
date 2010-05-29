@@ -1,5 +1,5 @@
 ##########################################################################
-# Makefile for GLFW test programs on Windows using Apple GCC.
+# Makefile for GLFW test programs on Mac OS X using Apple GCC.
 #-------------------------------------------------------------------------
 # To compile the test files using this makefile, run:
 #  make -f Makefile.carbon
@@ -19,11 +19,11 @@ all: Accuracy.app/Contents/MacOS/Accuracy \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
      FSInput.app/Contents/MacOS/FSInput \
-     Joysticks.app/Contents/MacOS/Joysticks \
+     joysticks \
      Peter.app/Contents/MacOS/Peter \
      ReOpen.app/Contents/MacOS/ReOpen \
      Tearing.app/Contents/MacOS/Tearing \
-     Version.app/Contents/MacOS/Version
+     version
 
 Accuracy.app/Contents/MacOS/Accuracy: accuracy.c $(LIB)
 	/bin/sh bundle.sh Accuracy
@@ -45,9 +45,8 @@ FSInput.app/Contents/MacOS/FSInput: fsinput.c $(LIB)
 	/bin/sh bundle.sh FSInput
 	$(CC) $(CFLAGS) fsinput.c $(LFLAGS) -o FSInput.app/Contents/MacOS/FSInput
 
-Joysticks.app/Contents/MacOS/Joysticks: joysticks.c $(LIB)
-	/bin/sh bundle.sh Joysticks
-	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o Joysticks.app/Contents/MacOS/Joysticks
+joysticks: joysticks.c $(LIB)
+	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o joysticks
 
 Peter.app/Contents/MacOS/Peter: peter.c $(LIB)
 	/bin/sh bundle.sh Peter
@@ -61,11 +60,10 @@ Tearing.app/Contents/MacOS/Tearing: tearing.c $(LIB)
 	/bin/sh bundle.sh Tearing
 	$(CC) $(CFLAGS) tearing.c $(LFLAGS) -o Tearing.app/Contents/MacOS/Tearing
 
-Version.app/Contents/MacOS/Version: version.c $(LIB)
-	/bin/sh bundle.sh Version
-	$(CC) $(CFLAGS) version.c $(LFLAGS) -o Version.app/Contents/MacOS/Version
+version: version.c $(LIB)
+	$(CC) $(CFLAGS) version.c $(LFLAGS) -o version
 
 clean:
 	rm -rf Accuracy.app Defaults.app Events.app FSAA.app FSInput.app \
-           Joysticks.app Peter.app ReOpen.app Tearing.app Version.app
+           joysticks Peter.app ReOpen.app Tearing.app version
 
