@@ -824,7 +824,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
     if( _glfwWin.opened )
     {
         _glfwPlatformSwapBuffers();
-:   }
+    }
 
     // Check for window messages
     if( _glfwWin.autoPollEvents )
