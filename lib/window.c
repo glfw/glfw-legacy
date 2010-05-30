@@ -809,8 +809,7 @@ GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 
 
 //========================================================================
-// glfwSwapBuffers() - Swap buffers (double-buffering) and poll any new
-// events
+// Swap buffers (double-buffering) and poll any new events
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
@@ -821,16 +820,16 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
         return;
     }
 
-    // Check for window messages
-    if( _glfwWin.autoPollEvents )
-    {
-        glfwPollEvents();
-    }
-
     // Update display-buffer
     if( _glfwWin.opened )
     {
         _glfwPlatformSwapBuffers();
+:   }
+
+    // Check for window messages
+    if( _glfwWin.autoPollEvents )
+    {
+        glfwPollEvents();
     }
 }
 
