@@ -121,10 +121,18 @@ nmake, where WATCOM is the directory in which you installed OpenWatcom
 <h3>2.5 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <b>compile.sh</b>.  It has been tested under Ubuntu Linux, Slackware
-Linux, Debian GNU/Linux and others, but should hopefully run on the majority of
-available Unix-like systems and generate functional Makefiles.  You do not have
-to run the script manually, since it is called from the top level Makefile.</p>
+called <b>compile.sh</b>.  Note that you don't need to run this script
+yourself, as it is run automatically when necessary.  It has been tested under
+Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others, but should
+hopefully run on the majority of available Unix-like systems and generate
+functional Makefiles.  You do not have to run the script manually, since it is
+called from the top level Makefile.</p>
+
+<p>If you wish to customize the compilation or link flags for GLFW, set the
+<code>CFLAGS</code> or <code>LFLAGS</code> environment variables as needed
+before building the library.  If you have already configured your source
+tree, you can reset it to an un-configured state with the make target
+<code>x11-dist-clean</code>.
 
 <p>If you are making your own build setup for GLFW, you need to be aware of the
 various preprocessor symbols that the bundled makefiles use to enable various
