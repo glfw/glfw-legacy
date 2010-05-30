@@ -493,6 +493,13 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         // For now, let everything else through
     }
 
+    if( wndconfig.glProfile &&
+        ( wndconfig.glMajor < 3 || ( wndconfig.glMajor == 3 && wndconfig.glMinor < 2 ) ) )
+    {
+        // Context profiles are only defined for version 3.2 and above
+        return GL_FALSE;
+    }
+
     if( wndconfig.glForward && wndconfig.glMajor < 3 )
     {
         // Forward-compatible contexts are only defined for version 3.0 and above
