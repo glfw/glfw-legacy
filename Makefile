@@ -46,6 +46,7 @@ default:
 	@echo "-----------------------------------------------------------------------------"
 	@echo "  $(MAKE) cocoa             for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-clean       to remove any compiled files for Cocoa on Mac OS X"
+	@echo "  $(MAKE) cocoa-install     to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
 	@echo " There are also Visual Studio 2008 project files available in support/msvc80"
 	@echo "-----------------------------------------------------------------------------"
@@ -167,4 +168,7 @@ cocoa-clean:
 	cd lib/cocoa; $(MAKE) -f Makefile.cocoa clean
 	cd examples;  $(MAKE) -f Makefile.cocoa clean
 	cd tests;     $(MAKE) -f Makefile.cocoa clean
+
+cocoa-install:
+	cd lib/cocoa; $(MAKE) -f Makefile.cocoa install
 
