@@ -386,7 +386,7 @@ If the function fails, GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function opens a window that best matches the parameters given to the
+This function opens a window that best matches the parameters given to the
 function. How well the resulting window matches the desired window depends
 mostly on the available hardware and \OpenGL\ drivers. In general,
 selecting a fullscreen mode has better chances of generating a close match
@@ -401,7 +401,7 @@ For additional control of window properties, see
 
 In fullscreen mode the mouse cursor is hidden by default and the
 screensaver is prohibited from starting. In windowed mode the mouse
-cursor is visible, and screensavers are allowed to start. To change the
+cursor is visible and screensavers are allowed to start. To change the
 visibility of the mouse cursor, use \textbf{glfwEnable} or
 \textbf{glfwDisable} with the argument GLFW\_MOUSE\_CURSOR.
 
@@ -412,6 +412,10 @@ In order to determine the actual properties of an opened window, use
 On Microsoft Windows, if the executable has an icon resource named
 \textbf{GLFW\_ICON}, it will be set as the icon for the window.  If no such
 icon is present, the \textbf{IDI\_WINLOGO} icon will be used instead.
+
+On Mac OS X the \GLFW\ window has no icon, but programs using \GLFW\ will use
+the application bundle's icon.  For more information on bundles, see the Bundle
+Programming Guide provided by Apple.
 \end{refnotes}
 
 
@@ -427,16 +431,14 @@ GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channe
 GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
-GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized (not used for fullscreen windows).\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized by the user (not used for fullscreen windows).\\ \hline
 GLFW\_FSAA\_SAMPLES      & 0                & Number of samples to use for the multisampling buffer. Zero disables multisampling.\\ \hline
-GLFW\_OPENGL\_VERSION\_MAJOR & 0	        & Major number of the desired OpenGL version.
-                                              The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
-GLFW\_OPENGL\_VERSION\_MINOR & 0	        & Minor number of the desired OpenGL version.
-                                              The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
-GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_FALSE   & Specify whether the OpenGL context should be forward compatible (i.e. disallow legacy functionality).
-                                              This hint is ignored for OpenGL version 2.1 and below.\\ \hline
+GLFW\_OPENGL\_VERSION\_MAJOR & 1	        & Major number of the desired \OpenGL\ version.\\ \hline
+GLFW\_OPENGL\_VERSION\_MINOR & 1	        & Minor number of the desired \OpenGL\ version.\\ \hline
+GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_FALSE   & Specify whether the \OpenGL\ context should be forward-compatible (i.e. disallow legacy functionality).
+                                              This should only be used when requesting \OpenGL\ version 3.0 or above.\\ \hline
 GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_FALSE    & Specify whether a debug context should be created.\\ \hline
-GLFW\_OPENGL\_PROFILE    & 0                & The OpenGL profile the context should implement, or zero to disable profile selection.
+GLFW\_OPENGL\_PROFILE    & 0                & The \OpenGL\ profile the context should implement, or zero to let the system choose.
                                               Available profiles are GLFW\_OPENGL\_CORE\_PROFILE and GLFW\_OPENGL\_COMPAT\_PROFILE.\\ \hline
 \end{tabular}
 \end{center}
@@ -456,9 +458,9 @@ void glfwOpenWindowHint( int target, int hint )
 \begin{refparameters}
 \begin{description}
 \item [\textit{target}]\ \\
-  Can be any of the constants in the table \ref{tab:winhints}.
+  Can be any of the tokens in the table \ref{tab:winhints}.
 \item [\textit{hint}]\ \\
-  An integer giving the value of the corresponding target (see table
+  An integer giving the value of the corresponding token (see table
   \ref{tab:winhints}).
 \end{description}
 \end{refparameters}
@@ -468,7 +470,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function sets additional properties for a window that is to be opened.
+This function sets additional properties for a window that is to be opened.
 For a hint to be registered, the function must be called before calling
 \textbf{glfwOpenWindow}. When the \textbf{glfwOpenWindow} function is
 called, any hints that were registered with the \textbf{glfwOpenWindowHint}
@@ -484,12 +486,37 @@ GLFW\_STEREO is a hard constraint. If stereo rendering is requested, but no
 stereo rendering capable pixel formats / framebuffer configs are available,
 \textbf{glfwOpenWindow} will fail.
 
-The GLFW\_REFRESH\_RATE property should be used with caution. Most
+The GLFW\_REFRESH\_RATE hint should be used with caution. Most
 systems have default values for monitor refresh rates that are optimal
 for the specific system. Specifying the refresh rate can override these
 settings, which can result in suboptimal operation. The monitor may be
 unable to display the resulting video signal, or in the worst case it may
 even be damaged!
+
+The GLFW\_WINDOW\_NO\_RESIZE hint applies only to manual resizing by the user.
+A window created with this hint enabled can still be resized by the application
+by calling \textbf{glfwSetWindowSize}.
+
+The GLFW\_OPENGL\_VERSION\_MAJOR and GLFW\_OPENGL\_VERSION\_MINOR hints specify
+the \OpenGL\ version that the created context must be compatible with,
+\emph{not} the exact version to use.  It is therefore perfectly safe to use the
+default of version 1.1 for legacy code and you will still get
+backwards-compatible contexts of version 3.0 and above when available.
+
+To make the behavior of the above version hints consistent across both modern
+and legacy drivers, \textbf{glfwOpenWindow} will fail if the modern creation
+mechanism (as specified in \textbf{WGL\_ARB\_create\_context}
+and \textbf{GLX\_ARB\_create\_context}) is unavailable \emph{and} the created
+context is of a version lower than the one that was requested.
+
+At the time of release, the exact meaning of what a "debug context" is (as
+created using the GLFW\_OPENGL\_DEBUG\_CONTEXT hint) has yet to be defined by
+the Khronos ARB WG.
+
+For full details on the workings of the \OpenGL\ version, forward-compatibility
+and debug hints, see the specifications for \textbf{WGL\_ARB\_create\_context}
+and \textbf{GLX\_ARB\_create\_context}, respectively.  The relevant \GLFW\
+hints map very closely to their platform-specific counterparts.
 \end{refnotes}
 
 
@@ -510,7 +537,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function closes an opened window and destroys the associated \OpenGL\
+This function closes an opened window and destroys the associated \OpenGL\
 context.
 \end{refdescription}
 
@@ -529,7 +556,8 @@ void glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
   Pointer to a callback function that will be called when a user requests
   that the window should be closed, typically by clicking the window close
   icon (e.g. the cross in the upper right corner of a window under
-  Microsoft Windows). The function should have the following C language
+  Microsoft Windows), and on Mac OS X also when selecting \textbf{Quit} from
+  the application menu. The function should have the following C language
   prototype:
 
   \texttt{int GLFWCALL functionname( void );}
@@ -540,8 +568,8 @@ void glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
   window will be closed. If the function returns GL\_FALSE, the window
   will not be closed.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -550,7 +578,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a window close
+This function selects which function to be called upon a window close
 event.
 
 A window has to be opened for this function to have any effect.
@@ -558,8 +586,8 @@ A window has to be opened for this function to have any effect.
 
 \begin{refnotes}
 Window close events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 
 The \OpenGL\ context is still valid when this function is called.
 
@@ -594,7 +622,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the title of the opened window.
+This function changes the title of the opened window.
 \end{refdescription}
 
 \begin{refnotes}
@@ -626,7 +654,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the size of an opened window. The \textit{width} and
+This function changes the size of an opened window. The \textit{width} and
 \textit{height} parameters denote the size of the client area of the
 window (i.e. excluding any window borders and decorations).
 
@@ -638,6 +666,9 @@ number of color bits will not be changed).
 \begin{refnotes}
 The \OpenGL\ context is guaranteed to be preserved after calling
 \textbf{glfwSetWindowSize}, even if the video mode is changed.
+
+This function is not affected by the value of the GLFW\_WINDOW\_NO\_RESIZE
+hint.
 \end{refnotes}
 
 
@@ -665,8 +696,10 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the position of an opened window. It does not have
+This function changes the position of an opened window. It does not have
 any effect on a fullscreen window.
+
+The behaviour of this function on multi-monitor systems is ill-defined.
 \end{refdescription}
 
 
@@ -693,7 +726,7 @@ The current width and height of the opened window is returned in the
 \end{refreturn}
 
 \begin{refdescription}
-The function is used for determining the size of an opened window.
+This function is used for determining the size of an opened window.
 The returned values are dimensions of the client area of the window
 (i.e. excluding any window borders and decorations).
 \end{refdescription}
@@ -728,8 +761,8 @@ void glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
   \textit{width} and \textit{height} are the dimensions of the window
   client area.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -738,7 +771,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a window size
+This function selects which function to be called upon a window size
 change event.
 
 A window has to be opened for this function to have any effect.
@@ -746,8 +779,11 @@ A window has to be opened for this function to have any effect.
 
 \begin{refnotes}
 Window size changes are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
+
+When a callback function is set, it will be called with the current window
+size before this function returns.
 \end{refnotes}
 
 
@@ -817,14 +853,13 @@ GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulati
 GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
-GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized, else GL\_FALSE.\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized by the user, else GL\_FALSE.\\ \hline
 GLFW\_FSAA\_SAMPLES      & Number of multisampling buffer samples. Zero indicated multisampling is disabled.\\ \hline
-GLFW\_OPENGL\_VERSION\_MAJOR & Major number of the desired OpenGL version.\\ \hline
-GLFW\_OPENGL\_VERSION\_MINOR & Minor number of the desired OpenGL version.\\ \hline
-GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_TRUE if the OpenGL context is forward compatible (i.e. disallows legacy functionality), else GL\_FALSE.
-                                This is always GL\_FALSE for OpenGL version 2.1 and below.\\ \hline
-GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_TRUE if the OpenGL context is a debug context.\\ \hline
-GLFW\_OPENGL\_PROFILE    & The OpenGL profile implemented by the context, or zero.\\ \hline
+GLFW\_OPENGL\_VERSION\_MAJOR & Major number of the actual version of the context.\\ \hline
+GLFW\_OPENGL\_VERSION\_MINOR & Minor number of the actual version of the context.\\ \hline
+GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_TRUE if the context is forward-compatible, else GL\_FALSE.\\ \hline
+GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_TRUE if the context is a debug context.\\ \hline
+GLFW\_OPENGL\_PROFILE    & The profile implemented by the context, or zero.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Window parameters for \textbf{glfwGetWindowParam}}
@@ -849,13 +884,12 @@ int glfwGetWindowParam( int param )
 \end{refparameters}
 
 \begin{refreturn}
-The function returns different parameters depending on the value of
-\textit{param}. Table \ref{tab:winparams} lists valid \textit{param}
-values, and their corresponding return values.
+The function returns the value the window parameter corresponding to the token
+\textit{param}.  Table \ref{tab:winparams} lists the available tokens.
 \end{refreturn}
 
 \begin{refdescription}
-The function is used for acquiring various properties of an opened window.
+This function is used for acquiring various properties of an opened window.
 \end{refdescription}
 
 \begin{refnotes}
@@ -887,11 +921,17 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function swaps the back and front color buffers of the window. If
+This function swaps the back and front color buffers of the window. If
 GLFW\_AUTO\_POLL\_EVENTS is enabled (which is the default),
-\textbf{glfwPollEvents} is called before swapping the front and back
+\textbf{glfwPollEvents} is called after swapping the front and back
 buffers.
 \end{refdescription}
+
+\begin{refnotes}
+In previous versions of \GLFW , \textbf{glfwPollEvents} was called
+\emph{before} buffer swap.  This was changed in order to decrease input
+lag but may affect code that relied on the former behavior.
+\end{refnotes}
 
 
 %-------------------------------------------------------------------------
@@ -917,7 +957,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects the minimum number of monitor vertical retraces that
+This function selects the minimum number of monitor vertical retraces that
 should occur between two buffer swaps. If the selected swap interval is
 one, the rate of buffer swaps will never be higher than the vertical
 refresh rate of the monitor. If the selected swap interval is zero, the
@@ -926,8 +966,9 @@ the hardware.
 \end{refdescription}
 
 \begin{refnotes}
-This function will only have an effect on hardware and drivers that
-support user selection of the swap interval.
+This function will only have an effect on hardware and drivers that support
+user selection of the swap interval.  ATI drivers in particular have been known
+to ignore this setting.
 \end{refnotes}
 
 
@@ -950,8 +991,8 @@ void glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 
   Where \textit{functionname} is the name of the callback function.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -960,7 +1001,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a window refresh
+This function selects which function to be called upon a window refresh
 event, which occurs when any part of the window client area has been
 damaged, and needs to be repainted (for instance, if a part of the window
 that was previously occluded by another window has become visible).
@@ -970,8 +1011,12 @@ A window has to be opened for this function to have any effect.
 
 \begin{refnotes}
 Window refresh events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
+
+Modern windowing systems using hardware compositing, such as Aqua, Aero and
+Compiz, very rarely need to refresh the contents of windows, so the specified
+callback will very rarely be called on such systems.
 \end{refnotes}
 
 
@@ -1008,7 +1053,7 @@ filled out with the video modes that are supported by the system.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns a list of supported video modes. Each video mode is
+This function returns a list of supported video modes. Each video mode is
 represented by a \textit{GLFWvidmode} structure, which has the following
 definition:
 
@@ -1051,7 +1096,7 @@ out with the desktop video mode.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the desktop video mode in a \textit{GLFWvidmode}
+This function returns the desktop video mode in a \textit{GLFWvidmode}
 structure. See \textbf{glfwGetVideoModes} for a definition of the
 \textit{GLFWvidmode} structure.
 \end{refdescription}
@@ -1064,9 +1109,10 @@ indexed 256 color display may report \textit{RedBits} = 3,
 \textit{GreenBits} = 3 and \textit{BlueBits} = 2, which adds up to 8 bits
 in total.
 
-The desktop video mode is the video mode used by the desktop, \textit{not}
-the current video mode (which may differ from the desktop video mode if
-the \GLFW\ window is a fullscreen window).
+The desktop video mode is the video mode used by the desktop at the time
+the \GLFW\ window was opened, \textit{not} the current video mode (which
+may differ from the desktop video mode if the \GLFW\ window is a
+fullscreen window).
 \end{refnotes}
 
 
@@ -1104,7 +1150,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function is used for polling for events, such as user input and
+This function is used for polling for events, such as user input and
 window resize events. Upon calling this function, all window states,
 keyboard states and mouse states are updated. If any related callback
 functions are registered, these are called during the call to
@@ -1113,7 +1159,7 @@ functions are registered, these are called during the call to
 
 \begin{refnotes}
 \textbf{glfwPollEvents} is called implicitly from \textbf{glfwSwapBuffers}
-if GLFW\_AUTO\_POLL\_EVENTS is enabled (default). Thus, if
+if GLFW\_AUTO\_POLL\_EVENTS is enabled (as it is by default). Thus, if
 \textbf{glfwSwapBuffers} is called frequently, which is normally the case,
 there is no need to call \textbf{glfwPollEvents}.
 \end{refnotes}
@@ -1136,10 +1182,10 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function is used for waiting for events, such as user input and
+This function is used for waiting for events, such as user input and
 window resize events. Upon calling this function, the calling thread will
 be put to sleep until any event appears in the event queue. When events
-are ready, the events will be processed just as they are processed by
+are available, they will be processed just as they are processed by
 \textbf{glfwPollEvents}.
 
 If there are any events in the queue when the function is called, the
@@ -1148,12 +1194,11 @@ all messages and then return, without blocking the calling thread).
 \end{refdescription}
 
 \begin{refnotes}
-It is guaranteed that \textbf{glfwWaitEvents} will wake up on any event
-that can be processed by \textbf{glfwPollEvents}. However,
-\textbf{glfwWaitEvents} may wake up on events that are \emph{not}
-processed or reported by \textbf{glfwPollEvents} too, and the function
-may behave differently on different systems. Do not make any assumptions
-about when or why \textbf{glfwWaitEvents} will return.
+It is guaranteed that \textbf{glfwWaitEvents} will wake up on any event that
+can be processed by \textbf{glfwPollEvents}. However, \GLFW\ receives many
+events that are only processed internally and the function may behave
+differently on different systems. Do not make any assumptions about when or why
+\textbf{glfwWaitEvents} will return.
 \end{refnotes}
 
 
@@ -1175,6 +1220,8 @@ GLFW\_KEY\_LCTRL          & Left control key\\ \hline
 GLFW\_KEY\_RCTRL          & Right control key\\ \hline
 GLFW\_KEY\_LALT           & Left alternate function key\\ \hline
 GLFW\_KEY\_RALT           & Right alternate function key\\ \hline
+GLFW\_KEY\_LSUPER         & Left super key, WinKey, or command key\\ \hline
+GLFW\_KEY\_RSUPER         & Right super key, WinKey, or command key\\ \hline
 GLFW\_KEY\_TAB            & Tabulator\\ \hline
 GLFW\_KEY\_ENTER          & Enter\\ \hline
 GLFW\_KEY\_BACKSPACE      & Backspace\\ \hline
@@ -1192,6 +1239,11 @@ GLFW\_KEY\_KP\_ADD        & Keypad add ($+$)\\ \hline
 GLFW\_KEY\_KP\_DECIMAL    & Keypad decimal (. or ,)\\ \hline
 GLFW\_KEY\_KP\_EQUAL      & Keypad equal (=)\\ \hline
 GLFW\_KEY\_KP\_ENTER      & Keypad enter\\ \hline
+GLFW\_KEY\_KP\_NUM\_LOCK  & Keypad num lock\\ \hline
+GLFW\_KEY\_CAPS\_LOCK     & Caps lock\\ \hline
+GLFW\_KEY\_SCROLL\_LOCK   & Scroll lock\\ \hline
+GLFW\_KEY\_PAUSE          & Pause key\\ \hline
+GLFW\_KEY\_MENU           & Menu key\\ \hline
 \end{tabular}
 \end{center}
 \caption{Special key identifiers}
@@ -1238,14 +1290,15 @@ if the key is not held down.
 \end{refreturn}
 
 \begin{refdescription}
-The function queries the current state of a specific keyboard key. The
+This function queries the current state of a specific keyboard key. The
 physical location of each key depends on the system keyboard layout
 setting.
 \end{refdescription}
 
 \begin{refnotes}
 The constant GLFW\_KEY\_SPACE is equal to 32, which is the ISO~8859-1 code
-for space.
+for space.  This is the only named \GLFW\ key identifier with a value in the
+ISO~8859-1 range.
 
 Not all key codes are supported on all systems. Also, while some keys are
 available on some keyboard layouts, they may not be available on other
@@ -1256,9 +1309,9 @@ modifier keys (shift, alt and control), the left version is used (e.g.
 GLFW\_KEY\_LSHIFT).
 
 A window must be opened for the function to have any effect, and
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} must be called before any keyboard events are
-recorded and reported by \textbf{glfwGetKey}.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) must be called before any keyboard
+events are recorded and reported by \textbf{glfwGetKey}.
 \end{refnotes}
 
 
@@ -1284,14 +1337,14 @@ GLFW\_RELEASE if the mouse button is not held down.
 \end{refreturn}
 
 \begin{refdescription}
-The function queries the current state of a specific mouse button.
+This function queries the current state of a specific mouse button.
 \end{refdescription}
 
 \begin{refnotes}
 A window must be opened for the function to have any effect, and
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} must be called before any mouse button events
-are recorded and reported by \textbf{glfwGetMouseButton}.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) must be called before any mouse button
+events are recorded and reported by \textbf{glfwGetMouseButton}.
 
 GLFW\_MOUSE\_BUTTON\_LEFT is equal to GLFW\_MOUSE\_BUTTON\_1.
 GLFW\_MOUSE\_BUTTON\_RIGHT is equal to GLFW\_MOUSE\_BUTTON\_2.
@@ -1310,34 +1363,32 @@ void glfwGetMousePos( int *xpos, int *ypos )
 \begin{refparameters}
 \begin{description}
 \item [\textit{xpos}]\ \\
-  Pointer to an integer that will be filled out with the horizontal
-  position of the mouse.
+  Pointer to an integer that will be set to the horizontal position of the
+  mouse cursor.
 \item [\textit{ypos}]\ \\
-  Pointer to an integer that will be filled out with the vertical
-  position of the mouse.
+  Pointer to an integer that will be set to the vertical position of the mouse cursor.
 \end{description}
 \end{refparameters}
 
 \begin{refreturn}
-The function returns the current mouse position in \textit{xpos} and
+The function returns the current mouse cursor position in \textit{xpos} and
 \textit{ypos}.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the current mouse position. If the cursor is not
+This function returns the current mouse position. If the cursor is not
 hidden, the mouse position is the cursor position, relative to the upper
-left corner of the window and limited to the client area of the window.
-If the cursor is hidden, the mouse position is a virtual absolute
-position, not limited to any boundaries except to those implied by the
-maximum number that can be represented by a signed integer (normally
--2147483648 to +2147483647).
+left corner of the window and with the Y-axis down.  If the cursor is hidden,
+the mouse position is a virtual absolute position, not limited to any
+boundaries except to those implied by the maximum number that can be
+represented by a signed integer.
 \end{refdescription}
 
 \begin{refnotes}
 A window must be opened for the function to have any effect, and
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} must be called before any mouse movements are
-recorded and reported by \textbf{glfwGetMousePos}.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) must be called before any mouse
+movements are recorded and reported by \textbf{glfwGetMousePos}.
 \end{refnotes}
 
 
@@ -1363,11 +1414,11 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the position of the mouse. If the cursor is
-visible (not disabled), the cursor will be moved to the specified
-position, relative to the upper left corner of the window client area.
-If the cursor is hidden (disabled), only the mouse position that is
-reported by \GLFW\ is changed.
+This function changes the position of the mouse. If the cursor is visible (not
+disabled), the cursor will be moved to the specified position, relative to the
+upper left corner of the window client area and with the Y-axis down.  If the
+cursor is hidden (disabled), only the mouse position that is reported by \GLFW\
+is changed.
 \end{refdescription}
 
 
@@ -1388,16 +1439,16 @@ The function returns the current mouse wheel position.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the current mouse wheel position. The mouse wheel can
+This function returns the current mouse wheel position. The mouse wheel can
 be thought of as a third mouse axis, which is available as a separate
 wheel or up/down stick on some mice.
 \end{refdescription}
 
 \begin{refnotes}
 A window must be opened for the function to have any effect, and
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} must be called before any mouse wheel movements
-are recorded and reported by \textbf{glfwGetMouseWheel}.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) must be called before any mouse wheel
+movements are recorded and reported by \textbf{glfwGetMouseWheel}.
 \end{refnotes}
 
 
@@ -1421,7 +1472,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function changes the position of the mouse wheel.
+This function changes the position of the mouse wheel.
 \end{refdescription}
 
 
@@ -1448,8 +1499,8 @@ void glfwSetKeyCallback( GLFWkeyfun cbfun )
   \ref{tab:keys}), and \textit{action} is either GLFW\_PRESS or
   GLFW\_RELEASE.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -1458,18 +1509,18 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a keyboard key
-event. The callback function is called every time the state of a single
-key is changed (from released to pressed or vice versa). The reported keys
-are unaffected by any modifiers (such as shift or alt).
+This function sets the callback for keyboard key events.  The callback function
+is called every time the state of a single key is changed (from released to
+pressed or vice versa). The reported keys are unaffected by any modifiers (such
+as shift or alt) and each modifier is reported as a separate key.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
 Keyboard events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 \end{refnotes}
 
 
@@ -1494,8 +1545,8 @@ void glfwSetCharCallback( GLFWcharfun cbfun )
   \textit{character} is a Unicode (ISO~10646) character, and
   \textit{action} is either GLFW\_PRESS or GLFW\_RELEASE.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -1504,18 +1555,18 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a keyboard character
-event. The callback function is called every time a key that results in a
-printable Unicode character is pressed or released. Characters are
-affected by modifiers (such as shift or alt).
+This function sets the callback for keyboard character events.  The callback
+function is called every time a key that results in a printable Unicode
+character is pressed or released.  Characters are affected by modifiers (such
+as shift or alt).
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
 Character events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 
 Control characters, such as tab and carriage return, are not reported to
 the character callback function, since they are not part of the Unicode
@@ -1552,8 +1603,8 @@ void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
   \ref{tab:mousebuttons} on page \pageref{tab:mousebuttons}), and
   \textit{action} is either GLFW\_PRESS or GLFW\_RELEASE.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -1562,7 +1613,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a mouse button
+This function selects which function to be called upon a mouse button
 event.
 
 A window has to be opened for this function to have any effect.
@@ -1570,8 +1621,8 @@ A window has to be opened for this function to have any effect.
 
 \begin{refnotes}
 Mouse button events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 
 GLFW\_MOUSE\_BUTTON\_LEFT is equal to GLFW\_MOUSE\_BUTTON\_1.
 GLFW\_MOUSE\_BUTTON\_RIGHT is equal to GLFW\_MOUSE\_BUTTON\_2.
@@ -1599,8 +1650,8 @@ void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
   \textit{x} and \textit{y} are the mouse coordinates (see
   \textbf{glfwGetMousePos} for more information on mouse coordinates).
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -1609,15 +1660,15 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a mouse motion event.
+This function selects which function to be called upon a mouse motion event.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
 Mouse motion events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 \end{refnotes}
 
 
@@ -1641,8 +1692,8 @@ void glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun )
   Where \textit{functionname} is the name of the callback function, and
   \textit{pos} is the mouse wheel position.
 
-  If \textit{cbfun} is NULL, any previously selected callback function
-  will be deselected.
+  If \textit{cbfun} is NULL, any previously set callback function
+  will be unset.
 \end{description}
 \end{refparameters}
 
@@ -1651,15 +1702,15 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function selects which function to be called upon a mouse wheel event.
+This function selects which function to be called upon a mouse wheel event.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
 Mouse wheel events are recorded continuously, but only reported when
-\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers} is called.
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 \end{refnotes}
 
 
@@ -1704,7 +1755,7 @@ values, and their corresponding return values.
 \end{refreturn}
 
 \begin{refdescription}
-The function is used for acquiring various properties of a joystick.
+This function is used for acquiring various properties of a joystick.
 \end{refdescription}
 
 \begin{refnotes}
@@ -1742,7 +1793,7 @@ return 0 (zero).
 \end{refreturn}
 
 \begin{refdescription}
-The function queries the current position of one or more axes of a
+This function queries the current position of one or more axes of a
 joystick. The positional values are returned in an array, where the first
 element represents the first axis of the joystick (normally the X axis).
 Each position is in the range -1.0 to 1.0. Where applicable, the positive
@@ -1795,7 +1846,7 @@ return 0 (zero).
 \end{refreturn}
 
 \begin{refdescription}
-The function queries the current state of one or more buttons of a
+This function queries the current state of one or more buttons of a
 joystick. The button states are returned in an array, where the first
 element represents the first button of the joystick. Each state can be
 either GLFW\_PRESS or GLFW\_RELEASE.
@@ -1840,7 +1891,7 @@ value.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the state of a high precision timer. Unless the timer
+This function returns the state of a high precision timer. Unless the timer
 has been set by the \textbf{glfwSetTime} function, the time is measured as
 the number of seconds that have passed since \textbf{glfwInit} was called.
 \end{refdescription}
@@ -1872,7 +1923,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function sets the current time of the high precision timer to the
+This function sets the current time of the high precision timer to the
 specified time. Subsequent calls to \textbf{glfwGetTime} will be relative
 to this time. The time is given in seconds.
 \end{refdescription}
@@ -1898,7 +1949,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function puts the calling thread to sleep for the requested period of
+This function puts the calling thread to sleep for the requested period of
 time. Only the calling thread is put to sleep. Other threads within the
 same process can still execute.
 \end{refdescription}
@@ -1964,7 +2015,7 @@ Otherwise GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function reads an image from the file specified by the parameter
+This function reads an image from the file specified by the parameter
 \textit{name} and returns the image information and data in a GLFWimage
 structure, which has the following definition:
 
@@ -2041,7 +2092,7 @@ Otherwise GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function reads an image from the memory buffer specified by the parameter
+This function reads an image from the memory buffer specified by the parameter
 \textit{data} and returns the image information and data in a GLFWimage
 structure, which has the following definition:
 
@@ -2109,7 +2160,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function frees any memory occupied by a loaded image, and clears all
+This function frees any memory occupied by a loaded image, and clears all
 the fields of the GLFWimage struct. Any image that has been loaded by the
 \textbf{glfwReadImage} function should be deallocated using this function,
 once the image is not needed anymore.
@@ -2155,7 +2206,7 @@ Otherwise GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function reads an image from the file specified by the parameter
+This function reads an image from the file specified by the parameter
 \textit{name} and uploads the image to \OpenGL\ texture memory (using the
 \textbf{glTexImage2D} function).
 
@@ -2223,7 +2274,7 @@ Otherwise GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function reads an image from the memory buffer specified by the parameter
+This function reads an image from the memory buffer specified by the parameter
 \textit{data} and uploads the image to \OpenGL\ texture memory (using the
 \textbf{glTexImage2D} function).
 
@@ -2290,7 +2341,7 @@ Otherwise GL\_FALSE is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function uploads the image specified by the parameter \textit{img} to
+This function uploads the image specified by the parameter \textit{img} to
 \OpenGL\ texture memory (using the \textbf{glTexImage2D} function).
 
 If the GLFW\_BUILD\_MIPMAPS\_BIT flag is set, all mipmap levels for the
@@ -2363,7 +2414,7 @@ returns GL\_FALSE.
 \end{refreturn}
 
 \begin{refdescription}
-The function does a string search in the list of supported \OpenGL\
+This function does a string search in the list of supported \OpenGL\
 extensions to find if the specified extension is listed.
 \end{refdescription}
 
@@ -2400,7 +2451,7 @@ is supported, otherwise NULL is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function acquires the pointer to an \OpenGL\ extension function. Some
+This function acquires the pointer to an \OpenGL\ extension function. Some
 (but not all) \OpenGL\ extensions define new API functions, which are
 usually not available through normal linking. It is therefore necessary to
 get access to those API functions at runtime.
@@ -2441,7 +2492,7 @@ for the currently used \OpenGL\ implementation.
 \end{refreturn}
 
 \begin{refdescription}
-The function returns the \OpenGL\ implementation version. This is a
+This function returns the \OpenGL\ implementation version. This is a
 convenient function that parses the version number information from the
 string returned by calling \texttt{glGetString(~GL\_VERSION~)}. The
 \OpenGL\ version information can be used to determine what functionality
@@ -2500,7 +2551,7 @@ fails, a negative number is returned.
 \end{refreturn}
 
 \begin{refdescription}
-The function creates a new thread, which executes within the same address
+This function creates a new thread, which executes within the same address
 space as the calling process. The thread entry point is specified with the
 \textit{fun} argument.
 
@@ -2535,7 +2586,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function kills a running thread and removes it from the thread list.
+This function kills a running thread and removes it from the thread list.
 \end{refdescription}
 
 \begin{refnotes}
@@ -2598,7 +2649,7 @@ thread.
 \end{refreturn}
 
 \begin{refdescription}
-The function determines the thread ID for the calling thread. The ID is
+This function determines the thread ID for the calling thread. The ID is
 the same value as was returned by \textbf{glfwCreateThread} when the
 thread was created.
 \end{refdescription}
@@ -2631,7 +2682,7 @@ created.
 \end{refreturn}
 
 \begin{refdescription}
-The function creates a mutex object, which can be used to control access
+This function creates a mutex object, which can be used to control access
 to data that is shared between threads.
 \end{refdescription}
 
@@ -2656,7 +2707,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function destroys a mutex object. After a mutex object has been
+This function destroys a mutex object. After a mutex object has been
 destroyed, it may no longer be used by any thread.
 \end{refdescription}
 
@@ -2681,7 +2732,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function will acquire a lock on the selected mutex object. If the
+This function will acquire a lock on the selected mutex object. If the
 mutex is already locked by another thread, the function will block the
 calling thread until it is released by the locking thread. Once the
 function returns, the calling thread has an exclusive lock on the mutex.
@@ -2709,7 +2760,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function releases the lock of a locked mutex object.
+This function releases the lock of a locked mutex object.
 \end{refdescription}
 
 
@@ -2738,7 +2789,7 @@ variable could not be created.
 \end{refreturn}
 
 \begin{refdescription}
-The function creates a condition variable object, which can be used to
+This function creates a condition variable object, which can be used to
 synchronize threads.
 \end{refdescription}
 
@@ -2763,7 +2814,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function destroys a condition variable object. After a condition
+This function destroys a condition variable object. After a condition
 variable object has been destroyed, it may no longer be used by any
 thread.
 \end{refdescription}
@@ -2794,7 +2845,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function atomically unlocks the mutex specified by \textit{mutex}, and
+This function atomically unlocks the mutex specified by \textit{mutex}, and
 waits for the condition variable \textit{cond} to be signaled. The thread
 execution is suspended and does not consume any CPU time until the
 condition variable is signaled or the amount of time specified by timeout
@@ -2834,7 +2885,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function restarts one of the threads that are waiting on the condition
+This function restarts one of the threads that are waiting on the condition
 variable \textit{cond}. If no threads are waiting on \textit{cond},
 nothing happens. If several threads are waiting on \textit{cond}, exactly
 one is restarted, but it is not specified which.
@@ -2867,7 +2918,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-The function restarts all the threads that are waiting on the condition
+This function restarts all the threads that are waiting on the condition
 variable \textit{cond}. If no threads are waiting on \textit{cond},
 nothing happens.
 \end{refdescription}
@@ -2989,16 +3040,16 @@ GLFW\_STICKY\_KEYS also clears the sticky information for all keys.
 
 \bigskip\begin{mysamepage}\hypertarget{lnk:stickymousebuttons}{}
 \textbf{GLFW\_STICKY\_MOUSE\_BUTTONS}\\
-When GLFW\_STICKY\_MOUSE\_BUTTONS is enabled, mouse buttons that are
-pressed will not be released until they are physically released and
-checked with \textbf{glfwGetMouseButton}. This behavior makes it
-possible to catch mouse buttons which were pressed and then released again
-between two calls to \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or
-\textbf{glfwSwapBuffers}, which would otherwise have been reported as
-released. Care should be taken when using this mode, since mouse buttons
-that are not checked with \textbf{glfwGetMouseButton} will never be
-released. Note also that enabling GLFW\_STICKY\_MOUSE\_BUTTONS does not
-affect the behavior of the mouse button callback functionality.
+When GLFW\_STICKY\_MOUSE\_BUTTONS is enabled, mouse buttons that are pressed
+will not be released until they are physically released and checked with
+\textbf{glfwGetMouseButton}. This behavior makes it possible to catch mouse
+buttons which were pressed and then released again between two calls to
+\textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
+(with GLFW\_AUTO\_POLL\_EVENTS enabled), which would otherwise have been
+reported as released. Care should be taken when using this mode, since mouse
+buttons that are not checked with \textbf{glfwGetMouseButton} will never be
+released. Note also that enabling GLFW\_STICKY\_MOUSE\_BUTTONS does not affect
+the behavior of the mouse button callback functionality.
 
 When GLFW\_STICKY\_MOUSE\_BUTTONS is disabled, the status of a mouse
 button that is reported by \textbf{glfwGetMouseButton} is always the
@@ -3042,7 +3093,7 @@ The function returns the number of active processors in the system.
 \end{refreturn}
 
 \begin{refdescription}
-The function determines the number of active processors in the system.
+This function determines the number of active processors in the system.
 \end{refdescription}
 
 \begin{refnotes}
