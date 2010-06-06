@@ -585,9 +585,9 @@ GLFW_BIN_LFLAGS="-lGLU $LIBS -lm"
 
 MKNAME='./lib/x11/Makefile.x11'
 
-echo "Creating ""$MKNAME" 1>&6
+echo "Creating $MKNAME" 1>&6
 
-echo "$self: Creating ""$MKNAME" >&5
+echo "$self: Creating $MKNAME" >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -608,9 +608,9 @@ cat './lib/x11/Makefile.x11.in' >>$MKNAME
 
 MKNAME='./examples/Makefile.x11'
 
-echo "Creating ""$MKNAME" 1>&6
+echo "Creating $MKNAME" 1>&6
 
-echo "$self: Creating ""$MKNAME" >&5
+echo "$self: Creating $MKNAME" >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -631,9 +631,9 @@ cat './examples/Makefile.x11.in' >>$MKNAME
 
 MKNAME='./tests/Makefile.x11'
 
-echo "Creating ""$MKNAME" 1>&6
+echo "Creating $MKNAME" 1>&6
 
-echo "$self: Creating ""$MKNAME" >&5
+echo "$self: Creating $MKNAME" >&5
 
 cat > "$MKNAME" <<EOF
 ##########################################################################
@@ -654,9 +654,9 @@ cat './tests/Makefile.x11.in' >>$MKNAME
 
 MKNAME="./lib/x11/libglfw.pc.in"
 
-echo "Creating ""$MKNAME" 1>&6
+echo "Creating $MKNAME" 1>&6
 
-echo "$self: Creating ""$MKNAME" >&5
+echo "$self: Creating $MKNAME" >&5
 
 cat > "$MKNAME" <<EOF
 prefix=@PREFIX@
