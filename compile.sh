@@ -149,7 +149,7 @@ link='$CC -o conftest $GLFW_CFLAGS $GLFW_LFLAGS conftest.c $LIBS 1>&5'
 
 
 ##########################################################################
-# Check if we are using GNU C
+# Check if we are using GNU C (or something claiming it is)
 ##########################################################################
 echo -n "Checking whether we are using GNU C... " 1>&6
 echo "$self: checking whether we are using GNU C" >&5
@@ -168,10 +168,6 @@ fi
 rm -f conftest*
 
 echo "$use_gcc" 1>&6
-
-if [ "x$use_gcc" = xyes ]; then
-  CC=gcc
-fi
 
 
 ##########################################################################
