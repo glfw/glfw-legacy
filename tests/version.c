@@ -113,7 +113,7 @@ static void list_extensions(int major, int minor)
 
 int main(int argc, char** argv)
 {
-    int ch, profile = 0, major = 1, minor = 0, revision;
+    int ch, profile = 0, major = 1, minor = 1, revision;
     GLboolean debug = GL_FALSE, forward = GL_FALSE, list = GL_FALSE;
     GLint flags, mask;
 
@@ -165,11 +165,11 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    if (major > 1)
+    if (major != 1 || minor != 1)
+    {
         glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, major);
-
-    if (minor > 0)
         glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, minor);
+    }
 
     if (debug)
         glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
