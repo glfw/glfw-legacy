@@ -583,8 +583,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a window close
-event.
+This function sets the callback for window close events.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
@@ -776,8 +775,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a window size
-change event.
+This function sets the callback for window size change events.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
@@ -1006,10 +1004,10 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a window refresh
-event, which occurs when any part of the window client area has been
-damaged, and needs to be repainted (for instance, if a part of the window
-that was previously occluded by another window has become visible).
+This function sets the callback for window refresh events, which occurs when
+any part of the window client area has been damaged, and needs to be repainted
+(for instance, if a part of the window that was previously occluded by another
+window has become visible).
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
@@ -1523,6 +1521,10 @@ A window has to be opened for this function to have any effect.
 \end{refdescription}
 
 \begin{refnotes}
+Keyboard key events are not intended for text input and many languages
+will not be able to be input using it.  Use Unicode character events for
+text input instead.
+
 Keyboard events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
 (with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
@@ -1573,7 +1575,7 @@ Character events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
 (with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
 
-Control characters, such as tab and carriage return, are not reported to
+Control characters such as tab and carriage return are not reported to
 the character callback function, since they are not part of the Unicode
 character set. Use the key callback function for such events (see
 \textbf{glfwSetKeyCallback}).
@@ -1618,8 +1620,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a mouse button
-event.
+This function sets the callback for mouse button events.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
@@ -1665,7 +1666,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a mouse motion event.
+This function sets the callback for mouse motion events.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
@@ -1707,7 +1708,7 @@ none
 \end{refreturn}
 
 \begin{refdescription}
-This function selects which function to be called upon a mouse wheel event.
+This function sets the callback for mouse wheel events.
 
 A window has to be opened for this function to have any effect.
 \end{refdescription}
