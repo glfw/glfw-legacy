@@ -58,6 +58,10 @@
  #error "GLX header version 1.3 or above is required"
 #endif
 
+#if defined( _GLFW_HAS_XF86VIDMODE ) && defined( _GLFW_HAS_XRANDR )
+ #error "Xf86VidMode and RandR extensions cannot both be enabled"
+#endif
+
 // With XFree86, we can use the XF86VidMode extension
 #if defined( _GLFW_HAS_XF86VIDMODE )
  #include <X11/extensions/xf86vmode.h>
