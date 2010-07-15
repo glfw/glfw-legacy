@@ -721,7 +721,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
                                                  &count );
         if( !count )
         {
-            fprintf(stderr, "No GLXFBConfigs returned");
+            fprintf(stderr, "No GLXFBConfigs returned\n");
             return NULL;
         }
     }
@@ -730,7 +730,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         fbconfigs = glXGetFBConfigs( _glfwLibrary.display, _glfwWin.screen, &count );
         if( !count )
         {
-            fprintf(stderr, "No GLXFBConfigs returned");
+            fprintf(stderr, "No GLXFBConfigs returned\n");
             return NULL;
         }
     }
@@ -738,7 +738,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
     result = (_GLFWfbconfig*) malloc(sizeof(_GLFWfbconfig) * count);
     if( !result )
     {
-        fprintf(stderr, "Out of memory");
+        fprintf(stderr, "Out of memory\n");
         return NULL;
     }
 
