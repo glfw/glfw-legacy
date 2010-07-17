@@ -575,13 +575,13 @@ static int getNextEvent( void )
             {
                 return GL_TRUE;
             }
-
-            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
+            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
             {
-                XSendEvent( _glfwLibrary.display,
-                        RootWindow( _glfwLibrary.display, _glfwWin.screen ),
-                        False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
+                event.xclient.window = RootWindow( _glfwLibrary.display, _glfwWin.screen );
+                XSendEvent( _glfwLibrary.display, event.xclient.window,
+                            False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
             }
+
             break;
         }
 
