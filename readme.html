@@ -83,9 +83,11 @@ compile successfully, we would very much like to know what you had to do.</p>
 
 <h3>2.1 Microsoft Windows</h3>
 
-<p>When building GLFW as a DLL (dynamic link library), regardless of which
-build environment you use, all compilation units need to have the
-<code>GLFW_BUILD_DLL</code> macro defined.</p>
+<p>When building GLFW as a DLL (dynamic link library), all compilation units
+need to have the <code>GLFW_BUILD_DLL</code> macro defined.  All build methods
+listed below already does this, but you need to do it yourself if you are
+making a custom build.  Without this macro, the GLFW DLL will not export
+functions correctly and code calling the DLL will be incorrectly generated.</p>
 
 <h4>2.1.1 Microsoft Visual C++ 9.0 and above</h4>
 
@@ -506,7 +508,7 @@ version of GLFW.</p>
   <li>[X11] Added support for user-specified compilation flags via <code>CFLAGS</code></li>
   <li>[X11] Added documentation of configuration macros</li>
   <li>[X11] Improved configuration and makefile creation logic</li>
-  <li>[X11] Removed support for GLX version 1.3 and below</li>
+  <li>[X11] Removed support for GLX version 1.2 and below</li>
   <li>[X11] Removed unnecessary calls to XSync</li>
   <li>[X11] Bugfix: Repeated keys would sometimes leak through despite key repeat being disabled</li>
   <li>[X11] Bugfix: Fullscreen window resizing would cause color buffer clearing without taking framebuffer objects into account</li>
