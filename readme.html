@@ -161,6 +161,10 @@ features and code paths.  They need to be defined either on the command line or
 at the very beginning for each GLFW source file with an <code>x11_</code>
 prefix.</p>
 
+<p>Note that the X11 port of GLFW compiles but is currently unable to open a
+window when running with X11.app on Mac OS X, due to Apple's incomplete
+implementation of GLXFBConfigs.</p>
+
 <table border=1>
   <tr>
     <td>_GLFW_USE_LINUX_JOYSTICKS</td>
@@ -225,6 +229,11 @@ versions available from the Apple Developer Connection site.  When they are
 installed, simply open Terminal and go to the root GLFW directory.  From there,
 you can build the library and all the examples by running make with the
 appropriate target, i.e. <b>make cocoa</b>.</p>
+
+<p>There is also a deprecated Carbon port of GLFW, which is limited to
+32-bit code and only runs well on Mac OS X 10.3 and 10.4.  However, if you
+need to build applications for those systems, it is a better choice than
+the Cocoa port, which uses APIs unavailable on systems older than 10.5.</p>
 
 
 
