@@ -63,6 +63,7 @@ DLL will also be compiled.</p>
   <li>Bare MinGW for Windows</li>
   <li>LCC-Win32 for Windows</li>
   <li>OpenWatcom for Windows</li>
+  <li>MinGW cross-compilation for Unix or Unix-like systems</li>
   <li>Unix or Unix-like systems running the X Window System</li>
   <li>Apple GCC or Clang on Mac OS X</li>
 </ol>
@@ -120,6 +121,16 @@ required environment variables. If nmake does not work, you probably have to
 run <code>WATCOM\setvars.bat</code> from the command prompt before executing
 nmake, where WATCOM is the directory in which you installed OpenWatcom (e.g.
 C:\Watcom).</p>
+
+
+<h4>2.1.5 MinGW cross-compilation for Unix or Unix-like systems</h4>
+
+<p>Some Unix-like systems have a MinGW cross-compilation package for compiling
+native Win32 binaries, for example the <code>mingw32</code> package on Debian
+GNU/Linux and its derivatives.  You can use this to build Win32 binaries of
+GLFW and all examples without having to start Microsoft Windows.  Use the
+regular make program with the <code>cross-mgw</code> target.  These binaries
+are also regularly tested with Wine.</p>
 
 
 <h3>2.2 X11 on Unix-like systems</h3>
