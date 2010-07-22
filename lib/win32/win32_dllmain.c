@@ -42,17 +42,6 @@ BOOL WINAPI DllMain( HINSTANCE instance, DWORD reason, LPVOID reserved )
     // NOTE: Some compilers complains about instance and x never being used -
     // never mind that (we don't want to use them)!
 
-    switch( reason )
-    {
-        case DLL_PROCESS_ATTACH:
-            // Initializations
-            break;
-        case DLL_PROCESS_DETACH:
-            // Do some cleanup
-            glfwTerminate();
-            break;
-    };
-
     return TRUE;
 }
 

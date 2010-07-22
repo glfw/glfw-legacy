@@ -547,6 +547,7 @@ version of GLFW.</p>
   <li>[Win32] Bugfix: Pointer for <code>GetExtensionsStringARB</code> was not initialized</li>
   <li>[Win32] Bugfix: Makefiles contained the wrong GLFW API version</li>
   <li>[Win32] Bugfix: Numeric keypad key symbols would change depending on Num Lock state</li>
+  <li>[Win32] Bugfix: <code>DllMain</code> performed a number of forbidden actions (by calling <code>glfwTerminate</code>)</li>
 </ul>
 
 <h3>v2.6</h3>
