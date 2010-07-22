@@ -42,7 +42,7 @@
 This document is a users guide for the \GLFW\ API that gives a practical
 introduction to using \GLFW . For a more detailed description of the
 \GLFW\ API you should refer to the \textit{GLFW Reference Manual}.
-\vspace{10cm}
+\vspace{5cm}
 
 \large
 Trademarks
@@ -93,29 +93,28 @@ to remedy this by providing the following functionality:
 \begin{itemize}
 \item Opening and managing an \OpenGL\ window.
 \item Keyboard, mouse and joystick input.
-\item A high precision timer.
-\item Multi threading support.
+\item High precision time input.
+\item Multi-threading support.
 \item Support for querying and using \OpenGL\ extensions.
-\item Image file loading support.
+\item Rudimentary image file loading support.
 \end{itemize}
 \vspace{18pt}
 
 All this functionality is implemented as a set of easy-to-use functions,
 which makes it possible to write an \OpenGL\ application framework in just a
-few lines of code. The \GLFW\ API is completely operating system and
-platform independent, which makes it very simple to port \GLFW\ based \OpenGL\
-applications to a variety of platforms.
+few lines of code. The \GLFW\ API is operating system and platform independent,
+making it very simple to port \GLFW\ based \OpenGL\ applications between the
+supported platforms.
 
 Currently supported platforms are:
 \begin{itemize}
-\item Microsoft Windows\textsuperscript{\textregistered} 95/98/ME/NT/2000/XP/.NET Server.
+\item Microsoft Windows\textsuperscript{\textregistered}
 \item Unix\textsuperscript{\textregistered} or Unix­-like systems running the
-X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
-IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
-Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
-Mac OS\textsuperscript{\textregistered} X.
-\item Mac OS\textsuperscript{\textregistered} X (Carbon)\footnote{Support for joysticks missing at the time of writing.}
+X Window System\texttrademark with GLX version 1.3 or later
+\item Mac OS X\textsuperscript{\textregistered} 10.5 and later, using Cocoa\footnote{Support for joysticks missing at the time of writing.}
 \end{itemize}
+
+There is also deprecated support for Mac OS X versions 10.3 and 10.4, using the Carbon API.
 
 
 %-------------------------------------------------------------------------
@@ -131,8 +130,8 @@ read some user keyboard input.
 %-------------------------------------------------------------------------
 \section{Initializing GLFW}
 Before using any of the \GLFW\ functions, it is necessary to call
-\textbf{glfwInit}. It initializes internal working variables that are used
-by other \GLFW\ functions. The C syntax is:
+\textbf{glfwInit}. It initializes the parts of \GLFW\ that are not dependent on
+a window, such as threading, timer and joystick input. The C syntax is:
 
 \begin{lstlisting}
 int glfwInit( void )
@@ -142,32 +141,28 @@ int glfwInit( void )
 GL\_FALSE if it failed.
 
 When your application is done using \GLFW , typically at the very end of
-the program, you should call \textbf{glfwTerminate}, which makes a clean
-up and places \GLFW\ in a non-initialized state (i.e. it is necessary to
-call \textbf{glfwInit} again before using any \GLFW\ functions). The C
-syntax is:
+the program, you should call \textbf{glfwTerminate}.  The C syntax is:
 
 \begin{lstlisting}
 void glfwTerminate( void )
 \end{lstlisting}
 
-Among other things, \textbf{glfwTerminate} closes the \OpenGL\ window
-unless it was closed manually, and kills any running threads that were
-created using \GLFW .
-
+This releases any resources allocated by GLFW, closes the window if it is open
+and kills any secondary threads created by \GLFW\.  After this call, you must
+call \textbf{glfwInit} again before using any \GLFW\ functions).
 
 %-------------------------------------------------------------------------
 \section{Opening An OpenGL Window}
-Opening an \OpenGL\ window is done with the function
-\textbf{glfwOpenWindow}. The function takes nine arguments, which are used
-to describe the following properties of the window to open:
+Opening an \OpenGL\ window is done with the \textbf{glfwOpenWindow} function.
+The function takes nine arguments, which are used to describe the following
+properties of the requested window:
 
 \begin{itemize}
 \item Window dimensions (width and height) in pixels.
-\item Color and alpha buffer depth.
-\item Depth buffer (Z-buffer) depth.
-\item Stencil buffer depth.
-\item Fullscreen or windowed mode.
+\item Color and alpha buffer bit depth.
+\item Depth buffer (Z-buffer) bit depth.
+\item Stencil buffer bit depth.
+\item Whether to use fullscreen or windowed mode.
 \end{itemize}
 
 The C language syntax for \textbf{glfwOpenWindow} is:
@@ -192,15 +187,15 @@ The \textit{mode} argument is used to specify if the window is to be a
 s.c. fullscreen window, or a regular window.
 
 If \textit{mode} is GLFW\_FULLSCREEN, the window will cover the entire
-screen and no window borders will be visible. If possible, the video mode
-will be changed to the mode that closest matches the \textit{width},
-\textit{height}, \textit{redbits}, \textit{greenbits}, \textit{bluebits}
-and \textit{alphabits} arguments. Furthermore, the mouse pointer will be
-hidden, and screensavers are prohibited. This is usually the best mode for
-games and demos.
+screen and no window border or decorations will be visible. If possible, the
+video mode will be changed to the mode that closest matches the \textit{width},
+\textit{height}, \textit{redbits}, \textit{greenbits}, \textit{bluebits} and
+\textit{alphabits} arguments. Furthermore, the mouse pointer will be hidden,
+and screensavers are prohibited. This is usually the best mode for games and
+demos.
 
-If \textit{mode} is GLFW\_WINDOW, the window will be opened as a normal
-window on the desktop. The mouse pointer will not be hidden, and
+If \textit{mode} is GLFW\_WINDOW, the window will be opened as a normal,
+decorated window on the desktop. The mouse pointer will not be hidden and
 screensavers are allowed to be activated.
 
 To close the window, you can either use \textbf{glfwTerminate}, as
@@ -210,6 +205,10 @@ described earlier, or you can use the more explicit approach by calling
 \begin{lstlisting}
 void glfwCloseWindow( void )
 \end{lstlisting}
+
+Note that you do not need to call \textbf{glfwTerminate} and \textbf{glfwInit}
+before opening a new window after having closed the current one using
+\textbf{glfwCloseWindow}.
 
 
 %-------------------------------------------------------------------------
@@ -228,8 +227,8 @@ It queries the current status of individual keyboard keys. The argument
 uppercase printable ISO 8859-1 (Latin 1) character (e.g. `A', `3' or `.'),
 or a special key identifier (see the \textit{GLFW Reference Manual} for a
 list of special key identifiers). \textbf{glfwGetKey} returns GLFW\_PRESS
-(or 1) if the key is currently held down, or GLFW\_RELEASE (or 0) if the
-key is not being held down. For example:
+if the key is currently held down, or GLFW\_RELEASE if the key is not being
+held down. For example:
 
 \begin{lstlisting}
 A_pressed = glfwGetKey( 'A' );
@@ -254,25 +253,27 @@ second in order for \GLFW\ to maintain an up to date input state.
 %-------------------------------------------------------------------------
 \section{Putting It Together: A Minimal GLFW Application}
 Now that you know how to initialize \GLFW , open a window and poll for
-keyboard input, let us exemplify this with a simple \OpenGL\ program. In
-the following example some error-checking has been omitted for the sake of
-brevity:
+keyboard input, let us exemplify this with a simple \OpenGL\ program:
 
 \begin{lstlisting}
 #include <GL/glfw.h>
+#include <stdlib.h>
 
 int main( void )
 {
     int running = GL_TRUE;
 
     // Initialize GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        exit( EXIT_FAILURE );
+    }
 
     // Open an OpenGL window
     if( !glfwOpenWindow( 300,300, 0,0,0,0,0,0, GLFW_WINDOW ) )
     {
         glfwTerminate();
-        return 0;
+        exit( EXIT_FAILURE );
     }
 
     // Main loop
@@ -293,7 +294,7 @@ int main( void )
     glfwTerminate();
 
     // Exit program
-    return 0;
+    exit( EXIT_SUCCESS );
 }
 \end{lstlisting}
 
@@ -308,7 +309,7 @@ is done in this example is to clear the window.
 \chapter{Window Operations}
 \thispagestyle{fancy}
 In this chapter, you will learn more about window related \GLFW\
-functionality, including: setting and getting window properties, buffer
+functionality, including setting and getting window properties, buffer
 swap control and video mode querying.
 
 
@@ -316,9 +317,9 @@ swap control and video mode querying.
 \section{Setting Window Properties}
 In the previous chapter the \textbf{glfwOpenWindow} function was
 described, which specifies the sizes of the color, alpha, depth and
-stencil buffers. It is also possible to request an accumulator buffer,
-auxiliary buffers and stereo rendering by using the
-\textbf{glfwOpenWindowHint} function:
+stencil buffers. It is also possible to request a specific minimum OpenGL
+version, multisampling anti-aliasing, an accumulation buffer, stereo
+rendering and more by using the \textbf{glfwOpenWindowHint} function:
 
 \begin{lstlisting}
 void glfwOpenWindowHint( int target, int hint )
@@ -334,20 +335,21 @@ specified target.
 \begin{tabular}{|l|l|p{7.0cm}|} \hline \raggedright
 \textbf{Name}            & \textbf{Default} & \textbf{Description} \\ \hline
 GLFW\_REFRESH\_RATE      & 0                & Vertical monitor refresh rate in Hz (only used for fullscreen windows). Zero means system default.\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & 0                & Number of bits for the red channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & 0                & Number of bits for the green channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & 0                & Number of bits for the blue channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & 0                & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & 0                & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_FALSE        & Specify if stereo rendering should be supported (can be GL\_TRUE or GL\_FALSE).\\ \hline
-GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized (not used for fullscreen windows).\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_FALSE        & Specify whether the window can be resized by the user (not used for fullscreen windows).\\ \hline
 GLFW\_FSAA\_SAMPLES      & 0                & Number of samples to use for the multisampling buffer. Zero disables multisampling.\\ \hline
-GLFW\_OPENGL\_VERSION\_MAJOR & 0	    & Major number of the desired OpenGL version.
-                                              The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
-GLFW\_OPENGL\_VERSION\_MINOR & 0	    & Minor number of the desired OpenGL version.
-                                              The default requests the highest OpenGL version equal to or lower than 2.1.\\ \hline
-GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_FALSE   & Specify whether the OpenGL context should be forward compatible (i.e. disallow legacy functionality).
-                                              This hint is ignored for OpenGL version 2.1 and below.\\ \hline
+GLFW\_OPENGL\_VERSION\_MAJOR & 1	        & Major number of the desired minimum OpenGL version.\\ \hline
+GLFW\_OPENGL\_VERSION\_MINOR & 1	        & Minor number of the desired minimum OpenGL version.\\ \hline
+GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_FALSE   & Specify whether the OpenGL context should be forward-compatible (i.e. disallow legacy functionality).
+                                              This should only be used when requesting OpenGL version 3.0 or above.\\ \hline
+GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_FALSE    & Specify whether a debug context should be created.\\ \hline
+GLFW\_OPENGL\_PROFILE    & 0                & The OpenGL profile the context should implement, or zero to let the system choose.
+                                              Available profiles are GLFW\_OPENGL\_CORE\_PROFILE and GLFW\_OPENGL\_COMPAT\_PROFILE.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Targets for \textbf{glfwOpenWindowHint}}
@@ -359,7 +361,7 @@ For a hint to have any effect, the \textbf{glfwOpenWindowHint} function
 must be called before opening the window with the \textbf{glfwOpenWindow}
 function.
 
-To request an accumulator buffer, set the GLFW\_ACCUM\_x\_BITS targets to
+To request an accumulation buffer, set the GLFW\_ACCUM\_x\_BITS targets to
 values greater than zero (usually eight or sixteen bits per component).
 To request auxiliary buffers, set the GLFW\_AUX\_BUFFERS target to a value
 greater than zero. To request a stereo rendering capable window, set the
@@ -372,10 +374,19 @@ fulfil the request, \GLFW\ will degrade gracefully and disable FSAA if necessary
 The GLFW\_REFRESH\_RATE target should be used with caution, since it may
 result in suboptimal operation, or even a blank or damaged screen.
 
-If you want to create a context with OpenGL version 3.0 or above you have to
-set the GLFW\_OPENGL\_VERSION\_MAJOR and GLFW\_OPENGL\_VERSION\_MINOR hints
-accordingly. If you don't do this, the highest OpenGL version available for a
-context is 2.1 or lower.
+If you want to create a forward-compatible \OpenGL\ context, set the
+GLFW\_OPENGL\_FORWARD\_COMPAT hint to GL\_TRUE.  Note that such contexts are
+only available for \OpenGL\ version 3.0 and above, so you will need to specify
+a valid minimum version using the GLFW\_OPENGL\_VERSION\_MAJOR and
+GLFW\_OPENGL\_VERSION\_MINOR hints.
+
+If you want to create a context using the core profile as available in \OpenGL\
+version 3.2 and above, set the GLFW\_OPENGL\_PROFILE hint accordingly.  Note that
+as above you have to set a valid minimum version for this to work.
+
+Also note that at the time of this release, Mac OS X did not support \OpenGL\
+version 3.0 or above; thus GLFW cannot create contexts of versions above 2.1
+on that platform.
 
 Besides the parameters that are given with the \textbf{glfwOpenWindow} and
 \textbf{glfwOpenWindowHint} functions, a few more properties of a window
@@ -391,7 +402,7 @@ void glfwSetWindowTitle( const char *title )
 
 \textit{title} is a null terminated ISO~8859-1 (8-bit Latin~1) string that
 will be used as the window title. It will also be used as the application
-name (for instance in the application list when using \texttt{ALT+TAB}
+name (for instance in the application list when using \texttt{Alt+Tab}
 under Windows, or as the icon name when the window is iconified under
 the X Window System). The default window name is ``GLFW Window'', which
 will be used unless \textbf{glfwSetWindowTitle} is called after the window
@@ -447,18 +458,19 @@ GLFW\_ALPHA\_BITS        & Number of bits for the alpha buffer.\\ \hline
 GLFW\_DEPTH\_BITS        & Number of bits for the depth buffer.\\ \hline
 GLFW\_STENCIL\_BITS      & Number of bits for the stencil buffer.\\ \hline
 GLFW\_REFRESH\_RATE      & Vertical monitor refresh rate in Hz. Zero indicates an unknown or a default refresh rate.\\ \hline
-GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulator buffer.\\ \hline
-GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulator buffer.\\ \hline
+GLFW\_ACCUM\_RED\_BITS   & Number of bits for the red channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_GREEN\_BITS & Number of bits for the green channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_BLUE\_BITS  & Number of bits for the blue channel of the accumulation buffer.\\ \hline
+GLFW\_ACCUM\_ALPHA\_BITS & Number of bits for the alpha channel of the accumulation buffer.\\ \hline
 GLFW\_AUX\_BUFFERS       & Number of auxiliary buffers.\\ \hline
 GLFW\_STEREO             & GL\_TRUE if stereo rendering is supported, else GL\_FALSE.\\ \hline
-GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized, else GL\_FALSE.\\ \hline
+GLFW\_WINDOW\_NO\_RESIZE & GL\_TRUE if the window cannot be resized by the user, else GL\_FALSE.\\ \hline
 GLFW\_FSAA\_SAMPLES      & Number of multisampling buffer samples. Zero indicated multisampling is disabled.\\ \hline
-GLFW\_OPENGL\_VERSION\_MAJOR & Major number of the desired OpenGL version.\\ \hline
-GLFW\_OPENGL\_VERSION\_MINOR & Minor number of the desired OpenGL version.\\ \hline
-GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_TRUE if the OpenGL context is forward compatible (i.e. disallows legacy functionality), else GL\_FALSE.
-This is always GL\_FALSE for OpenGL version 2.1 and below.\\ \hline
+GLFW\_OPENGL\_VERSION\_MAJOR & Major number of the actual version of the context.\\ \hline
+GLFW\_OPENGL\_VERSION\_MINOR & Minor number of the actual version of the context.\\ \hline
+GLFW\_OPENGL\_FORWARD\_COMPAT & GL\_TRUE if the context is forward-compatible, else GL\_FALSE.\\ \hline
+GLFW\_OPENGL\_DEBUG\_CONTEXT & GL\_TRUE if the context is a debug context.\\ \hline
+GLFW\_OPENGL\_PROFILE    & The profile implemented by the context, or zero.\\ \hline
 \end{tabular}
 \end{center}
 \caption{Window parameters for \textbf{glfwGetWindowParam}}
@@ -485,12 +497,12 @@ and the second argument is the height of the window. Here is an example
 of how to use a window size callback function:
 
 \begin{lstlisting}
-int WinWidth, WinHeight;
+int windowWidth, windowHeight;
 
 void GLFWCALL WindowResize( int width, int height )
 {
-    WinWidth  = width;
-    WinHeight = height;
+    windowWidth  = width;
+    windowHeight = height;
 }
 
 int main( void )
@@ -513,8 +525,9 @@ is to use the function \textbf{glfwGetWindowSize}:
 void glfwGetWindowSize( int *width, int *height )
 \end{lstlisting}
 
-The \textit{width} and \textit{height} arguments are filled out with the
-current window dimensions.
+The variables pointed to by \textit{width} and \textit{height} are set to the
+current window dimensions.  Note that either of these may be NULL; that
+argument is then ignored.
 
 
 %-------------------------------------------------------------------------
@@ -537,11 +550,11 @@ frame, and begin rendering a new frame. This is done with the command
 void glfwSwapBuffers( void )
 \end{lstlisting}
 
-Besides swapping the front and back rendering buffers,
-\textbf{glfwSwapBuffers} also calls \textbf{glfwPollEvents}\footnote{This
-behavior can be disabled by calling \textbf{glfwDisable} with the argument
-GLFW\_AUTO\_POLL\_EVENTS.}. This is to ensure frequent polling of events,
-such as keyboard and mouse input, and window reshaping events.
+After swapping the front and back rendering buffers, \textbf{glfwSwapBuffers}
+by default calls \textbf{glfwPollEvents}\footnote{This behavior can be disabled
+by calling \textbf{glfwDisable} with the argument GLFW\_AUTO\_POLL\_EVENTS.}.
+This is to ensure frequent polling of events, such as keyboard and mouse input,
+and window reshaping events.
 
 Sometimes it can be useful to select when the buffer swap will occur. With
 the function \textbf{glfwSwapInterval} it is possible to select the
@@ -582,9 +595,9 @@ int glfwGetVideoModes( GLFWvidmode *list, int maxcount )
 \end{lstlisting}
 
 The argument \textit{list} is a vector of GLFWvidmode structures, and
-\textit{maxcount} is the maximum number of video modes that your vector
-can hold. \textbf{glfwGetVideoModes} will return the actual number of
-video modes detected on the system.
+\textit{maxcount} is the maximum number of video modes that your vector can
+hold. \textbf{glfwGetVideoModes} will return the number of video modes detected
+on the system, up to \textit{maxcount}.
 
 The GLFWvidmode structure looks like this:
 
@@ -637,12 +650,14 @@ The first thing to know about input handling in \GLFW\ is that all
 keyboard and mouse input is collected by checking for input events. This
 has do be done manually by calling either \textbf{glfwPollEvents} or
 \textbf{glfwSwapBuffers} (which implicitly calls \textbf{glfwPollEvents}
-for you). Normally this does not have to be a concern, since
+for you). Normally this is not a cause for concern, as
 \textbf{glfwSwapBuffers} is called every frame, which should be often
-enough (about 10-100 times per second for a normal \OpenGL\ application).
-One exception is when rendering is paused, and then the program waits for
-input to begin animation again. In this case \textbf{glfwPollEvents} has
-to be called repeatedly until any new input events arrive.
+enough (about 10-100 times per second for a normal \OpenGL\ application) that
+the window will feel responsive.
+
+One exception is when an application is rendering only in response to input.
+In this case the \textbf{glfwWaitEvents} is useful, as it blocks the calling
+thread until an event arrives.
 
 If it is not desirable that \textbf{glfwPollEvents is} called implicitly
 from \textbf{glfwSwapBuffers}, call \textbf{glfwDisable} with the argument
@@ -655,7 +670,7 @@ called.
 
 %-------------------------------------------------------------------------
 \section{Keyboard Input}
-\GLFW\ gives three options for getting keyboard input:
+\GLFW\ provides three mechanisms for getting keyboard input:
 
 \begin{itemize}
 \item Manually polling the state of individual keys.
@@ -664,12 +679,12 @@ called.
 \item Automatically receive characters, using a callback function.
 \end{itemize}
 
-Depending on what the keyboard input will be used for, either of the
-methods may be more suitable. The main difference between the two last
-options is that while characters are affected by modifier keys (such as
-shift), key state is independent of any modifier keys. Also, special keys
-(such as function keys, cursor keys and modifier keys) are not reported to
-the character callback function.
+Depending on what the keyboard input will be used for, different methods may be
+preferred. The main difference between the two last methods is that while
+characters are affected by modifier keys (such as shift), key state is
+independent of any modifier keys. Also, special keys (such as function keys,
+cursor keys and modifier keys) are not reported to the character callback
+function.
 
 %-------------------------------------------------------------------------
 \subsection{Key state}
