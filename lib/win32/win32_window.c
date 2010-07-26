@@ -1361,11 +1361,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     setForegroundWindow( _glfwWin.window );
     SetFocus( _glfwWin.window );
 
-    // Start by clearing the front buffer to black (avoid ugly desktop
-    // remains in our OpenGL window)
-    glClear( GL_COLOR_BUFFER_BIT );
-    _glfw_SwapBuffers( _glfwWin.DC );
-
     return GL_TRUE;
 }
 

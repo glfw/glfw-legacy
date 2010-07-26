@@ -1306,11 +1306,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Connect the context to the window
     glXMakeCurrent( _glfwLibrary.display, _glfwWin.window, _glfwWin.context );
 
-    // Start by clearing the front buffer to black (avoid ugly desktop
-    // remains in our OpenGL window)
-    glClear( GL_COLOR_BUFFER_BIT );
-    glXSwapBuffers( _glfwLibrary.display, _glfwWin.window );
-
     return GL_TRUE;
 }
 

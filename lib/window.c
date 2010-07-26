@@ -605,6 +605,11 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         glfwDisable( GLFW_MOUSE_CURSOR );
     }
 
+    // Start by clearing the front buffer to black (avoid ugly desktop
+    // remains in our OpenGL window)
+    glClear( GL_COLOR_BUFFER_BIT );
+    _glfwPlatformSwapBuffers();
+
     return GL_TRUE;
 }
 
