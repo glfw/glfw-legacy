@@ -1135,14 +1135,12 @@ static GLboolean createWindow( int width, int height,
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
 
-    XMapWindow( _glfwLibrary.display, _glfwWin.window );
+    // Make sure that our window ends up on top of things
+    XMapRaised( _glfwLibrary.display, _glfwWin.window );
 
     // Wait for map notification
     XIfEvent( _glfwLibrary.display, &event, isMapNotify,
               (char*)_glfwWin.window );
-
-    // Make sure that our window ends up on top of things
-    XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
 
     return GL_TRUE;
 }
