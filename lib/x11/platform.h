@@ -268,6 +268,7 @@ struct _GLFWwin_struct {
     // Platform specific window resources
     Colormap      colormap;        // Window colormap:
     Window        window;          // Window
+    Window        root;            // Root window for screen
     int           screen;          // Screen ID
     XVisualInfo  *visual;          // Visual
     GLXFBConfigID fbconfigID;      // ID of the selected GLXFBConfig

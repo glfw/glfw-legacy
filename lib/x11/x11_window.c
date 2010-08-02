@@ -162,9 +162,7 @@ static void disableDecorations( void )
     if( removedDecorations )
     {
         // Finally set the transient hints
-        XSetTransientForHint( _glfwLibrary.display,
-                              _glfwWin.window,
-                              RootWindow( _glfwLibrary.display, _glfwWin.screen) );
+        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, _glfwWin.root );
         XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
         XMapWindow( _glfwLibrary.display, _glfwWin.window );
     }
@@ -577,7 +575,7 @@ static int getNextEvent( void )
             }
             else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
             {
-                event.xclient.window = RootWindow( _glfwLibrary.display, _glfwWin.screen );
+                event.xclient.window = _glfwWin.root;
                 XSendEvent( _glfwLibrary.display, event.xclient.window,
                             False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
             }
@@ -1047,8 +1045,7 @@ static GLboolean createWindow( int width, int height,
     // We create one based on the visual used by the current context
 
     _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
-                                         RootWindow( _glfwLibrary.display,
-                                                     _glfwWin.screen ),
+                                         _glfwWin.root,
                                          _glfwWin.visual->visual,
                                          AllocNone );
 
@@ -1073,7 +1070,7 @@ static GLboolean createWindow( int width, int height,
 
         _glfwWin.window = XCreateWindow(
             _glfwLibrary.display,
-            RootWindow( _glfwLibrary.display, _glfwWin.screen ),
+            _glfwWin.root,
             0, 0,                            // Upper left corner of this window on root
             _glfwWin.width, _glfwWin.height,
             0,                               // Border width
@@ -1189,6 +1186,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     // As the 2.x API doesn't understand screens, we hardcode this choice and
     // hope for the best
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
+    _glfwWin.root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
 
     initGLXExtensions();
 
@@ -1318,7 +1316,6 @@ void _glfwPlatformCloseWindow( void )
 {
 #if defined( _GLFW_HAS_XRANDR )
     XRRScreenConfiguration *sc;
-    Window root;
 #endif
 
     // Do we have a rendering context?
@@ -1374,12 +1371,11 @@ void _glfwPlatformCloseWindow( void )
 #if defined( _GLFW_HAS_XRANDR )
         if( _glfwLibrary.XRandR.available )
         {
-            root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
-            sc = XRRGetScreenInfo( _glfwLibrary.display, root );
+            sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
 
             XRRSetScreenConfig( _glfwLibrary.display,
                                 sc,
-                                root,
+                                _glfwWin.root,
                                 _glfwWin.FS.oldSizeID,
                                 _glfwWin.FS.oldRotation,
                                 CurrentTime );
@@ -1722,8 +1718,7 @@ void _glfwPlatformRefreshWindowParams( void )
 #if defined( _GLFW_HAS_XRANDR )
     if( _glfwLibrary.XRandR.available )
     {
-        sc = XRRGetScreenInfo( _glfwLibrary.display,
-                               RootWindow( _glfwLibrary.display, _glfwWin.screen ) );
+        sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
         _glfwWin.refreshRate = XRRConfigCurrentRate( sc );
         XRRFreeScreenConfigInfo( sc );
     }
