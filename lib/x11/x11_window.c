@@ -706,7 +706,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
     {
         if( !_glfwWin.has_GLX_SGIX_fbconfig )
         {
-            fprintf(stderr, "GLXFBConfigs are not supported by the X server\n");
+            fprintf( stderr, "GLXFBConfigs are not supported by the X server\n" );
             return NULL;
         }
     }
@@ -719,7 +719,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
                                                  &count );
         if( !count )
         {
-            fprintf(stderr, "No GLXFBConfigs returned\n");
+            fprintf( stderr, "No GLXFBConfigs returned\n" );
             return NULL;
         }
     }
@@ -728,15 +728,15 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         fbconfigs = glXGetFBConfigs( _glfwLibrary.display, _glfwWin.screen, &count );
         if( !count )
         {
-            fprintf(stderr, "No GLXFBConfigs returned\n");
+            fprintf( stderr, "No GLXFBConfigs returned\n" );
             return NULL;
         }
     }
 
-    result = (_GLFWfbconfig*) malloc(sizeof(_GLFWfbconfig) * count);
+    result = (_GLFWfbconfig*) malloc( sizeof(_GLFWfbconfig) * count );
     if( !result )
     {
-        fprintf(stderr, "Out of memory\n");
+        fprintf( stderr, "Out of memory\n" );
         return NULL;
     }
 
