@@ -1037,7 +1037,6 @@ static GLboolean createWindow( int width, int height,
 {
     XEvent event;
     Atom protocols[2];
-    XSizeHints *sizehints;
     unsigned long wamask;
     XSetWindowAttributes wa;
 
@@ -1110,20 +1109,26 @@ static GLboolean createWindow( int width, int height,
         disableDecorations();
     }
 
-    // Set window position and size WM hints
+    // Set ICCCM WM_NORMAL_HINTS property
     {
-        sizehints = XAllocSizeHints();
-        sizehints->flags = 0;
+        XSizeHints *hints = XAllocSizeHints();
+        if( !hints )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        hints->flags = 0;
 
         if( wndconfig->windowNoResize )
         {
-            sizehints->flags |= (PMinSize | PMaxSize);
-            sizehints->min_width  = sizehints->max_width  = _glfwWin.width;
-            sizehints->min_height = sizehints->max_height = _glfwWin.height;
+            hints->flags |= (PMinSize | PMaxSize);
+            hints->min_width  = hints->max_width  = _glfwWin.width;
+            hints->min_height = hints->max_height = _glfwWin.height;
         }
 
-        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
-        XFree( sizehints );
+        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, hints );
+        XFree( hints );
     }
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
