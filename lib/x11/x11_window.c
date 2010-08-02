@@ -1109,6 +1109,22 @@ static GLboolean createWindow( int width, int height,
         disableDecorations();
     }
 
+    // Set ICCCM WM_HINTS property
+    {
+        XWMHints *hints = XAllocWMHints();
+        if( !hints )
+        {
+            _glfwPlatformCloseWindow();
+            return GL_FALSE;
+        }
+
+        hints->flags = StateHint;
+        hints->initial_state = NormalState;
+
+        XSetWMHints( _glfwLibrary.display, _glfwWin.window, hints );
+        XFree( hints );
+    }
+
     // Set ICCCM WM_NORMAL_HINTS property
     {
         XSizeHints *hints = XAllocSizeHints();
