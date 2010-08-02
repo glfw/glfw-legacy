@@ -1183,8 +1183,8 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.refreshRate      = wndconfig->refreshRate;
     _glfwWin.windowNoResize   = wndconfig->windowNoResize;
 
-    // As the 2.x API doesn't understand screens, we hardcode this choice and
-    // hope for the best
+    // As the 2.x API doesn't understand multiple display devices, we hardcode
+    // this choice and hope for the best
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
     _glfwWin.root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
 
