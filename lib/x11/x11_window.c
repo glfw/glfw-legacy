@@ -1122,13 +1122,6 @@ static GLboolean createWindow( int width, int height,
             sizehints->min_height = sizehints->max_height = _glfwWin.height;
         }
 
-        if( wndconfig->mode == GLFW_FULLSCREEN )
-        {
-            sizehints->flags |= PPosition;
-            sizehints->x = 0;
-            sizehints->y = 0;
-        }
-
         XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
         XFree( sizehints );
     }
