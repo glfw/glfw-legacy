@@ -554,7 +554,10 @@ After swapping the front and back rendering buffers, \textbf{glfwSwapBuffers}
 by default calls \textbf{glfwPollEvents}\footnote{This behavior can be disabled
 by calling \textbf{glfwDisable} with the argument GLFW\_AUTO\_POLL\_EVENTS.}.
 This is to ensure frequent polling of events, such as keyboard and mouse input,
-and window reshaping events.
+and window reshaping events.  Even if a given application does not use input
+events, without frequent polling of events (at \emph{least} once every few
+seconds), most modern window systems will flag the application as unresponsive
+and may suggest that the user terminate it.
 
 Sometimes it can be useful to select when the buffer swap will occur. With
 the function \textbf{glfwSwapInterval} it is possible to select the
@@ -574,11 +577,12 @@ when it is not desirable to measure the time it takes to wait for the
 vertical retrace. However, a swap interval of 1 generally gives better
 visual quality.
 
-It should be noted that not all \OpenGL\ implementations and hardware
-support this function, in which case \textbf{glfwSwapInterval} will have
-no effect. Sometimes it is only possible to affect the swap interval
-through driver settings (e.g. the display settings under Windows, or as an
-environment variable setting under Unix).
+It should be noted that not all \OpenGL\ implementations and hardware support
+this function, in which case \textbf{glfwSwapInterval} will have no effect.  ATI
+Radeon cards under Microsoft Windows are especially notorious in this regard.
+Sometimes it is only possible to affect the swap interval through driver
+settings (e.g.  the display settings under Windows, or as an environment
+variable setting under Unix).
 
 
 %-------------------------------------------------------------------------
@@ -655,9 +659,11 @@ for you). Normally this is not a cause for concern, as
 enough (about 10-100 times per second for a normal \OpenGL\ application) that
 the window will feel responsive.
 
-One exception is when an application is rendering only in response to input.
+One exception is when an application is updating its view only in response to input.
 In this case the \textbf{glfwWaitEvents} is useful, as it blocks the calling
-thread until an event arrives.
+thread until an event arrives.  The refresh callback, set with
+\textbf{glfwSetWindowRefreshCallback}, may also be useful for such
+applications, especially on unbuffered window systems.
 
 If it is not desirable that \textbf{glfwPollEvents is} called implicitly
 from \textbf{glfwSwapBuffers}, call \textbf{glfwDisable} with the argument
@@ -715,8 +721,8 @@ glfwEnable( GLFW_STICKY_KEYS );
 When sticky keys are enabled, a key will not be released until it is
 checked with \textbf{glfwGetKey}. To disable sticky keys, call
 \textbf{glfwDisable} witht the argument GLFW\_STICKY\_KEYS. Then all keys
-that are not currently held down will be released, and future key releases
-will take place immediately when the user releases the key, without
+that are not currently held down will be released and future key releases
+will take place immediately when the user releases the key without
 waiting for \textbf{glfwGetKey} to check the key. By default sticky keys
 are disabled.
 
@@ -732,8 +738,8 @@ recording many key presses in the first section that will be detected in
 the second section. To avoid this problem, always disable sticky keys
 before leaving a section of a program.
 
-An alternative to using \textbf{glfwGetKey} is to register a keyboard
-input callback function with \textbf{glfwSetKeyCallback}:
+A usually better alternative to using \textbf{glfwGetKey} is to register a
+keyboard input callback function with \textbf{glfwSetKeyCallback}:
 
 \begin{lstlisting}
 void glfwSetKeyCallback( GLFWkeyfun cbfun )
@@ -745,8 +751,10 @@ identifier, and the second is the new key state, which can be GLFW\_PRESS
 or GLFW\_RELEASE. To unregister a callback function, call
 \textbf{glfwSetKeyCallback} with \textit{fun} = NULL.
 
-A callback function can be useful in some situations. For instance it can
-replace multiple \textbf{glfwGetKey} calls with a switch/case statement.
+Using the callback function, you can be sure not to miss any key press or
+release events, regardless of how many may have occurred during the last frame.
+It also encourages event-based design, where the application responds only to
+actual events instead of having to poll for every supported event.
 
 %-------------------------------------------------------------------------
 \subsection{Character input}
@@ -761,7 +769,7 @@ void glfwSetCharCallback( GLFWcharfun cbfun )
 
 The argument \textit{fun} is a pointer to a callback function. The
 callback function shall take two integer arguments. The first is a Unicode
-character code, and the second is  GLFW\_PRESS if the key that generated
+code point, and the second is  GLFW\_PRESS if the key that generated
 the character was pressed, or GLFW\_RELEASE if it was released. To
 unregister a callback function, call \textbf{glfwSetCharCallback} with
 \textit{fun} = NULL.
@@ -818,16 +826,17 @@ polling or callback functions.
 
 %-------------------------------------------------------------------------
 \subsection{Mouse position}
-To read the mouse position, you can use the function
-\textbf{glfwGetMousePos}:
+To query the position of the mouse cursor, call \textbf{glfwGetMousePos}:
 
 \begin{lstlisting}
 void glfwGetMousePos( int *x, int *y )
 \end{lstlisting}
 
-The arguments \textit{x} and \textit{y} point to integer variables that
-will be updated with the current absolute mouse position. An alternative
-is to use a callback function instead, which can be set with
+The variables pointed to by \textit{x} and \textit{y} will be updated with the
+current position of the mouse cursor relative to the upper-left corner of the
+client area of the \GLFW\ window.
+
+An alternative is to use a callback function, which can be set with
 \textbf{glfwSetMousePosCallback}:
 
 \begin{lstlisting}
@@ -835,8 +844,13 @@ void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
 \end{lstlisting}
 
 The function that \textit{fun} points to will be called every time the
-mouse position changes. The first argument to the callback function is
-the mouse x position, and the second argument is the mouse y position.
+mouse cursor moves.  The first argument to the callback function is
+the cursor x-coordinate and the second the cursor y-coordinate, both relative
+to the upper-left corner of the client area of the \GLFW\ window.
+
+Note that while the \textbf{glfwGetMousePos} function only reports the final
+position after cursor movement events have been processed, using a callback
+function lets the application see each and every such event.
 
 
 %-------------------------------------------------------------------------
@@ -847,24 +861,24 @@ To query the state of a mouse button, call \textbf{glfwGetMouseButton}:
 int glfwGetMouseButton( int button )
 \end{lstlisting}
 
-The argument \textit{button} can be one of the following mouse button
-identifiers: GLFW\_MOUSE\_BUTTON\_LEFT, GLFW\_MOUSE\_BUTTON\_RIGHT or
+The argument \textit{button} can be any \GLFW\ mouse button token, i.e.
+GLFW\_MOUSE\_BUTTON\_1 through GLFW\_MOUSE\_BUTTON\_8 or one of
+GLFW\_MOUSE\_BUTTON\_LEFT, GLFW\_MOUSE\_BUTTON\_RIGHT or
 GLFW\_MOUSE\_BUTTON\_MIDDLE. \textbf{glfwGetMouseButton} will return
-GLFW\_PRESS (which is a non-zero value) if the corresponding mouse
-button is held down, otherwise it will return GLFW\_RELEASE (which is
-equal to zero).
+GLFW\_PRESS (which is a non-zero value) if the corresponding mouse button is
+held down, otherwise it will return GLFW\_RELEASE (which is equal to zero).
 
-Just as it is possible to make keys ``sticky'', it is also possible to
-make mouse buttons appear as held down until the button is checked for
-with \textbf{glfwGetMouseButton}. To enable sticky mouse buttons, call
+Just as it is possible to make keys ``sticky'', it is also possible to make
+each mouse button appear as held down until it is checked with
+\textbf{glfwGetMouseButton}.  To enable sticky mouse buttons, call
 \textbf{glfwEnable} with the argument GLFW\_STICKY\_MOUSE\_BUTTONS.
 
 When sticky mouse buttons are enabled, a mouse button will not be released
 until it is checked with \textbf{glfwGetMouseButton}. To disable sticky
 mouse buttons, call \textbf{glfwDisable} with the argument
 GLFW\_STICKY\_MOUSE\_BUTTONS. Then all mouse buttons that are not
-currently held down will be released, and future mouse button releases
-will take place immediately when the user releases the mouse button,
+currently held down will be released and future mouse button releases
+will take place immediately when the user releases the mouse button
 without waiting for \textbf{glfwGetMouseButton} to check for the mouse
 button. By default sticky mouse buttons are disabled.
 
