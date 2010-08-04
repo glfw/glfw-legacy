@@ -103,7 +103,6 @@ to remedy this by providing the following functionality:
 \item Support for querying and using \OpenGL\ extensions.
 \item Basic Targa image loading support.
 \end{itemize}
-\vspace{18pt}
 
 All this functionality is implemented as a set of easy-to-use functions,
 which makes it possible to write an \OpenGL\ application framework in just a
@@ -114,12 +113,15 @@ a variety of platforms.
 Currently supported platforms are:
 \begin{itemize}
 \item Microsoft Windows\textsuperscript{\textregistered} (32-bit only).
-\item Unix\textsuperscript{\textregistered} or Unix­-like systems running the
-X Window System\texttrademark, e.g. Linux\textsuperscript{\textregistered},
-IRIX\textsuperscript{\textregistered}, FreeBSD\textsuperscript{\textregistered},
-Solaris\texttrademark, QNX\textsuperscript{\textregistered} and
-Mac OS\textsuperscript{\textregistered} X.
-\item Mac OS\textsuperscript{\textregistered} X, using Cocoa\footnote{Support for joysticks missing at the time of writing.}
+\item Unix\textsuperscript{\textregistered} or Unix­-like systems running
+resonably a modern version of the X Window
+System\texttrademark\footnote{X11.app on Mac OS X is not supported due to its
+incomplete implementation of GLXFBConfigs} e.g.
+Linux\textsuperscript{\textregistered},
+FreeBSD\textsuperscript{\textregistered} and Solaris\texttrademark (32- and
+64-bit).
+\item Mac OS\textsuperscript{\textregistered} X, using Cocoa\footnote{Joystick
+input is not yet supported on Mac OS X.} (32- and 64-bit).
 \end{itemize}
 
 
