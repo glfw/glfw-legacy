@@ -3082,6 +3082,16 @@ number of logical processors.
 \chapter{GLFW Standards Conformance}
 \thispagestyle{fancy}
 
+This chapter describes the various API extensions used by this version of
+\GLFW .  It lists what are essentially implementation details, but which are
+nonetheless vital knowledge for developers wishing to deploy their applications
+on machines with varied specifications.
+
+Note that the information in this appendix is not a part of the API
+specification but merely list some of the preconditions for certain parts of it
+to function on a given machine.  As such, any part of it may change in future
+versions without this being considered a breaking API change.
+
 %-------------------------------------------------------------------------
 \section{X11 Conformance}
 
@@ -3093,37 +3103,89 @@ conventions have been developed; most importantly the \textbf{Inter-Client
 Communication Conventions Manual} (ICCCM) and \textbf{Extended Window Manager
 Hints} (EWMH) standards.
 
+\GLFW\ uses the ICCCM \textbf{WM\_DELETE\_WINDOW} protocol to intercept the user
+attempting to close the \GLFW\ window.  If the running window manager does not
+support this protocol, the close callback will never be called.
+
+\GLFW\ uses the EWMH \textbf{\_NET\_WM\_PING} protocol, allowing the window
+manager notify the user when the application has stopped responding, i.e. when
+it has ceased to process events.  If the running window manager does not
+support this protocol, the user will not be notified if the application locks
+up.
+
+\GLFW\ uses the EWMH \textbf{\_NET\_WM\_STATE} protocol to tell the window
+manager to make the \GLFW\ window fullscreen.  If the running window manager
+does not support this protocol, fullscreen windows may not work properly.
+\GLFW\ has a fallback code path in case this protocol is unavailable, but every
+window manager behaves slightly differently in this regard.
+
 %-------------------------------------------------------------------------
 \section{GLX Extensions}
 
+The \textbf{GLX} API is used to create \OpenGL\ contexts on Unix-like systems
+using the X Window System.
+
 \GLFW\ uses the \textbf{GLXFBConfig} API to enumerate and select framebuffer
 pixel formats.  This requires either \textbf{GLX} 1.3 or greater, or the
-\textbf{GLX\_SGIX\_fbconfig} extension.  If both are available, the extension
-is preferred.
+\textbf{GLX\_SGIX\_fbconfig} extension.  Where both are available, the SGIX
+extension is preferred.  If neither is available, \GLFW\ will be unable to open
+windows.
+
+\GLFW\ uses the \textbf{GLX\_SGI\_swap\_control} extension to provide vertical
+retrace synchronization (or ``vsync'').  Where this extension is unavailable,
+calling \textbf{glfwSwapInterval} will have no effect.
+
+\GLFW\ uses the \textbf{GLX\_ARB\_multisample} extension to create contexts
+with multisampling anti-aliasing.  Where this extension is unavailable, the
+GLFW\_FSAA\_SAMPLES hint will have no effect.
 
 \GLFW\ uses the \textbf{GLX\_ARB\_create\_context} extension when available,
-even when creating OpenGL contexts of version 2.1 and below.  Where this
-extension is unsupported supported, the GLFW\_OPENGL\_VERSION\_MAJOR and
+even when creating \OpenGL\ contexts of version 2.1 and below.  Where this
+extension is unavailable, the GLFW\_OPENGL\_VERSION\_MAJOR and
 GLFW\_OPENGL\_VERSION\_MINOR hints will only be partially supported, the
 GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and changing the
 GLFW\_OPENGL\_PROFILE and GLFW\_FORWARD\_COMPAT hints will cause
 \textbf{glfwOpenWindow} to fail.
 
-\GLFW\ uses the \textbf{GLX\_ARB\_create\_context\_profile} extension when
-available, to provide support for context profile.  Where this extension is
-unsupported, setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will
-cause \textbf{glfwOpenWindow} to fail.
-
-\GLFW\ uses the \textbf{GLX\_SGI\_swap\_control} extension when available, to
-provide vertical retrace buffer swap sync or ``vsync''.  Where this extension
-is unsupported, calling \textbf{glfwSwapInterval} will have no effect.
-
-\GLFW\ uses the \textbf{GLX\_ARB\_multisample} extension when available, to
-create contexts with multisampling anti-aliasing.  Where this extension is
-unsupported, the GLFW\_FSAA\_SAMPLES hint will have no effect.
+\GLFW\ uses the \textbf{GLX\_ARB\_create\_context\_profile} extension to
+provide support for context profiles.  Where this extension is unavailable,
+setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will cause
+\textbf{glfwOpenWindow} to fail.
 
 %-------------------------------------------------------------------------
 \section{WGL Extensions}
+
+The \textbf{WGL} API is used to create \OpenGL\ contexts on Microsoft Windows
+and other implementations of the Win32 API, such as Wine.
+
+\GLFW\ uses either the \textbf{WGL\_EXT\_extension\_string} or the
+\textbf{WGL\_ARB\_extension\_string} extension to check for the presence of all
+other \textbf{WGL} extensions listed below.  If both are available, the EXT one
+is preferred.  If neither is available, no other extensions are used and many
+\GLFW\ features related to context creation will have no effect or cause errors
+when used.
+
+\GLFW\ uses the \textbf{WGL\_EXT\_swap\_control} extension to provide vertical
+retrace synchronization (or ``vsync'').  Where this extension is unavailable,
+calling \textbf{glfwSwapInterval} will have no effect.
+
+\GLFW\ uses the \textbf{WGL\_ARB\_pixel\_format} and
+\textbf{WGL\_ARB\_multisample} extensions to create contexts with multisampling
+anti-aliasing.  Where these extensions are unavailable, the GLFW\_FSAA\_SAMPLES
+hint will have no effect.
+
+\GLFW\ uses the \textbf{WGL\_ARB\_create\_context} extension when available,
+even when creating \OpenGL\ contexts of version 2.1 and below.  Where this
+extension is unavailable, the GLFW\_OPENGL\_VERSION\_MAJOR and
+GLFW\_OPENGL\_VERSION\_MINOR hints will only be partially supported, the
+GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and changing the
+GLFW\_OPENGL\_PROFILE and GLFW\_FORWARD\_COMPAT hints will cause
+\textbf{glfwOpenWindow} to fail.
+
+\GLFW\ uses the \textbf{WGL\_ARB\_create\_context\_profile} extension to
+provide support for context profiles.  Where this extension is unavailable,
+setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will cause
+\textbf{glfwOpenWindow} to fail.
 
 
 
