@@ -3075,4 +3075,56 @@ number of logical processors.
 \end{refnotes}
 
 
+%-------------------------------------------------------------------------
+% GLFW Standards Conformance
+%-------------------------------------------------------------------------
+\appendix
+\chapter{GLFW Standards Conformance}
+\thispagestyle{fancy}
+
+%-------------------------------------------------------------------------
+\section{X11 Conformance}
+
+As \GLFW\ uses \textbf{Xlib}, directly, without any intervening toolkit
+library, it has sole responsibility for interacting well with the many and
+varied window managers in use on Unix-like systems.  In order for applications
+and window managers to work well together, a number of standards and
+conventions have been developed; most importantly the \textbf{Inter-Client
+Communication Conventions Manual} (ICCCM) and \textbf{Extended Window Manager
+Hints} (EWMH) standards.
+
+%-------------------------------------------------------------------------
+\section{GLX Extensions}
+
+\GLFW\ uses the \textbf{GLXFBConfig} API to enumerate and select framebuffer
+pixel formats.  This requires either \textbf{GLX} 1.3 or greater, or the
+\textbf{GLX\_SGIX\_fbconfig} extension.  If both are available, the extension
+is preferred.
+
+\GLFW\ uses the \textbf{GLX\_ARB\_create\_context} extension when available,
+even when creating OpenGL contexts of version 2.1 and below.  Where this
+extension is unsupported supported, the GLFW\_OPENGL\_VERSION\_MAJOR and
+GLFW\_OPENGL\_VERSION\_MINOR hints will only be partially supported, the
+GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and changing the
+GLFW\_OPENGL\_PROFILE and GLFW\_FORWARD\_COMPAT hints will cause
+\textbf{glfwOpenWindow} to fail.
+
+\GLFW\ uses the \textbf{GLX\_ARB\_create\_context\_profile} extension when
+available, to provide support for context profile.  Where this extension is
+unsupported, setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will
+cause \textbf{glfwOpenWindow} to fail.
+
+\GLFW\ uses the \textbf{GLX\_SGI\_swap\_control} extension when available, to
+provide vertical retrace buffer swap sync or ``vsync''.  Where this extension
+is unsupported, calling \textbf{glfwSwapInterval} will have no effect.
+
+\GLFW\ uses the \textbf{GLX\_ARB\_multisample} extension when available, to
+create contexts with multisampling anti-aliasing.  Where this extension is
+unsupported, the GLFW\_FSAA\_SAMPLES hint will have no effect.
+
+%-------------------------------------------------------------------------
+\section{WGL Extensions}
+
+
+
 \end{document}
