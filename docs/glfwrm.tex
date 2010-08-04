@@ -3131,22 +3131,26 @@ pixel formats.  This requires either \textbf{GLX} 1.3 or greater, or the
 extension is preferred.  If neither is available, \GLFW\ will be unable to open
 windows.
 
+% This paragraph repeated almost verbatim below
 \GLFW\ uses the \textbf{GLX\_SGI\_swap\_control} extension to provide vertical
 retrace synchronization (or ``vsync'').  Where this extension is unavailable,
 calling \textbf{glfwSwapInterval} will have no effect.
 
+% This paragraph repeated almost verbatim below
 \GLFW\ uses the \textbf{GLX\_ARB\_multisample} extension to create contexts
 with multisampling anti-aliasing.  Where this extension is unavailable, the
 GLFW\_FSAA\_SAMPLES hint will have no effect.
 
+% This paragraph repeated almost verbatim below
 \GLFW\ uses the \textbf{GLX\_ARB\_create\_context} extension when available,
 even when creating \OpenGL\ contexts of version 2.1 and below.  Where this
 extension is unavailable, the GLFW\_OPENGL\_VERSION\_MAJOR and
 GLFW\_OPENGL\_VERSION\_MINOR hints will only be partially supported, the
-GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and changing the
-GLFW\_OPENGL\_PROFILE and GLFW\_FORWARD\_COMPAT hints will cause
-\textbf{glfwOpenWindow} to fail.
+GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and setting the
+GLFW\_OPENGL\_PROFILE or GLFW\_FORWARD\_COMPAT hints to a non-zero value will
+cause \textbf{glfwOpenWindow} to fail.
 
+% This paragraph repeated almost verbatim below
 \GLFW\ uses the \textbf{GLX\_ARB\_create\_context\_profile} extension to
 provide support for context profiles.  Where this extension is unavailable,
 setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will cause
@@ -3165,23 +3169,27 @@ is preferred.  If neither is available, no other extensions are used and many
 \GLFW\ features related to context creation will have no effect or cause errors
 when used.
 
+% This paragraph repeated almost verbatim above
 \GLFW\ uses the \textbf{WGL\_EXT\_swap\_control} extension to provide vertical
 retrace synchronization (or ``vsync'').  Where this extension is unavailable,
 calling \textbf{glfwSwapInterval} will have no effect.
 
+% This paragraph repeated almost verbatim above
 \GLFW\ uses the \textbf{WGL\_ARB\_pixel\_format} and
 \textbf{WGL\_ARB\_multisample} extensions to create contexts with multisampling
 anti-aliasing.  Where these extensions are unavailable, the GLFW\_FSAA\_SAMPLES
 hint will have no effect.
 
+% This paragraph repeated almost verbatim above
 \GLFW\ uses the \textbf{WGL\_ARB\_create\_context} extension when available,
 even when creating \OpenGL\ contexts of version 2.1 and below.  Where this
 extension is unavailable, the GLFW\_OPENGL\_VERSION\_MAJOR and
 GLFW\_OPENGL\_VERSION\_MINOR hints will only be partially supported, the
-GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and changing the
-GLFW\_OPENGL\_PROFILE and GLFW\_FORWARD\_COMPAT hints will cause
-\textbf{glfwOpenWindow} to fail.
+GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and setting the
+GLFW\_OPENGL\_PROFILE or GLFW\_FORWARD\_COMPAT hints to a non-zero value will
+cause \textbf{glfwOpenWindow} to fail.
 
+% This paragraph repeated almost verbatim above
 \GLFW\ uses the \textbf{WGL\_ARB\_create\_context\_profile} extension to
 provide support for context profiles.  Where this extension is unavailable,
 setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will cause
