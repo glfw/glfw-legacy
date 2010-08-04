@@ -898,9 +898,10 @@ depending on the new state of the corresponding mouse button.
 
 %-------------------------------------------------------------------------
 \subsection{Mouse wheel}
-Some mice have a mouse wheel, which can be thought of as a third mouse
-axis. To get the position of the mouse wheel, call
-\textbf{glfwGetMouseWheel}:
+Some mice have a mouse wheel, most commonly used for vertical scrolling.  Also,
+most modern touchpads allow the user to scroll at least vertically, either by
+reserving an area for scrolling or through multi-finger gestures. To get the
+position of the mouse wheel, call \textbf{glfwGetMouseWheel}:
 
 \begin{lstlisting}
 int glfwGetMouseWheel( void )
@@ -908,7 +909,8 @@ int glfwGetMouseWheel( void )
 
 The function returns an integer that represents the position of the mouse
 wheel. When the user turns the wheel, the wheel position will increase or
-decrease.
+decrease.  Note that since scrolling hardware has no absolute position, \GLFW\
+simply sets the position to zero when the window is opened.
 
 It is also possible to register a callback function for mouse wheel events
 with the \textbf{glfwSetMouseWheelCallback} function:
