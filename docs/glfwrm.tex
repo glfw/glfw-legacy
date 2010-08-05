@@ -423,6 +423,10 @@ icon is present, the \textbf{IDI\_WINLOGO} icon will be used instead.
 On Mac OS X the \GLFW\ window has no icon, but programs using \GLFW\ will use
 the application bundle's icon.  For more information on bundles, see the Bundle
 Programming Guide provided by Apple.
+
+For information on how the availability of different platform-specific
+extensions affect the behavior of this function, see appendix
+\ref{chap:compatibility}.
 \end{refnotes}
 
 
@@ -519,6 +523,9 @@ context is of a version lower than the one that was requested.
 At the time of release, the exact meaning of what a "debug context" is (as
 created using the GLFW\_OPENGL\_DEBUG\_CONTEXT hint) has yet to be defined by
 the Khronos ARB WG.
+
+For information on how the availability of different extensions affect the
+behavior of this function, see appendix \ref{chap:compatibility}.
 
 For full details on the workings of the \OpenGL\ version, forward-compatibility
 and debug hints, see the specifications for \textbf{WGL\_ARB\_create\_context}
@@ -3079,7 +3086,8 @@ number of logical processors.
 % GLFW Standards Conformance
 %-------------------------------------------------------------------------
 \appendix
-\chapter{GLFW Standards Conformance}
+\chapter{GLFW Compatibility}
+\label{chap:compatibility}
 \thispagestyle{fancy}
 
 This chapter describes the various API extensions used by this version of
@@ -3088,12 +3096,12 @@ nonetheless vital knowledge for developers wishing to deploy their applications
 on machines with varied specifications.
 
 Note that the information in this appendix is not a part of the API
-specification but merely list some of the preconditions for certain parts of it
-to function on a given machine.  As such, any part of it may change in future
-versions without this being considered a breaking API change.
+specification but merely list some of the preconditions for certain parts of
+the API to function on a given machine.  As such, any part of it may change in
+future versions without this being considered a breaking API change.
 
 %-------------------------------------------------------------------------
-\section{X11 Conformance}
+\section{ICCCM and EWMH Conformance}
 
 As \GLFW\ uses \textbf{Xlib}, directly, without any intervening toolkit
 library, it has sole responsibility for interacting well with the many and
