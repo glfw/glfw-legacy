@@ -964,7 +964,7 @@ have to be called in order for joystick state to be updated.
 
 %-------------------------------------------------------------------------
 \subsection{Joystick capabilities}
-First, it is often necessary to determine if a joystick is connected, and
+First, it is often necessary to determine if a joystick is connected and
 what its capabilities are. To get this information the function
 \textbf{glfwGetJoystickParam} can be used:
 
@@ -982,6 +982,10 @@ To determine the number of axes or buttons that are supported by the
 joystick, \textit{param} should be GLFW\_AXES or GLFW\_BUTTONS,
 respectively.
 
+Note that \GLFW\ supports both D-pads and POVs, even though they are not
+explicitly mentioned in the API.  D-pads are exposed as a set of four buttons
+and POVs are as two axes.
+
 
 %-------------------------------------------------------------------------
 \subsection{Joystick position}
@@ -994,8 +998,8 @@ int glfwGetJoystickPos( int joy, float *pos, int numaxes )
 
 As with \textbf{glfwGetJoystickParam}, the \textit{joy} argument
 specifies which joystick to retrieve information from. The
-\textit{numaxes} argument specifies how many axes to return, and the
-\textit{pos} argument specifies an array in which all the axis positions
+\textit{numaxes} argument specifies how many axes to return positions for and the
+\textit{pos} argument specifies an array in which they
 are stored. The function returns the actual number of axes that were
 returned, which could be less than \textit{numaxes} if the joystick does
 not support all the requested axes, or if the joystick is not connected.
@@ -1033,12 +1037,12 @@ int glfwGetJoystickButtons( int joy, unsigned char *buttons,
                             int numbuttons )
 \end{lstlisting}
 
-The function works just like the \textbf{glfwGetJoystickAxis} function,
-except that it returns the state of joystick buttons instead of axis
-positions. Each button in the array specified by the \textit{buttons}
-argument can be either GLFW\_PRESS or GLFW\_RELEASE, telling if the
-corresponding button is currently held down or not. Unsupported buttons
-will have the value GLFW\_RELEASE.
+The function works just like the \textbf{glfwGetJoystickAxis} function, except
+that it returns the state of joystick buttons instead of axis positions. Each
+button in the array specified by the \textit{buttons} argument can be either
+GLFW\_PRESS or GLFW\_RELEASE, indicating whether the corresponding button is
+currently held down or not. Unsupported buttons will have the value
+GLFW\_RELEASE.
 
 
 %-------------------------------------------------------------------------
