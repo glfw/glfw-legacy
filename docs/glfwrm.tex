@@ -3107,9 +3107,9 @@ As \GLFW\ uses \textbf{Xlib}, directly, without any intervening toolkit
 library, it has sole responsibility for interacting well with the many and
 varied window managers in use on Unix-like systems.  In order for applications
 and window managers to work well together, a number of standards and
-conventions have been developed; most importantly the \textbf{Inter-Client
-Communication Conventions Manual} (ICCCM) and \textbf{Extended Window Manager
-Hints} (EWMH) standards.
+conventions have been developed that regulate behavior outside the scope of the
+X11 API; most importantly the \textbf{Inter-Client Communication Conventions
+Manual} (ICCCM) and \textbf{Extended Window Manager Hints} (EWMH) standards.
 
 \GLFW\ uses the ICCCM \textbf{WM\_DELETE\_WINDOW} protocol to intercept the user
 attempting to close the \GLFW\ window.  If the running window manager does not
