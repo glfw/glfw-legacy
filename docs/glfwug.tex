@@ -1246,8 +1246,8 @@ An extension is defined by:
 \end{enumerate}
 
 A list of official extensions, together with their definitions, can be
-found at the \textit{OpenGL Extension Registry}
-(\url{http://oss.sgi.com/projects/ogl-sample/registry/}).
+found at the \textit{OpenGL Registry}
+(\url{http://www.opengl.org/registry/}).
 
 To use a certain extension, the following steps must be performed:
 
@@ -1261,6 +1261,12 @@ To use a certain extension, the following steps must be performed:
 How this is done using \GLFW\ is described in the following sections.
 Please note that this chapter covers some advanced topics, and is quite
 specific to the C programming language.
+
+For a much easier way to get access to \OpenGL\ extensions, you should probably
+use a dedicated extension loading library such as GLEW or GLee.  This kind of
+library greatly reduces the amount of work necessary to use \OpenGL\
+extensions.  GLEW in particular has been extensively tested with and works well
+with \GLFW .
 
 
 %-------------------------------------------------------------------------
@@ -1276,25 +1282,25 @@ is an example of how to check for the extension GL\_ARB\_multitexture:
     // Extension is supported by the include files
 #else
     // Extension is not supported by the include files
-    // Update your <GL/gl.h> file!
+    // Get a more up-to-date <GL/gl.h> file!
 #endif
 \end{lstlisting}
 
 
 %-------------------------------------------------------------------------
 \section{Runtime Check}
-Even if the compiler include files have defined all the necessary tokens,
-the target system may not support the extension (perhaps it has a
-different graphic card with a different \OpenGL\ implementation, or it has
-an older driver). That is why it is necessary to do a run time check for
-the extension support as well. This is done with the \GLFW\ function
-\textbf{glfwExtensionSupported}, which has the C syntax:
+Even if the compiler include files have defined all the necessary tokens, a
+given machine may not actually support the extension (it may have a graphics
+card with a different \OpenGL\ implementation, or an older driver). That is why
+it is necessary to do a run time check for the extension support as well. This
+is done with the \GLFW\ function \textbf{glfwExtensionSupported}, which has the
+C syntax:
 
 \begin{lstlisting}
 int glfwExtensionSupported( const char *extension )
 \end{lstlisting}
 
-The argument \textit{extension} is a null terminated ISO~8859-1 string
+The argument \textit{extension} is a null terminated ASCII string
 with the extension name. \textbf{glfwExtensionSupported} returns GL\_TRUE
 if the extension is supported, otherwise it returns GL\_FALSE.
 
@@ -1312,7 +1318,7 @@ int multitexture_supported;
         glfwExtensionSupported( "GL_ARB_multitexture" );
 #else
     // Extension is not supported by the include files
-    // Update your <GL/gl.h> file!
+    // Get a more up-to-date <GL/gl.h> file!
     multitexture_supported = GL_FALSE;
 #endif
 \end{lstlisting}
@@ -1333,16 +1339,16 @@ Now it is easy to check for the extension within the program, simply do:
 
 %-------------------------------------------------------------------------
 \section{Fetching Function Pointers}
-Some extensions (not all) require the use of new \OpenGL\ functions, which
-are not necessarily defined by your link libraries. Thus it is necessary
-to get the function pointers dynamically at run time. This is done with
-the \GLFW\ function \textbf{glfwGetProcAddress}:
+Some extensions, though not all, require the use of new \OpenGL\ functions.
+These entry points are not necessarily exposed by your link libraries, making
+it necessary to find them dynamically at run time.  You can retrieve these
+entry points using the \textbf{glfwGetProcAddress} function:
 
 \begin{lstlisting}
 void * glfwGetProcAddress( const char *procname )
 \end{lstlisting}
 
-The argument \textit{procname} is a null terminated ISO~8859-1 string
+The argument \textit{procname} is a null terminated ASCII string
 holding the name of the \OpenGL\ function. \textbf{glfwGetProcAddress}
 returns the address to the function if the function is available,
 otherwise NULL is returned.
@@ -1360,21 +1366,20 @@ errors. My proposed solution is the following:
 
 \begin{itemize}
 \item Do not use the function name for the variable name. Use something
-      similar (perhaps with a prefix or suffix), and then use
+      similar, perhaps by adding a prefix or suffix, and then use
       \texttt{\#define} to map the function name to your variable.
 \item The standard type definition naming convention for function pointers
       is \texttt{PFN\textit{xxxx}PROC}, where \texttt{\textit{xxxx}} is
       the uppercase version of the function name (e.g.
-      \texttt{PFNGLACTIVETEXTUREARBPROC}). Either make sure that a
-      compatible \texttt{gl.h} and/or \texttt{glext.h} file is used by
-      your compiler and rely on it to do the type definitions for you, or
-      use a custom type definition naming convention (e.g.
-      \texttt{\textit{xxxx}\_T} or something) and do the type definitions
-      yourself.
+      \texttt{PFNGLACTIVETEXTUREARBPROC}). Either make sure your compiler uses
+      a compatible \texttt{gl.h} and/or \texttt{glext.h} file and rely on it to
+      define these types, or use define the types yourself using a different
+      naming convention (for example  \texttt{\textit{xxxx}\_T}) and do the
+      type definitions yourself.
 \end{itemize}
 
-Here is an example of how to do it (here we use our own function pointer
-type defintion):
+Here is a slightly longer example of how to use an extension, this time using
+our own function pointer type definition):
 
 \begin{lstlisting}
 // Type definition of the function pointer
@@ -1407,27 +1412,25 @@ int multitexture_supported;
 #endif
 \end{lstlisting}
 
-Please note that the code example is not 100\% complete. First of all,
-the GL\_ARB\_multitexture extension defines many more functions than the
-single function that the code example defines. Secondly, checking if an
-extension is supported using \textbf{glfwExtensionSupported} is not enough
-to ensure that the corresponding functions will be valid. You also need to
-check if the function pointers returned by \textbf{glfwGetProcAddress} are
-non-NULL values.
+Even this example leaves some things to be desired. First of all, the
+GL\_ARB\_multitexture extension defines many more functions than the single
+function used above.  Secondly, checking if an extension is supported using
+\textbf{glfwExtensionSupported} is not enough to ensure that the corresponding
+functions will be valid.  You also need to check that the all function pointers
+returned by \textbf{glfwGetProcAddress} are non-NULL.
 
 
 %-------------------------------------------------------------------------
 \subsection{Function pointer type definitions}
 To make a function pointer type definition, you need to know the function
 prototype. This can often be found in the extension definitions (e.g. at
-the \textit{OpenGL Extension Registry}). All the functions that are
-defined for an extension are listed with their C prototype definitions
-under the section \textit{New Procedures and Functions} in the extension
-definition.
+the \textit{OpenGL Registry}).  All the entry points that are defined by an
+extension are listed with their C prototype definitions under the section
+\textit{New Procedures and Functions} in the extension definition.
 
 For instance, if we look at the definition of the
 GL\_ARB\_texture\_compression extension, we find a list of new functions.
-One of the functions looks like this:
+One of these is declared like this:
 
 \begin{lstlisting}
 void GetCompressedTexImageARB(enum target, int lod, void *img);
@@ -1446,9 +1449,8 @@ pointer type definition, is to replace the function name with
 \texttt{(APIENTRY * \textit{xxxx}\_T)}, where \textit{xxxx} is the
 uppercase version of the name (according to the proposed naming
 convention). The keyword \texttt{APIENTRY} is needed to be compatible
-between different platforms. The \GLFW\ include file \texttt{GL/glfw.h}
-always makes sure that \texttt{APIENTRY} is properly defined, regardless
-of which platform the program is compiled on.
+between different platforms. The \GLFW\ header file \texttt{GL/glfw.h}
+ensures that \texttt{APIENTRY} is properly defined on all supported platforms.
 
 In other words, for the function \textbf{glGetCompressedTexImageARB} we
 get:
