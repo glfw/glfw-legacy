@@ -360,7 +360,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 
 - (void)flagsChanged:(NSEvent *)event
 {
-    unsigned int newModifierFlags = [event modifierFlags];
+    unsigned int newModifierFlags = [event modifierFlags] | NSDeviceIndependentModifierFlagsMask;
     int mode;
 
     if( newModifierFlags > _glfwWin.modifierFlags )

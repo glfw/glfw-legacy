@@ -33,6 +33,28 @@
 
 #include "internal.h"
 
+@interface GLFWApplication : NSApplication
+@end
+
+@implementation GLFWApplication
+
+// From http://cocoadev.com/index.pl?GameKeyboardHandlingAlmost
+// This works around an AppKit bug, where key up events while holding
+// down the command key don't get sent to the key window.
+- (void)sendEvent:(NSEvent *)event
+{
+    if( [event type] == NSKeyUp && ( [event modifierFlags] & NSCommandKeyMask ) )
+    {
+        [[self keyWindow] sendEvent:event];
+    }
+    else
+    {
+        [super sendEvent:event];
+    }
+}
+
+@end
+
 // Prior to Snow Leopard, we need to use this oddly-named semi-private API
 // to get the application menu working properly.  Need to be careful in
 // case it goes away in a future OS update.
@@ -196,7 +218,7 @@ int _glfwPlatformInit( void )
     _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 
     // Implicitly create shared NSApplication instance
-    [NSApplication sharedApplication];
+    [GLFWApplication sharedApplication];
 
     NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
 
