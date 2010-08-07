@@ -394,10 +394,10 @@ static int translateChar( XKeyEvent *event )
 
 
 //========================================================================
-// Get next X event (called by glfwPollEvents)
+// Get and process next X event (called by glfwPollEvents)
 //========================================================================
 
-static int getNextEvent( void )
+static int processSingleEvent( void )
 {
     XEvent event, next_event;
 
@@ -1768,7 +1768,7 @@ void _glfwPlatformPollEvents( void )
     // Empty the window event queue
     while( XPending( _glfwLibrary.display ) )
     {
-        if( getNextEvent() )
+        if( processSingleEvent() )
         {
             winclosed = GL_TRUE;
         }
