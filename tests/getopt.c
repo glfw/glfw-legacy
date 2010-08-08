@@ -40,7 +40,7 @@
 #include "getopt.h"
 
 
-/* 2009-10-12 Camilla Berglund <elmindreda@users.sourceforge.net>
+/* 2009-10-12 Camilla Berglund <elmindreda@elmindreda.org>
  *
  * Removed unused global static variable 'ID'.
  */
