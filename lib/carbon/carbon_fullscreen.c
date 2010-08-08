@@ -3,7 +3,7 @@
 // File:        macosx_fullscreen.c
 // Platform:    Mac OS X
 // API Version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
 //

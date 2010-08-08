@@ -2,7 +2,7 @@
 // GLFW - An OpenGL framework
 // File:        glfw.d
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2005 Camilla Berglund
 //

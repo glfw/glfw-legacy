@@ -667,7 +667,7 @@ includedir=@PREFIX@/include
 Name: GLFW
 Description: A portable framework for OpenGL development
 Version: 2.7
-URL: http://glfw.sourceforge.net/
+URL: http://www.glfw.org/
 Libs: -L\${libdir} -lglfw $GLFW_LFLAGS $LIBS -lm
 Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF

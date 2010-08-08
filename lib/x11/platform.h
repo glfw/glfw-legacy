@@ -3,7 +3,7 @@
 // File:        platform.h
 // Platform:    X11 (Unix)
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Camilla Berglund
 //
