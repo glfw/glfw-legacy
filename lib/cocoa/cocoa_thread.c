@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_thread.c
 // Platform:    Cocoa/NSOpenGL
 // API Version: 2.7
 // WWW:         http://www.glfw.org/

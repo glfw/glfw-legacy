@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        platform.h
 // Platform:    Cocoa/NSOpenGL
 // API Version: 2.7
 // WWW:         http://www.glfw.org/

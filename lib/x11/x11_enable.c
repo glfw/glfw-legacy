@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        x11_enable.c
 // Platform:    X11 (Unix)
 // API version: 2.7
 // WWW:         http://www.glfw.org/

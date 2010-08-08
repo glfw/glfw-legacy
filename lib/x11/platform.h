@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        platform.h
 // Platform:    X11/GLX
 // API version: 2.7
 // WWW:         http://www.glfw.org/

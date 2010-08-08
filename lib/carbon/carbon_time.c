@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_time.c
 // Platform:    Carbon/AGL/CGL
 // API Version: 2.7
 // WWW:         http://www.glfw.org/

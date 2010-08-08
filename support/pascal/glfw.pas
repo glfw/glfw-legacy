@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        glfw.pas
 // Platform:    Delphi/FPC + Windows/Linux/Mac OS
 // API version: 2.7
 // WWW:         http://www.glfw.org/

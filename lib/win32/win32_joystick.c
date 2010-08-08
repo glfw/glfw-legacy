@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        win32_joystick.c
 // Platform:    Win32/WGL
 // API version: 2.7
 // WWW:         http://www.glfw.org/

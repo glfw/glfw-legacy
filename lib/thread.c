@@ -1,6 +1,5 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        thread.c
 // Platform:    Any
 // API version: 2.7
 // WWW:         http://www.glfw.org/
