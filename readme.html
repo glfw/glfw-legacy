@@ -8,54 +8,52 @@
 <h1>GLFW 2.7 source distribution</h1>
 
 <ol>
- <li><a href="#sec1">Introduction</a></li>
- <li><a href="#sec2">Compiling GLFW and the example programs</a></li>
- <li><a href="#sec3">Installing GLFW</a></li>
- <li><a href="#sec4">Using GLFW</a></li>
- <li><a href="#sec5">Version history</a></li>
- <li><a href="#sec6">Directory structure of the GLFW distribution</a></li>
- <li><a href="#sec7">Contacting the project</a></li>
- <li><a href="#sec8">Acknowledgements</a></li>
+ <li><a href="#intro">Introduction</a></li>
+ <li><a href="#compiling">Compiling GLFW and the example programs</a></li>
+ <li><a href="#installing">Installing GLFW</a></li>
+ <li><a href="#using">Using GLFW</a></li>
+ <li><a href="#changelog">Version history</a></li>
+ <li><a href="#structure">Directory structure of the GLFW distribution</a></li>
+ <li><a href="#contact">Contacting the project</a></li>
+ <li><a href="#credits">Acknowledgements</a></li>
 </ol>
 
-<p><hr>
-
-<a name="sec1">
+<a name="intro">
 <h2>1. Introduction</h2>
 
 <p>Welcome to version 2.7 of the GLFW OpenGL framework, codenamed "Godot". GLFW
 is a free, open source, portable framework for OpenGL application development.
-In short, it is a library that constitutes a powerful API for handling
-operating system specific tasks, such as opening an OpenGL window, reading
-keyboard and mouse input, creating threads, and much more.</p>
+In short, it is a library that provides a powerful API for handling operating
+system specific tasks, such as opening an OpenGL window, reading keyboard,
+mouse, joystick and time input, creating threads, and more.</p>
 
-<p>This is expected to be the last major release of the 2.x series and most
-development will take place in the 3.0 branch from now on.  Requests for
-additional features in the 2.x branch will be denied.</p>
+<p>This is expected to be the last major release of the 2.x series, with the
+expectation being that most development will take place in the 3.0 branch.</p>
 
-<p>The only major feature added in this release is support for OpenGL 3.0 and
-above.  Note that as Mac OS X does not yet support OpenGL 3.0, attempts to
-create such a context on that system will fail.</p>
+<p>only major additions in this release is support for creating OpenGL contexts
+of version 3.0 and above, and a new Cocoa port for Mac OS X 10.5 and above.
+Note that as Mac OS X does not yet support OpenGL 3.0, attempts to create such
+a context on that system will fail.</p>
 
-<p><hr>
-
-<a name="sec2">
+<a name="compiling">
 <h2>2. Compiling GLFW and the example programs</h2>
 
 <p>A top level makefile can be found in the root directory of the GLFW
 distribution that has been designed to work with several compilers. If you
-simply enter the GLFW root directory in a shell and type <b>make</b> (or
-<b>nmake</b> or <b>gmake</b>, depending on the name of your make tool), and a
-list should appear with the currently supported options for systems and
-compilers.</p>
+simply enter the GLFW root directory in a shell and type <code>make</code> (or
+<code>nmake</code> or <code>gmake</code>, depending on the name of your make
+tool), and a list should appear with the currently supported options for
+systems and compilers.</p>
 
 <p>For example, one of the options is to compile GLFW for Windows with the
-LCC-Win32 C compiler. To do that, type <b>make win32-lcc</b> in the shell (as
-specified in the previously mentioned list). That will compile the GLFW static
-link library and the supplied example programs. For Windows compilers, a Win32
-DLL will also be compiled.</p>
+LCC-Win32 C compiler, i.e.:</p>
 
-<p>Currently supported compilers and systems are:
+<blockquote><code>make win32-lcc</code></blockquote>
+
+<p>That will compile the GLFW static link library and the supplied example
+programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
+
+<p>Currently supported compilers and systems are:</p>
 
 <ol>
   <li>Microsoft Visual C++ 9.0 and above</li>
@@ -69,12 +67,12 @@ DLL will also be compiled.</p>
 </ol>
 
 <p>There are also project files available for Microsoft Visual C++ 9.0 in the
-<b>support/msvc90</b> directory.</p>
+<code>support/msvc90</code> directory.</p>
 
 <p>If your compiler/system is not in the list, you may have to create new
-makefiles in the <b>lib\win32</b>, <b>lib/x11</b> or <b>lib/cocoa</b>
-directory, and in the <b>examples</b> directory. If you have any problems,
-please use our support forum and bug tracker on
+makefiles in the <code>lib\win32</code>, <code>lib/x11</code> or
+<code>lib/cocoa</code> directory, and in the <code>examples</code> directory.
+If you have any problems, please use our support forum and bug tracker on
 <a href="http://sourceforge.net/projects/glfw/">SourceForge.net</a>. We would
 like to support as many systems as possible, so if you had to make any
 modifications or additions to the source and/or makefiles in order to make GLFW
@@ -92,8 +90,8 @@ functions correctly and code calling the DLL will be incorrectly generated.</p>
 <h4>2.1.1 Microsoft Visual C++ 9.0 and above</h4>
 
 <p>Project files for both the static and dynamic versions of the GLFW library
-are provided in the <b>support/msvc90</b> directory, as well as project files
-for all example and test programs.</p>
+are provided in the <code>support/msvc90</code> directory, as well as project
+files for all example and test programs.</p>
 
 
 <h4>2.1.2 MSYS or Cygwin on Windows</h4>
@@ -107,22 +105,25 @@ the <code>win32-cygwin</code> target.</p>
 
 <h4>2.1.3 Bare MinGW on Windows</h4>
 
-<p>This uses only the stock MinGW installation and uses the Windows command
+<p>GLFW can be compiled using only barebone MinGW, using the Windows command
 line environment for file management.  Open a regular command prompt, enter the
-GLFW root directory and run the MinGW make program with the
-<code>win32-mingw</code> target.</p>
+GLFW root directory and run the MinGW make program <code>mingw32-make</code>
+with the <code>win32-mingw</code> target.</p>
 
 
 <h4>2.1.4 OpenWatcom on Windows</h4>
 
-<p>In order to compile GLFW successfully with OpenWatcom (for Windows),
-execute <code>nmake MAKE=nmake win32-ow</code> in the GLFW root directory. Also
-make sure that you have all your environment variables set up correctly. It is
-the default option when installing OpenWatcom to permanently set up all the
-required environment variables. If nmake does not work, you probably have to
-run <code>WATCOM\setvars.bat</code> from the command prompt before executing
-nmake, where WATCOM is the directory in which you installed OpenWatcom (e.g.
-C:\Watcom).</p>
+<p>GLFW can be compiled using OpenWatcom for Windows by running the following
+in the GLFW root directory:</p>
+
+<blockquote><code>nmake MAKE=nmake win32-ow</code></blockquote>
+
+<p>Also make sure that you have all your environment variables set up
+correctly.  It is the default option when installing OpenWatcom to permanently
+set up all the required environment variables.  If <code>nmake</code> is
+unavailable, you probably have to run <code>WATCOM\setvars.bat</code> from the
+command prompt first, where WATCOM is the directory in which you installed
+OpenWatcom (e.g. <code>C:\Watcom</code>).</p>
 
 
 <h4>2.1.5 MinGW cross-compilation for Unix or Unix-like systems</h4>
@@ -138,12 +139,12 @@ are also regularly tested with Wine.</p>
 <h3>2.2 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <b>compile.sh</b>.  Note that you don't need to run this script
+called <code>compile.sh</code>.  Note that you don't need to run this script
 yourself, as it is run automatically when necessary.  It has been tested under
-Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others, but should
+Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others and should
 hopefully run on the majority of available Unix-like systems and generate
 functional Makefiles.  You do not have to run the script manually, since it is
-called from the top level Makefile.</p>
+called from the top-level makefile.</p>
 
 <p>If you wish to customize the compilation or link flags for GLFW, set the
 <code>CFLAGS</code> or <code>LFLAGS</code> environment variables as needed
@@ -155,7 +156,8 @@ variable before building the library.  This will also be stored in the
 generated <code>Makefile.x11</code> files.</p>
 
 <p>If you have already configured your source tree, you can reset it to an
-un-configured state with the <code>x11-dist-clean</code> make target.</p>
+un-configured state by running make with the <code>x11-dist-clean</code>
+target.</p>
 
 <p>If you are making your own build setup for GLFW, you need to be aware of the
 various preprocessor symbols that the bundled makefiles use to enable various
@@ -230,12 +232,16 @@ Tools.  A version of these tools can be found on your Mac OS X disc, with newer
 versions available from the Apple Developer Connection site.  When they are
 installed, simply open Terminal and go to the root GLFW directory.  From there,
 you can build the library and all the examples by running make with the
-appropriate target, i.e. <b>make cocoa</b>.</p>
+appropriate target, i.e.:</p>
+
+<blockquote><code>make cocoa</code></blockquote>
 
 <p>The default compiler for the Cocoa port of GLFW is <code>cc</code>, which as
 of Mac OS X 10.6 still defaults to GCC, but you can override this using the
-<code>CC</code> environment variable.  For example, you can do <code>env
-CC=clang make cocoa</code> to build GLFW using Clang.</p>
+<code>CC</code> environment variable.  For example, to build GLFW using Clang,
+use:</p>
+
+<blockquote><code>env CC=clang make cocoa</code></blockquote>
 
 <p>There is also a deprecated Carbon port of GLFW, which is limited to
 32-bit code and only runs well on Mac OS X 10.3 and 10.4.  However, if you
@@ -243,53 +249,52 @@ need to build applications for those systems, it is a better choice than
 the Cocoa port, which uses APIs unavailable on systems older than 10.5.</p>
 
 
-
-<p><hr>
-
-<a name="sec3">
+<a name="installing">
 <h2>3. Installing GLFW</h2>
 
 <h3>3.1 Windows</h3>
 
 <p>After compiling GLFW with MinGW or Cygwin, three files of interest should
-have appeared in the <b>lib\win32</b> directory. They are: <b>libglfw.a</b>
-(the static link version of GLFW), <b>glfw.dll</b> (the DLL version of GLFW)
-and <b>libglfwdll.a</b> (the DLL import library).</p>
+have appeared in the <code>lib\win32</code> directory. They are:
+<code>libglfw.a</code> (the static link version of GLFW), <code>glfw.dll</code>
+(the DLL version of GLFW) and <code>libglfwdll.a</code> (the DLL import
+library).</p>
 
 <p>To install GLFW on Cygwin (and possibly MinGW), run make with the
-<b>cygwin-install</b> target.  This will generate the pkgconfig file and copy
-it, the header file and the library to the correct locations of your Cygwin
-installation. If you wish to change the installation location from its default,
-set the desired prefix path with the environment variable <b>PREFIX</b>.</p>
+<code>cygwin-install</code> target.  This will generate the pkgconfig file and
+copy it, the header file and the library to the correct locations of your
+Cygwin installation. If you wish to change the installation location from its
+default, set the desired prefix path with the environment variable
+<code>PREFIX</code>.</p>
 
 <p>If you used Borland C++ Builder, LCC-Win32, Microsoft Visual C++ or
-OpenWatcom, the files are named <b>glfw.lib</b> (the static link version of
-GLFW), <b>glfw.dll</b> (the DLL version of GLFW) and <b>glfwdll.lib</b> (the
-DLL import library).</p>
+OpenWatcom, the files are named <code>glfw.lib</code> (the static link version
+of GLFW), <code>glfw.dll</code> (the DLL version of GLFW) and
+<code>glfwdll.lib</code> (the DLL import library).</p>
 
 <p>The static link library and the DLL import library should be copied to your
-compiler's <b>LIB</b> directory (where all other link libraries are located).
-The DLL can be copied either to your Windows system directory (where
+compiler's <code>LIB</code> directory (where all other link libraries are
+located).  The DLL can be copied either to your Windows system directory (where
 opengl32.dll is located), or to the project directory of your GLFW-based
-projects (where you place your compiled EXEs).</p>
+projects (where you place your executable files).</p>
 
-<p>You should also copy the GLFW include file, <b>include\GL\glfw.h</b>, to the
-<b>GL</b> directory of your compiler's include directory (where gl.h, glu.h
-etc. are located).</p>
+<p>You should also copy the GLFW include file, <code>include\GL\glfw.h</code>,
+to the <code>GL</code> directory of your compiler's include directory (where
+<code>gl.h</code>, <code>glu.h</code> etc. are located).</p>
 
 
 <h3>3.2 Unix</h3>
 
-<p>After compiling GLFW, three files named <b>libglfw.pc.in</b>,
-<b>libglfw.a</b> and <b>libglfw.so</b> should have appeared in the
-<b>lib/x11</b> directory. This is the pkgconfig template file, the GLFW static
-link library and the GLFW shared library, respectively.</p>
+<p>After compiling GLFW, three files named <code>libglfw.pc.in</code>,
+<code>libglfw.a</code> and <code>libglfw.so</code> should have appeared in the
+<code>lib/x11</code> directory. This is the pkgconfig template file, the GLFW
+static link library and the GLFW shared library, respectively.</p>
 
 <p>To install GLFW onto your system, run make as root with the
-<b>x11-install</b> make target. This will install the pkgconfig file, the
+<code>x11-install</code> make target. This will install the pkgconfig file, the
 static library and the header. By default, the files will be installed under
-<b>/usr/local</b>. If you wish to install to a different location, set the
-environment variable <b>PREFIX</b> appropriately when running make.</p>
+<code>/usr/local</code>. If you wish to install to a different location, set the
+<code>PREFIX</code> environment variable appropriately when running make.</p>
 
 <p>Note that the shared library is not installed by default, as you really
 should think twice before using it. GLFW is very small and shared library
@@ -299,48 +304,46 @@ code.</p>
 
 <p>However, if you're a *nix distribution packager, use a language binding or
 for some other reason wish to install the shared library along with the rest,
-use the <b>x11-distro-install</b> make target.</p>
+run make with the <code>x11-distro-install</code> target.</p>
 
 
 <h3>3.4 Mac OS X</h3>
 
-<p>After compiling GLFW, three files named <b>libglfw.pc.in</b>,
-<b>libglfw.a</b> and <b>libglfw.dylib</b> should appear in the
-<b>lib/cocoa</b> directory. This is the pkgconfig template file, the GLFW
+<p>After compiling GLFW, three files named <code>libglfw.pc.in</code>,
+<code>libglfw.a</code> and <code>libglfw.dylib</code> should appear in the
+<code>lib/cocoa</code> directory. This is the pkgconfig template file, the GLFW
 static link library and the GLFW dynamic library, respectively.</p>
 
 <p>To install GLFW onto your system, run make with sudo and the
-<b>cocoa-install</b> build target, i.e.:</p>
+<code>cocoa-install</code> build target, i.e.:</p>
 
-<p>&nbsp;&nbsp;<b>sudo make cocoa-install</b>
+<blockquote><code>sudo make cocoa-install</code></blockquote>
 
-<p>This will install the pkgconfig file, the
-static library and the header. By default, the files will be installed under
-<b>/usr/local</b>. If you wish to install to a different location, set
-the environment variable <b>PREFIX</b> appropriately when running make.</p>
+<p>This will install the pkgconfig file, the static library and the header. By
+default, the files will be installed under <code>/usr/local</code>. If you wish
+to install to a different location, set the environment variable
+<code>PREFIX</code> appropriately when running make.</p>
 
 <p>Note that the shared library is not installed by default, as you really
 should think twice before using it. GLFW is very small and very sutable for
 static linking. The GLFW license also allows static linking without requiring
 your to share your code.</p>
 
-<hr>
-
-<a name="sec4">
+<a name="using">
 <h2>4. Using GLFW</h2>
 
-<p>There are two aspects to using GLFW:
+<p>There are two aspects to using GLFW:</p>
 
-<p>
 <ol>
   <li>How does the GLFW API work</li>
   <li>How to compile programs that use GLFW</li>
 </ol>
 
-<p>The first point is covered in the <a href="docs/UsersGuide.pdf">GLFW
-Users Guide</a> and the <a href="docs/Reference.pdf">GLFW Reference
-Manual</a>, and we suggest that you read at least the Users Guide, since
-it's a good introduction to the GLFW API.</p>
+<p>The first point is covered in the
+<a href="docs/UsersGuide.pdf">GLFW Users Guide</a> and the
+<a href="docs/Reference.pdf">GLFW Reference Manual</a>, and we suggest that you
+read at least the Users Guide, since it's a good introduction to the GLFW
+API.</p>
 
 <p>Designing and compiling programs that use GLFW is not very difficult.
 A few rules for successfully designing GLFW-based programs are presented
@@ -348,33 +351,43 @@ in the following sections.</p>
 
 <h3>4.1 Include &lt;GL/glfw.h&gt;</h3>
 
-<p>In your program, you should include &lt;GL/glfw.h&gt;. This include
-file defines all the necessary constants, types and prototypes that are
-used to interact with the GLFW API. It also includes &lt;GL/gl.h&gt; and
-&lt;GL/glu.h&gt;, and - <u>this is very important</u> - <i><b>it defines
-all the necessary constants and types that are necessary for OpenGL to
-work on different platforms</b></i>.</p>
+<p>In the files of your program where you use OpenGL or GLFW, you should
+include the <code>GL/glfw.h</code> header file, i.e.:</p>
 
-<p>For instance, under Windows you are normally required to include
-&lt;windows.h&gt; before you include &lt;GL/gl.h&gt;. If you write such a
-program, it would not compile under e.g. Linux since &lt;windows.h&gt;
-does not exist under Linux. &lt;GL/glfw.h&gt; takes care of these things
-for you. Note however that it does not actually include &lt;windows.h&gt;,
-it merely mimics the parts of it that are needed for &lt;GL/gl.h&gt; and
-&lt;GL/glu.h&gt; (this way we do not get the thousands of constants,
-types and prototypes that could otherwise possibly interfere with our own
-declarations).</p>
+<blockquote><code>#include &lt;GL/glfw.h&gt;</code></blockquote>
+
+<p>This defines all the constants, types and function prototypes of the GLFW
+API.  It also includes the <code>gl.h</code> and </code>GL/glu.h</code> header
+files, and - this is very important - <em>it defines all the necessary
+constants and types that are necessary for the OpenGL headers to work on
+different platforms</em>.</p>
+
+<p>For example, under Microsoft Windows you are normally required to include
+<code>windows.h</code> before you include <code>GL/gl.h</code>.  This would
+however make your code dependent on the Windows platform, or at least require
+your program to check which platform it is being compiled on.
+
+The GLFW header file takes care of this for you, not by including
+<code>windows.h</code>, but rather by itself duplicating the necessary parts of
+it.  This way, the namespace won't be cluttered by the entire Windows API.</p>
 
 <p>In other words:
 <ul>
-  <li>Do <i>not</i> include &lt;GL/gl.h&gt; or &lt;GL/glu.h&gt;! (GLFW
-      does it for you)</li>
-  <li>Do <i>not</i> include &lt;windows.h&gt;! (unless you really need
-      it)</li>
+  <li>Do <em>not</em> include <code>GL/gl.h</code> or <code>GL/glu.h</code>
+      yourself, as GLFW does this for you</li>
+  <li>Do <em>not</em> include <code>windows.h</code> unless you actually need
+      direct access to the Windows API</li>
+  <li>If you <i>do</i> need to include <code>windows.h</code>, do it
+      <em>before</em> including <code>GL/glfw.h</code> and the GLFW header will
+      detect this.</p>
 </ul>
 
-<p>Note: If you <i>do</i> need to include &lt;windows.h&gt;, do it
-<i>before</i> including &lt;GL/glfw.h&gt;.</p>
+<p>Also note that if you are using an OpenGL extension loading library such as
+<a href="http://glew.sourceforge.net/">GLEW</a>, you should include the GLEW
+header <em>before</em> the GLFW one.  The GLEW header defines macros that
+disable any <code>gl.h</code> that the GLFW header includes and GLEW will work
+as expected.</p>
+
 
 
 <h3>4.2 Link with the right libraries</h3>
@@ -384,50 +397,90 @@ declarations).</p>
 <p>If you link with the static version of GLFW, it is also necessary to
 link with some system libraries that GLFW uses.</p>
 
-<p>When linking a program under Windows that uses the static version of
-GLFW, you must also link with the following libraries: <b>opengl32</b>,
-<b>user32</b> and <b>kernel32</b>. Some of these libraries may be linked
-with by default by your compiler. In the table below you can see the
-minimum required link options for each supported Windows compiler (you may
-want to add other libraries as well, such as <b>glu32</b>):</p>
+<p>When linking a program under Windows that uses the static version of GLFW,
+you must also link with the following libraries: <code>opengl32</code>,
+<code>user32</code> and <code>kernel32</code>. Some of these libraries may be
+linked with by default by your compiler. In the table below you can see the
+minimum required link options for each supported Windows compiler (you may want
+to add other libraries as well, such as <code>glu32</code>):</p>
 
-<p><table border=1>
-<tr><td><b>Compiler</b></td><td><b>Link options</b></td></tr>
-<tr><td>Borland C++ Builder</td><td>glfw.lib opengl32.lib</td></tr>
-<tr><td>Cygwin</td><td><i>See Unix static library below</i></td></tr>
-<tr><td>LCC-Win32</td><td>glfw.lib opengl32.lib</td></tr>
-<tr><td>Microsoft Visual C++</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
-<tr><td>MinGW32</td><td>-lglfw -lopengl32</td></tr>
-<tr><td>OpenWatcom</td><td>glfw.lib opengl32.lib user32.lib</td></tr>
+<table border=1>
+  <tr>
+    <td><b>Compiler</b></td>
+    <td><b>Link options</b></td>
+  </tr>
+  <tr>
+    <td>Borland C++ Builder</td>
+    <td><code>glfw.lib opengl32.lib</code></td>
+  </tr>
+  <tr>
+    <td>Cygwin</td>
+    <td><i>See Unix static library below</i></td>
+  </tr>
+  <tr>
+    <td>LCC-Win32</td>
+    <td><code>glfw.lib opengl32.lib</code></td>
+  </tr>
+  <tr>
+    <td>Microsoft Visual C++</td>
+    <td><code>glfw.lib opengl32.lib user32.lib</code></td>
+  </tr>
+  <tr>
+    <td>MinGW32</td>
+    <td><code>-lglfw -lopengl32</code></td>
+  </tr>
+  <tr>
+    <td>OpenWatcom</td>
+    <td><code>glfw.lib opengl32.lib user32.lib</code></td>
+  </tr>
 </table>
 
 
 <h4>4.2.2 Windows DLL</h4>
 
 <p>To compile a program that uses the DLL version of GLFW, you need to
-define the <b>GLFW_DLL</b> constant. This can either be done with a
-compiler switch, typically by adding <b>-DGLFW_DLL</b> to the list of
-compiler options. You can also do it by adding the line:</p>
+define the <code>GLFW_DLL</code> constant. This can either be done with a
+compiler switch, typically by adding <code>-DGLFW_DLL</code> to the list of
+compiler options. You can also do it by adding the following line to all your
+source files <b>before</b> including the GLFW header file:</p>
 
-<p>#define GLFW_DLL
-
-<p>...to all your source files that include <b>glfw.h</b>, <u>before</u>
-including it.</p>
+<blockquote><code>#define GLFW_DLL</code></blockquote>
 
 <p>When linking a program under Windows that uses the DLL version of GLFW,
-the only library you need to link with for GLFW to work is <b>glfwdll</b>.
+the only library you need to link with for GLFW to work is <code>glfwdll</code>.
 In the table below you can see the minimum required link options for each
 supported Windows compiler (you may want to add other libraries as well,
-such as <b>opengl32</b> and <b>glu32</b>):</p>
+such as <code>opengl32</code> and <code>glu32</code>):</p>
 
-<p><table border=1>
-<tr><td><b>Compiler</b></td><td><b>Link options</b></td></tr>
-<tr><td>Borland C++ Builder</td><td>glfwdll.lib</td></tr>
-<tr><td>Cygwin</td><td>-lglfwdll</td></tr>
-<tr><td>LCC-Win32</td><td>glfwdll.lib</td></tr>
-<tr><td>Microsoft Visual C++</td><td>glfwdll.lib</td></tr>
-<tr><td>MinGW32</td><td>-lglfwdll</td></tr>
-<tr><td>OpenWatcom</td><td>glfwdll.lib</td></tr>
+<table border=1>
+  <tr>
+    <td><b>Compiler</b></td>
+    <td><b>Link options</b></td>
+  </tr>
+  <tr>
+    <td>Borland C++ Builder</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>Cygwin</td>
+    <td><code>-lglfwdll</code></td>
+  </tr>
+  <tr>
+    <td>LCC-Win32</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>Microsoft Visual C++</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
+  <tr>
+    <td>MinGW32</td>
+    <td><code>-lglfwdll</code></td>
+  </tr>
+  <tr>
+    <td>OpenWatcom</td>
+    <td><code>glfwdll.lib</code></td>
+  </tr>
 </table>
 
 
@@ -435,27 +488,27 @@ such as <b>opengl32</b> and <b>glu32</b>):</p>
 <h4>4.2.3 Unix static library</h4>
 
 <p>GLFW now supports
-<a href="http://pkgconfig.freedesktop.org/wiki/">pkgconfig</a>,
-and a libglfw.pc file is generated and installed when you install the library.
-For systems that do not provide pkgconfig, you should look in this file for the
-proper compile and link flags for your system, as determined by compile.sh at
-compile time.</p>
+<a href="http://pkgconfig.freedesktop.org/wiki/">pkg-config</a>,
+and a <code>libglfw.pc</code> file is generated and installed when you install
+the library.  For systems that do not provide pkgconfig, you should look in
+this file for the proper compile and link flags for your system, as determined
+by compile.sh at compile time.</p>
 
-<p>A typical compile and link command line may look like this (using GCC):</p>
+<p>A typical compile and link command line may look like this:</p>
 
-<p>&nbsp;&nbsp;<b>gcc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</b>
+<blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
 <p>If you use GLU functions in your program you should also add
-<b>-lGLU</b>.</p>
+<code>-lGLU</code>.</p>
 
 
 
 <h4>4.2.5 Mac OS X static library</h4>
 
 <p>When compiling and linking a program under Mac OS X that uses GLFW, you
-must also link with <b>Cocoa.framework</b> and <b>OpenGL.framework</b>.
+must also link with <code>Cocoa.framework</code> and <code>OpenGL.framework</code>.
 
-<p>If you are using Xcode, you simply add the GLFW library <b>libglfw.a</b> and
+<p>If you are using Xcode, you simply add the GLFW library <code>libglfw.a</code> and
 these frameworks to your project. If, however, you are building your program
 from the command line, there are two methods for correctly linking your GLFW
 program.</p>
@@ -469,13 +522,13 @@ href="http://darwinports.opendarwin.org/">DarwinPorts</a>, so if you have one
 of them installed, simply install pkgconfig. Once you have pkgconfig available,
 the command line for compiling and linking your program is:</p>
 
-<p>&nbsp;&nbsp;<b>gcc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</b>
+<blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
 <p>If you do not wish to use pkgconfig, you will need to add the required
-frameworks and libraries to your command line using the <b>-l</b> and
-<b>-framework</b> switches, i.e.:</p>
+frameworks and libraries to your command line using the <code>-l</code> and
+<code>-framework</code> switches, i.e.:</p>
 
-<p>&nbsp;&nbsp;<b>gcc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL</b>
+<blockquote><code>cc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL</code></blockquote>
 
 <p>Note that you do not add the .framework extension to a framework when adding
 it from the command line.</p>
@@ -486,9 +539,7 @@ that even though your machine may have Unix-style GL libraries, they are for
 use with the X Window System, and will <i>not</i> work with the Mac OS X native
 version of GLFW.</p>
 
-<hr>
-
-<a name="sec5">
+<a name="changelog">
 <h2>5. Version history</h2>
 
 <h3>v2.7</h3>
@@ -647,7 +698,7 @@ version of GLFW.</p>
      GLFW license), so now GLFW is OSI Certified</li>
  <li>Rewrote the GLFW documentation in LaTeX, meaning several improvements
      (both visual and practical)</li>
- <li>Added the <b>support</b> folder to the distribution, which includes
+ <li>Added the <code>support</code> folder to the distribution, which includes
      support for various languages</li>
  <li>[Win32] Added OpenWatcom compiler support (thanks Sebastian
      Schuberth!)</li>
@@ -914,34 +965,30 @@ version of GLFW.</p>
 </ul>
 
 
-<p><hr>
-
-<a name="sec6">
+<a name="structure">
 <h2>6. Directory structure of the GLFW distribution</h2>
 
 <p>Here is an overview of the directory structure of the GLFW distribution:
 
 <p>
 <table border=0 cellspacing=0>
-<tr valign="top"><td width=100><b>docs</b></td><td>&nbsp;</td><td>GLFW manuals in PDF format</td></tr>
-<tr valign="top"><td><b>examples</b></td><td>&nbsp;</td><td>Several example programs in C</td></tr>
-<tr valign="top"><td><b>include</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;GL</b></td><td>&nbsp;</td><td>Here is the GLFW C/C++ include file</td></tr>
-<tr valign="top"><td><b>lib</b></td><td>&nbsp;</td><td>The source code for GLFW</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;cocoa</b></td><td>&nbsp;</td><td>Mac OS X/Cocoa specific implementation</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;win32</b></td><td>&nbsp;</td><td>Windows specific implementation</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;x11</b></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
-<tr valign="top"><td><b>support</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;d</b></td><td>&nbsp;</td><td>D support</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;msvc90</b></td><td>&nbsp;</td><td>Project files for Visual C++ 9.0</td></tr>
-<tr valign="top"><td><b>&nbsp;&nbsp;&nbsp;pascal</b></td><td>&nbsp;</td><td>Pascal support</td></tr>
-<tr valign="top"><td><b>tests</b></td><td>&nbsp;</td><td>Several test programs in C</td></tr>
+<tr valign="top"><td width=100><code>docs</code></td><td>&nbsp;</td><td>GLFW manuals in PDF format</td></tr>
+<tr valign="top"><td><code>examples</code></td><td>&nbsp;</td><td>Several example programs in C</td></tr>
+<tr valign="top"><td><code>include</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;GL</code></td><td>&nbsp;</td><td>Here is the GLFW C/C++ include file</td></tr>
+<tr valign="top"><td><code>lib</code></td><td>&nbsp;</td><td>The source code for GLFW</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;cocoa</code></td><td>&nbsp;</td><td>Mac OS X/Cocoa specific implementation</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;win32</code></td><td>&nbsp;</td><td>Windows specific implementation</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;x11</code></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
+<tr valign="top"><td><code>support</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;d</code></td><td>&nbsp;</td><td>D support</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc90</code></td><td>&nbsp;</td><td>Project files for Visual C++ 9.0</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;pascal</code></td><td>&nbsp;</td><td>Pascal support</td></tr>
+<tr valign="top"><td><code>tests</code></td><td>&nbsp;</td><td>Several test programs in C</td></tr>
 </table>
 
 
-<p><hr>
-
-<a name="sec7">
+<a name="contact">
 <h2>7. Contacting the project</h2>
 
 <p>The official GLFW web site can be found here:
@@ -949,7 +996,7 @@ version of GLFW.</p>
 version of GLFW, news and other information that is useful for OpenGL
 development.</p>
 
-<p>If you have questions related to the use of <b>GLFW</b>, we have a
+<p>If you have questions related to the use of GLFW, we have a
 <a href="https://sourceforge.net/forum/forum.php?forum_id=247562">user's web forum</a>,
 and a
 <a href="https://lists.sourceforge.net/lists/listinfo/glfw-user">user's mailing list</a>
@@ -961,14 +1008,12 @@ it in the
 <a href="http://sourceforge.net/tracker/?group_id=72569">SF.net trackers</a>.</p>
 
 Finally, if you're interested in helping out with the development of
-<b>GLFW</b> or porting it to your favorite platform, we have a
+GLFW or porting it to your favorite platform, we have a
 <a href="https://lists.stacken.kth.se/mailman/listinfo/glfw-dev">developer's mailing list</a>,
 or you could join us on <code>#glfw</code>.
 
 
-<p><hr>
-
-<a name="sec8">
+<a name="credits">
 <h2>8. Acknowledgements</h2>
 
 <p>GLFW would not be what it is today without the help from:
