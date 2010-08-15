@@ -232,6 +232,11 @@ installed, simply open Terminal and go to the root GLFW directory.  From there,
 you can build the library and all the examples by running make with the
 appropriate target, i.e. <b>make cocoa</b>.</p>
 
+<p>The default compiler for the Cocoa port of GLFW is <code>cc</code>, which as
+of Mac OS X 10.6 still defaults to GCC, but you can override this using the
+<code>CC</code> environment variable.  For example, you can do <code>env
+CC=clang make cocoa</code> to build GLFW using Clang.</p>
+
 <p>There is also a deprecated Carbon port of GLFW, which is limited to
 32-bit code and only runs well on Mac OS X 10.3 and 10.4.  However, if you
 need to build applications for those systems, it is a better choice than
