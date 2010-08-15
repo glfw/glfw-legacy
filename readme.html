@@ -499,28 +499,28 @@ by compile.sh at compile time.</p>
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
 <p>If you use GLU functions in your program you should also add
-<code>-lGLU</code>.</p>
+<code>-lGLU</code> to your link flags.</p>
 
 
 
 <h4>4.2.5 Mac OS X static library</h4>
 
 <p>When compiling and linking a program under Mac OS X that uses GLFW, you
-must also link with <code>Cocoa.framework</code> and <code>OpenGL.framework</code>.
+must also link with Cocoa and OpenGL frameworks.
 
 <p>If you are using Xcode, you simply add the GLFW library <code>libglfw.a</code> and
 these frameworks to your project. If, however, you are building your program
 from the command line, there are two methods for correctly linking your GLFW
 program.</p>
 
-<p>GLFW now supports <a
-href="http://pkgconfig.freedesktop.org/wiki/">pkgconfig</a>, and a libglfw.pc
-file is generated and installed when you install the library. You can find
-pkgconfig in most packaging systems, such as <a
-href="http://www.finkproject.org/">Fink</a> and <a
-href="http://darwinports.opendarwin.org/">DarwinPorts</a>, so if you have one
-of them installed, simply install pkgconfig. Once you have pkgconfig available,
-the command line for compiling and linking your program is:</p>
+<p>GLFW now supports
+<a href="http://pkgconfig.freedesktop.org/wiki/">pkg-config</a>, and a
+libglfw.pc file is generated and installed when you install the library. You
+can find pkgconfig in most packaging systems, such as
+<a href="http://www.finkproject.org/">Fink</a> and
+<a href="http://www.macports.org/">MacPorts</a>, so if you have one of them
+installed, simply install pkgconfig. Once you have pkgconfig available, the
+command line for compiling and linking your program is:</p>
 
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
@@ -533,10 +533,10 @@ frameworks and libraries to your command line using the <code>-l</code> and
 <p>Note that you do not add the .framework extension to a framework when adding
 it from the command line.</p>
 
-<p>These frameworks contain all GL and GLU functions, so there is no need to
+<p>These frameworks contain all OpenGL and GLU functions, so there is no need to
 add additional libraries or frameworks when using GLU functionality. Also note
-that even though your machine may have Unix-style GL libraries, they are for
-use with the X Window System, and will <i>not</i> work with the Mac OS X native
+that even though your machine may have Unix-style OpenGL libraries, they are for
+use with the X Window System, and will <em>not</em> work with the Mac OS X native
 version of GLFW.</p>
 
 <a name="changelog">
