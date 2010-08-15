@@ -6,7 +6,7 @@
 ##########################################################################
 
 # Compiler settings
-CC     = cc
+CC     ?= cc
 CFLAGS = -I../include
 
 # Linker settings
