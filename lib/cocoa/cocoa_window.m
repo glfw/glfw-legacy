@@ -502,9 +502,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     _glfwWin.window = [[NSWindow alloc]
         initWithContentRect:NSMakeRect(0, 0, width, height)
-                      styleMask:styleMask
-                        backing:NSBackingStoreBuffered
-                          defer:NO];
+                  styleMask:styleMask
+                    backing:NSBackingStoreBuffered
+                      defer:NO];
     [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
     [_glfwWin.window setDelegate:_glfwWin.delegate];
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
