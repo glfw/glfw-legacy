@@ -72,11 +72,14 @@ programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
 <p>If your compiler/system is not in the list, you may have to create new
 makefiles in the <code>lib\win32</code>, <code>lib/x11</code> or
 <code>lib/cocoa</code> directory, and in the <code>examples</code> directory.
-If you have any problems, please use our support forum and bug tracker on
-<a href="http://sourceforge.net/projects/glfw/">SourceForge.net</a>. We would
-like to support as many systems as possible, so if you had to make any
-modifications or additions to the source and/or makefiles in order to make GLFW
-compile successfully, we would very much like to know what you had to do.</p>
+If you have any problems, please use our
+<a href="http://sourceforge.net/projects/glfw/forums/forum/247562">support forum</a>
+and
+<a href="http://sourceforge.net/tracker/?group_id=72569&atid=534938">bug tracker</a>
+on SourceForge.net. We would like to support as many systems as possible, so if
+you had to make any modifications or additions to the source and/or makefiles
+in order to make GLFW compile successfully, we would very much like to know
+what you had to do.</p>
 
 
 <h3>2.1 Microsoft Windows</h3>
@@ -105,7 +108,7 @@ the <code>win32-cygwin</code> target.</p>
 
 <h4>2.1.3 Bare MinGW on Windows</h4>
 
-<p>GLFW can be compiled using only barebone MinGW, using the Windows command
+<p>GLFW can be compiled using only bare bone MinGW, using the Windows command
 line environment for file management.  Open a regular command prompt, enter the
 GLFW root directory and run the MinGW make program <code>mingw32-make</code>
 with the <code>win32-mingw</code> target.</p>
@@ -113,8 +116,8 @@ with the <code>win32-mingw</code> target.</p>
 
 <h4>2.1.4 OpenWatcom on Windows</h4>
 
-<p>GLFW can be compiled using OpenWatcom for Windows by running the following
-in the GLFW root directory:</p>
+<p>GLFW can be compiled using <a href="http://www.openwatcom.org/">OpenWatcom</a>
+for Windows by running the following in the GLFW root directory:</p>
 
 <blockquote><code>nmake MAKE=nmake win32-ow</code></blockquote>
 
@@ -122,8 +125,8 @@ in the GLFW root directory:</p>
 correctly.  It is the default option when installing OpenWatcom to permanently
 set up all the required environment variables.  If <code>nmake</code> is
 unavailable, you probably have to run <code>WATCOM\setvars.bat</code> from the
-command prompt first, where WATCOM is the directory in which you installed
-OpenWatcom (e.g. <code>C:\Watcom</code>).</p>
+command prompt first, where <code>WATCOM</code> is the directory in which you
+installed OpenWatcom (e.g. <code>C:\Watcom</code>).</p>
 
 
 <h4>2.1.5 MinGW cross-compilation for Unix or Unix-like systems</h4>
@@ -131,20 +134,21 @@ OpenWatcom (e.g. <code>C:\Watcom</code>).</p>
 <p>Some Unix-like systems have a MinGW cross-compilation package for compiling
 native Win32 binaries, for example the <code>mingw32</code> package on Debian
 GNU/Linux and its derivatives.  You can use this to build Win32 binaries of
-GLFW and all examples without having to start Microsoft Windows.  Use the
-regular make program with the <code>cross-mgw</code> target.  These binaries
-are also regularly tested with Wine.</p>
+GLFW and all examples without having to run Microsoft Windows.  Use the regular
+make program with the <code>cross-mgw</code> target.  These binaries are also
+regularly tested with Wine.</p>
 
 
 <h3>2.2 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <code>compile.sh</code>.  Note that you don't need to run this script
-yourself, as it is run automatically when necessary.  It has been tested under
-Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others and should
-hopefully run on the majority of available Unix-like systems and generate
-functional Makefiles.  You do not have to run the script manually, since it is
-called from the top-level makefile.</p>
+called <code>compile.sh</code> the first time you build GLFW using the
+<code>x11</code> target.  Note that you don't need to run this script yourself,
+as it is run automatically when necessary.  It has been tested under Ubuntu
+Linux, Slackware Linux, Debian GNU/Linux and others and should hopefully run on
+the majority of available Unix-like systems and generate functional Makefiles.
+You do not have to run the script manually, since it is called from the
+top-level makefile.</p>
 
 <p>If you wish to customize the compilation or link flags for GLFW, set the
 <code>CFLAGS</code> or <code>LFLAGS</code> environment variables as needed
@@ -377,7 +381,7 @@ it.  This way, the namespace won't be cluttered by the entire Windows API.</p>
       yourself, as GLFW does this for you</li>
   <li>Do <em>not</em> include <code>windows.h</code> unless you actually need
       direct access to the Windows API</li>
-  <li>If you <i>do</i> need to include <code>windows.h</code>, do it
+  <li>If you <em>do</em> need to include <code>windows.h</code>, do it
       <em>before</em> including <code>GL/glfw.h</code> and the GLFW header will
       detect this.</p>
 </ul>
