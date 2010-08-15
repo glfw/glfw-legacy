@@ -108,10 +108,10 @@ the <code>win32-cygwin</code> target.</p>
 
 <h4>2.1.3 Bare MinGW on Windows</h4>
 
-<p>GLFW can be compiled using only bare bone MinGW, using the Windows command
-line environment for file management.  Open a regular command prompt, enter the
-GLFW root directory and run the MinGW make program <code>mingw32-make</code>
-with the <code>win32-mingw</code> target.</p>
+<p>GLFW can be compiled using only bare bone MinGW, using the Windows
+command-line environment for file management.  Open a regular command prompt,
+enter the GLFW root directory and run the MinGW make program
+<code>mingw32-make</code> with the <code>win32-mingw</code> target.</p>
 
 
 <h4>2.1.4 OpenWatcom on Windows</h4>
@@ -142,13 +142,12 @@ regularly tested with Wine.</p>
 <h3>2.2 X11 on Unix-like systems</h3>
 
 <p>Compiler and link library capabilities are auto-detected with a script
-called <code>compile.sh</code> the first time you build GLFW using the
-<code>x11</code> target.  Note that you don't need to run this script yourself,
-as it is run automatically when necessary.  It has been tested under Ubuntu
-Linux, Slackware Linux, Debian GNU/Linux and others and should hopefully run on
-the majority of available Unix-like systems and generate functional Makefiles.
-You do not have to run the script manually, since it is called from the
-top-level makefile.</p>
+called <code>compile.sh</code>.  Note that you don't need to run this script
+yourself, as it is run automatically when necessary.  It has been tested under
+Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others and should
+hopefully run on the majority of available Unix-like systems and generate
+functional Makefiles.  You do not have to run the script manually, since it is
+called from the top-level makefile.</p>
 
 <p>If you wish to customize the compilation or link flags for GLFW, set the
 <code>CFLAGS</code> or <code>LFLAGS</code> environment variables as needed
@@ -165,7 +164,7 @@ target.</p>
 
 <p>If you are making your own build setup for GLFW, you need to be aware of the
 various preprocessor symbols that the bundled makefiles use to enable various
-features and code paths.  They need to be defined either on the command line or
+features and code paths.  They need to be defined either on the command-line or
 at the very beginning for each GLFW source file with an <code>x11_</code>
 prefix.</p>
 
@@ -353,7 +352,7 @@ API.</p>
 A few rules for successfully designing GLFW-based programs are presented
 in the following sections.</p>
 
-<h3>4.1 Include &lt;GL/glfw.h&gt;</h3>
+<h3>4.1 Include the GLFW header file</h3>
 
 <p>In the files of your program where you use OpenGL or GLFW, you should
 include the <code>GL/glfw.h</code> header file, i.e.:</p>
@@ -494,11 +493,11 @@ such as <code>opengl32</code> and <code>glu32</code>):</p>
 <p>GLFW now supports
 <a href="http://pkgconfig.freedesktop.org/wiki/">pkg-config</a>,
 and a <code>libglfw.pc</code> file is generated and installed when you install
-the library.  For systems that do not provide pkgconfig, you should look in
+the library.  For systems that do not provide pkg-config, you should look in
 this file for the proper compile and link flags for your system, as determined
 by compile.sh at compile time.</p>
 
-<p>A typical compile and link command line may look like this:</p>
+<p>A typical compile and link command-line may look like this:</p>
 
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
@@ -514,7 +513,7 @@ must also link with Cocoa and OpenGL frameworks.
 
 <p>If you are using Xcode, you simply add the GLFW library <code>libglfw.a</code> and
 these frameworks to your project. If, however, you are building your program
-from the command line, there are two methods for correctly linking your GLFW
+from the command-line, there are two methods for correctly linking your GLFW
 program.</p>
 
 <p>GLFW now supports
@@ -524,18 +523,18 @@ can find pkgconfig in most packaging systems, such as
 <a href="http://www.finkproject.org/">Fink</a> and
 <a href="http://www.macports.org/">MacPorts</a>, so if you have one of them
 installed, simply install pkgconfig. Once you have pkgconfig available, the
-command line for compiling and linking your program is:</p>
+command-line for compiling and linking your program is:</p>
 
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
 <p>If you do not wish to use pkgconfig, you will need to add the required
-frameworks and libraries to your command line using the <code>-l</code> and
+frameworks and libraries to your command-line using the <code>-l</code> and
 <code>-framework</code> switches, i.e.:</p>
 
 <blockquote><code>cc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL</code></blockquote>
 
 <p>Note that you do not add the .framework extension to a framework when adding
-it from the command line.</p>
+it from the command-line.</p>
 
 <p>These frameworks contain all OpenGL and GLU functions, so there is no need to
 add additional libraries or frameworks when using GLU functionality. Also note
@@ -562,7 +561,7 @@ version of GLFW.</p>
   <li>Added Cocoa port for Mac OS X 10.5 Leopard and later</li>
   <li>Added vsync to all relevant example programs</li>
   <li>Updated Pascal (formerly Delphi) bindings to support more compilers</li>
-  <li>Clarified and expanded the the User's Guide and Reference Manual</li>
+  <li>Clarified and expanded the User's Guide and Reference Manual</li>
   <li>Fixed a number of compiler warnings in the example programs</li>
   <li>OpenGL version is now only parsed once, at window creation time</li>
   <li>Changed <code>glfwSwapBuffers</code> to call <code>glfwPollEvents</code> <em>after</em> buffer swap</li>
