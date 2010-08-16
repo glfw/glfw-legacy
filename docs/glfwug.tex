@@ -1465,69 +1465,40 @@ typedef void (APIENTRY * GLGETCOMPRESSEDTEXIMAGEARB_T)
 %-------------------------------------------------------------------------
 % Multi Threading
 %-------------------------------------------------------------------------
-\chapter{Multi Threading}
+\chapter{Multi-threading}
 \thispagestyle{fancy}
-Multi threading may not seem to be related to \OpenGL , and thus it may
-seem to be out of the scope of \GLFW\ to provide multi threading support.
-The initial intent of \GLFW\ was to provide the very basic functionality
+
+The initial intent of \GLFW\ was to provide only the basic functionality
 needed to create an \OpenGL\ application, but as \GLFW\ grew to be a
-platform for portable \OpenGL\ applications, it felt natural to include an
-operating system independent multi threading layer in \GLFW . Hopefully
-this will make \GLFW\ more attractive for advanced \OpenGL\ developers, as
-well as inspire more programmers to use multi threading.
+platform for portable \OpenGL\ applications, it came to include a basic
+operating system independent multi-threading layer.
 
-In this chapter you will learn about multi threading and how you can use
-\GLFW\ to create multi threaded applications.
-
-
-%-------------------------------------------------------------------------
-\section{Why Use Multi Threading?}
-Multi threading is not a new technology, neither is it an advanced
-technology. In fact, multi threading could be found as early as 1985 in
-consumer computers, namely the Amiga, whose operating system implemented
-preemptive multi threading. During the early and mid 90's, consumer level
-operating systems emerged for Intel based PCs that supported multi
-threading. Still, over a decade later, many programmers, especially game
-programmers, feel reluctant to using threading in their applications.
-Why?
-
-There are probably many reasons that one can think of to avoid multi
-threading, but many of them are based on ignorance and myths. The foremost
-reason for not using multi threading is probably that it requires a new
-way of thinking, but once accepted, threaded programming can take your
-program to new performance levels and solve many problematic timing and
-synchronization issues.
-
-In the following sections a few key reasons for using multi threaded
-programming will be presented.
+However, this layer is fairly isolated from the rest of \GLFW\ and most of the
+rest of the API is \emph{not} thread-safe.  This is important to keep in mind
+when using \GLFW\ in a multi-threaded application.
 
 
 %-------------------------------------------------------------------------
-\subsection{Take advantage of multi processor systems}
-If an application is divided into several threads that can execute
-concurrently, these threads will automatically execute on separate
-processors in parallel on an SMP (symmetric multi-processing) system.
+\section{Why Use Multi-threading?}
+Most computers being sold today have at least two CPU cores and many have four
+or more.  Even the cheapest netbooks have a semblance of multi-core in the form
+of hyper-threading.  With the individual cores not getting much faster,
+increased performance can only be had by using the additional CPU cores.
 
-Multi processor platforms are becoming increasingly common, in many
-different forms. The classic multi processor system is based around several
-processor chips that execute in parallel. More recent solutions focus on
-placing several processor cores on a single chip. These cores may be
-a few identical general purpose processors, or they may be several smaller,
-specialized cores, such as in the Cell architecture by IBM, which is
-used in the Playstation~3 game console.
+However, the \OpenGL\ API itself is single-threaded and a given context should
+only be used by a single thread at a time.  This means that the primary use for
+multi-threading in the area of computer graphics isn't to distribute rendering
+across multiple threads, but rather to relieve the render thread from doing
+other kinds of work.  Examples include collision and dynamics ticks, audio
+processing and playback, networking and even rendering steps that don't involve
+calling \OpenGL .
 
-Another emerging technology known as SMT (symmetric multi threading) is
-also becoming more and more popular. In short, it takes a single physical
-processor, and divides it into several logical processors that can execute
-separate threads. The idea behind this is to better utilize all available
-CPU resources by running independent pieces of code on the same physical
-CPU.
-
-The problem with SMP systems is of course that if an application is not
-multi threaded, only one of the available processors will actually be
-used to execute the application. This is probably the most important
-aspect of multi threading. For SMP systems to be really useful, programs
-\emph{must} be multi threaded.
+The downside of using multi-threading is the added complexity that comes from
+making a program non-sequential and to ensure that one thread does not
+interfere with the data being used by another.  Whether or not it is worth
+making a given application multi-threaded is a complex question and as always,
+there is no substitute for data and experience.  Profile, measure and
+experiment.
 
 
 %-------------------------------------------------------------------------
@@ -1535,8 +1506,8 @@ aspect of multi threading. For SMP systems to be really useful, programs
 In many situations, an application is placed in a wait state, waiting for
 a task to complete. Examples of such situations are: waiting for a file to
 load from disk, waiting for a vertical retrace (when using a double
-buffered display, such as a \GLFW\ \OpenGL\ window), waiting for a display
-to be cleared or data to be sent to the graphic card.
+buffered display, such as a \GLFW\ window), waiting for a display
+to be cleared or data to be sent to the graphics card.
 
 Some or all of these operations can be done asynchronously, if the
 conditions are right and the operating system supports it, but a simple
@@ -1565,7 +1536,7 @@ thread, it becomes a very simple task.
 
 %-------------------------------------------------------------------------
 \section{How To Use Multi Threading}
-In general, every program runs as a process, which has its own memory
+In general, every process, i.e. instance of a program, has its own memory
 space and its own set of resources, such as opened files etc. As a
 consequence, each process is coupled with a fairly large set of state.
 When the processor changes the execution from one process to another
