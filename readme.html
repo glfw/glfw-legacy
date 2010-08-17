@@ -1021,87 +1021,93 @@ or you could join us on <code>#glfw</code>.
 <a name="credits">
 <h2>8. Acknowledgements</h2>
 
-<p>GLFW would not be what it is today without the help from:
+<p>GLFW exists because people around the world donated their time and lent
+their skills.  Special thanks go out to:</p>
+
 <ul>
 
-  <li>Marcus Geelnard, the orignal author and long-time maintainer of GLFW,
-  without whose brilliant work none of this would have happened.</li><br>
-
-  <li>Robin Leffmann, for his work on Mac OS X and other platforms, and his
-  invaluable support.</li><br>
+  <li>Bobyshev Alexander and Martins Mozeiko, for the original proposal of
+  an FSAA hint and their work on the Win32 implementation of FSAA</li><br>
 
   <li>Keith Bauer, for his invaluable help with porting and maintaining GLFW on
-  Mac OS X, and for his many ideas.</li><br>
+  Mac OS X, and for his many ideas</li><br>
 
-  <li>Ozzy @ <a href="http://www.orkysquad.org">Orkysquad</a>,
-  for his dedication to GLFW, for debugging my source, and for his
-  valuable experience with game development.</li><br>
+  <li>Jarrod Davis, for the Delphi port of GLFW</li><br>
+
+  <li>Olivier Delannoy, for the initial implementation of FSAA support on
+  X11, cross-compiling support for MinGW and general extreme usefulness</li><br>
+
+  <li>Paul R. Deppe, who helped with Cygwin support, and made an
+  adaption of <a href="http://plib.sourceforge.net/">PLIB</a>
+  so that it can use GLFW (instead of GLUT)</li><br>
+
+  <li>Gerald Franz, who made GLFW compile under IRIX, and supplied patches
+  for the X11 keyboard translation routine</li><br>
+
+  <li>Marcus Geelnard, the original author and long-time maintainer of GLFW,
+  without whose brilliant work none of this would have happened</li><br>
+
+  <li>Sylvain Hellegouarch, for support, bug reports and testing</li><br>
+
+  <li>Alex Holkner, for writing the code from which the Compiz/Intel fix was
+  stolen</li><br>
+
+  <li>Toni Jovanoski, for helping with the MASM32 port of GLFW, and
+  supplying the example program and fixed OpenGL and GLU bindings for
+  MASM32</li><br>
+
+  <li>Robin Leffmann, for his work on Mac OS X and other platforms, and his
+  invaluable support</li><br>
+
+  <li>Glenn Lewis, for helping out with support for the D programming
+  language</li><br>
+
+  <li>David Medlock, for doing the initial Lua port</li><br>
 
   <li>Jeff Molofee, the author of the excellent OpenGL tutorials at <a
   href="http://nehe.gamedev.net/">NeHe Productions</a>.
   Much of the Windows code of GLFW was originally based on Jeff's
-  code.</li><br>
+  code</li><br>
 
   <li>Douglas C. Schmidt and Irfan Pyarali, for their excellent article
   <a href="http://www.cs.wustl.edu/~schmidt/win32-cv-1.html">Strategies for Implementing POSIX Condition Variables on Win32</a>,
   which is the basis for the Win32 condition variable implementation in
-  GLFW.</li><br>
+  GLFW</li><br>
 
-  <li>Bobyshev Alexander and Martins Mozeiko, for the original proposal of
-  an FSAA hint and their work on the Win32 implementation of FSAA.</li><br>
+  <li>Sebastian Schuberth, for the OpenWatcom makefiles</li><br>
 
-  <li>Gerald Franz, who made GLFW compile under IRIX, and supplied patches
-  for the X11 keyboard translation routine.</li><br>
+  <li>Matt Sealey, for helping with the MorphOS port</li><br>
+
+  <li>Dmitri Shuralyov, for support, bug reports and testing</li><br>
 
   <li>Bradley Smith, for his updates of the D support and his ports of the
-  remaining examples to the D language.</li><br>
+  remaining examples to the D language</li><br>
 
-  <li>Olivier Delannoy, for the initial implementation of FSAA support on
-  X11, cross-compiling support for MinGW and general extreme usefulness.</li><br>
+  <li>Julian Squires, for finding and fixing a key repeat bug on X11</li><br>
 
-  <li>Glenn Lewis, for helping out with support for the D programming
-  language.</li><br>
+  <li>Johannes Stein, for maintaining the Pascal bindings</li><br>
 
-  <li>David Medlock, for doing the initial Lua port.</li><br>
-
-  <li>Alex Holkner, for writing the code from which the Compiz/Intel fix was
-  stolen.</li><br>
+  <li>Samuli Tuomola, for support, bug reports and testing</li><br>
 
   <li>Frank Wille, for helping with the AmigaOS port and making GLFW
-  compile under IRIX 5.3.</li><br>
+  compile under IRIX 5.3</li><br>
 
-  <li>Matt Sealey, for helping with the MorphOS port.</li><br>
+  <li>Santi Zupancic, for support, bug reports and testing</li><br>
 
-  <li>Paul R. Deppe, who helped with Cygwin support, and made an
-  adaption of <a href="http://plib.sourceforge.net/">PLIB</a>
-  so that it can use GLFW (instead of GLUT).</li><br>
+  <li>Дмитри Малышев, for the idea of a GLFW_NO_GLU macro</li><br>
 
-  <li>Jarrod Davis, for the Delphi port of GLFW.</li><br>
+  <li>Ozzy @ <a href="http://www.orkysquad.org">Orkysquad</a>,
+  for his dedication to GLFW, for debugging my source, and for his
+  valuable experience with game development</li><br>
 
-  <li>Toni Jovanoski, for helping with the MASM32 port of GLFW, and
-  supplying the example program and fixed OpenGL and GLU bindings for
-  MASM32.</li><br>
+  <li>TTK-Bandit, for adding many missing keys to the Win32 and X11 ports</li><br>
 
-  <li>Sebastian Schuberth, for the OpenWatcom makefiles.</li><br>
+  <li>All the unmentioned and anonymous contributors in the GLFW community, for
+  bug reports, patches, feedback and encouragement</li><br>
 
-  <li>Dmitri Shuralyov, Samuli Tuomola, Santi Zupancic, Sylvain
-  Hellegouarch, and many others for support, bug reports and
-  testing.</li><br>
-
-  <li>TTK-Bandit, for adding many missing keys to the Win32 and X11 ports.</li><br>
-
-  <li>Julian Squires, for finding and fixing a key repeat bug on X11.</li><br>
-
-  <li>Дмитри Малышев, for the idea of a GLFW_NO_GLU macro.</li><br>
-
-  <li><a href="http://www.opengl.org/">www.opengl.org</a>,
-  and all the people on the discussion forums there that have provided
-  help during the development of GLFW.</li><br>
-
-  <li>The <a href="http://msdn.microsoft.com/library/">MSDN Online Linrary</a>,
-  which was used extensively for Windows development.</li><br>
-
-  <li>All the feedback from the GLFW community - thank you!</li><br>
+  <li><a href="http://www.opengl.org/">OpenGL.org</a>, and all the people on
+  the discussion forums there that have provided help during the development of
+  GLFW</li><br>
 </ul>
 
 </body>
