@@ -264,7 +264,7 @@ have appeared in the <code>lib\win32</code> directory. They are:
 library).</p>
 
 <p>To install GLFW on Cygwin (and possibly MinGW), run make with the
-<code>cygwin-install</code> target.  This will generate the pkgconfig file and
+<code>cygwin-install</code> target.  This will generate the pkg-config file and
 copy it, the header file and the library to the correct locations of your
 Cygwin installation. If you wish to change the installation location from its
 default, set the desired prefix path with the environment variable
@@ -290,11 +290,11 @@ to the <code>GL</code> directory of your compiler's include directory (where
 
 <p>After compiling GLFW, three files named <code>libglfw.pc.in</code>,
 <code>libglfw.a</code> and <code>libglfw.so</code> should have appeared in the
-<code>lib/x11</code> directory. This is the pkgconfig template file, the GLFW
+<code>lib/x11</code> directory. This is the pkg-config template file, the GLFW
 static link library and the GLFW shared library, respectively.</p>
 
 <p>To install GLFW onto your system, run make as root with the
-<code>x11-install</code> make target. This will install the pkgconfig file, the
+<code>x11-install</code> make target. This will install the pkg-config file, the
 static library and the header. By default, the files will be installed under
 <code>/usr/local</code>. If you wish to install to a different location, set the
 <code>PREFIX</code> environment variable appropriately when running make.</p>
@@ -314,7 +314,7 @@ run make with the <code>x11-distro-install</code> target.</p>
 
 <p>After compiling GLFW, three files named <code>libglfw.pc.in</code>,
 <code>libglfw.a</code> and <code>libglfw.dylib</code> should appear in the
-<code>lib/cocoa</code> directory. This is the pkgconfig template file, the GLFW
+<code>lib/cocoa</code> directory. This is the pkg-config template file, the GLFW
 static link library and the GLFW dynamic library, respectively.</p>
 
 <p>To install GLFW onto your system, run make with sudo and the
@@ -322,7 +322,7 @@ static link library and the GLFW dynamic library, respectively.</p>
 
 <blockquote><code>sudo make cocoa-install</code></blockquote>
 
-<p>This will install the pkgconfig file, the static library and the header. By
+<p>This will install the pkg-config file, the static library and the header. By
 default, the files will be installed under <code>/usr/local</code>. If you wish
 to install to a different location, set the environment variable
 <code>PREFIX</code> appropriately when running make.</p>
@@ -519,15 +519,15 @@ program.</p>
 <p>GLFW now supports
 <a href="http://pkgconfig.freedesktop.org/wiki/">pkg-config</a>, and a
 libglfw.pc file is generated and installed when you install the library. You
-can find pkgconfig in most packaging systems, such as
+can find pkg-config in most packaging systems, such as
 <a href="http://www.finkproject.org/">Fink</a> and
 <a href="http://www.macports.org/">MacPorts</a>, so if you have one of them
-installed, simply install pkgconfig. Once you have pkgconfig available, the
+installed, simply install pkg-config. Once you have pkg-config available, the
 command-line for compiling and linking your program is:</p>
 
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
-<p>If you do not wish to use pkgconfig, you will need to add the required
+<p>If you do not wish to use pkg-config, you will need to add the required
 frameworks and libraries to your command-line using the <code>-l</code> and
 <code>-framework</code> switches, i.e.:</p>
 
@@ -625,7 +625,7 @@ version of GLFW.</p>
   <li>Delphi bindings updated to reflect API additions</li>
   <li>Bugfix: The interaction between key repeat and window focus code caused duplicate presses</li>
   <li>Bugfix: The mouse position was not properly updated when re-enabling the mouse cursor</li>
-  <li>[Win32] Added pkgconfig file generation for Cygwin</li>
+  <li>[Win32] Added pkg-config file generation for Cygwin</li>
   <li>[Win32] Added version number to window class name</li>
   <li>[Win32] Added optional loading of user provided window icon resource</li>
   <li>[Win32] Bugfix: Very small sleep periods were forced to higher value</li>
@@ -636,7 +636,7 @@ version of GLFW.</p>
   <li>[X11] Added building of shared library</li>
   <li>[X11] Added <a href="http://tronche.com/gui/x/icccm/">ICCCM</a> WM fullscreen hints</li>
   <li>[X11] Added support for the <code>_NET_WM_PING</code> protocol</li>
-  <li>[X11] Added pkgconfig file generation</li>
+  <li>[X11] Added pkg-config file generation</li>
   <li>[X11] Added setting of WM size hints</li>
   <li>[X11] Bugfix: Removed assembly RDTSC timing code</li>
   <li>[X11] Bugfix: Window re-opening now works properly (including fullscreen windows)</li>
@@ -644,7 +644,7 @@ version of GLFW.</p>
   <li>[X11] Bugfix: Static buffers imposed an invisible limit on reported video mode count</li>
   <li>[X11] Bugfix: Interaction with certain window managers when setting input focus would cause termination with a BadMatch error</li>
   <li>[X11] Bugfix: Keypad keys did not trigger the character callback</li>
-  <li>[MacOSX] Added pkgconfig file generation</li>
+  <li>[MacOSX] Added pkg-config file generation</li>
   <li>[MacOSX] Added building of shared library</li>
   <li>[MacOSX] Added building of Universal Binary libraries</li>
   <li>[MacOSX] Replaced fullscreen code path with CGL version</li>
