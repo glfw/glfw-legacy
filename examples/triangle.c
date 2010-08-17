@@ -9,10 +9,6 @@
 #include <GL/glfw.h>
 
 
-//========================================================================
-// main()
-//========================================================================
-
 int main( void )
 {
     int width, height, x;
@@ -25,7 +21,7 @@ int main( void )
         exit( EXIT_FAILURE );
     }
 
-    // Open OpenGL window
+    // Open a window and create its OpenGL context
     if( !glfwOpenWindow( 640, 480, 0,0,0,0, 0,0, GLFW_WINDOW ) )
     {
         fprintf( stderr, "Failed to open GLFW window\n" );
@@ -36,16 +32,14 @@ int main( void )
 
     glfwSetWindowTitle( "Spinning Triangle" );
 
-    // Enable sticky keys
+    // Ensure we can capture the escape key being pressed below
     glfwEnable( GLFW_STICKY_KEYS );
 
     // Enable vertical sync (on cards that support it)
     glfwSwapInterval( 1 );
 
-    // Main loop
     do
     {
-        // Get time and mouse position
         t = glfwGetTime();
         glfwGetMousePos( &x, NULL );
 
@@ -53,10 +47,9 @@ int main( void )
         glfwGetWindowSize( &width, &height );
         height = height > 0 ? height : 1;
 
-        // Set viewport
         glViewport( 0, 0, width, height );
 
-        // Clear color buffer
+        // Clear color buffer to black
         glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
         glClear( GL_COLOR_BUFFER_BIT );
 
