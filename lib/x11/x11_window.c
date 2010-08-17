@@ -631,7 +631,7 @@ static int processSingleEvent( void )
                 }
             }
 #endif
-                break;
+            break;
         }
     }
 
