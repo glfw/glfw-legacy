@@ -1,9 +1,7 @@
 //========================================================================
 // This is a small test application for GLFW.
 // The program opens a window (640x480), and renders a spinning colored
-// triangle (it is controlled with both the GLFW timer and the mouse). It
-// also calculates the rendering speed (FPS), which is displayed in the
-// window title bar.
+// triangle (it is controlled with both the GLFW timer and the mouse).
 //========================================================================
 
 #include <stdio.h>
