@@ -15,8 +15,8 @@
 
 int main( void )
 {
-    int     width, height, running, x;
-    double  t;
+    int width, height, x;
+    double t;
 
     // Initialise GLFW
     if( !glfwInit() )
@@ -43,8 +43,7 @@ int main( void )
     glfwSwapInterval( 1 );
 
     // Main loop
-    running = GL_TRUE;
-    while( running )
+    do
     {
         // Get time and mouse position
         t = glfwGetTime();
@@ -88,10 +87,9 @@ int main( void )
         // Swap buffers
         glfwSwapBuffers();
 
-        // Check if the ESC key was pressed or the window was closed
-        running = !glfwGetKey( GLFW_KEY_ESC ) &&
-                  glfwGetWindowParam( GLFW_OPENED );
-    }
+    } // Check if the ESC key was pressed or the window was closed
+    while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
+           glfwGetWindowParam( GLFW_OPENED ) );
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
