@@ -45,6 +45,8 @@ int main( void )
 
         // Get window size (may be different than the requested size)
         glfwGetWindowSize( &width, &height );
+
+        // Special case: avoid division by zero below
         height = height > 0 ? height : 1;
 
         glViewport( 0, 0, width, height );
