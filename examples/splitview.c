@@ -50,7 +50,7 @@ static int do_redraw = 1;
 #define TORUS_MAJOR_RES 32
 #define TORUS_MINOR_RES 32
 
-static void DrawTorus( void )
+static void drawTorus( void )
 {
     static GLuint torus_list = 0;
     int    i, j, k;
@@ -110,7 +110,7 @@ static void DrawTorus( void )
 // Draw the scene (a rotating torus)
 //========================================================================
 
-static void DrawScene( void )
+static void drawScene( void )
 {
     const GLfloat model_diffuse[4]  = {1.0f, 0.8f, 0.8f, 1.0f};
     const GLfloat model_specular[4] = {0.6f, 0.6f, 0.6f, 1.0f};
@@ -132,7 +132,7 @@ static void DrawScene( void )
     glMaterialf(  GL_FRONT, GL_SHININESS, model_shininess );
 
     // Draw torus
-    DrawTorus();
+    drawTorus();
 
     glPopMatrix();
 }
@@ -142,7 +142,7 @@ static void DrawScene( void )
 // Draw a 2D grid (used for orthogonal views)
 //========================================================================
 
-static void DrawGrid( float scale, int steps )
+static void drawGrid( float scale, int steps )
 {
     int   i;
     float x, y;
@@ -200,7 +200,7 @@ static void DrawGrid( float scale, int steps )
 // Draw all views
 //========================================================================
 
-static void DrawAllViews( void )
+static void drawAllViews( void )
 {
     const GLfloat light_position[4] = {0.0f, 8.0f, 8.0f, 1.0f};
     const GLfloat light_diffuse[4]  = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -253,8 +253,8 @@ static void DrawAllViews( void )
     gluLookAt( 0.0f, 10.0f, 1e-3f,   // Eye-position (above)
                0.0f, 0.0f, 0.0f,     // View-point
                0.0f, 1.0f, 0.0f );   // Up-vector
-    DrawGrid( 0.5, 12 );
-    DrawScene();
+    drawGrid( 0.5, 12 );
+    drawScene();
 
     // Lower left view (FRONT VIEW)
     glViewport( 0, 0, width/2, height/2 );
@@ -264,8 +264,8 @@ static void DrawAllViews( void )
     gluLookAt( 0.0f, 0.0f, 10.0f,    // Eye-position (in front of)
                0.0f, 0.0f, 0.0f,     // View-point
                0.0f, 1.0f, 0.0f );   // Up-vector
-    DrawGrid( 0.5, 12 );
-    DrawScene();
+    drawGrid( 0.5, 12 );
+    drawScene();
 
     // Lower right view (SIDE VIEW)
     glViewport( width/2, 0, width/2, height/2 );
@@ -275,8 +275,8 @@ static void DrawAllViews( void )
     gluLookAt( 10.0f, 0.0f, 0.0f,    // Eye-position (to the right)
                0.0f, 0.0f, 0.0f,     // View-point
                0.0f, 1.0f, 0.0f );   // Up-vector
-    DrawGrid( 0.5, 12 );
-    DrawScene();
+    drawGrid( 0.5, 12 );
+    drawScene();
 
     // Disable line anti-aliasing
     glDisable( GL_LINE_SMOOTH );
@@ -316,7 +316,7 @@ static void DrawAllViews( void )
     glEnable( GL_LIGHTING );
 
     // Draw scene
-    DrawScene();
+    drawScene();
 
     // Disable lighting
     glDisable( GL_LIGHTING );
@@ -357,7 +357,7 @@ static void DrawAllViews( void )
 // Window size callback function
 //========================================================================
 
-static void GLFWCALL WindowSizeFun( int w, int h )
+static void GLFWCALL windowSizeFun( int w, int h )
 {
     width  = w;
     height = h > 0 ? h : 1;
@@ -369,7 +369,7 @@ static void GLFWCALL WindowSizeFun( int w, int h )
 // Window refresh callback function
 //========================================================================
 
-static void GLFWCALL WindowRefreshFun( void )
+static void GLFWCALL windowRefreshFun( void )
 {
     do_redraw = 1;
 }
@@ -379,7 +379,7 @@ static void GLFWCALL WindowRefreshFun( void )
 // Mouse position callback function
 //========================================================================
 
-static void GLFWCALL MousePosFun( int x, int y )
+static void GLFWCALL mousePosFun( int x, int y )
 {
     // Depending on which view was selected, rotate around different axes
     switch( active_view )
@@ -414,7 +414,7 @@ static void GLFWCALL MousePosFun( int x, int y )
 // Mouse button callback function
 //========================================================================
 
-static void GLFWCALL MouseButtonFun( int button, int action )
+static void GLFWCALL mouseButtonFun( int button, int action )
 {
     // Button clicked?
     if( ( button == GLFW_MOUSE_BUTTON_LEFT ) && action == GLFW_PRESS )
@@ -448,13 +448,11 @@ static void GLFWCALL MouseButtonFun( int button, int action )
 
 int main( void )
 {
-    int running;
-
     // Initialise GLFW
     if( !glfwInit() )
     {
         fprintf( stderr, "Failed to initialize GLFW\n" );
-        exit( 1 );
+        exit( EXIT_FAILURE );
     }
 
     // Open OpenGL window
@@ -462,7 +460,7 @@ int main( void )
     {
         fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit( 1 );
+        exit( EXIT_FAILURE );
     }
 
     // Enable vsync
@@ -481,10 +479,10 @@ int main( void )
     glfwDisable( GLFW_AUTO_POLL_EVENTS );
 
     // Set callback functions
-    glfwSetWindowSizeCallback( WindowSizeFun );
-    glfwSetWindowRefreshCallback( WindowRefreshFun );
-    glfwSetMousePosCallback( MousePosFun );
-    glfwSetMouseButtonCallback( MouseButtonFun );
+    glfwSetWindowSizeCallback( windowSizeFun );
+    glfwSetWindowRefreshCallback( windowRefreshFun );
+    glfwSetMousePosCallback( mousePosFun );
+    glfwSetMouseButtonCallback( mouseButtonFun );
 
     // Main loop
     do
@@ -493,7 +491,7 @@ int main( void )
         if( do_redraw )
         {
             // Draw all views
-            DrawAllViews();
+            drawAllViews();
 
             // Swap buffers
             glfwSwapBuffers();
@@ -504,15 +502,13 @@ int main( void )
         // Wait for new events
         glfwWaitEvents();
 
-        // Check if the ESC key was pressed or the window was closed
-        running = !glfwGetKey( GLFW_KEY_ESC ) &&
-                  glfwGetWindowParam( GLFW_OPENED );
-    }
-    while( running );
+    } // Check if the ESC key was pressed or the window was closed
+    while( glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS &&
+           glfwGetWindowParam( GLFW_OPENED ) );
 
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
-    exit( 0 );
+    exit( EXIT_SUCCESS );
 }
 
