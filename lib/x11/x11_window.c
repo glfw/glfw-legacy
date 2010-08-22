@@ -673,7 +673,7 @@ static Cursor createNULLCursor( Display *display, Window root )
 
 //========================================================================
 // Returns the specified attribute of the specified GLXFBConfig
-// NOTE: Do not call this unless we have found GLX 1.3 or GLX_SGIX_fbconfig
+// NOTE: Do not call this unless we have found GLX 1.3+ or GLX_SGIX_fbconfig
 //========================================================================
 
 static int getFBConfigAttrib( GLXFBConfig fbconfig, int attrib )
