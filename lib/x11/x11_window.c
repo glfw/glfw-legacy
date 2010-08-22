@@ -576,8 +576,11 @@ static int processSingleEvent( void )
             else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
             {
                 event.xclient.window = _glfwWin.root;
-                XSendEvent( _glfwLibrary.display, event.xclient.window,
-                            False, SubstructureNotifyMask | SubstructureRedirectMask, &event );
+                XSendEvent( _glfwLibrary.display,
+                            event.xclient.window,
+                            False,
+                            SubstructureNotifyMask | SubstructureRedirectMask,
+                            &event );
             }
 
             break;
