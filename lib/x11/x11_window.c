@@ -424,9 +424,9 @@ static int processSingleEvent( void )
         // Is a key being released?
         case KeyRelease:
         {
-            // Do not report key releases for key repeats. For key repeats
-            // we will get KeyRelease/KeyPress pairs with identical time
-            // stamps. User selected key repeat filtering is handled in
+            // Do not report key releases for key repeats. For key repeats we
+            // will get KeyRelease/KeyPress pairs with similar or identical
+            // time stamps. User selected key repeat filtering is handled in
             // _glfwInputKey()/_glfwInputChar().
             if( XEventsQueued( _glfwLibrary.display, QueuedAfterReading ) )
             {
