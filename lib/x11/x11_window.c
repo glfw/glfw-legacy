@@ -1177,7 +1177,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                              const _GLFWwndconfig* wndconfig,
                              const _GLFWfbconfig* fbconfig )
 {
-    unsigned int mask, fbcount;
+    unsigned int fbcount;
     _GLFWfbconfig *fbconfigs;
     _GLFWfbconfig closest;
     const _GLFWfbconfig *result;
@@ -1302,6 +1302,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     {
         Window window, root;
         int windowX, windowY, rootX, rootY;
+        unsigned int mask;
 
         XQueryPointer( _glfwLibrary.display,
                        _glfwWin.window,
