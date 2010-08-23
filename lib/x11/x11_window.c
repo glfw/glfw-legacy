@@ -1181,8 +1181,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     _GLFWfbconfig *fbconfigs;
     _GLFWfbconfig closest;
     const _GLFWfbconfig *result;
-    Window window, root;
-    int windowX, windowY, rootX, rootY;
 
     // Clear platform specific GLFW window state
     _glfwWin.visual           = (XVisualInfo*)NULL;
@@ -1302,6 +1300,9 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Retrieve and set initial cursor position
     {
+        Window window, root;
+        int windowX, windowY, rootX, rootY;
+
         XQueryPointer( _glfwLibrary.display,
                        _glfwWin.window,
                        &root,
