@@ -1761,7 +1761,7 @@ void _glfwPlatformRefreshWindowParams( void )
 
 void _glfwPlatformPollEvents( void )
 {
-    int winclosed = GL_FALSE;
+    int closeRequested = GL_FALSE;
 
     // Flag that the cursor has not moved
     _glfwInput.MouseMoved = GL_FALSE;
@@ -1775,7 +1775,7 @@ void _glfwPlatformPollEvents( void )
     {
         if( processSingleEvent() )
         {
-            winclosed = GL_TRUE;
+            closeRequested = GL_TRUE;
         }
     }
 
@@ -1879,13 +1879,11 @@ void _glfwPlatformPollEvents( void )
         _glfwInputDeactivation();
     }
 
-    // Was there a window close request?
-    if( winclosed && _glfwWin.windowCloseCallback )
+    if( closeRequested && _glfwWin.windowCloseCallback )
     {
-        // Check if the program wants us to close the window
-        winclosed = _glfwWin.windowCloseCallback();
+        closeRequested = _glfwWin.windowCloseCallback();
     }
-    if( winclosed )
+    if( closeRequested )
     {
         glfwCloseWindow();
     }
