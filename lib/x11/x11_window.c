@@ -1177,10 +1177,7 @@ int _glfwPlatformOpenWindow( int width, int height,
                              const _GLFWwndconfig* wndconfig,
                              const _GLFWfbconfig* fbconfig )
 {
-    unsigned int fbcount;
-    _GLFWfbconfig *fbconfigs;
     _GLFWfbconfig closest;
-    const _GLFWfbconfig *result;
 
     // Clear platform specific GLFW window state
     _glfwWin.visual           = (XVisualInfo*)NULL;
@@ -1205,6 +1202,10 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     // Choose the best available fbconfig
     {
+        unsigned int fbcount;
+        _GLFWfbconfig *fbconfigs;
+        const _GLFWfbconfig *result;
+
         fbconfigs = getFBConfigs( &fbcount );
         if( !fbconfigs )
         {
@@ -1222,8 +1223,6 @@ int _glfwPlatformOpenWindow( int width, int height,
 
         closest = *result;
         free( fbconfigs );
-        fbconfigs = NULL;
-        result = NULL;
     }
 
     if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
