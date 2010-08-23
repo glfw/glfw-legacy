@@ -394,10 +394,11 @@ static int translateChar( XKeyEvent *event )
 
 
 //========================================================================
-// Get and process next X event (called by glfwPollEvents)
+// Get and process next X event (called by _glfwPlatformPollEvents)
+// Returns GL_TRUE if a window close request was received
 //========================================================================
 
-static int processSingleEvent( void )
+static GLboolean processSingleEvent( void )
 {
     XEvent event, next_event;
 
