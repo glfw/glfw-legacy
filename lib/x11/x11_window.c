@@ -1756,12 +1756,12 @@ void _glfwPlatformRefreshWindowParams( void )
 
 
 //========================================================================
-// _glfwPlatformPollEvents() - Poll for new window and input events
+// Poll for new window and input events
 //========================================================================
 
 void _glfwPlatformPollEvents( void )
 {
-    int closeRequested = GL_FALSE;
+    GLboolean closeRequested = GL_FALSE;
 
     // Flag that the cursor has not moved
     _glfwInput.MouseMoved = GL_FALSE;
