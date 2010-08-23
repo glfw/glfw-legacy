@@ -19,6 +19,7 @@ all: Accuracy.app/Contents/MacOS/Accuracy \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
      FSInput.app/Contents/MacOS/FSInput \
+     Iconify.app/Contents/MacOS/Iconify \
      joysticks \
      Peter.app/Contents/MacOS/Peter \
      ReOpen.app/Contents/MacOS/ReOpen \
@@ -45,6 +46,10 @@ FSInput.app/Contents/MacOS/FSInput: fsinput.c $(LIB)
 	/bin/sh bundle.sh FSInput
 	$(CC) $(CFLAGS) fsinput.c $(LFLAGS) -o FSInput.app/Contents/MacOS/FSInput
 
+Iconify.app/Contents/MacOS/Iconify: iconify.c $(LIB)
+	/bin/sh bundle.sh Iconify
+	$(CC) $(CFLAGS) iconify.c $(LFLAGS) -o Iconify.app/Contents/MacOS/Iconify
+
 joysticks: joysticks.c $(LIB)
 	$(CC) $(CFLAGS) joysticks.c $(LFLAGS) -o joysticks
 
@@ -65,5 +70,5 @@ version: version.c $(LIB)
 
 clean:
 	rm -rf Accuracy.app Defaults.app Events.app FSAA.app FSInput.app \
-           joysticks Peter.app ReOpen.app Tearing.app version
+           Iconify.app joysticks Peter.app ReOpen.app Tearing.app version
 

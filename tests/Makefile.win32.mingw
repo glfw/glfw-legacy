@@ -14,10 +14,13 @@ LFLAGS = $(LIB) -lglu32 -lopengl32 -s
 WINDOWS = -mwindows
 CONSOLE = -mconsole
 
+BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fsinput.exe \
+           iconify.exe joysticks.exe peter.exe reopen.exe tearing.exe \
+           version.exe
+
 HEADER = ../include/GL/glfw.h
 
-all: accuracy.exe defaults.exe events.exe fsaa.exe fsinput.exe \
-     joysticks.exe peter.exe reopen.exe tearing.exe version.exe
+all: $(BINARIES)
 
 accuracy.exe: accuracy.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(WINDOWS) accuracy.c $(LFLAGS) -o $@
@@ -33,6 +36,9 @@ fsaa.exe: fsaa.c $(LIB) $(HEADER)
 
 fsinput.exe: fsinput.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(WINDOWS) fsinput.c $(LFLAGS) -o $@
+
+iconify.exe: iconify.c getopt.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) $(CONSOLE) iconify.c getopt.c $(LFLAGS) -o $@
 
 joysticks.exe: joysticks.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(CONSOLE) joysticks.c $(LFLAGS) -o $@
