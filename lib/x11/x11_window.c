@@ -1579,7 +1579,8 @@ void _glfwPlatformRestoreWindow( void )
     if( _glfwWin.fullscreen )
     {
         _glfwSetVideoMode( _glfwWin.screen,
-                       &_glfwWin.width, &_glfwWin.height, &_glfwWin.refreshRate );
+                           &_glfwWin.width, &_glfwWin.height,
+                           &_glfwWin.refreshRate );
     }
 
     // Un-iconify window
