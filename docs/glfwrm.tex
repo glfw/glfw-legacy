@@ -677,6 +677,8 @@ number of color bits will not be changed).
 \end{refdescription}
 
 \begin{refnotes}
+This function has no effect if the window is iconified.
+
 The \OpenGL\ context is guaranteed to be preserved after calling
 \textbf{glfwSetWindowSize}, even if the video mode is changed.
 
@@ -711,9 +713,13 @@ none
 \begin{refdescription}
 This function changes the position of an opened window. It does not have
 any effect on a fullscreen window.
+\end{refdescription}
+
+\begin{refnotes}
+This function has no effect if the window is iconified.
 
 The behaviour of this function on multi-monitor systems is ill-defined.
-\end{refdescription}
+\end{refnotes}
 
 
 %-------------------------------------------------------------------------
