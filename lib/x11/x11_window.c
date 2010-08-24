@@ -931,26 +931,7 @@ static void enterFullscreenMode( void )
 
     if( _glfwWin.mouseLock )
     {
-        if( !_glfwWin.pointerHidden )
-        {
-            XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                           createNULLCursor( _glfwLibrary.display,
-                                             _glfwWin.window ) );
-
-            _glfwWin.pointerHidden = GL_TRUE;
-        }
-
-        if( !_glfwWin.pointerGrabbed )
-        {
-            if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
-                              ButtonPressMask | ButtonReleaseMask |
-                              PointerMotionMask, GrabModeAsync,
-                              GrabModeAsync, _glfwWin.window, None,
-                              CurrentTime ) == GrabSuccess )
-            {
-                _glfwWin.pointerGrabbed = GL_TRUE;
-            }
-        }
+        _glfwPlatformHideMouseCursor();
     }
 
     // HACK: Try to get window inside viewport (for virtual displays) by moving
@@ -985,17 +966,7 @@ static void leaveFullscreenMode( void )
 #endif
     _glfwWin.FS.modeChanged = GL_FALSE;
 
-    if( _glfwWin.pointerHidden )
-    {
-        XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
-        _glfwWin.pointerHidden = GL_FALSE;
-    }
-
-    if( _glfwWin.pointerGrabbed )
-    {
-        XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.pointerGrabbed = GL_FALSE;
-    }
+    _glfwPlatformShowMouseCursor();
 }
 
 //========================================================================
