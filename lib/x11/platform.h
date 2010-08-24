@@ -275,6 +275,7 @@ struct _GLFWwin_struct {
     GLXContext    context;         // OpenGL rendering context
     Atom          WMDeleteWindow;  // For WM close detection
     Atom          WMPing;          // For WM ping response
+    Cursor        cursor;
 
     // GLX extensions
     PFNGLXSWAPINTERVALSGIPROC             SwapIntervalSGI;

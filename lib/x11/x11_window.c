@@ -1283,6 +1283,9 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.screen = DefaultScreen( _glfwLibrary.display );
     _glfwWin.root = RootWindow( _glfwLibrary.display, _glfwWin.screen );
 
+    // Create the invisible cursor for hidden cursor mode
+    _glfwWin.cursor = createNULLCursor( _glfwLibrary.display, _glfwWin.root );
+
     initGLXExtensions();
 
     // Choose the best available fbconfig
@@ -1410,6 +1413,12 @@ void _glfwPlatformCloseWindow( void )
     {
         XFreeColormap( _glfwLibrary.display, _glfwWin.colormap );
         _glfwWin.colormap = (Colormap) 0;
+    }
+
+    if( _glfwWin.cursor )
+    {
+        XFreeCursor( _glfwLibrary.display, _glfwWin.cursor );
+        _glfwWin.cursor = (Cursor) 0;
     }
 }
 
@@ -1713,9 +1722,7 @@ void _glfwPlatformHideMouseCursor( void )
     // Hide cursor
     if( !_glfwWin.pointerHidden )
     {
-        XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                       createNULLCursor( _glfwLibrary.display,
-                                         _glfwWin.window ) );
+        XDefineCursor( _glfwLibrary.display, _glfwWin.window, _glfwWin.cursor );
 
         _glfwWin.pointerHidden = GL_TRUE;
     }
