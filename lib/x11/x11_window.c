@@ -668,11 +668,6 @@ static GLboolean createWindow( int width, int height,
                          sizeof(protocols) / sizeof(Atom) );
     }
 
-    if( wndconfig->mode == GLFW_FULLSCREEN )
-    {
-        disableDecorations();
-    }
-
     // Set ICCCM WM_HINTS property
     {
         XWMHints *hints = XAllocWMHints();
