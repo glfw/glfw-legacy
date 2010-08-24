@@ -393,364 +393,6 @@ static int translateChar( XKeyEvent *event )
 
 
 //========================================================================
-// Enter fullscreen mode
-//========================================================================
-
-static void enterFullscreenMode( void )
-{
-    _glfwSetVideoMode( _glfwWin.screen,
-                       &_glfwWin.width, &_glfwWin.height,
-                       &_glfwWin.refreshRate );
-
-    if( _glfwWin.overrideRedirect )
-    {
-        XResizeWindow( _glfwLibrary.display, _glfwWin.window,
-                       _glfwWin.width, _glfwWin.height );
-        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
-        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
-                        RevertToParent, CurrentTime );
-    }
-
-    if( _glfwWin.mouseLock )
-    {
-        if( !_glfwWin.pointerHidden )
-        {
-            XDefineCursor( _glfwLibrary.display, _glfwWin.window,
-                           createNULLCursor( _glfwLibrary.display,
-                                             _glfwWin.window ) );
-
-            _glfwWin.pointerHidden = GL_TRUE;
-        }
-
-        if( !_glfwWin.pointerGrabbed )
-        {
-            if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
-                              ButtonPressMask | ButtonReleaseMask |
-                              PointerMotionMask, GrabModeAsync,
-                              GrabModeAsync, _glfwWin.window, None,
-                              CurrentTime ) == GrabSuccess )
-            {
-                _glfwWin.pointerGrabbed = GL_TRUE;
-            }
-        }
-    }
-
-    // HACK: Try to get window inside viewport (for virtual displays) by moving
-    // the mouse cursor to the upper left corner (and then to the center)
-    XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
-    XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
-                  _glfwWin.width / 2, _glfwWin.height / 2 );
-}
-
-//========================================================================
-// Leave fullscreen mode
-//========================================================================
-
-static void leaveFullscreenMode( void )
-{
-#if defined( _GLFW_HAS_XRANDR )
-    if( _glfwLibrary.XRandR.available )
-    {
-        // TODO: The code.
-    }
-#elif defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwLibrary.XF86VidMode.available )
-    {
-        // Unlock mode switch
-        XF86VidModeLockModeSwitch( _glfwLibrary.display, _glfwWin.screen, 0 );
-
-        // Change the video mode back to the old mode
-        XF86VidModeSwitchToMode( _glfwLibrary.display,
-                                 _glfwWin.screen,
-                                 &_glfwWin.FS.oldMode );
-    }
-#endif
-    _glfwWin.FS.modeChanged = GL_FALSE;
-
-    if( _glfwWin.pointerHidden )
-    {
-        XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
-        _glfwWin.pointerHidden = GL_FALSE;
-    }
-
-    if( _glfwWin.pointerGrabbed )
-    {
-        XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.pointerGrabbed = GL_FALSE;
-    }
-}
-
-//========================================================================
-// Get and process next X event (called by _glfwPlatformPollEvents)
-// Returns GL_TRUE if a window close request was received
-//========================================================================
-
-static GLboolean processSingleEvent( void )
-{
-    XEvent event;
-
-    // Pull next event from event queue
-    XNextEvent( _glfwLibrary.display, &event );
-
-    // Handle certain window messages
-    switch( event.type )
-    {
-        // Is a key being pressed?
-        case KeyPress:
-        {
-            // Translate and report key press
-            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_PRESS );
-
-            // Translate and report character input
-            if( _glfwWin.charCallback )
-            {
-                _glfwInputChar( translateChar( &event.xkey ), GLFW_PRESS );
-            }
-            break;
-        }
-
-        // Is a key being released?
-        case KeyRelease:
-        {
-            // Do not report key releases for key repeats. For key repeats we
-            // will get KeyRelease/KeyPress pairs with similar or identical
-            // time stamps. User selected key repeat filtering is handled in
-            // _glfwInputKey()/_glfwInputChar().
-            if( XEventsQueued( _glfwLibrary.display, QueuedAfterReading ) )
-            {
-                XEvent nextEvent;
-                XPeekEvent( _glfwLibrary.display, &nextEvent );
-
-                if( nextEvent.type == KeyPress &&
-                    nextEvent.xkey.window == event.xkey.window &&
-                    nextEvent.xkey.keycode == event.xkey.keycode )
-                {
-                    // This last check is a hack to work around key repeats
-                    // leaking through due to some sort of time drift
-                    // Toshiyuki Takahashi can press a button 16 times per
-                    // second so it's fairly safe to assume that no human is
-                    // pressing the key 50 times per second (value is ms)
-                    if( ( nextEvent.xkey.time - event.xkey.time ) < 20 )
-                    {
-                        // Do not report anything for this event
-                        break;
-                    }
-                }
-            }
-
-            // Translate and report key release
-            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_RELEASE );
-
-            // Translate and report character input
-            if( _glfwWin.charCallback )
-            {
-                _glfwInputChar( translateChar( &event.xkey ), GLFW_RELEASE );
-            }
-            break;
-        }
-
-        // Were any of the mouse-buttons pressed?
-        case ButtonPress:
-        {
-            if( event.xbutton.button == Button1 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
-            }
-            else if( event.xbutton.button == Button2 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
-            }
-            else if( event.xbutton.button == Button3 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT, GLFW_PRESS );
-            }
-
-            // XFree86 3.3.2 and later translates mouse wheel up/down into
-            // mouse button 4 & 5 presses
-            else if( event.xbutton.button == Button4 )
-            {
-                _glfwInput.WheelPos++;  // To verify: is this up or down?
-                if( _glfwWin.mouseWheelCallback )
-                {
-                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
-                }
-            }
-            else if( event.xbutton.button == Button5 )
-            {
-                _glfwInput.WheelPos--;
-                if( _glfwWin.mouseWheelCallback )
-                {
-                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
-                }
-            }
-            break;
-        }
-
-        // Were any of the mouse-buttons released?
-        case ButtonRelease:
-        {
-            if( event.xbutton.button == Button1 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
-                                      GLFW_RELEASE );
-            }
-            else if( event.xbutton.button == Button2 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE,
-                                      GLFW_RELEASE );
-            }
-            else if( event.xbutton.button == Button3 )
-            {
-                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT,
-                                      GLFW_RELEASE );
-            }
-            break;
-        }
-
-        // Was the mouse moved?
-        case MotionNotify:
-        {
-            if( event.xmotion.x != _glfwInput.CursorPosX ||
-                event.xmotion.y != _glfwInput.CursorPosY )
-            {
-                if( _glfwWin.mouseLock )
-                {
-                    _glfwInput.MousePosX += event.xmotion.x -
-                                            _glfwInput.CursorPosX;
-                    _glfwInput.MousePosY += event.xmotion.y -
-                                            _glfwInput.CursorPosY;
-                }
-                else
-                {
-                    _glfwInput.MousePosX = event.xmotion.x;
-                    _glfwInput.MousePosY = event.xmotion.y;
-                }
-                _glfwInput.CursorPosX = event.xmotion.x;
-                _glfwInput.CursorPosY = event.xmotion.y;
-                _glfwInput.MouseMoved = GL_TRUE;
-
-                // Call user callback function
-                if( _glfwWin.mousePosCallback )
-                {
-                    _glfwWin.mousePosCallback( _glfwInput.MousePosX,
-                                               _glfwInput.MousePosY );
-                }
-            }
-            break;
-        }
-
-        // Was the window resized?
-        case ConfigureNotify:
-        {
-            if( event.xconfigure.width != _glfwWin.width ||
-                event.xconfigure.height != _glfwWin.height )
-            {
-                _glfwWin.width = event.xconfigure.width;
-                _glfwWin.height = event.xconfigure.height;
-                if( _glfwWin.windowSizeCallback )
-                {
-                    _glfwWin.windowSizeCallback( _glfwWin.width,
-                                                 _glfwWin.height );
-                }
-            }
-            break;
-        }
-
-        // Was the window closed by the window manager?
-        case ClientMessage:
-        {
-            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMDeleteWindow )
-            {
-                return GL_TRUE;
-            }
-            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
-            {
-                event.xclient.window = _glfwWin.root;
-                XSendEvent( _glfwLibrary.display,
-                            event.xclient.window,
-                            False,
-                            SubstructureNotifyMask | SubstructureRedirectMask,
-                            &event );
-            }
-
-            break;
-        }
-
-        // Was the window mapped (un-iconified)?
-        case MapNotify:
-            _glfwWin.iconified = GL_FALSE;
-            break;
-
-        // Was the window unmapped (iconified)?
-        case UnmapNotify:
-            _glfwWin.iconified = GL_TRUE;
-            break;
-
-        // Was the window activated?
-        case FocusIn:
-        {
-            _glfwWin.active = GL_TRUE;
-
-            if( _glfwWin.fullscreen )
-            {
-                enterFullscreenMode();
-            }
-
-            break;
-        }
-
-        // Was the window de-activated?
-        case FocusOut:
-        {
-            _glfwWin.active = GL_FALSE;
-            _glfwInputDeactivation();
-
-            if( _glfwWin.fullscreen )
-            {
-                leaveFullscreenMode();
-            }
-
-            break;
-        }
-
-        // Was the window contents damaged?
-        case Expose:
-        {
-            // Call user callback function
-            if( _glfwWin.windowRefreshCallback )
-            {
-                _glfwWin.windowRefreshCallback();
-            }
-            break;
-        }
-
-        // Was the window destroyed?
-        case DestroyNotify:
-            return GL_FALSE;
-
-        default:
-        {
-#if defined( _GLFW_HAS_XRANDR )
-            switch( event.type - _glfwLibrary.XRandR.eventBase )
-            {
-                case RRScreenChangeNotify:
-                {
-                    // Show XRandR that we really care
-                    XRRUpdateConfiguration( &event );
-                    break;
-                }
-            }
-#endif
-            break;
-        }
-    }
-
-    // The window was not destroyed
-    return GL_FALSE;
-}
-
-
-//========================================================================
 // Create a blank cursor (for locked mouse mode)
 //========================================================================
 
@@ -1265,6 +907,364 @@ static GLboolean createWindow( int width, int height,
                   (char*)_glfwWin.window );
 
     return GL_TRUE;
+}
+
+
+//========================================================================
+// Enter fullscreen mode
+//========================================================================
+
+static void enterFullscreenMode( void )
+{
+    _glfwSetVideoMode( _glfwWin.screen,
+                       &_glfwWin.width, &_glfwWin.height,
+                       &_glfwWin.refreshRate );
+
+    if( _glfwWin.overrideRedirect )
+    {
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window,
+                       _glfwWin.width, _glfwWin.height );
+        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
+        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
+                        RevertToParent, CurrentTime );
+    }
+
+    if( _glfwWin.mouseLock )
+    {
+        if( !_glfwWin.pointerHidden )
+        {
+            XDefineCursor( _glfwLibrary.display, _glfwWin.window,
+                           createNULLCursor( _glfwLibrary.display,
+                                             _glfwWin.window ) );
+
+            _glfwWin.pointerHidden = GL_TRUE;
+        }
+
+        if( !_glfwWin.pointerGrabbed )
+        {
+            if( XGrabPointer( _glfwLibrary.display, _glfwWin.window, True,
+                              ButtonPressMask | ButtonReleaseMask |
+                              PointerMotionMask, GrabModeAsync,
+                              GrabModeAsync, _glfwWin.window, None,
+                              CurrentTime ) == GrabSuccess )
+            {
+                _glfwWin.pointerGrabbed = GL_TRUE;
+            }
+        }
+    }
+
+    // HACK: Try to get window inside viewport (for virtual displays) by moving
+    // the mouse cursor to the upper left corner (and then to the center)
+    XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
+    XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
+                  _glfwWin.width / 2, _glfwWin.height / 2 );
+}
+
+//========================================================================
+// Leave fullscreen mode
+//========================================================================
+
+static void leaveFullscreenMode( void )
+{
+#if defined( _GLFW_HAS_XRANDR )
+    if( _glfwLibrary.XRandR.available )
+    {
+        // TODO: The code.
+    }
+#elif defined( _GLFW_HAS_XF86VIDMODE )
+    if( _glfwLibrary.XF86VidMode.available )
+    {
+        // Unlock mode switch
+        XF86VidModeLockModeSwitch( _glfwLibrary.display, _glfwWin.screen, 0 );
+
+        // Change the video mode back to the old mode
+        XF86VidModeSwitchToMode( _glfwLibrary.display,
+                                 _glfwWin.screen,
+                                 &_glfwWin.FS.oldMode );
+    }
+#endif
+    _glfwWin.FS.modeChanged = GL_FALSE;
+
+    if( _glfwWin.pointerHidden )
+    {
+        XUndefineCursor( _glfwLibrary.display, _glfwWin.window );
+        _glfwWin.pointerHidden = GL_FALSE;
+    }
+
+    if( _glfwWin.pointerGrabbed )
+    {
+        XUngrabPointer( _glfwLibrary.display, CurrentTime );
+        _glfwWin.pointerGrabbed = GL_FALSE;
+    }
+}
+
+//========================================================================
+// Get and process next X event (called by _glfwPlatformPollEvents)
+// Returns GL_TRUE if a window close request was received
+//========================================================================
+
+static GLboolean processSingleEvent( void )
+{
+    XEvent event;
+
+    // Pull next event from event queue
+    XNextEvent( _glfwLibrary.display, &event );
+
+    // Handle certain window messages
+    switch( event.type )
+    {
+        // Is a key being pressed?
+        case KeyPress:
+        {
+            // Translate and report key press
+            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_PRESS );
+
+            // Translate and report character input
+            if( _glfwWin.charCallback )
+            {
+                _glfwInputChar( translateChar( &event.xkey ), GLFW_PRESS );
+            }
+            break;
+        }
+
+        // Is a key being released?
+        case KeyRelease:
+        {
+            // Do not report key releases for key repeats. For key repeats we
+            // will get KeyRelease/KeyPress pairs with similar or identical
+            // time stamps. User selected key repeat filtering is handled in
+            // _glfwInputKey()/_glfwInputChar().
+            if( XEventsQueued( _glfwLibrary.display, QueuedAfterReading ) )
+            {
+                XEvent nextEvent;
+                XPeekEvent( _glfwLibrary.display, &nextEvent );
+
+                if( nextEvent.type == KeyPress &&
+                    nextEvent.xkey.window == event.xkey.window &&
+                    nextEvent.xkey.keycode == event.xkey.keycode )
+                {
+                    // This last check is a hack to work around key repeats
+                    // leaking through due to some sort of time drift
+                    // Toshiyuki Takahashi can press a button 16 times per
+                    // second so it's fairly safe to assume that no human is
+                    // pressing the key 50 times per second (value is ms)
+                    if( ( nextEvent.xkey.time - event.xkey.time ) < 20 )
+                    {
+                        // Do not report anything for this event
+                        break;
+                    }
+                }
+            }
+
+            // Translate and report key release
+            _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_RELEASE );
+
+            // Translate and report character input
+            if( _glfwWin.charCallback )
+            {
+                _glfwInputChar( translateChar( &event.xkey ), GLFW_RELEASE );
+            }
+            break;
+        }
+
+        // Were any of the mouse-buttons pressed?
+        case ButtonPress:
+        {
+            if( event.xbutton.button == Button1 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
+            }
+            else if( event.xbutton.button == Button2 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS );
+            }
+            else if( event.xbutton.button == Button3 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT, GLFW_PRESS );
+            }
+
+            // XFree86 3.3.2 and later translates mouse wheel up/down into
+            // mouse button 4 & 5 presses
+            else if( event.xbutton.button == Button4 )
+            {
+                _glfwInput.WheelPos++;  // To verify: is this up or down?
+                if( _glfwWin.mouseWheelCallback )
+                {
+                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
+                }
+            }
+            else if( event.xbutton.button == Button5 )
+            {
+                _glfwInput.WheelPos--;
+                if( _glfwWin.mouseWheelCallback )
+                {
+                    _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
+                }
+            }
+            break;
+        }
+
+        // Were any of the mouse-buttons released?
+        case ButtonRelease:
+        {
+            if( event.xbutton.button == Button1 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
+                                      GLFW_RELEASE );
+            }
+            else if( event.xbutton.button == Button2 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_MIDDLE,
+                                      GLFW_RELEASE );
+            }
+            else if( event.xbutton.button == Button3 )
+            {
+                _glfwInputMouseClick( GLFW_MOUSE_BUTTON_RIGHT,
+                                      GLFW_RELEASE );
+            }
+            break;
+        }
+
+        // Was the mouse moved?
+        case MotionNotify:
+        {
+            if( event.xmotion.x != _glfwInput.CursorPosX ||
+                event.xmotion.y != _glfwInput.CursorPosY )
+            {
+                if( _glfwWin.mouseLock )
+                {
+                    _glfwInput.MousePosX += event.xmotion.x -
+                                            _glfwInput.CursorPosX;
+                    _glfwInput.MousePosY += event.xmotion.y -
+                                            _glfwInput.CursorPosY;
+                }
+                else
+                {
+                    _glfwInput.MousePosX = event.xmotion.x;
+                    _glfwInput.MousePosY = event.xmotion.y;
+                }
+                _glfwInput.CursorPosX = event.xmotion.x;
+                _glfwInput.CursorPosY = event.xmotion.y;
+                _glfwInput.MouseMoved = GL_TRUE;
+
+                // Call user callback function
+                if( _glfwWin.mousePosCallback )
+                {
+                    _glfwWin.mousePosCallback( _glfwInput.MousePosX,
+                                               _glfwInput.MousePosY );
+                }
+            }
+            break;
+        }
+
+        // Was the window resized?
+        case ConfigureNotify:
+        {
+            if( event.xconfigure.width != _glfwWin.width ||
+                event.xconfigure.height != _glfwWin.height )
+            {
+                _glfwWin.width = event.xconfigure.width;
+                _glfwWin.height = event.xconfigure.height;
+                if( _glfwWin.windowSizeCallback )
+                {
+                    _glfwWin.windowSizeCallback( _glfwWin.width,
+                                                 _glfwWin.height );
+                }
+            }
+            break;
+        }
+
+        // Was the window closed by the window manager?
+        case ClientMessage:
+        {
+            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMDeleteWindow )
+            {
+                return GL_TRUE;
+            }
+            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
+            {
+                event.xclient.window = _glfwWin.root;
+                XSendEvent( _glfwLibrary.display,
+                            event.xclient.window,
+                            False,
+                            SubstructureNotifyMask | SubstructureRedirectMask,
+                            &event );
+            }
+
+            break;
+        }
+
+        // Was the window mapped (un-iconified)?
+        case MapNotify:
+            _glfwWin.iconified = GL_FALSE;
+            break;
+
+        // Was the window unmapped (iconified)?
+        case UnmapNotify:
+            _glfwWin.iconified = GL_TRUE;
+            break;
+
+        // Was the window activated?
+        case FocusIn:
+        {
+            _glfwWin.active = GL_TRUE;
+
+            if( _glfwWin.fullscreen )
+            {
+                enterFullscreenMode();
+            }
+
+            break;
+        }
+
+        // Was the window de-activated?
+        case FocusOut:
+        {
+            _glfwWin.active = GL_FALSE;
+            _glfwInputDeactivation();
+
+            if( _glfwWin.fullscreen )
+            {
+                leaveFullscreenMode();
+            }
+
+            break;
+        }
+
+        // Was the window contents damaged?
+        case Expose:
+        {
+            // Call user callback function
+            if( _glfwWin.windowRefreshCallback )
+            {
+                _glfwWin.windowRefreshCallback();
+            }
+            break;
+        }
+
+        // Was the window destroyed?
+        case DestroyNotify:
+            return GL_FALSE;
+
+        default:
+        {
+#if defined( _GLFW_HAS_XRANDR )
+            switch( event.type - _glfwLibrary.XRandR.eventBase )
+            {
+                case RRScreenChangeNotify:
+                {
+                    // Show XRandR that we really care
+                    XRRUpdateConfiguration( &event );
+                    break;
+                }
+            }
+#endif
+            break;
+        }
+    }
+
+    // The window was not destroyed
+    return GL_FALSE;
 }
 
 
