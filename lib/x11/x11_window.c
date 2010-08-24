@@ -741,9 +741,6 @@ static void enterFullscreenMode( void )
                        &_glfwWin.width, &_glfwWin.height,
                        &_glfwWin.refreshRate );
 
-    // NOTE: The section below is TEMPORARY code, to be replaced with proper
-    // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
-
     if( _glfwWin.overrideRedirect )
     {
         XSetWindowAttributes attributes;
@@ -768,11 +765,18 @@ static void enterFullscreenMode( void )
     }
     else
     {
+        // NOTE: The section below is TEMPORARY code, to be replaced with proper
+        // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
+
         Atom activeWindowAtom = XInternAtom( _glfwLibrary.display,
                                              "_NET_ACTIVE_WINDOW", True );
 
         if( activeWindowAtom != None )
         {
+            // Ask the window manager to raise and focus the GLFW window
+            // Only focused windows with the _NET_WM_STATE_FULLSCREEN state end
+            // up on top of all other windows (Stacking order in the EWMH spec)
+
             XEvent event;
             memset( &event, 0, sizeof(event) );
 
@@ -796,6 +800,10 @@ static void enterFullscreenMode( void )
 
         if( stateAtom != None && fullscreenAtom != None )
         {
+            // Ask the window manager to make the GLFW window a fullscreen window
+            // Fullscreen windows are undecorated and, when focused, are kept
+            // on top of all other windows
+
             XEvent event;
             memset( &event, 0, sizeof(event) );
 
@@ -852,6 +860,9 @@ static void leaveFullscreenMode( void )
 
     if( !_glfwWin.overrideRedirect )
     {
+        // NOTE: The section below is TEMPORARY code, to be replaced with proper
+        // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
+
         Atom stateAtom = XInternAtom( _glfwLibrary.display,
                                       "_NET_WM_STATE", True );
         Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
@@ -859,6 +870,9 @@ static void leaveFullscreenMode( void )
 
         if( stateAtom != None && fullscreenAtom != None )
         {
+            // Ask the window manager to make the GLFW window a normal window
+            // Normal windows usually have frames and other decorations
+
             XEvent event;
             memset( &event, 0, sizeof(event) );
 
