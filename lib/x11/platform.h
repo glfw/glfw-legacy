@@ -487,6 +487,7 @@ void _glfwInitTimer( void );
 int  _glfwGetClosestVideoMode( int screen, int *width, int *height, int *rate );
 void _glfwSetVideoModeMODE( int screen, int mode, int rate );
 void _glfwSetVideoMode( int screen, int *width, int *height, int *rate );
+void _glfwRestoreVideoMode( void );
 
 // Joystick input
 void _glfwInitJoysticks( void );

@@ -966,6 +966,8 @@ static void enterFullscreenMode( void )
 
 static void leaveFullscreenMode( void )
 {
+    _glfwRestoreVideoMode();
+
     // Did we change the screen saver setting?
     if( _glfwWin.Saver.changed )
     {
@@ -980,42 +982,6 @@ static void leaveFullscreenMode( void )
     }
 
     // Did we change the fullscreen resolution?
-    if( _glfwWin.FS.modeChanged )
-    {
-#if defined( _GLFW_HAS_XRANDR )
-        if( _glfwLibrary.XRandR.available )
-        {
-            XRRScreenConfiguration *sc;
-
-            if( _glfwLibrary.XRandR.available )
-            {
-                sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
-
-                XRRSetScreenConfig( _glfwLibrary.display,
-                                    sc,
-                                    _glfwWin.root,
-                                    _glfwWin.FS.oldSizeID,
-                                    _glfwWin.FS.oldRotation,
-                                    CurrentTime );
-
-                XRRFreeScreenConfigInfo( sc );
-            }
-        }
-#elif defined( _GLFW_HAS_XF86VIDMODE )
-        if( _glfwLibrary.XF86VidMode.available )
-        {
-            // Unlock mode switch
-            XF86VidModeLockModeSwitch( _glfwLibrary.display, _glfwWin.screen, 0 );
-
-            // Change the video mode back to the old mode
-            XF86VidModeSwitchToMode( _glfwLibrary.display,
-                                    _glfwWin.screen,
-                                    &_glfwWin.FS.oldMode );
-        }
-#endif
-        _glfwWin.FS.modeChanged = GL_FALSE;
-    }
-
     if( _glfwWin.mouseLock )
     {
         _glfwPlatformShowMouseCursor();
