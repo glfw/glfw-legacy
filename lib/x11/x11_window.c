@@ -901,7 +901,7 @@ static GLboolean createWindow( int width, int height,
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
 
-    // Make sure window is mapped
+    // Make sure the window is mapped
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
     XPeekIfEvent( _glfwLibrary.display, &event, isMapNotify,
                   (char*)_glfwWin.window );
@@ -916,17 +916,30 @@ static GLboolean createWindow( int width, int height,
 
 static void enterFullscreenMode( void )
 {
+    // Remember old screen saver settings
+    XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
+                        &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
+                        &_glfwWin.Saver.exposure );
+
+    // Disable screen saver
+    XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
+                        DefaultExposures );
+
+    _glfwWin.Saver.changed = GL_TRUE;
+
     _glfwSetVideoMode( _glfwWin.screen,
                        &_glfwWin.width, &_glfwWin.height,
                        &_glfwWin.refreshRate );
+
+    XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
+    XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
+                    RevertToParent, CurrentTime );
 
     if( _glfwWin.overrideRedirect )
     {
         XResizeWindow( _glfwLibrary.display, _glfwWin.window,
                        _glfwWin.width, _glfwWin.height );
         XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
-        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
-                        RevertToParent, CurrentTime );
     }
 
     if( _glfwWin.mouseLock )
@@ -947,26 +960,59 @@ static void enterFullscreenMode( void )
 
 static void leaveFullscreenMode( void )
 {
+    // Did we change the screen saver setting?
+    if( _glfwWin.Saver.changed )
+    {
+        // Restore old screen saver settings
+        XSetScreenSaver( _glfwLibrary.display,
+                         _glfwWin.Saver.timeout,
+                         _glfwWin.Saver.interval,
+                         _glfwWin.Saver.blanking,
+                         _glfwWin.Saver.exposure );
+        _glfwWin.Saver.changed = GL_FALSE;
+    }
+
+    // Did we change the fullscreen resolution?
+    if( _glfwWin.FS.modeChanged )
+    {
 #if defined( _GLFW_HAS_XRANDR )
-    if( _glfwLibrary.XRandR.available )
-    {
-        // TODO: The code.
-    }
+        if( _glfwLibrary.XRandR.available )
+        {
+            XRRScreenConfiguration *sc;
+
+            if( _glfwLibrary.XRandR.available )
+            {
+                sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
+
+                XRRSetScreenConfig( _glfwLibrary.display,
+                                    sc,
+                                    _glfwWin.root,
+                                    _glfwWin.FS.oldSizeID,
+                                    _glfwWin.FS.oldRotation,
+                                    CurrentTime );
+
+                XRRFreeScreenConfigInfo( sc );
+            }
+        }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
-    if( _glfwLibrary.XF86VidMode.available )
-    {
-        // Unlock mode switch
-        XF86VidModeLockModeSwitch( _glfwLibrary.display, _glfwWin.screen, 0 );
+        if( _glfwLibrary.XF86VidMode.available )
+        {
+            // Unlock mode switch
+            XF86VidModeLockModeSwitch( _glfwLibrary.display, _glfwWin.screen, 0 );
 
-        // Change the video mode back to the old mode
-        XF86VidModeSwitchToMode( _glfwLibrary.display,
-                                 _glfwWin.screen,
-                                 &_glfwWin.FS.oldMode );
-    }
+            // Change the video mode back to the old mode
+            XF86VidModeSwitchToMode( _glfwLibrary.display,
+                                    _glfwWin.screen,
+                                    &_glfwWin.FS.oldMode );
+        }
 #endif
-    _glfwWin.FS.modeChanged = GL_FALSE;
+        _glfwWin.FS.modeChanged = GL_FALSE;
+    }
 
-    _glfwPlatformShowMouseCursor();
+    if( _glfwWin.mouseLock )
+    {
+        _glfwPlatformShowMouseCursor();
+    }
 }
 
 //========================================================================
@@ -1180,11 +1226,6 @@ static GLboolean processSingleEvent( void )
         {
             _glfwWin.active = GL_TRUE;
 
-            if( _glfwWin.fullscreen )
-            {
-                enterFullscreenMode();
-            }
-
             break;
         }
 
@@ -1193,11 +1234,6 @@ static GLboolean processSingleEvent( void )
         {
             _glfwWin.active = GL_FALSE;
             _glfwInputDeactivation();
-
-            if( _glfwWin.fullscreen )
-            {
-                leaveFullscreenMode();
-            }
 
             break;
         }
@@ -1307,18 +1343,6 @@ int _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    if( wndconfig->mode == GLFW_FULLSCREEN )
-    {
-        // Remember old screen saver settings
-        XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
-                         &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
-                         &_glfwWin.Saver.exposure );
-
-        // Disable screen saver
-        XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
-                         DefaultExposures );
-    }
-
     if( !createWindow( width, height, wndconfig ) )
     {
         _glfwPlatformCloseWindow();
@@ -1336,8 +1360,10 @@ int _glfwPlatformOpenWindow( int width, int height,
                             RRScreenChangeNotifyMask );
         }
 #endif
+        enterFullscreenMode();
     }
 
+    // Process the window map event and any other that may have arrived
     _glfwPlatformPollEvents();
 
     // Retrieve and set initial cursor position
@@ -1373,6 +1399,11 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 void _glfwPlatformCloseWindow( void )
 {
+    if( _glfwWin.fullscreen )
+    {
+        leaveFullscreenMode();
+    }
+
     // Do we have a rendering context?
     if( _glfwWin.context )
     {
@@ -1391,18 +1422,6 @@ void _glfwPlatformCloseWindow( void )
         _glfwWin.visual = NULL;
     }
 
-    // Ungrab pointer and/or keyboard?
-    if( _glfwWin.keyboardGrabbed )
-    {
-        XUngrabKeyboard( _glfwLibrary.display, CurrentTime );
-        _glfwWin.keyboardGrabbed = GL_FALSE;
-    }
-    if( _glfwWin.pointerGrabbed )
-    {
-        XUngrabPointer( _glfwLibrary.display, CurrentTime );
-        _glfwWin.pointerGrabbed = GL_FALSE;
-    }
-
     // Do we have a window?
     if( _glfwWin.window )
     {
@@ -1418,54 +1437,6 @@ void _glfwPlatformCloseWindow( void )
     {
         XFreeColormap( _glfwLibrary.display, _glfwWin.colormap );
         _glfwWin.colormap = (Colormap) 0;
-    }
-
-    // Did we change the fullscreen resolution?
-    if( _glfwWin.FS.modeChanged )
-    {
-#if defined( _GLFW_HAS_XRANDR )
-        XRRScreenConfiguration *sc;
-
-        if( _glfwLibrary.XRandR.available )
-        {
-            sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
-
-            XRRSetScreenConfig( _glfwLibrary.display,
-                                sc,
-                                _glfwWin.root,
-                                _glfwWin.FS.oldSizeID,
-                                _glfwWin.FS.oldRotation,
-                                CurrentTime );
-
-            XRRFreeScreenConfigInfo( sc );
-        }
-#elif defined( _GLFW_HAS_XF86VIDMODE )
-        if( _glfwLibrary.XF86VidMode.available )
-        {
-            // Unlock mode switch
-            XF86VidModeLockModeSwitch( _glfwLibrary.display,
-                                       _glfwWin.screen,
-                                       0 );
-
-            // Change the video mode back to the old mode
-            XF86VidModeSwitchToMode( _glfwLibrary.display,
-                                     _glfwWin.screen,
-                                     &_glfwWin.FS.oldMode );
-        }
-#endif
-        _glfwWin.FS.modeChanged = GL_FALSE;
-    }
-
-    // Did we change the screen saver setting?
-    if( _glfwWin.Saver.changed )
-    {
-        // Restore old screen saver settings
-        XSetScreenSaver( _glfwLibrary.display,
-                         _glfwWin.Saver.timeout,
-                         _glfwWin.Saver.interval,
-                         _glfwWin.Saver.blanking,
-                         _glfwWin.Saver.exposure );
-        _glfwWin.Saver.changed = GL_FALSE;
     }
 }
 
