@@ -1373,10 +1373,6 @@ int _glfwPlatformOpenWindow( int width, int height,
 
 void _glfwPlatformCloseWindow( void )
 {
-#if defined( _GLFW_HAS_XRANDR )
-    XRRScreenConfiguration *sc;
-#endif
-
     // Do we have a rendering context?
     if( _glfwWin.context )
     {
@@ -1428,6 +1424,8 @@ void _glfwPlatformCloseWindow( void )
     if( _glfwWin.FS.modeChanged )
     {
 #if defined( _GLFW_HAS_XRANDR )
+        XRRScreenConfiguration *sc;
+
         if( _glfwLibrary.XRandR.available )
         {
             sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
