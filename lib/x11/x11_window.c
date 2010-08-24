@@ -916,27 +916,32 @@ static GLboolean createWindow( int width, int height,
 
 static void enterFullscreenMode( void )
 {
-    // Remember old screen saver settings
-    XGetScreenSaver( _glfwLibrary.display, &_glfwWin.Saver.timeout,
-                        &_glfwWin.Saver.interval, &_glfwWin.Saver.blanking,
-                        &_glfwWin.Saver.exposure );
+    if( !_glfwWin.Saver.changed )
+    {
+        // Remember old screen saver settings
+        XGetScreenSaver( _glfwLibrary.display,
+                         &_glfwWin.Saver.timeout, &_glfwWin.Saver.interval,
+                         &_glfwWin.Saver.blanking, &_glfwWin.Saver.exposure );
 
-    // Disable screen saver
-    XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
+        // Disable screen saver
+        XSetScreenSaver( _glfwLibrary.display, 0, 0, DontPreferBlanking,
                         DefaultExposures );
 
-    _glfwWin.Saver.changed = GL_TRUE;
+        _glfwWin.Saver.changed = GL_TRUE;
+    }
 
     _glfwSetVideoMode( _glfwWin.screen,
                        &_glfwWin.width, &_glfwWin.height,
                        &_glfwWin.refreshRate );
 
-    XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
-    XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
-                    RevertToParent, CurrentTime );
-
     if( _glfwWin.overrideRedirect )
     {
+        // In override-redirect mode, we have divorced ourselves from the
+        // window manager, so we need to do everything manually
+
+        XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
+        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
+                        RevertToParent, CurrentTime );
         XResizeWindow( _glfwLibrary.display, _glfwWin.window,
                        _glfwWin.width, _glfwWin.height );
         XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
@@ -949,6 +954,7 @@ static void enterFullscreenMode( void )
 
     // HACK: Try to get window inside viewport (for virtual displays) by moving
     // the mouse cursor to the upper left corner (and then to the center)
+    // This hack should be harmless on saner systems as well
     XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, 0,0 );
     XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0,
                   _glfwWin.width / 2, _glfwWin.height / 2 );
@@ -969,6 +975,7 @@ static void leaveFullscreenMode( void )
                          _glfwWin.Saver.interval,
                          _glfwWin.Saver.blanking,
                          _glfwWin.Saver.exposure );
+
         _glfwWin.Saver.changed = GL_FALSE;
     }
 
