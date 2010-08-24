@@ -768,6 +768,27 @@ static void enterFullscreenMode( void )
     }
     else
     {
+        Atom activeWindowAtom = XInternAtom( _glfwLibrary.display,
+                                             "_NET_ACTIVE_WINDOW", True );
+
+        if( activeWindowAtom != None )
+        {
+            XEvent event;
+            memset( &event, 0, sizeof(event) );
+
+            event.type = ClientMessage;
+            event.xclient.window = _glfwWin.window;
+            event.xclient.format = 32;
+            event.xclient.message_type = activeWindowAtom;
+            event.xclient.data.l[0] = 1; // Sender is a normal application
+
+            XSendEvent( _glfwLibrary.display,
+                        _glfwWin.root,
+                        False,
+                        SubstructureNotifyMask | SubstructureRedirectMask,
+                        &event );
+        }
+
         Atom stateAtom = XInternAtom( _glfwLibrary.display,
                                       "_NET_WM_STATE", True );
         Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
