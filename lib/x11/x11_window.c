@@ -31,18 +31,6 @@
 #include "internal.h"
 
 
-/* KDE decoration values */
-enum {
-  KDE_noDecoration = 0,
-  KDE_normalDecoration = 1,
-  KDE_tinyDecoration = 2,
-  KDE_noFocus = 256,
-  KDE_standaloneMenuBar = 512,
-  KDE_desktopIcon = 1024 ,
-  KDE_staysOnTop = 2048
-};
-
-
 /* Define GLX 1.4 FSAA tokens if not already defined */
 #ifndef GLX_VERSION_1_4
 
@@ -51,6 +39,10 @@ enum {
 
 #endif /*GLX_VERSION_1_4*/
 
+// Action for EWMH client messages
+#define _NET_WM_STATE_REMOVE        0
+#define _NET_WM_STATE_ADD           1
+#define _NET_WM_STATE_TOGGLE        2
 
 
 //************************************************************************
@@ -64,186 +56,6 @@ enum {
 static Bool isMapNotify( Display *d, XEvent *e, char *arg )
 {
     return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
-}
-
-
-//========================================================================
-// Turn off window decorations
-// Based on xawdecode: src/wmhooks.c
-//========================================================================
-
-#define MWM_HINTS_DECORATIONS (1L << 1)
-
-static void disableDecorations( void )
-{
-    GLboolean removedDecorations;
-    Atom hintAtom;
-    XSetWindowAttributes attributes;
-
-    removedDecorations = GL_FALSE;
-
-    // First try to set MWM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
-    if ( hintAtom != None )
-    {
-        struct {
-            unsigned long flags;
-            unsigned long functions;
-            unsigned long decorations;
-                     long input_mode;
-            unsigned long status;
-        } MWMHints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
-
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
-                         32, PropModeReplace, (unsigned char *)&MWMHints,
-                         sizeof(MWMHints) / 4 );
-        removedDecorations = GL_TRUE;
-    }
-
-    // Now try to set KWM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
-    if ( hintAtom != None )
-    {
-        long KWMHints = KDE_tinyDecoration;
-
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
-                         32, PropModeReplace, (unsigned char *)&KWMHints,
-                         sizeof(KWMHints) / 4 );
-        removedDecorations = GL_TRUE;
-    }
-
-    // Now try to set GNOME hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
-    if ( hintAtom != None )
-    {
-        long GNOMEHints = 0;
-
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, hintAtom,
-                         32, PropModeReplace, (unsigned char *)&GNOMEHints,
-                         sizeof(GNOMEHints) / 4 );
-        removedDecorations = GL_TRUE;
-    }
-
-    // Now try to set KDE NET_WM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
-    if ( hintAtom != None )
-    {
-        Atom NET_WMHints[2];
-
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.display,
-                                      "_KDE_NET_WM_WINDOW_TYPE_OVERRIDE",
-                                      True );
-        /* define a fallback... */
-        NET_WMHints[1] = XInternAtom( _glfwLibrary.display,
-                                      "_NET_WM_WINDOW_TYPE_NORMAL",
-                                      True );
-
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, XA_ATOM,
-                         32, PropModeReplace, (unsigned char *)&NET_WMHints,
-                         2 );
-        removedDecorations = GL_TRUE;
-    }
-
-    // Set ICCCM fullscreen WM hint
-    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_STATE", True );
-    if ( hintAtom != None )
-    {
-        Atom NET_WMHints[1];
-
-        NET_WMHints[0] = XInternAtom( _glfwLibrary.display,
-                                      "_NET_WM_STATE_FULLSCREEN",
-                                      True );
-
-        XChangeProperty( _glfwLibrary.display, _glfwWin.window, hintAtom, XA_ATOM,
-                         32, PropModeReplace, (unsigned char *)&NET_WMHints, 1 );
-    }
-
-    // Did we sucessfully remove the window decorations?
-    if( removedDecorations )
-    {
-        // Finally set the transient hints
-        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, _glfwWin.root );
-        XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
-        XMapWindow( _glfwLibrary.display, _glfwWin.window );
-    }
-    else
-    {
-        // The Butcher way of removing window decorations
-        attributes.override_redirect = True;
-        XChangeWindowAttributes( _glfwLibrary.display,
-                                 _glfwWin.window,
-                                 CWOverrideRedirect,
-                                 &attributes );
-        _glfwWin.overrideRedirect = GL_TRUE;
-    }
-}
-
-
-//========================================================================
-// Turn on window decorations
-//========================================================================
-
-static void enableDecorations( void )
-{
-    GLboolean activatedDecorations;
-    Atom hintAtom;
-
-    // If this is an override redirect window, skip it...
-    if( _glfwWin.overrideRedirect )
-    {
-        return;
-    }
-
-    activatedDecorations = 0;
-
-    // First try to unset MWM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_MOTIF_WM_HINTS", True );
-    if ( hintAtom != None )
-    {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
-        activatedDecorations = GL_TRUE;
-    }
-
-    // Now try to unset KWM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "KWM_WIN_DECORATION", True );
-    if ( hintAtom != None )
-    {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
-        activatedDecorations = GL_TRUE;
-    }
-
-    // Now try to unset GNOME hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_WIN_HINTS", True );
-    if ( hintAtom != None )
-    {
-        XDeleteProperty( _glfwLibrary.display, _glfwWin.window, hintAtom );
-        activatedDecorations = GL_TRUE;
-    }
-
-    // Now try to unset NET_WM hints
-    hintAtom = XInternAtom( _glfwLibrary.display, "_NET_WM_WINDOW_TYPE", True );
-    if ( hintAtom != None )
-    {
-        Atom NET_WMHints = XInternAtom( _glfwLibrary.display,
-                                        "_NET_WM_WINDOW_TYPE_NORMAL",
-                                        True);
-        if( NET_WMHints != None )
-        {
-            XChangeProperty( _glfwLibrary.display, _glfwWin.window,
-                            hintAtom, XA_ATOM, 32, PropModeReplace,
-                            (unsigned char *)&NET_WMHints, 1 );
-            activatedDecorations = GL_TRUE;
-        }
-    }
-
-    // Finally unset the transient hints if necessary
-    if( activatedDecorations )
-    {
-        // NOTE: Does this work?
-        XSetTransientForHint( _glfwLibrary.display, _glfwWin.window, None );
-        XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
-        XMapWindow( _glfwLibrary.display, _glfwWin.window );
-    }
 }
 
 
@@ -934,8 +746,21 @@ static void enterFullscreenMode( void )
                        &_glfwWin.width, &_glfwWin.height,
                        &_glfwWin.refreshRate );
 
+    // NOTE: The section below is TEMPORARY code, to be replaced with proper
+    // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
+
     if( _glfwWin.overrideRedirect )
     {
+        XSetWindowAttributes attributes;
+
+        // The Butcher way of removing window decorations
+        attributes.override_redirect = True;
+        XChangeWindowAttributes( _glfwLibrary.display,
+                                 _glfwWin.window,
+                                 CWOverrideRedirect,
+                                 &attributes );
+        _glfwWin.overrideRedirect = GL_TRUE;
+
         // In override-redirect mode, we have divorced ourselves from the
         // window manager, so we need to do everything manually
 
@@ -945,6 +770,34 @@ static void enterFullscreenMode( void )
         XResizeWindow( _glfwLibrary.display, _glfwWin.window,
                        _glfwWin.width, _glfwWin.height );
         XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
+    }
+    else
+    {
+        Atom stateAtom = XInternAtom( _glfwLibrary.display,
+                                      "_NET_WM_STATE", True );
+        Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
+                                           "_NET_WM_STATE_FULLSCREEN", True );
+
+        if( stateAtom != None && fullscreenAtom != None )
+        {
+            XEvent event;
+            memset( &event, 0, sizeof(event) );
+
+            event.type = ClientMessage;
+            event.xclient.window = _glfwWin.window;
+            event.xclient.format = 32;
+            event.xclient.message_type = stateAtom;
+            event.xclient.data.l[0] = _NET_WM_STATE_ADD;
+            event.xclient.data.l[1] = fullscreenAtom;
+            event.xclient.data.l[2] = 0; // No secondary property
+            event.xclient.data.l[3] = 1; // Sender is a normal application
+
+            XSendEvent( _glfwLibrary.display,
+                        _glfwWin.root,
+                        False,
+                        SubstructureNotifyMask | SubstructureRedirectMask,
+                        &event );
+        }
     }
 
     if( _glfwWin.mouseLock )
@@ -979,6 +832,35 @@ static void leaveFullscreenMode( void )
                          _glfwWin.Saver.exposure );
 
         _glfwWin.Saver.changed = GL_FALSE;
+    }
+
+    if( !_glfwWin.overrideRedirect )
+    {
+        Atom stateAtom = XInternAtom( _glfwLibrary.display,
+                                      "_NET_WM_STATE", True );
+        Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
+                                           "_NET_WM_STATE_FULLSCREEN", True );
+
+        if( stateAtom != None && fullscreenAtom != None )
+        {
+            XEvent event;
+            memset( &event, 0, sizeof(event) );
+
+            event.type = ClientMessage;
+            event.xclient.window = _glfwWin.window;
+            event.xclient.format = 32;
+            event.xclient.message_type = stateAtom;
+            event.xclient.data.l[0] = _NET_WM_STATE_REMOVE;
+            event.xclient.data.l[1] = fullscreenAtom;
+            event.xclient.data.l[2] = 0; // No secondary property
+            event.xclient.data.l[3] = 1; // Sender is a normal application
+
+            XSendEvent( _glfwLibrary.display,
+                        _glfwWin.root,
+                        False,
+                        SubstructureNotifyMask | SubstructureRedirectMask,
+                        &event );
+        }
     }
 
     // Did we change the fullscreen resolution?
