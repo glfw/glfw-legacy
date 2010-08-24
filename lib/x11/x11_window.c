@@ -1663,7 +1663,7 @@ void _glfwPlatformShowMouseCursor( void )
     // Un-grab cursor (only in windowed mode: in fullscreen mode we still
     // want the mouse grabbed in order to confine the cursor to the window
     // area)
-    if( _glfwWin.pointerGrabbed && !_glfwWin.fullscreen )
+    if( _glfwWin.pointerGrabbed )
     {
         XUngrabPointer( _glfwLibrary.display, CurrentTime );
         _glfwWin.pointerGrabbed = GL_FALSE;
