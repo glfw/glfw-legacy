@@ -785,6 +785,7 @@ static void enterFullscreenMode( void )
             event.xclient.format = 32;
             event.xclient.message_type = activeWindowAtom;
             event.xclient.data.l[0] = 1; // Sender is a normal application
+            event.xclient.data.l[1] = 0; // We don't really know the timestamp
 
             XSendEvent( _glfwLibrary.display,
                         _glfwWin.root,
