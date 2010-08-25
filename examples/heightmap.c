@@ -445,14 +445,8 @@ int main(int argc, char** argv)
         fprintf(stderr, "ERROR: Unable to initialize GLFW\n");
         usage();
 
-        if (vertex_shader_src != NULL)
-        {
-            free(vertex_shader_src);
-        }
-        if (fragment_shader_src != NULL)
-        {
-            free(fragment_shader_src);
-        }
+        free(vertex_shader_src);
+        free(fragment_shader_src);
         exit(EXIT_FAILURE);
     }
 
@@ -472,14 +466,8 @@ int main(int argc, char** argv)
         fprintf(stderr, "ERROR: Unable to create the OpenGL context and associated window\n");
         usage();
 
-        if (vertex_shader_src != NULL)
-        {
-            free(vertex_shader_src);
-        }
-        if (fragment_shader_src != NULL)
-        {
-            free(fragment_shader_src);
-        }
+        free(vertex_shader_src);
+        free(fragment_shader_src);
         exit(EXIT_FAILURE);
     }
 
@@ -491,14 +479,8 @@ int main(int argc, char** argv)
 
     /* Prepare opengl resources for rendering */
     shader_program = make_shader_program(vertex_shader_src , fragment_shader_src);
-    if (vertex_shader_src != NULL)
-    {
-        free(vertex_shader_src);
-    }
-    if (fragment_shader_src != NULL)
-    {
-        free(fragment_shader_src);
-    }
+    free(vertex_shader_src);
+    free(fragment_shader_src);
 
     if (shader_program == 0u)
     {
@@ -506,6 +488,7 @@ int main(int argc, char** argv)
         usage();
         exit(EXIT_FAILURE);
     }
+
     glUseProgram(shader_program);
     uloc_project   = glGetUniformLocation(shader_program, "project");
     uloc_modelview = glGetUniformLocation(shader_program, "modelview");
