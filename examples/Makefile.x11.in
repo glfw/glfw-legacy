@@ -1,5 +1,5 @@
 BINARIES = triangle listmodes mthello pong3d mtbench particles splitview \
-		   mipmaps gears boing wave  
+		   mipmaps gears boing wave heightmap
 
 all: $(BINARIES)
 
@@ -35,6 +35,9 @@ boing: boing.c ../lib/x11/libglfw.a
 
 wave: wave.c ../lib/x11/libglfw.a
 	$(CC) $(CFLAGS) wave.c $(LFLAGS) -o $@
+
+heightmap: heightmap.c ../lib/x11/libglfw.a
+	$(CC) $(CFLAGS) heightmap.c $(LFLAGS) -o $@
 
 clean:
 	rm -f $(BINARIES)

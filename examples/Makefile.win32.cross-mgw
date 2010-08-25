@@ -17,7 +17,8 @@ WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-		   particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
+		   particles.exe splitview.exe mipmaps.exe gears.exe boing.exe \
+		   wave.exe heightmap.exe
 
 all: $(BINARIES)
 
@@ -53,6 +54,10 @@ boing.exe: boing.c $(LIB)
 
 wave.exe: wave.c $(LIB)
 	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) wave.c $(LFLAGS) -lm -o $@
+
+heightmap.exe: heightmap.c $(LIB)
+	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) heightmap.c $(LFLAGS) -lm -o $@
+
 
 clean:
 	rm -f $(BINARIES)

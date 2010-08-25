@@ -21,7 +21,8 @@ CONSOLE = -subsystem console
 
 # Default: Build all tests
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-     particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
+     particles.exe splitview.exe mipmaps.exe gears.exe boing.exe \
+	 wave.exe heightmap.exe
 
 
 # Rule for triangle
@@ -68,3 +69,6 @@ boing.exe: boing.c
 wave.exe: wave.c
 	$(CC) $(CFLAGS) wave.c $(LFLAGS)  -o $@ -s $(WINDOWS)
 
+# Rule for heightmap
+heightmap.exe: heightmap.c
+	$(CC) $(CFLAGS) heightmap.c $(LFLAGS)  -o $@ -s $(WINDOWS)

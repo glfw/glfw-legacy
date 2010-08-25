@@ -17,7 +17,8 @@ CONSOLE = -mconsole
 HEADER = ../include/GL/glfw.h
 
 all: triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
-     particles.exe splitview.exe mipmaps.exe gears.exe boing.exe wave.exe
+     particles.exe splitview.exe mipmaps.exe gears.exe boing.exe \
+	 wave.exe heightmap.exe
 
 triangle.exe: triangle.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(WINDOWS) triangle.c $(LFLAGS) -o $@
@@ -52,3 +53,5 @@ boing.exe: boing.c $(LIB) $(HEADER)
 wave.exe: wave.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(WINDOWS) wave.c $(LFLAGS) -lm -o $@
 
+heightmap.exe: heightmap.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) $(WINDOWS) heightmap.c $(LFLAGS) -lm -o $@
