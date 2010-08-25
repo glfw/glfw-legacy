@@ -440,9 +440,6 @@ int main(int argc, char** argv)
     double dt;
     double last_update_time;
     int frame;
-    int major;
-    int minor;
-    int rev;
     float f;
     GLint uloc_modelview;
     GLint uloc_project;
@@ -489,9 +486,6 @@ int main(int argc, char** argv)
     }
 
     glfwEnable(GLFW_AUTO_POLL_EVENTS); /* No explicit call to glfwPollEvents() */
-    glfwGetVersion(&major, &minor, &rev);
-    printf("GLFW Version %d.%d.%d\n", major, minor, rev);
-    printf("Heightmap demo\n");
 
     glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
