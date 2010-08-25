@@ -465,23 +465,6 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    if (atexit(glfwTerminate) != 0)
-    {
-        fprintf(stderr, "ERROR: Unable to register exit function glfwTerminate()\n");
-        fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-        fprintf(stderr, "       XXXX_shader_file are optionals\n");
-        if (vertex_shader_src != NULL)
-        {
-            free(vertex_shader_src);
-        }
-        if (fragment_shader_src != NULL)
-        {
-            free(fragment_shader_src);
-        }
-        glfwTerminate();
-        return EXIT_FAILURE;
-    }
-
     glfwEnable(GLFW_AUTO_POLL_EVENTS); /* No explicit call to glfwPollEvents() */
     glfwGetVersion(&major, &minor, &rev);
     printf("GLFW Version %d.%d.%d\n", major, minor, rev);
