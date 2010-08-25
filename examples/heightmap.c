@@ -380,14 +380,11 @@ static void GLFWCALL key_callback(int key, int action)
 {
     switch(key)
     {
-        case GLFW_KEY_ESC: /* The escape key exit the demo when after being released */
-            if (action == GLFW_RELEASE)
-                running = GL_FALSE;
-            break;
-        default:
+        case GLFW_KEY_ESC:
+            // Exit program on Escape
+            running = GL_FALSE;
             break;
     }
-
 }
 
 static void usage(void)
