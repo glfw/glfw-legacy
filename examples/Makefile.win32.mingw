@@ -53,5 +53,5 @@ boing.exe: boing.c $(LIB) $(HEADER)
 wave.exe: wave.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(WINDOWS) wave.c $(LFLAGS) -lm -o $@
 
-heightmap.exe: heightmap.c $(LIB) $(HEADER)
-	$(CC) $(CFLAGS) $(WINDOWS) heightmap.c $(LFLAGS) -lm -o $@
+heightmap.exe: heightmap.c getopt.c $(LIB) $(HEADER)
+	$(CC) $(CFLAGS) $(WINDOWS) heightmap.c getopt.c $(LFLAGS) -lm -o $@

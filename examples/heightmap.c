@@ -28,6 +28,8 @@
 #include <math.h>
 #include <assert.h>
 
+#include "getopt.h"
+
 #include <GL/glfw.h>
 
 /* Map height updates */
@@ -431,12 +433,12 @@ static void GLFWCALL key_callback(int key, int action)
 /* Print usage information */
 static void usage(void)
 {
-    printf("Usage: heightmap [vertex_shader_file] [fragment_shader_file]\n");
+    printf("Usage: heightmap [-v <vertex_shader_path>] [-f <fragment_shader_path>]\n");
 }
 
 int main(int argc, char** argv)
 {
-    int iter;
+    int ch, iter;
     double dt;
     double last_update_time;
     int frame;
@@ -444,33 +446,51 @@ int main(int argc, char** argv)
     GLint uloc_modelview;
     GLint uloc_project;
 
+    char* vertex_shader_path = NULL;
+    char* fragment_shader_path = NULL;
     char* vertex_shader_src = NULL;
     char* fragment_shader_src = NULL;
     GLuint shader_program;
 
-    if ((argc == 2) || (argc == 3))
+    while ((ch = getopt(argc, argv, "f:v:h")) != -1)
     {
-        /* Load vertex shader from source file */
-
-        vertex_shader_src = read_file_content(argv[1]);
-        if (vertex_shader_src == NULL)
+        switch (ch)
         {
-            fprintf(stderr, "ERROR: unable to load vertex shader from '%s'\n", argv[1]);
-            usage();
+            case 'f':
+                fragment_shader_path = optarg;
+                break;
+            case 'v':
+                vertex_shader_path = optarg;
+                break;
+            case 'h':
+                usage();
+                exit(EXIT_SUCCESS);
+            default:
+                usage();
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    if (fragment_shader_path)
+    {
+        vertex_shader_src = read_file_content(fragment_shader_path);
+        if (!fragment_shader_src)
+        {
+            fprintf(stderr,
+                    "ERROR: unable to load fragment shader from '%s'\n",
+                    fragment_shader_path);
             exit(EXIT_FAILURE);
         }
     }
 
-    if (argc == 3)
+    if (vertex_shader_path)
     {
-        /* Load fragment shader from source file */
-        fragment_shader_src = read_file_content(argv[2]);
-        if (fragment_shader_src == NULL)
+        vertex_shader_src = read_file_content(vertex_shader_path);
+        if (!vertex_shader_src)
         {
-            fprintf(stderr, "ERROR: unable to load fragment shader from '%s'\n", argv[2]);
-            usage();
-
-            free(vertex_shader_src);
+            fprintf(stderr,
+                    "ERROR: unable to load vertex shader from '%s'\n",
+                    fragment_shader_path);
             exit(EXIT_FAILURE);
         }
     }

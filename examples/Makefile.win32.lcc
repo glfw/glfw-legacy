@@ -70,5 +70,5 @@ wave.exe: wave.c
 	$(CC) $(CFLAGS) wave.c $(LFLAGS)  -o $@ -s $(WINDOWS)
 
 # Rule for heightmap
-heightmap.exe: heightmap.c
-	$(CC) $(CFLAGS) heightmap.c $(LFLAGS)  -o $@ -s $(WINDOWS)
+heightmap.exe: heightmap.c getopt.c
+	$(CC) $(CFLAGS) heightmap.c getopt.c $(LFLAGS)  -o $@ -s $(WINDOWS)
