@@ -367,12 +367,12 @@ static void update_mesh(void)
 }
 
 /* If set to false the app stops */
-static int run;
+static GLboolean running = GL_TRUE;
 
 /* GLFW Window management functions */
 static int GLFWCALL close_window_callback(void)
 {
-    run = GL_FALSE;
+    running = GL_FALSE;
     return GL_FALSE; /* exiting the main loop will do the job */
 }
 
@@ -382,7 +382,7 @@ static void GLFWCALL key_callback(int key, int action)
     {
         case GLFW_KEY_ESC: /* The escape key exit the demo when after being released */
             if (action == GLFW_RELEASE)
-                run = GL_FALSE;
+                running = GL_FALSE;
             break;
         default:
             break;
@@ -520,11 +520,11 @@ int main(int argc, char** argv)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     /* main loop */
-    run = GL_TRUE;
     frame = 0;
     iter = 0;
     dt = last_update_time = glfwGetTime();
-    while (run == GL_TRUE)
+
+    while (running)
     {
         ++frame;
         /* render the next frame */
