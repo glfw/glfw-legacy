@@ -11,7 +11,7 @@
 #define MAX_ITER (200)
 #define NUM_ITER_AT_A_TIME (1)
 
-/* Map general information */ 
+/* Map general information */
 #define MAP_SIZE (10.0f)
 #define MAP_NUM_VERTICES (80)
 #define MAP_NUM_TOTAL_VERTICES (MAP_NUM_VERTICES*MAP_NUM_VERTICES)
@@ -20,7 +20,7 @@
 
 
 /* shaders */
-const char* default_vertex_shader = 
+const char* default_vertex_shader =
 "#version 150\n"
 "uniform mat4 project;\n"
 "uniform mat4 modelview;\n"
@@ -41,13 +41,13 @@ const char* default_fragment_shader =
 "{\n"
 "    gl_FragColor = vec4(0.2, 1.0, 0.2, 1.0); \n"
 "}\n";
- 
+
 
 
 
 
 /* Uniforms */
-/* Frustrum configuration */ 
+/* Frustrum configuration */
 GLfloat view_angle = 45.0f;
 GLfloat aspect_ratio = 4.0f/3.0f;
 GLfloat z_near = 1.0f;
@@ -56,7 +56,7 @@ GLfloat z_far = 100.f;
 
 /* Projection matrix */
 GLfloat projection_matrix[16] = {
-    1.0f, 0.0f, 0.0f, 0.0f, 
+    1.0f, 0.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 0.0f, 1.0f
@@ -65,7 +65,7 @@ GLfloat projection_matrix[16] = {
 
 /* Model view matrix */
 GLfloat modelview_matrix[16] = {
-    1.0f, 0.0f, 0.0f, 0.0f,  
+    1.0f, 0.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 0.0f, 1.0f
@@ -75,8 +75,8 @@ GLfloat modelview_matrix[16] = {
 GLfloat map_vertices[3][MAP_NUM_TOTAL_VERTICES];
 GLuint  map_line_indices[2*MAP_NUM_LINES];
 
-/* Store uniform location for the shaders 
- * Those values are setup as part of the process of creating 
+/* Store uniform location for the shaders
+ * Those values are setup as part of the process of creating
  * the shader program. They should not be used before creating
  * the program.
  */
@@ -84,7 +84,7 @@ GLuint mesh;
 GLuint mesh_vbo[4];
 
 
-/* Load a file into a buffer */ 
+/* Load a file into a buffer */
 char* read_file_content(const char* filename)
 {
     FILE* fd;
@@ -111,7 +111,7 @@ char* read_file_content(const char* filename)
 
 
 
-/* OpenGL helpers */ 
+/* OpenGL helpers */
 GLuint make_shader(GLenum type, const char* shader_src)
 {
     GLuint shader;
@@ -132,11 +132,11 @@ GLuint make_shader(GLenum type, const char* shader_src)
             fprintf(stderr, "ERROR: \n%s\n\n", info_log);
             glDeleteShader(shader);
             shader = 0;
-        } 
+        }
     }
     return shader;
 }
- 
+
 GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_shader_src)
 {
     GLuint program = 0u;
@@ -152,11 +152,11 @@ GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_s
         fragment_shader = make_shader(GL_FRAGMENT_SHADER, (fragment_shader_src == NULL) ? default_fragment_shader : fragment_shader_src);
         if (fragment_shader != 0u)
         {
-            /* make the program that connect the two shader and link it */ 
+            /* make the program that connect the two shader and link it */
             program = glCreateProgram();
             if (program != 0u)
             {
-                /* attach both shader and link */ 
+                /* attach both shader and link */
                 glAttachShader(program, vertex_shader);
                 glAttachShader(program, fragment_shader);
                 glLinkProgram(program);
@@ -174,7 +174,7 @@ GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_s
                 }
             }
         }
-        else 
+        else
         {
             fprintf(stderr, "ERROR: Unable to load fragment shader\n");
             glDeleteShader(vertex_shader);
@@ -188,7 +188,7 @@ GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_s
 }
 
 
-/* Generate vertices and indices */ 
+/* Generate vertices and indices */
 void init_map(void)
 {
     int i;
@@ -206,7 +206,7 @@ void init_map(void)
             map_vertices[0][k] = x;
             map_vertices[1][k] = 0.0f;
             map_vertices[2][k] = z;
-            z += step; 
+            z += step;
             ++k;
         }
         x += step;
@@ -215,18 +215,18 @@ void init_map(void)
 #if DEBUG_ENABLED
     for (i = 0 ; i < MAP_NUM_TOTAL_VERTICES ; ++i)
     {
-        printf ("Vertice %d (%f, %f, %f)\n", 
+        printf ("Vertice %d (%f, %f, %f)\n",
                 i, map_vertices[0][i], map_vertices[1][i], map_vertices[2][i]);
-                
+
     }
 #endif
     /* create indices */
-    /* line fan based on i 
+    /* line fan based on i
      * i+1
      * |  / i + n + 1
      * | /
-     * |/  
-     * i --- i + n 
+     * |/
+     * i --- i + n
      */
 
     /* close the top of the square */
@@ -242,7 +242,7 @@ void init_map(void)
         map_line_indices[k++] = (MAP_NUM_VERTICES - 1) * MAP_NUM_VERTICES + i;
         map_line_indices[k++] = (MAP_NUM_VERTICES - 1) * MAP_NUM_VERTICES + i + 1;
     }
-    
+
     for (i = 0 ; i < (MAP_NUM_VERTICES - 1) ; ++i)
     {
         for (j = 0 ; j < (MAP_NUM_VERTICES - 1) ; ++j)
@@ -250,7 +250,7 @@ void init_map(void)
             int ref = i * (MAP_NUM_VERTICES) + j;
             map_line_indices[k++] = ref;
             map_line_indices[k++] = ref + 1;
-            
+
             map_line_indices[k++] = ref;
             map_line_indices[k++] = ref + MAP_NUM_VERTICES;
 
@@ -258,23 +258,23 @@ void init_map(void)
             map_line_indices[k++] = ref + MAP_NUM_VERTICES + 1;
         }
     }
-    
+
 #ifdef DEBUG_ENABLED
     for (k = 0 ; k < 2 * MAP_NUM_LINES ; k += 2)
     {
         int beg, end;
         beg = map_line_indices[k];
         end = map_line_indices[k+1];
-        printf ("Line %d: %d -> %d (%f, %f, %f) -> (%f, %f, %f)\n", 
+        printf ("Line %d: %d -> %d (%f, %f, %f) -> (%f, %f, %f)\n",
                 k / 2, beg, end,
-                map_vertices[0][beg], map_vertices[1][beg], map_vertices[2][beg], 
-                map_vertices[0][end], map_vertices[1][end], map_vertices[2][end]); 
+                map_vertices[0][beg], map_vertices[1][beg], map_vertices[2][beg],
+                map_vertices[0][end], map_vertices[1][end], map_vertices[2][end]);
     }
 #endif
 }
 
 
-static void generate_heightmap__circle(float* center_x, float* center_y, 
+static void generate_heightmap__circle(float* center_x, float* center_y,
         float* size, float* displacement)
 {
     float sign;
@@ -294,7 +294,7 @@ void update_map(int num_iter)
     while(num_iter)
     {
         /* center of the circle */
-        float center_x; 
+        float center_x;
         float center_z;
         float circle_size;
         float disp;
@@ -308,7 +308,7 @@ void update_map(int num_iter)
             GLfloat pd = (2.0f * sqrtf((dx * dx) + (dz * dz))) / circle_size;
             if (fabs(pd) <= 1.0f)
             {
-                /* tx,tz is within the circle */ 
+                /* tx,tz is within the circle */
                 GLfloat new_height = disp + (cos(pd*3.14f)*disp);
                 map_vertices[1][ii] += new_height;
             }
@@ -327,14 +327,14 @@ void make_mesh(GLuint program)
     /* Prepare the data for drawing through a buffer inidices */
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_vbo[3]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)* MAP_NUM_LINES * 2, map_line_indices, GL_STATIC_DRAW);
-    
+
     /* Prepare the attributes for rendering */
     attrloc = glGetAttribLocation(program, "x");
     glBindBuffer(GL_ARRAY_BUFFER, mesh_vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * MAP_NUM_TOTAL_VERTICES, &map_vertices[0][0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(attrloc);
     glVertexAttribPointer(attrloc, 1, GL_FLOAT, GL_FALSE, 0, 0);
-    
+
     attrloc = glGetAttribLocation(program, "z");
     glBindBuffer(GL_ARRAY_BUFFER, mesh_vbo[2]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * MAP_NUM_TOTAL_VERTICES, &map_vertices[2][0], GL_STATIC_DRAW);
@@ -360,14 +360,14 @@ int run;
 int GLFWCALL close_window_callback(void)
 {
     run = GL_FALSE;
-    return GL_FALSE; /* exiting the main loop will do the job */ 
+    return GL_FALSE; /* exiting the main loop will do the job */
 }
 
 void GLFWCALL key_callback(int key, int action)
 {
     switch(key)
     {
-        case GLFW_KEY_ESC: /* The escape key exit the demo when after being released */ 
+        case GLFW_KEY_ESC: /* The escape key exit the demo when after being released */
             if (action == GLFW_RELEASE)
                 run = GL_FALSE;
             break;
@@ -377,7 +377,7 @@ void GLFWCALL key_callback(int key, int action)
 
 }
 
-/* Driver */ 
+/* Driver */
 int main(int argc, char** argv)
 {
     int iter;
@@ -407,7 +407,7 @@ int main(int argc, char** argv)
             fprintf(stderr, "       XXXX_shader_file are optionals\n");
             return EXIT_FAILURE;
         }
-    }   
+    }
 
     if (argc == 3)
     {
@@ -457,7 +457,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    glfwEnable(GLFW_AUTO_POLL_EVENTS); /* No explicit call to glfwPollEvents() */ 
+    glfwEnable(GLFW_AUTO_POLL_EVENTS); /* No explicit call to glfwPollEvents() */
     glfwGetVersion(&major, &minor, &rev);
     printf("GLFW Version %d.%d.%d\n", major, minor, rev);
     printf("Heightmap demo\n");
@@ -490,7 +490,7 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(key_callback);
 
 
-    /* Prepare opengl resources for rendering */ 
+    /* Prepare opengl resources for rendering */
     shader_program = make_shader_program(vertex_shader_src , fragment_shader_src);
     if (vertex_shader_src != NULL)
     {
@@ -507,12 +507,12 @@ int main(int argc, char** argv)
         fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
         fprintf(stderr, "       XXXX_shader_file are optionals\n");
         return EXIT_FAILURE;
-    }    
-    glUseProgram(shader_program); 
+    }
+    glUseProgram(shader_program);
     uloc_project   = glGetUniformLocation(shader_program, "project");
     uloc_modelview = glGetUniformLocation(shader_program, "modelview");
 
-    /* Compute the projection matrix */ 
+    /* Compute the projection matrix */
     f = 1.0f / tanf(view_angle / 2.0f);
     projection_matrix[0]  = f / aspect_ratio;
     projection_matrix[5]  = f;
@@ -521,42 +521,42 @@ int main(int argc, char** argv)
     projection_matrix[14] = 2.0f * (z_far * z_near) / (z_near - z_far);
     glUniformMatrix4fv(uloc_project, 1, GL_FALSE, projection_matrix);
 
-    /* Set the camera position */ 
+    /* Set the camera position */
     modelview_matrix[12]  = -5.0f;
     modelview_matrix[13]  = -5.0f;
     modelview_matrix[14]  = -20.0f;
     glUniformMatrix4fv(uloc_modelview, 1, GL_FALSE, modelview_matrix);
 
     /* Create mesh data */
-    init_map(); 
+    init_map();
     make_mesh(shader_program);
 
-    /* Create vao + vbo to store the mesh */ 
+    /* Create vao + vbo to store the mesh */
     /* Create the vbo to store all the information for the grid and the height */
 
-    /* setup the scene ready for rendering */ 
+    /* setup the scene ready for rendering */
     glViewport(0, 0, 800, 600);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    /* main loop */    
+    /* main loop */
     run = GL_TRUE;
     frame = 0;
     iter = 0;
     dt = last_update_time = glfwGetTime();
     while (run == GL_TRUE)
-    {   
+    {
         ++frame;
 	    /* render the next frame */
         glClear(GL_COLOR_BUFFER_BIT);
         glDrawElements(GL_LINES, 2* MAP_NUM_LINES , GL_UNSIGNED_INT, 0);
 
-        /* display and process events through callbacks */ 
+        /* display and process events through callbacks */
         glfwSwapBuffers();
-        /* Check the frame rate and update the heightmap if needed */ 
+        /* Check the frame rate and update the heightmap if needed */
         dt = glfwGetTime();
         if ((dt - last_update_time) > 0.2)
         {
-            /* generate the next iteration of the heightmap */ 
+            /* generate the next iteration of the heightmap */
             if (iter < MAX_ITER)
             {
                 update_map(NUM_ITER_AT_A_TIME);
