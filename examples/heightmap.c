@@ -41,7 +41,7 @@
 #define MAP_NUM_VERTICES (80)
 #define MAP_NUM_TOTAL_VERTICES (MAP_NUM_VERTICES*MAP_NUM_VERTICES)
 #define MAP_NUM_LINES (3* (MAP_NUM_VERTICES - 1) * (MAP_NUM_VERTICES - 1) + \
-		       2 * (MAP_NUM_VERTICES - 1))
+               2 * (MAP_NUM_VERTICES - 1))
 
 
 /* shaders */
@@ -571,7 +571,7 @@ int main(int argc, char** argv)
     while (run == GL_TRUE)
     {
         ++frame;
-	    /* render the next frame */
+        /* render the next frame */
         glClear(GL_COLOR_BUFFER_BIT);
         glDrawElements(GL_LINES, 2* MAP_NUM_LINES , GL_UNSIGNED_INT, 0);
 
@@ -585,7 +585,7 @@ int main(int argc, char** argv)
             if (iter < MAX_ITER)
             {
                 update_map(NUM_ITER_AT_A_TIME);
-		update_mesh();
+                update_mesh();
                 iter += NUM_ITER_AT_A_TIME;
             }
             last_update_time = dt;
