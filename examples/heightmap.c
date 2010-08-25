@@ -44,7 +44,10 @@
 #define MAP_NUM_LINES (3* (MAP_NUM_VERTICES - 1) * (MAP_NUM_VERTICES - 1) + \
                2 * (MAP_NUM_VERTICES - 1))
 
-/* shaders */
+/**********************************************************************
+ * Default shader programs
+ *********************************************************************/
+
 static const char* default_vertex_shader =
 "#version 150\n"
 "uniform mat4 project;\n"
@@ -66,8 +69,11 @@ static const char* default_fragment_shader =
 "    gl_FragColor = vec4(0.2, 1.0, 0.2, 1.0); \n"
 "}\n";
 
-/* Uniforms */
-/* Frustrum configuration */
+/**********************************************************************
+ * Values for shader uniforms
+ *********************************************************************/
+
+/* Frustum configuration */
 static GLfloat view_angle = 45.0f;
 static GLfloat aspect_ratio = 4.0f/3.0f;
 static GLfloat z_near = 1.0f;
@@ -89,7 +95,10 @@ static GLfloat modelview_matrix[16] = {
     0.0f, 0.0f, 0.0f, 1.0f
 };
 
-/* Map data */
+/**********************************************************************
+ * Heightmap vertex and index data
+ *********************************************************************/
+
 static GLfloat map_vertices[3][MAP_NUM_TOTAL_VERTICES];
 static GLuint  map_line_indices[2*MAP_NUM_LINES];
 
@@ -101,7 +110,12 @@ static GLuint  map_line_indices[2*MAP_NUM_LINES];
 static GLuint mesh;
 static GLuint mesh_vbo[4];
 
-/* Load a file into a buffer */
+/**********************************************************************
+ * OpenGL helper functions
+ *********************************************************************/
+
+/* Load a (text) file into memory and return its contents
+ */
 static char* read_file_content(const char* filename)
 {
     FILE* fd;
@@ -126,7 +140,8 @@ static char* read_file_content(const char* filename)
     return result;
 }
 
-/* OpenGL helpers */
+/* Creates a shader object of the specified type using the specified text
+ */
 static GLuint make_shader(GLenum type, const char* shader_src)
 {
     GLuint shader;
@@ -152,6 +167,8 @@ static GLuint make_shader(GLenum type, const char* shader_src)
     return shader;
 }
 
+/* Creates a program object using the specified vertex and fragment text
+ */
 static GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_shader_src)
 {
     GLuint program = 0u;
@@ -202,7 +219,12 @@ static GLuint make_shader_program(const char* vertex_shader_src, const char* fra
     return program;
 }
 
-/* Generate vertices and indices */
+/**********************************************************************
+ * Geometry creation functions
+ *********************************************************************/
+
+/* Generate vertices and indices for the heightmap
+ */
 static void init_map(void)
 {
     int i;
@@ -300,7 +322,9 @@ static void generate_heightmap__circle(float* center_x, float* center_y,
     *displacement = (sign * (MAX_DISPLACEMENT * rand())) / (1.0f * RAND_MAX);
 }
 
-/* run num_iter iteration of the generation process for the heightmap */
+/* Run the specified number of iterations of the generation process for the
+ * heightmap
+ */
 static void update_map(int num_iter)
 {
     assert(num_iter > 0);
@@ -330,6 +354,13 @@ static void update_map(int num_iter)
     }
 }
 
+/**********************************************************************
+ * OpenGL helper functions
+ *********************************************************************/
+
+/* Create VBO, IBO and VAO objects for the heightmap geometry and bind them to
+ * the specified program object
+ */
 static void make_mesh(GLuint program)
 {
     GLuint attrloc;
@@ -361,19 +392,29 @@ static void make_mesh(GLuint program)
     glVertexAttribPointer(attrloc, 1, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
+/* Update VBO vertices from source data
+ */
 static void update_mesh(void)
 {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * MAP_NUM_TOTAL_VERTICES, &map_vertices[1][0]);
 }
 
-/* If set to false the app stops */
+/**********************************************************************
+ * GLFW callback functions
+ *********************************************************************/
+
+/* The program runs as long as this is GL_TRUE
+ */
 static GLboolean running = GL_TRUE;
 
 /* GLFW Window management functions */
 static int GLFWCALL close_window_callback(void)
 {
     running = GL_FALSE;
-    return GL_FALSE; /* exiting the main loop will do the job */
+
+    /* Disallow window closing
+     * The window will be closed when the main loop terminates */
+    return GL_FALSE;
 }
 
 static void GLFWCALL key_callback(int key, int action)
@@ -381,18 +422,18 @@ static void GLFWCALL key_callback(int key, int action)
     switch(key)
     {
         case GLFW_KEY_ESC:
-            // Exit program on Escape
+            /* Exit program on Escape */
             running = GL_FALSE;
             break;
     }
 }
 
+/* Print usage information */
 static void usage(void)
 {
     printf("Usage: heightmap [vertex_shader_file] [fragment_shader_file]\n");
 }
 
-/* Driver */
 int main(int argc, char** argv)
 {
     int iter;
