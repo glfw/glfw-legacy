@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+
 #include <GL/glfw.h>
 
 /* Map height updates */
@@ -43,7 +44,6 @@
 #define MAP_NUM_LINES (3* (MAP_NUM_VERTICES - 1) * (MAP_NUM_VERTICES - 1) + \
                2 * (MAP_NUM_VERTICES - 1))
 
-
 /* shaders */
 static const char* default_vertex_shader =
 "#version 150\n"
@@ -58,7 +58,6 @@ static const char* default_vertex_shader =
 "   gl_Position = project * modelview * vec4(x, y, z, 1.0);\n"
 "}\n";
 
-
 static const char* default_fragment_shader =
 "#version 150\n"
 "out vec4 gl_FragColor;\n"
@@ -67,17 +66,12 @@ static const char* default_fragment_shader =
 "    gl_FragColor = vec4(0.2, 1.0, 0.2, 1.0); \n"
 "}\n";
 
-
-
-
-
 /* Uniforms */
 /* Frustrum configuration */
 static GLfloat view_angle = 45.0f;
 static GLfloat aspect_ratio = 4.0f/3.0f;
 static GLfloat z_near = 1.0f;
 static GLfloat z_far = 100.f;
-
 
 /* Projection matrix */
 static GLfloat projection_matrix[16] = {
@@ -86,7 +80,6 @@ static GLfloat projection_matrix[16] = {
     0.0f, 0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 0.0f, 1.0f
 };
-
 
 /* Model view matrix */
 static GLfloat modelview_matrix[16] = {
@@ -107,7 +100,6 @@ static GLuint  map_line_indices[2*MAP_NUM_LINES];
  */
 static GLuint mesh;
 static GLuint mesh_vbo[4];
-
 
 /* Load a file into a buffer */
 static char* read_file_content(const char* filename)
@@ -133,8 +125,6 @@ static char* read_file_content(const char* filename)
     }
     return result;
 }
-
-
 
 /* OpenGL helpers */
 static GLuint make_shader(GLenum type, const char* shader_src)
@@ -211,7 +201,6 @@ static GLuint make_shader_program(const char* vertex_shader_src, const char* fra
     }
     return program;
 }
-
 
 /* Generate vertices and indices */
 static void init_map(void)
@@ -297,7 +286,6 @@ static void init_map(void)
     }
 #endif
 }
-
 
 static void generate_heightmap__circle(float* center_x, float* center_y,
         float* size, float* displacement)
@@ -451,7 +439,6 @@ int main(int argc, char** argv)
             exit(EXIT_FAILURE);
         }
     }
-
 
     if (GL_TRUE != glfwInit())
     {
