@@ -45,7 +45,7 @@
 
 
 /* shaders */
-const char* default_vertex_shader =
+static const char* default_vertex_shader =
 "#version 150\n"
 "uniform mat4 project;\n"
 "uniform mat4 modelview;\n"
@@ -59,7 +59,7 @@ const char* default_vertex_shader =
 "}\n";
 
 
-const char* default_fragment_shader =
+static const char* default_fragment_shader =
 "#version 150\n"
 "out vec4 gl_FragColor;\n"
 "void main()\n"
@@ -73,14 +73,14 @@ const char* default_fragment_shader =
 
 /* Uniforms */
 /* Frustrum configuration */
-GLfloat view_angle = 45.0f;
-GLfloat aspect_ratio = 4.0f/3.0f;
-GLfloat z_near = 1.0f;
-GLfloat z_far = 100.f;
+static GLfloat view_angle = 45.0f;
+static GLfloat aspect_ratio = 4.0f/3.0f;
+static GLfloat z_near = 1.0f;
+static GLfloat z_far = 100.f;
 
 
 /* Projection matrix */
-GLfloat projection_matrix[16] = {
+static GLfloat projection_matrix[16] = {
     1.0f, 0.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 1.0f, 0.0f,
@@ -89,7 +89,7 @@ GLfloat projection_matrix[16] = {
 
 
 /* Model view matrix */
-GLfloat modelview_matrix[16] = {
+static GLfloat modelview_matrix[16] = {
     1.0f, 0.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 1.0f, 0.0f,
@@ -97,20 +97,20 @@ GLfloat modelview_matrix[16] = {
 };
 
 /* Map data */
-GLfloat map_vertices[3][MAP_NUM_TOTAL_VERTICES];
-GLuint  map_line_indices[2*MAP_NUM_LINES];
+static GLfloat map_vertices[3][MAP_NUM_TOTAL_VERTICES];
+static GLuint  map_line_indices[2*MAP_NUM_LINES];
 
 /* Store uniform location for the shaders
  * Those values are setup as part of the process of creating
  * the shader program. They should not be used before creating
  * the program.
  */
-GLuint mesh;
-GLuint mesh_vbo[4];
+static GLuint mesh;
+static GLuint mesh_vbo[4];
 
 
 /* Load a file into a buffer */
-char* read_file_content(const char* filename)
+static char* read_file_content(const char* filename)
 {
     FILE* fd;
     size_t size = 0;
@@ -137,7 +137,7 @@ char* read_file_content(const char* filename)
 
 
 /* OpenGL helpers */
-GLuint make_shader(GLenum type, const char* shader_src)
+static GLuint make_shader(GLenum type, const char* shader_src)
 {
     GLuint shader;
     GLint shader_ok;
@@ -162,7 +162,7 @@ GLuint make_shader(GLenum type, const char* shader_src)
     return shader;
 }
 
-GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_shader_src)
+static GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_shader_src)
 {
     GLuint program = 0u;
     GLint program_ok;
@@ -214,7 +214,7 @@ GLuint make_shader_program(const char* vertex_shader_src, const char* fragment_s
 
 
 /* Generate vertices and indices */
-void init_map(void)
+static void init_map(void)
 {
     int i;
     int j;
@@ -313,7 +313,7 @@ static void generate_heightmap__circle(float* center_x, float* center_y,
 }
 
 /* run num_iter iteration of the generation process for the heightmap */
-void update_map(int num_iter)
+static void update_map(int num_iter)
 {
     assert(num_iter > 0);
     while(num_iter)
@@ -342,7 +342,7 @@ void update_map(int num_iter)
     }
 }
 
-void make_mesh(GLuint program)
+static void make_mesh(GLuint program)
 {
     GLuint attrloc;
 
@@ -373,22 +373,22 @@ void make_mesh(GLuint program)
     glVertexAttribPointer(attrloc, 1, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
-void update_mesh(void)
+static void update_mesh(void)
 {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * MAP_NUM_TOTAL_VERTICES, &map_vertices[1][0]);
 }
 
 /* If set to false the app stops */
-int run;
+static int run;
 
 /* GLFW Window management functions */
-int GLFWCALL close_window_callback(void)
+static int GLFWCALL close_window_callback(void)
 {
     run = GL_FALSE;
     return GL_FALSE; /* exiting the main loop will do the job */
 }
 
-void GLFWCALL key_callback(int key, int action)
+static void GLFWCALL key_callback(int key, int action)
 {
     switch(key)
     {
