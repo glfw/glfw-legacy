@@ -402,6 +402,11 @@ static void GLFWCALL key_callback(int key, int action)
 
 }
 
+static void usage(void)
+{
+    printf("Usage: heightmap [vertex_shader_file] [fragment_shader_file]\n");
+}
+
 /* Driver */
 int main(int argc, char** argv)
 {
@@ -428,8 +433,7 @@ int main(int argc, char** argv)
         if (vertex_shader_src == NULL)
         {
             fprintf(stderr, "ERROR: unable to load vertex shader from '%s'\n", argv[1]);
-            fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-            fprintf(stderr, "       XXXX_shader_file are optionals\n");
+            usage();
             exit(EXIT_FAILURE);
         }
     }
@@ -441,8 +445,8 @@ int main(int argc, char** argv)
         if (fragment_shader_src == NULL)
         {
             fprintf(stderr, "ERROR: unable to load fragment shader from '%s'\n", argv[2]);
-            fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-            fprintf(stderr, "       XXXX_shader_file are optionals\n");
+            usage();
+
             free(vertex_shader_src);
             exit(EXIT_FAILURE);
         }
@@ -452,8 +456,8 @@ int main(int argc, char** argv)
     if (GL_TRUE != glfwInit())
     {
         fprintf(stderr, "ERROR: Unable to initialize GLFW\n");
-        fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-        fprintf(stderr, "       XXXX_shader_file are optionals\n");
+        usage();
+
         if (vertex_shader_src != NULL)
         {
             free(vertex_shader_src);
@@ -479,8 +483,8 @@ int main(int argc, char** argv)
     if (GL_TRUE != glfwOpenWindow(800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
     {
         fprintf(stderr, "ERROR: Unable to create the OpenGL context and associated window\n");
-        fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-        fprintf(stderr, "       XXXX_shader_file are optionals\n");
+        usage();
+
         if (vertex_shader_src != NULL)
         {
             free(vertex_shader_src);
@@ -512,8 +516,7 @@ int main(int argc, char** argv)
     if (shader_program == 0u)
     {
         fprintf(stderr, "ERROR: during creation of the shader program\n");
-        fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
-        fprintf(stderr, "       XXXX_shader_file are optionals\n");
+        usage();
         exit(EXIT_FAILURE);
     }
     glUseProgram(shader_program);
