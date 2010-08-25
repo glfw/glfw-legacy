@@ -430,7 +430,7 @@ int main(int argc, char** argv)
             fprintf(stderr, "ERROR: unable to load vertex shader from '%s'\n", argv[1]);
             fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
             fprintf(stderr, "       XXXX_shader_file are optionals\n");
-            return EXIT_FAILURE;
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -444,7 +444,7 @@ int main(int argc, char** argv)
             fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
             fprintf(stderr, "       XXXX_shader_file are optionals\n");
             free(vertex_shader_src);
-            return EXIT_FAILURE;
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -462,7 +462,7 @@ int main(int argc, char** argv)
         {
             free(fragment_shader_src);
         }
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     glfwEnable(GLFW_AUTO_POLL_EVENTS); /* No explicit call to glfwPollEvents() */
@@ -489,7 +489,7 @@ int main(int argc, char** argv)
         {
             free(fragment_shader_src);
         }
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     glfwSetWindowTitle("GLFW OpenGL3 Heightmap demo");
@@ -514,7 +514,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "ERROR: during creation of the shader program\n");
         fprintf(stderr, "Usage: %s [vertex_shader_file] [fragment_shader_file]\n", argv[0]);
         fprintf(stderr, "       XXXX_shader_file are optionals\n");
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
     glUseProgram(shader_program);
     uloc_project   = glGetUniformLocation(shader_program, "project");
@@ -575,6 +575,7 @@ int main(int argc, char** argv)
             frame = 0;
         }
     }
-    return EXIT_SUCCESS;
+
+    exit(EXIT_SUCCESS);
 }
 
