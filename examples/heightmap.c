@@ -434,6 +434,7 @@ static void GLFWCALL key_callback(int key, int action)
 static void usage(void)
 {
     printf("Usage: heightmap [-v <vertex_shader_path>] [-f <fragment_shader_path>]\n");
+    printf("       heightmap [-h]\n");
 }
 
 int main(int argc, char** argv)
