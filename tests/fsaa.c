@@ -50,7 +50,7 @@ int main(void)
 
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
 
-    if (!glfwOpenWindow(640, 480, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
+    if (!glfwOpenWindow(400, 400, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
     {
         glfwTerminate();
 
