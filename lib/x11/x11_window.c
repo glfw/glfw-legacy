@@ -1053,7 +1053,6 @@ static void leaveFullscreenMode( void )
                     &event );
     }
 
-    // Did we change the fullscreen resolution?
     if( _glfwWin.mouseLock )
     {
         _glfwPlatformShowMouseCursor();
