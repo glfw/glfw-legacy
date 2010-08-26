@@ -23,8 +23,9 @@
 //
 //========================================================================
 //
-// This test renders a high contrast, slowly rotating quad, allowing for
-// visual verification of whether FSAA is indeed enabled
+// This test renders two high contrast, slowly rotating quads, one aliased
+// and one (hopefully) anti-aliased, thus allowing for visual verification
+// of whether FSAA is indeed enabled
 //
 //========================================================================
 
