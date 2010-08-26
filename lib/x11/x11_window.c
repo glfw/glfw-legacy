@@ -808,7 +808,7 @@ static GLboolean createWindow( int width, int height,
     {
         // This is the butcher's way of removing window decorations
         // Setting the override-redirect attribute on a window makes the window
-        // manager ignore the window completely
+        // manager ignore the window completely (ICCCM, section 4)
         // The good thing is that this makes undecorated fullscreen windows
         // easy to do; the bad thing is that we have to do everything manually
         // and some things (like iconify/restore) won't work at all, as they're
