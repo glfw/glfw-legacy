@@ -108,7 +108,9 @@ static Atom getSupportedAtom( Atom* supportedAtoms,
     Atom atom = XInternAtom( _glfwLibrary.display, atomName, True );
     if( atom != None )
     {
-        for( unsigned long i = 0;  i < atomCount;  i++ )
+        unsigned long i;
+
+        for( i = 0;  i < atomCount;  i++ )
         {
             if( supportedAtoms[i] == atom )
             {
