@@ -49,7 +49,7 @@ int main(void)
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
@@ -59,7 +59,7 @@ int main(void)
         glfwTerminate();
 
         fprintf(stderr, "Failed to open GLFW window\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     glfwSetWindowTitle("Aliasing Detector");
@@ -103,6 +103,6 @@ int main(void)
     }
 
     glfwTerminate();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
