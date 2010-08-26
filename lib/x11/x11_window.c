@@ -804,6 +804,20 @@ static GLboolean createWindow( int width, int height,
     // Check whether an EWMH-compliant window manager is running
     _glfwWin.hasEWMH = checkForEWMH();
 
+    if( _glfwWin.fullscreen && !_glfwWin.hasEWMH )
+    {
+        XSetWindowAttributes attributes;
+
+        // The Butcher way of removing window decorations
+        attributes.override_redirect = True;
+        XChangeWindowAttributes( _glfwLibrary.display,
+                                 _glfwWin.window,
+                                 CWOverrideRedirect,
+                                 &attributes );
+
+        _glfwWin.overrideRedirect = GL_TRUE;
+    }
+
     // Find or create the WM_DELETE_WINDOW protocol atom
     _glfwWin.wmDeleteWindow = XInternAtom( _glfwLibrary.display,
                                             "WM_DELETE_WINDOW",
@@ -958,28 +972,17 @@ static void enterFullscreenMode( void )
                     SubstructureNotifyMask | SubstructureRedirectMask,
                     &event );
     }
-    else
+    else if( _glfwWin.overrideRedirect )
     {
-        XSetWindowAttributes attributes;
-
-        // The Butcher way of removing window decorations
-        attributes.override_redirect = True;
-        XChangeWindowAttributes( _glfwLibrary.display,
-                                 _glfwWin.window,
-                                 CWOverrideRedirect,
-                                 &attributes );
-
         // In override-redirect mode, we have divorced ourselves from the
         // window manager, so we need to do everything manually
 
         XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
         XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
                         RevertToParent, CurrentTime );
+        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
         XResizeWindow( _glfwLibrary.display, _glfwWin.window,
                        _glfwWin.width, _glfwWin.height );
-        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
-
-        _glfwWin.overrideRedirect = GL_TRUE;
     }
 
     if( _glfwWin.mouseLock )
