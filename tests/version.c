@@ -58,7 +58,7 @@ typedef const GLubyte * (APIENTRY *PFNGLGETSTRINGI) (GLenum, GLuint);
 
 static void usage(void)
 {
-    printf("version [-h] [-m MAJOR] [-n MINOR] [-d] [-f] [-p PROFILE]\n");
+    printf("version [-h] [-m MAJOR] [-n MINOR] [-d] [-l] [-f] [-p PROFILE]\n");
     printf("available profiles: core compat\n");
 }
 
