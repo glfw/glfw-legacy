@@ -594,6 +594,9 @@ version of GLFW.</p>
   <li>[X11] Bugfix: The response to <code>_NET_WM_PING</code> events was malformed</li>
   <li>[X11] Bugfix: Restoring an iconified fullscreen window caused the application to abort with a <code>BadMatch</code> Xlib error</li>
   <li>[X11] Bugfix: The invisible cursor objects used for hidden cursor mode were not freed</li>
+  <li>[X11] Bugfix: EWMH-compliant window managers were incorrectly detected</li>
+  <li>[X11] Bugfix: The EWMH code path for fullscreen windows did not present the window using <code>_NET_ACTIVE_WINDOW</code></li>
+  <li>[X11] Bugfix: The EWMH code path for fullscreen windows did not send a <code>_NET_WM_STATE</code> client message</li>
   <li>[Carbon] Added Universal Binary build targets for all examples</li>
   <li>[Carbon] Renamed MacOSX port to Carbon</li>
   <li>[Carbon] Removed support for 10.2 Jaguar</li>
