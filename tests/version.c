@@ -147,12 +147,12 @@ int main(int argc, char** argv)
                 else
                 {
                     usage();
-                    exit(1);
+                    exit(EXIT_FAILURE);
                 }
                 break;
             default:
                 usage();
-                exit(1);
+                exit(EXIT_FAILURE);
         }
     }
 
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     if (major != 1 || minor != 1)
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
         glfwTerminate();
 
         fprintf(stderr, "Failed to open GLFW window\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     // Report GLFW version
@@ -248,6 +248,6 @@ int main(int argc, char** argv)
         list_extensions(major, minor);
 
     glfwTerminate();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
