@@ -274,8 +274,10 @@ static GLboolean init_opengl(void)
     RESOLVE_GL_FCN(PFN_glGetAttribLocation, pglGetAttribLocation, "glGetAttribLocation");
     RESOLVE_GL_FCN(PFN_glGenVertexArrays, pglGenVertexArrays, "glGenVertexArrays");
     RESOLVE_GL_FCN(PFN_glDeleteVertexArrays, pglDeleteVertexArrays, "glDeleteVertexArrays");
+    RESOLVE_GL_FCN(PFN_glBindVertexArray, pglBindVertexArray, "glBindVertexArray");
     RESOLVE_GL_FCN(PFN_glGenBuffers, pglGenBuffers, "glGenBuffers");
     RESOLVE_GL_FCN(PFN_glBindBuffer, pglBindBuffer, "glBindBuffer");
+    RESOLVE_GL_FCN(PFN_glBufferData, pglBufferData, "glBufferData");
     RESOLVE_GL_FCN(PFN_glBufferSubData, pglBufferSubData, "glBufferSubData");
     RESOLVE_GL_FCN(PFN_glEnableVertexAttribArray, pglEnableVertexAttribArray, "glEnableVertexAttribArray");
     RESOLVE_GL_FCN(PFN_glVertexAttribPointer, pglVertexAttribPointer, "glVertexAttribPointer");
