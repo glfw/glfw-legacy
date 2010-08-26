@@ -1232,7 +1232,8 @@ static GLboolean processSingleEvent( void )
             {
                 return GL_TRUE;
             }
-            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmPing )
+            else if( _glfwWin.wmPing != None &&
+                     (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmPing )
             {
                 event.xclient.window = _glfwWin.root;
                 XSendEvent( _glfwLibrary.display,
@@ -1338,6 +1339,12 @@ int _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.Saver.changed    = GL_FALSE;
     _glfwWin.refreshRate      = wndconfig->refreshRate;
     _glfwWin.windowNoResize   = wndconfig->windowNoResize;
+
+    _glfwWin.wmDeleteWindow    = None;
+    _glfwWin.wmPing            = None;
+    _glfwWin.wmState           = None;
+    _glfwWin.wmStateFullscreen = None;
+    _glfwWin.wmActiveWindow    = None;
 
     // As the 2.x API doesn't understand multiple display devices, we hardcode
     // this choice and hope for the best
