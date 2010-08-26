@@ -279,7 +279,6 @@ struct _GLFWwin_struct {
     Atom          wmStateFullscreen; // _NET_WM_STATE_FULLSCREEN atom
     Atom          wmActiveWindow;    // _NET_ACTIVE_WINDOW atom
     Cursor        cursor;            // Invisible cursor for hidden cursor
-    GLboolean     hasEWMH;           // True if window manager supports EWMH
 
     // GLX extensions
     PFNGLXSWAPINTERVALSGIPROC             SwapIntervalSGI;
@@ -295,12 +294,11 @@ struct _GLFWwin_struct {
     GLboolean   has_GLX_ARB_create_context_profile;
 
     // Various platform specific internal variables
-    int         overrideRedirect; // True if window is OverrideRedirect
-    int         keyboardGrabbed; // True if keyboard is currently grabbed
-    int         pointerGrabbed;  // True if pointer is currently grabbed
-    int         pointerHidden;   // True if pointer is currently hidden
-    int         mapNotifyCount;  // Used for during processing
-    int         focusInCount;    // Used for during processing
+    GLboolean   hasEWMH;          // True if window manager supports EWMH
+    GLboolean   overrideRedirect; // True if window is OverrideRedirect
+    GLboolean   keyboardGrabbed;  // True if keyboard is currently grabbed
+    GLboolean   pointerGrabbed;   // True if pointer is currently grabbed
+    GLboolean   pointerHidden;    // True if pointer is currently hidden
 
     // Screensaver data
     struct {
