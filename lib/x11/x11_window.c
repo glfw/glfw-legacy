@@ -30,6 +30,8 @@
 
 #include "internal.h"
 
+#include <limits.h>
+
 
 /* Define GLX 1.4 FSAA tokens if not already defined */
 #ifndef GLX_VERSION_1_4
@@ -58,6 +60,156 @@ static Bool isMapNotify( Display *d, XEvent *e, char *arg )
     return (e->type == MapNotify) && (e->xmap.window == (Window)arg);
 }
 
+
+//========================================================================
+// Retrieve a single window property of the specified type
+// Inspired by fghGetWindowProperty from freeglut
+//========================================================================
+
+static unsigned long getWindowProperty( Window window,
+                                        Atom property,
+                                        Atom type,
+                                        unsigned char** value )
+{
+    Atom actualType;
+    int actualFormat;
+    unsigned long itemCount, bytesAfter;
+
+    XGetWindowProperty( _glfwLibrary.display,
+                        window,
+                        property,
+                        0,
+                        LONG_MAX,
+                        False,
+                        type,
+                        &actualType,
+                        &actualFormat,
+                        &itemCount,
+                        &bytesAfter,
+                        value );
+
+    if( actualType != type )
+    {
+        return 0;
+    }
+
+    return itemCount;
+}
+
+
+//========================================================================
+// Check whether the specified atom is supported
+//========================================================================
+
+static Atom getSupportedAtom( Atom* supportedAtoms,
+                              unsigned long atomCount,
+                              const char* atomName )
+{
+    Atom atom = XInternAtom( _glfwLibrary.display, atomName, True );
+    if( atom != None )
+    {
+        for( unsigned long i = 0;  i < atomCount;  i++ )
+        {
+            if( supportedAtoms[i] == atom )
+            {
+                return atom;
+            }
+        }
+    }
+
+    return None;
+}
+
+
+//========================================================================
+// Check whether the running window manager is EWMH-compliant
+//========================================================================
+
+static GLboolean checkForEWMH( void )
+{
+    Window *windowFromRoot = NULL;
+    Window *windowFromChild = NULL;
+
+    // Hey kids; let's see if the window manager supports EWMH!
+
+    // First we need a couple of atoms, which should already be there
+    Atom supportingWmCheck = XInternAtom( _glfwLibrary.display,
+                                          "_NET_SUPPORTING_WM_CHECK",
+                                          True );
+    Atom wmSupported = XInternAtom( _glfwLibrary.display,
+                                    "_NET_SUPPORTED",
+                                    True );
+    if( supportingWmCheck == None || wmSupported == None )
+    {
+        return GL_FALSE;
+    }
+
+    // Then we look for the _NET_SUPPORTING_WM_CHECK property of the root window
+    if( getWindowProperty( _glfwWin.root,
+                           supportingWmCheck,
+                           XA_WINDOW,
+                           (unsigned char**) &windowFromRoot ) != 1 )
+    {
+        XFree( windowFromRoot );
+        return GL_FALSE;
+    }
+
+    // It should be the ID of a child window (of the root)
+    // Then we look for the same property on the child window
+    if( getWindowProperty( *windowFromRoot,
+                           supportingWmCheck,
+                           XA_WINDOW,
+                           (unsigned char**) &windowFromChild ) != 1 )
+    {
+        XFree( windowFromRoot );
+        XFree( windowFromChild );
+        return GL_FALSE;
+    }
+
+    // It should be the ID of that same child window
+    if( *windowFromRoot != *windowFromChild )
+    {
+        XFree( windowFromRoot );
+        XFree( windowFromChild );
+        return GL_FALSE;
+    }
+
+    XFree( windowFromRoot );
+    XFree( windowFromChild );
+
+    // We are now fairly sure that an EWMH-compliant window manager is running
+
+    Atom *supportedAtoms;
+    unsigned long atomCount;
+
+    // Now we need to check the _NET_SUPPORTED property of the root window
+    atomCount = getWindowProperty( _glfwWin.root,
+                                   wmSupported,
+                                   XA_ATOM,
+                                   (unsigned char**) &supportedAtoms );
+
+    // See which of the atoms we support that are supported by the WM
+
+    _glfwWin.wmState = getSupportedAtom( supportedAtoms,
+                                         atomCount,
+                                         "_NET_WM_STATE" );
+
+    _glfwWin.wmStateFullscreen = getSupportedAtom( supportedAtoms,
+                                                   atomCount,
+                                                   "_NET_WM_STATE_FULLSCREEN" );
+
+    _glfwWin.wmPing = getSupportedAtom( supportedAtoms,
+                                        atomCount,
+                                        "_NET_WM_PING" );
+
+    _glfwWin.wmActiveWindow = getSupportedAtom( supportedAtoms,
+                                                atomCount,
+                                                "_NET_ACTIVE_WINDOW" );
+
+    XFree( supportedAtoms );
+
+    return GL_TRUE;
+}
 
 //========================================================================
 // Translates an X Window key to internal coding
@@ -600,7 +752,6 @@ static GLboolean createWindow( int width, int height,
                                const _GLFWwndconfig *wndconfig )
 {
     XEvent event;
-    Atom protocols[2];
     unsigned long wamask;
     XSetWindowAttributes wa;
 
@@ -650,22 +801,39 @@ static GLboolean createWindow( int width, int height,
         }
     }
 
-    // Declare which WM protocols we support
-    {
-        // Basic window close notification protocol
-        _glfwWin.WMDeleteWindow = XInternAtom( _glfwLibrary.display,
-                                               "WM_DELETE_WINDOW",
-                                               False );
+    // Check whether an EWMH-compliant window manager is running
+    _glfwWin.hasEWMH = checkForEWMH();
 
+    // Find or create the WM_DELETE_WINDOW protocol atom
+    _glfwWin.wmDeleteWindow = XInternAtom( _glfwLibrary.display,
+                                            "WM_DELETE_WINDOW",
+                                            False );
+
+    // Declare the WM protocols we support
+    {
+        int count = 0;
+        Atom protocols[2];
+
+        // The WM_DELETE_WINDOW ICCCM protocol
+        // Basic window close notification protocol
+        if( _glfwWin.wmDeleteWindow != None )
+        {
+            protocols[count++] = _glfwWin.wmDeleteWindow;
+        }
+
+        // The _NET_WM_PING EWMH protocol
         // Tells the WM to ping our window and flag us as unresponsive if we
         // don't reply within a few seconds
-        _glfwWin.WMPing = XInternAtom( _glfwLibrary.display, "_NET_WM_PING", False );
+        if( _glfwWin.wmPing != None )
+        {
+            protocols[count++] = _glfwWin.wmPing;
+        }
 
-        protocols[0] = _glfwWin.WMDeleteWindow;
-        protocols[1] = _glfwWin.WMPing;
-
-        XSetWMProtocols( _glfwLibrary.display, _glfwWin.window, protocols,
-                         sizeof(protocols) / sizeof(Atom) );
+        if( count > 0 )
+        {
+            XSetWMProtocols( _glfwLibrary.display, _glfwWin.window,
+                             protocols, count );
+        }
     }
 
     // Set ICCCM WM_HINTS property
@@ -708,7 +876,7 @@ static GLboolean createWindow( int width, int height,
 
     _glfwPlatformSetWindowTitle( "GLFW Window" );
 
-    // Make sure the window is mapped
+    // Make sure the window is mapped before proceeding
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
     XPeekIfEvent( _glfwLibrary.display, &event, isMapNotify,
                   (char*)_glfwWin.window );
@@ -741,49 +909,23 @@ static void enterFullscreenMode( void )
                        &_glfwWin.width, &_glfwWin.height,
                        &_glfwWin.refreshRate );
 
-    if( _glfwWin.overrideRedirect )
+    if( _glfwWin.hasEWMH &&
+        _glfwWin.wmState != None &&
+        _glfwWin.wmStateFullscreen != None )
     {
-        XSetWindowAttributes attributes;
-
-        // The Butcher way of removing window decorations
-        attributes.override_redirect = True;
-        XChangeWindowAttributes( _glfwLibrary.display,
-                                 _glfwWin.window,
-                                 CWOverrideRedirect,
-                                 &attributes );
-        _glfwWin.overrideRedirect = GL_TRUE;
-
-        // In override-redirect mode, we have divorced ourselves from the
-        // window manager, so we need to do everything manually
-
-        XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
-        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
-                        RevertToParent, CurrentTime );
-        XResizeWindow( _glfwLibrary.display, _glfwWin.window,
-                       _glfwWin.width, _glfwWin.height );
-        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
-    }
-    else
-    {
-        // NOTE: The section below is TEMPORARY code, to be replaced with proper
-        // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
-
-        Atom activeWindowAtom = XInternAtom( _glfwLibrary.display,
-                                             "_NET_ACTIVE_WINDOW", True );
-
-        if( activeWindowAtom != None )
+        if( _glfwWin.wmActiveWindow != None )
         {
             // Ask the window manager to raise and focus the GLFW window
             // Only focused windows with the _NET_WM_STATE_FULLSCREEN state end
-            // up on top of all other windows (Stacking order in the EWMH spec)
+            // up on top of all other windows ("Stacking order" in EWMH spec)
 
             XEvent event;
             memset( &event, 0, sizeof(event) );
 
             event.type = ClientMessage;
             event.xclient.window = _glfwWin.window;
-            event.xclient.format = 32;
-            event.xclient.message_type = activeWindowAtom;
+            event.xclient.format = 32; // Data is 32-bit longs
+            event.xclient.message_type = _glfwWin.wmActiveWindow;
             event.xclient.data.l[0] = 1; // Sender is a normal application
             event.xclient.data.l[1] = 0; // We don't really know the timestamp
 
@@ -794,35 +936,50 @@ static void enterFullscreenMode( void )
                         &event );
         }
 
-        Atom stateAtom = XInternAtom( _glfwLibrary.display,
-                                      "_NET_WM_STATE", True );
-        Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
-                                           "_NET_WM_STATE_FULLSCREEN", True );
+        // Ask the window manager to make the GLFW window a fullscreen window
+        // Fullscreen windows are undecorated and, when focused, are kept
+        // on top of all other windows
 
-        if( stateAtom != None && fullscreenAtom != None )
-        {
-            // Ask the window manager to make the GLFW window a fullscreen window
-            // Fullscreen windows are undecorated and, when focused, are kept
-            // on top of all other windows
+        XEvent event;
+        memset( &event, 0, sizeof(event) );
 
-            XEvent event;
-            memset( &event, 0, sizeof(event) );
+        event.type = ClientMessage;
+        event.xclient.window = _glfwWin.window;
+        event.xclient.format = 32; // Data is 32-bit longs
+        event.xclient.message_type = _glfwWin.wmState;
+        event.xclient.data.l[0] = _NET_WM_STATE_ADD;
+        event.xclient.data.l[1] = _glfwWin.wmStateFullscreen;
+        event.xclient.data.l[2] = 0; // No secondary property
+        event.xclient.data.l[3] = 1; // Sender is a normal application
 
-            event.type = ClientMessage;
-            event.xclient.window = _glfwWin.window;
-            event.xclient.format = 32;
-            event.xclient.message_type = stateAtom;
-            event.xclient.data.l[0] = _NET_WM_STATE_ADD;
-            event.xclient.data.l[1] = fullscreenAtom;
-            event.xclient.data.l[2] = 0; // No secondary property
-            event.xclient.data.l[3] = 1; // Sender is a normal application
+        XSendEvent( _glfwLibrary.display,
+                    _glfwWin.root,
+                    False,
+                    SubstructureNotifyMask | SubstructureRedirectMask,
+                    &event );
+    }
+    else
+    {
+        XSetWindowAttributes attributes;
 
-            XSendEvent( _glfwLibrary.display,
-                        _glfwWin.root,
-                        False,
-                        SubstructureNotifyMask | SubstructureRedirectMask,
-                        &event );
-        }
+        // The Butcher way of removing window decorations
+        attributes.override_redirect = True;
+        XChangeWindowAttributes( _glfwLibrary.display,
+                                 _glfwWin.window,
+                                 CWOverrideRedirect,
+                                 &attributes );
+
+        // In override-redirect mode, we have divorced ourselves from the
+        // window manager, so we need to do everything manually
+
+        XRaiseWindow( _glfwLibrary.display, _glfwWin.window );
+        XSetInputFocus( _glfwLibrary.display, _glfwWin.window,
+                        RevertToParent, CurrentTime );
+        XResizeWindow( _glfwLibrary.display, _glfwWin.window,
+                       _glfwWin.width, _glfwWin.height );
+        XMoveWindow( _glfwLibrary.display, _glfwWin.window, 0, 0 );
+
+        _glfwWin.overrideRedirect = GL_TRUE;
     }
 
     if( _glfwWin.mouseLock )
@@ -859,39 +1016,30 @@ static void leaveFullscreenMode( void )
         _glfwWin.Saver.changed = GL_FALSE;
     }
 
-    if( !_glfwWin.overrideRedirect )
+    if( _glfwWin.hasEWMH &&
+        _glfwWin.wmState != None &&
+        _glfwWin.wmStateFullscreen != None )
     {
-        // NOTE: The section below is TEMPORARY code, to be replaced with proper
-        // EWMH support detection using the _NET_SUPPORTING_WM_CHECK atom
+        // Ask the window manager to make the GLFW window a normal window
+        // Normal windows usually have frames and other decorations
 
-        Atom stateAtom = XInternAtom( _glfwLibrary.display,
-                                      "_NET_WM_STATE", True );
-        Atom fullscreenAtom = XInternAtom( _glfwLibrary.display,
-                                           "_NET_WM_STATE_FULLSCREEN", True );
+        XEvent event;
+        memset( &event, 0, sizeof(event) );
 
-        if( stateAtom != None && fullscreenAtom != None )
-        {
-            // Ask the window manager to make the GLFW window a normal window
-            // Normal windows usually have frames and other decorations
+        event.type = ClientMessage;
+        event.xclient.window = _glfwWin.window;
+        event.xclient.format = 32; // Data is 32-bit longs
+        event.xclient.message_type = _glfwWin.wmState;
+        event.xclient.data.l[0] = _NET_WM_STATE_REMOVE;
+        event.xclient.data.l[1] = _glfwWin.wmStateFullscreen;
+        event.xclient.data.l[2] = 0; // No secondary property
+        event.xclient.data.l[3] = 1; // Sender is a normal application
 
-            XEvent event;
-            memset( &event, 0, sizeof(event) );
-
-            event.type = ClientMessage;
-            event.xclient.window = _glfwWin.window;
-            event.xclient.format = 32;
-            event.xclient.message_type = stateAtom;
-            event.xclient.data.l[0] = _NET_WM_STATE_REMOVE;
-            event.xclient.data.l[1] = fullscreenAtom;
-            event.xclient.data.l[2] = 0; // No secondary property
-            event.xclient.data.l[3] = 1; // Sender is a normal application
-
-            XSendEvent( _glfwLibrary.display,
-                        _glfwWin.root,
-                        False,
-                        SubstructureNotifyMask | SubstructureRedirectMask,
-                        &event );
-        }
+        XSendEvent( _glfwLibrary.display,
+                    _glfwWin.root,
+                    False,
+                    SubstructureNotifyMask | SubstructureRedirectMask,
+                    &event );
     }
 
     // Did we change the fullscreen resolution?
@@ -1080,11 +1228,11 @@ static GLboolean processSingleEvent( void )
         // Was the window closed by the window manager?
         case ClientMessage:
         {
-            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMDeleteWindow )
+            if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmDeleteWindow )
             {
                 return GL_TRUE;
             }
-            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.WMPing )
+            else if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmPing )
             {
                 event.xclient.window = _glfwWin.root;
                 XSendEvent( _glfwLibrary.display,

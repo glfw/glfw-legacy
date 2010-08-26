@@ -266,16 +266,20 @@ struct _GLFWwin_struct {
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
-    Colormap      colormap;        // Window colormap:
-    Window        window;          // Window
-    Window        root;            // Root window for screen
-    int           screen;          // Screen ID
-    XVisualInfo  *visual;          // Visual
-    GLXFBConfigID fbconfigID;      // ID of the selected GLXFBConfig
-    GLXContext    context;         // OpenGL rendering context
-    Atom          WMDeleteWindow;  // For WM close detection
-    Atom          WMPing;          // For WM ping response
-    Cursor        cursor;
+    Colormap      colormap;          // Window colormap
+    Window        window;            // Window
+    Window        root;              // Root window for screen
+    int           screen;            // Screen ID
+    XVisualInfo  *visual;            // Visual for selected GLXFBConfig
+    GLXFBConfigID fbconfigID;        // ID of selected GLXFBConfig
+    GLXContext    context;           // OpenGL rendering context
+    Atom          wmDeleteWindow;    // WM_DELETE_WINDOW atom
+    Atom          wmPing;            // _NET_WM_PING atom
+    Atom          wmState;           // _NET_WM_STATE atom
+    Atom          wmStateFullscreen; // _NET_WM_STATE_FULLSCREEN atom
+    Atom          wmActiveWindow;    // _NET_ACTIVE_WINDOW atom
+    Cursor        cursor;            // Invisible cursor for hidden cursor
+    GLboolean     hasEWMH;           // True if window manager supports EWMH
 
     // GLX extensions
     PFNGLXSWAPINTERVALSGIPROC             SwapIntervalSGI;
