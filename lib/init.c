@@ -79,7 +79,10 @@ GLFWAPI int GLFWAPIENTRY glfwInit( void )
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwTerminate( void )
-{
+{       
+        
+        
+
     // Is GLFW initialized?
     if( !_glfwInitialized )
     {
