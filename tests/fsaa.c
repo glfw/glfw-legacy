@@ -33,6 +33,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef GL_ARB_multisample
+#define GL_MULTISAMPLE_ARB 0x809D
+#endif
+
 static void GLFWCALL window_size_callback(int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -75,18 +79,25 @@ int main(void)
 
     while (glfwGetWindowParam(GLFW_OPENED))
     {
+        GLfloat time = (GLfloat) glfwGetTime();
+
         glClear(GL_COLOR_BUFFER_BIT);
 
         glLoadIdentity();
-        glRotatef((GLfloat) glfwGetTime(), 0.f, 0.f, 1.f);
+        glTranslatef(0.5f, 0.f, 0.f);
+        glRotatef(time, 0.f, 0.f, 1.f);
 
-        glBegin(GL_QUADS);
+        glEnable(GL_MULTISAMPLE_ARB);
         glColor3f(1.f, 1.f, 1.f);
-        glVertex2f(-0.25f,  0.25f);
-        glVertex2f( 0.25f,  0.25f);
-        glVertex2f( 0.25f, -0.25f);
-        glVertex2f(-0.25f, -0.25f);
-        glEnd();
+        glRectf(-0.25f, -0.25f, 0.25f, 0.25f);
+
+        glLoadIdentity();
+        glTranslatef(-0.5f, 0.f, 0.f);
+        glRotatef(time, 0.f, 0.f, 1.f);
+
+        glDisable(GL_MULTISAMPLE_ARB);
+        glColor3f(1.f, 1.f, 1.f);
+        glRectf(-0.25f, -0.25f, 0.25f, 0.25f);
 
         glfwSwapBuffers();
     }
