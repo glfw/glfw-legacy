@@ -27,8 +27,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-
+#include <stddef.h>
 #include "getopt.h"
+
+
 #define GLFW_NO_GLU 1 
 #include <GL/glfw.h>
 
@@ -39,6 +41,9 @@
 #endif
 
 #ifndef GL_VERSION_2_0
+
+typedef char GLchar;
+
 #define GL_BLEND_EQUATION_RGB             0x8009
 #define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
 #define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623
@@ -124,6 +129,10 @@
 
 
 #ifndef GL_VERSION_1_5
+
+typedef ptrdiff_t GLintptr;
+typedef ptrdiff_t GLsizeiptr;
+
 #define GL_BUFFER_SIZE                    0x8764
 #define GL_BUFFER_USAGE                   0x8765
 #define GL_QUERY_COUNTER_BITS             0x8864
