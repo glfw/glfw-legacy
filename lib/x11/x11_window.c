@@ -806,9 +806,15 @@ static GLboolean createWindow( int width, int height,
 
     if( _glfwWin.fullscreen && !_glfwWin.hasEWMH )
     {
-        XSetWindowAttributes attributes;
+        // This is the butcher's way of removing window decorations
+        // Setting the override-redirect attribute on a window makes the window
+        // manager ignore the window completely
+        // The good thing is that this makes undecorated fullscreen windows
+        // easy to do; the bad thing is that we have to do everything manually
+        // and some things (like iconify/restore) won't work at all, as they're
+        // usually performed by the window manager
 
-        // The Butcher way of removing window decorations
+        XSetWindowAttributes attributes;
         attributes.override_redirect = True;
         XChangeWindowAttributes( _glfwLibrary.display,
                                  _glfwWin.window,
