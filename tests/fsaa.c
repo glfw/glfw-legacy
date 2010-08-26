@@ -44,8 +44,6 @@ static void GLFWCALL window_size_callback(int width, int height)
 
 int main(void)
 {
-    int samples;
-
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -66,13 +64,11 @@ int main(void)
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSwapInterval(1);
 
-    samples = glfwGetWindowParam(GLFW_FSAA_SAMPLES);
+    int samples = glfwGetWindowParam(GLFW_FSAA_SAMPLES);
     if (samples)
         printf("Context reports FSAA is supported with %i samples\n", samples);
     else
         printf("Context reports FSAA is unsupported\n");
-
-    glClearColor(0.f, 0.f, 0.f, 0.f);
 
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0.f, 1.f, 0.f, 1.f);
