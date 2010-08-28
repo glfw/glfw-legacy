@@ -1194,16 +1194,20 @@ static GLboolean processSingleEvent( void )
             {
                 if( _glfwWin.mouseLock )
                 {
-                    _glfwInput.MousePosX += event.xmotion.x -
-                                            _glfwInput.CursorPosX;
-                    _glfwInput.MousePosY += event.xmotion.y -
-                                            _glfwInput.CursorPosY;
+                    if( _glfwWin.pointerHidden )
+                    {
+                        _glfwInput.MousePosX += event.xmotion.x -
+                                                _glfwInput.CursorPosX;
+                        _glfwInput.MousePosY += event.xmotion.y -
+                                                _glfwInput.CursorPosY;
+                    }
                 }
                 else
                 {
                     _glfwInput.MousePosX = event.xmotion.x;
                     _glfwInput.MousePosY = event.xmotion.y;
                 }
+
                 _glfwInput.CursorPosX = event.xmotion.x;
                 _glfwInput.CursorPosY = event.xmotion.y;
                 _glfwInput.MouseMoved = GL_TRUE;
@@ -1271,6 +1275,11 @@ static GLboolean processSingleEvent( void )
         {
             _glfwWin.active = GL_TRUE;
 
+            if( _glfwWin.mouseLock )
+            {
+                _glfwPlatformHideMouseCursor();
+            }
+
             break;
         }
 
@@ -1279,6 +1288,11 @@ static GLboolean processSingleEvent( void )
         {
             _glfwWin.active = GL_FALSE;
             _glfwInputDeactivation();
+
+            if( _glfwWin.mouseLock )
+            {
+                _glfwPlatformShowMouseCursor();
+            }
 
             break;
         }
@@ -1757,7 +1771,7 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Did we get mouse movement in locked cursor mode?
-    if( _glfwInput.MouseMoved && _glfwWin.mouseLock )
+    if( _glfwInput.MouseMoved && _glfwWin.pointerHidden )
     {
         _glfwPlatformSetMouseCursorPos( _glfwWin.width/2,
                                         _glfwWin.height/2 );
