@@ -1067,16 +1067,14 @@ static void leaveFullscreenMode( void )
 static GLboolean processSingleEvent( void )
 {
     XEvent event;
-
-    // Pull next event from event queue
     XNextEvent( _glfwLibrary.display, &event );
 
-    // Handle certain window messages
     switch( event.type )
     {
-        // Is a key being pressed?
         case KeyPress:
         {
+            // A keyboard key was pressed
+
             // Translate and report key press
             _glfwInputKey( translateKey( event.xkey.keycode ), GLFW_PRESS );
 
@@ -1088,9 +1086,10 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Is a key being released?
         case KeyRelease:
         {
+            // A keyboard key was released
+
             // Do not report key releases for key repeats. For key repeats we
             // will get KeyRelease/KeyPress pairs with similar or identical
             // time stamps. User selected key repeat filtering is handled in
@@ -1128,9 +1127,10 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Were any of the mouse-buttons pressed?
         case ButtonPress:
         {
+            // A mouse button was pressed or a scrolling event occurred
+
             if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS );
@@ -1165,9 +1165,10 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Were any of the mouse-buttons released?
         case ButtonRelease:
         {
+            // A mouse button was released
+
             if( event.xbutton.button == Button1 )
             {
                 _glfwInputMouseClick( GLFW_MOUSE_BUTTON_LEFT,
@@ -1186,12 +1187,15 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the mouse moved?
         case MotionNotify:
         {
+            // The mouse cursor was moved
+
             if( event.xmotion.x != _glfwInput.CursorPosX ||
                 event.xmotion.y != _glfwInput.CursorPosY )
             {
+                // The mouse cursor was moved and we didn't do it
+
                 if( _glfwWin.mouseLock )
                 {
                     if( _glfwWin.pointerHidden )
@@ -1212,7 +1216,6 @@ static GLboolean processSingleEvent( void )
                 _glfwInput.CursorPosY = event.xmotion.y;
                 _glfwInput.MouseMoved = GL_TRUE;
 
-                // Call user callback function
                 if( _glfwWin.mousePosCallback )
                 {
                     _glfwWin.mousePosCallback( _glfwInput.MousePosX,
@@ -1222,12 +1225,13 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the window resized?
         case ConfigureNotify:
         {
             if( event.xconfigure.width != _glfwWin.width ||
                 event.xconfigure.height != _glfwWin.height )
             {
+                // The window was resized
+
                 _glfwWin.width = event.xconfigure.width;
                 _glfwWin.height = event.xconfigure.height;
                 if( _glfwWin.windowSizeCallback )
@@ -1239,16 +1243,21 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the window closed by the window manager?
         case ClientMessage:
         {
             if( (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmDeleteWindow )
             {
+                // The window manager was asked to close the window, for example by
+                // the user pressing a 'close' window decoration button
+
                 return GL_TRUE;
             }
             else if( _glfwWin.wmPing != None &&
                      (Atom) event.xclient.data.l[ 0 ] == _glfwWin.wmPing )
             {
+                // The window manager is pinging us to make sure we are still
+                // responding to events
+
                 event.xclient.window = _glfwWin.root;
                 XSendEvent( _glfwLibrary.display,
                             event.xclient.window,
@@ -1260,19 +1269,26 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the window mapped (un-iconified)?
         case MapNotify:
+        {
+            // The window was mapped
+
             _glfwWin.iconified = GL_FALSE;
             break;
+        }
 
-        // Was the window unmapped (iconified)?
         case UnmapNotify:
+        {
+            // The window was unmapped
+
             _glfwWin.iconified = GL_TRUE;
             break;
+        }
 
-        // Was the window activated?
         case FocusIn:
         {
+            // The window gained focus
+
             _glfwWin.active = GL_TRUE;
 
             if( _glfwWin.mouseLock )
@@ -1283,9 +1299,10 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the window de-activated?
         case FocusOut:
         {
+            // The window lost focus
+
             _glfwWin.active = GL_FALSE;
             _glfwInputDeactivation();
 
@@ -1297,10 +1314,10 @@ static GLboolean processSingleEvent( void )
             break;
         }
 
-        // Was the window contents damaged?
         case Expose:
         {
-            // Call user callback function
+            // The window's contents was damaged
+
             if( _glfwWin.windowRefreshCallback )
             {
                 _glfwWin.windowRefreshCallback();
@@ -1472,31 +1489,23 @@ void _glfwPlatformCloseWindow( void )
         leaveFullscreenMode();
     }
 
-    // Do we have a rendering context?
     if( _glfwWin.context )
     {
-        // Release the context
+        // Release and destroy the context
         glXMakeCurrent( _glfwLibrary.display, None, NULL );
-
-        // Delete the context
         glXDestroyContext( _glfwLibrary.display, _glfwWin.context );
         _glfwWin.context = NULL;
     }
 
-    // Do we have a visual?
     if( _glfwWin.visual )
     {
         XFree( _glfwWin.visual );
         _glfwWin.visual = NULL;
     }
 
-    // Do we have a window?
     if( _glfwWin.window )
     {
-        // Unmap the window
         XUnmapWindow( _glfwLibrary.display, _glfwWin.window );
-
-        // Destroy the window
         XDestroyWindow( _glfwLibrary.display, _glfwWin.window );
         _glfwWin.window = (Window) 0;
     }
@@ -1528,7 +1537,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 
 //========================================================================
-// _glfwPlatformSetWindowSize() - Set the window size.
+// Set the window size
 //========================================================================
 
 void _glfwPlatformSetWindowSize( int width, int height )
@@ -1538,15 +1547,16 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
     rate = _glfwWin.refreshRate;
 
-    // If we are in fullscreen mode, get some info about the current mode
     if( _glfwWin.fullscreen )
     {
-        // Get closest match for target video mode
+        // Get the closest matching video mode for the specified window size
         mode = _glfwGetClosestVideoMode( _glfwWin.screen, &width, &height, &rate );
     }
 
     if( _glfwWin.windowNoResize )
     {
+        // Update window size restrictions to match new window size
+
         sizehints = XAllocSizeHints();
         sizehints->flags = 0;
 
@@ -1564,10 +1574,9 @@ void _glfwPlatformSetWindowSize( int width, int height )
         sizeChanged = GL_TRUE;
     }
 
-    // Change fullscreen video mode?
     if( _glfwWin.fullscreen )
     {
-        // Change video mode (keeping current rate)
+        // Change video mode, keeping current refresh rate
         _glfwSetVideoModeMODE( _glfwWin.screen, mode, _glfwWin.refreshRate );
     }
 
@@ -1580,12 +1589,11 @@ void _glfwPlatformSetWindowSize( int width, int height )
 
 
 //========================================================================
-// _glfwPlatformSetWindowPos() - Set the window position.
+// Set the window position.
 //========================================================================
 
 void _glfwPlatformSetWindowPos( int x, int y )
 {
-    // Set window position
     XMoveWindow( _glfwLibrary.display, _glfwWin.window, x, y );
 }
 
@@ -1596,13 +1604,13 @@ void _glfwPlatformSetWindowPos( int x, int y )
 
 void _glfwPlatformIconifyWindow( void )
 {
-    // We can't do this for override redirect windows
     if( _glfwWin.overrideRedirect )
     {
+        // We can't iconify/restore override-redirect windows, as that's
+        // performed by the window manager
         return;
     }
 
-    // Iconify window (everything else done in event handlers)
     XIconifyWindow( _glfwLibrary.display, _glfwWin.window, _glfwWin.screen );
 }
 
@@ -1613,20 +1621,19 @@ void _glfwPlatformIconifyWindow( void )
 
 void _glfwPlatformRestoreWindow( void )
 {
-    // We can't do this for override redirect windows
     if( _glfwWin.overrideRedirect )
     {
+        // We can't iconify/restore override-redirect windows, as that's
+        // performed by the window manager
         return;
     }
 
-    // Un-iconify window (everything else done in event handlers)
     XMapWindow( _glfwLibrary.display, _glfwWin.window );
 }
 
 
 //========================================================================
-// _glfwPlatformSwapBuffers() - Swap buffers (double-buffering) and poll
-// any new events.
+// Swap OpenGL buffers and poll any new events
 //========================================================================
 
 void _glfwPlatformSwapBuffers( void )
@@ -1637,7 +1644,7 @@ void _glfwPlatformSwapBuffers( void )
 
 
 //========================================================================
-// _glfwPlatformSwapInterval() - Set double buffering swap interval
+// Set double buffering swap interval
 //========================================================================
 
 void _glfwPlatformSwapInterval( int interval )
@@ -1694,7 +1701,6 @@ void _glfwPlatformRefreshWindowParams( void )
     // true sounds better than false, so we hardcode true here
     _glfwWin.accelerated = GL_TRUE;
 
-    // "Standard" window parameters
     _glfwWin.redBits = getFBConfigAttrib( *fbconfig, GLX_RED_SIZE );
     _glfwWin.greenBits = getFBConfigAttrib( *fbconfig, GLX_GREEN_SIZE );
     _glfwWin.blueBits = getFBConfigAttrib( *fbconfig, GLX_BLUE_SIZE );
@@ -1709,11 +1715,9 @@ void _glfwPlatformRefreshWindowParams( void )
     _glfwWin.accumAlphaBits = getFBConfigAttrib( *fbconfig, GLX_ACCUM_ALPHA_SIZE );
 
     _glfwWin.auxBuffers = getFBConfigAttrib( *fbconfig, GLX_AUX_BUFFERS );
-
-    // Get stereo rendering setting
     _glfwWin.stereo = getFBConfigAttrib( *fbconfig, GLX_STEREO ) ? 1 : 0;
 
-    // Get multisample buffer samples
+    // Get FSAA buffer sample count
     if( _glfwWin.has_GLX_ARB_multisample )
     {
         _glfwWin.samples = getFBConfigAttrib( *fbconfig, GLX_SAMPLES );
@@ -1761,7 +1765,7 @@ void _glfwPlatformPollEvents( void )
     // Flag that the cursor has not moved
     _glfwInput.MouseMoved = GL_FALSE;
 
-    // Empty the window event queue
+    // Process all pending events
     while( XPending( _glfwLibrary.display ) )
     {
         if( processSingleEvent() )
@@ -1770,7 +1774,7 @@ void _glfwPlatformPollEvents( void )
         }
     }
 
-    // Did we get mouse movement in locked cursor mode?
+    // Did we get mouse movement in fully enabled hidden cursor mode?
     if( _glfwInput.MouseMoved && _glfwWin.pointerHidden )
     {
         _glfwPlatformSetMouseCursorPos( _glfwWin.width/2,
@@ -1789,24 +1793,23 @@ void _glfwPlatformPollEvents( void )
 
 
 //========================================================================
-// _glfwPlatformWaitEvents() - Wait for new window and input events
+// Wait for new window and input events
 //========================================================================
 
 void _glfwPlatformWaitEvents( void )
 {
     XEvent event;
 
-    // Wait for new events (blocking)
+    // Block waiting for an event to arrive
     XNextEvent( _glfwLibrary.display, &event );
     XPutBackEvent( _glfwLibrary.display, &event );
 
-    // Poll events from queue
     _glfwPlatformPollEvents();
 }
 
 
 //========================================================================
-// _glfwPlatformHideMouseCursor() - Hide mouse cursor (lock it)
+// Hide mouse cursor (lock it)
 //========================================================================
 
 void _glfwPlatformHideMouseCursor( void )
@@ -1815,7 +1818,6 @@ void _glfwPlatformHideMouseCursor( void )
     if( !_glfwWin.pointerHidden )
     {
         XDefineCursor( _glfwLibrary.display, _glfwWin.window, _glfwWin.cursor );
-
         _glfwWin.pointerHidden = GL_TRUE;
     }
 
@@ -1835,7 +1837,7 @@ void _glfwPlatformHideMouseCursor( void )
 
 
 //========================================================================
-// _glfwPlatformShowMouseCursor() - Show mouse cursor (unlock it)
+// Show mouse cursor (unlock it)
 //========================================================================
 
 void _glfwPlatformShowMouseCursor( void )
@@ -1859,7 +1861,7 @@ void _glfwPlatformShowMouseCursor( void )
 
 
 //========================================================================
-// _glfwPlatformSetMouseCursorPos() - Set physical mouse cursor position
+// Set physical mouse cursor position
 //========================================================================
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
