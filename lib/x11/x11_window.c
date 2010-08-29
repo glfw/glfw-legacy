@@ -463,7 +463,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         if( !getFBConfigAttrib( fbconfigs[i], GLX_DOUBLEBUFFER ) ||
             !getFBConfigAttrib( fbconfigs[i], GLX_VISUAL_ID ) )
         {
-            // Only consider doublebuffered GLXFBConfigs with associated visuals
+            // Only consider double-buffered GLXFBConfigs with associated visuals
             continue;
         }
 
@@ -758,7 +758,7 @@ static GLboolean createWindow( int width, int height,
     XSetWindowAttributes wa;
 
     // Every window needs a colormap
-    // We create one based on the visual used by the current context
+    // Create one based on the visual used by the current context
 
     _glfwWin.colormap = XCreateColormap( _glfwLibrary.display,
                                          _glfwWin.root,
@@ -778,7 +778,7 @@ static GLboolean createWindow( int width, int height,
         if( wndconfig->mode == GLFW_WINDOW )
         {
             // The /only/ reason we are setting the background pixel here is
-            // because otherwise our window wont get any decorations on systems
+            // that otherwise our window wont get any decorations on systems
             // using Compiz on Intel hardware
             wa.background_pixel = BlackPixel( _glfwLibrary.display, _glfwWin.screen );
             wamask |= CWBackPixel;
@@ -826,7 +826,7 @@ static GLboolean createWindow( int width, int height,
         _glfwWin.overrideRedirect = GL_TRUE;
     }
 
-    // Find or create the WM_DELETE_WINDOW protocol atom
+    // Find or create the protocol atom for window close notifications
     _glfwWin.wmDeleteWindow = XInternAtom( _glfwLibrary.display,
                                             "WM_DELETE_WINDOW",
                                             False );
@@ -874,7 +874,7 @@ static GLboolean createWindow( int width, int height,
         XFree( hints );
     }
 
-    // Set ICCCM WM_NORMAL_HINTS property
+    // Set ICCCM WM_NORMAL_HINTS property (even if no parts are set)
     {
         XSizeHints *hints = XAllocSizeHints();
         if( !hints )
@@ -1525,7 +1525,7 @@ void _glfwPlatformCloseWindow( void )
 
 
 //========================================================================
-// _glfwPlatformSetWindowTitle() - Set the window title.
+// Set the window title
 //========================================================================
 
 void _glfwPlatformSetWindowTitle( const char *title )
@@ -1866,9 +1866,10 @@ void _glfwPlatformShowMouseCursor( void )
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    // Change cursor position
+    // Store the new position so we can recognise it later
     _glfwInput.CursorPosX = x;
     _glfwInput.CursorPosY = y;
+
     XWarpPointer( _glfwLibrary.display, None, _glfwWin.window, 0,0,0,0, x, y );
 }
 
