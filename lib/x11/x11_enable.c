@@ -41,7 +41,11 @@
 
 void _glfwPlatformEnableSystemKeys( void )
 {
-    // Not supported under X11 (yet)
+    if( _glfwWin.keyboardGrabbed )
+    {
+        XUngrabKeyboard( _glfwLibrary.display, CurrentTime );
+        _glfwWin.keyboardGrabbed = GL_FALSE;
+    }
 }
 
 //========================================================================
@@ -50,6 +54,11 @@ void _glfwPlatformEnableSystemKeys( void )
 
 void _glfwPlatformDisableSystemKeys( void )
 {
-    // Not supported under X11 (yet)
+    if( XGrabKeyboard( _glfwLibrary.display, _glfwWin.window, True,
+                        GrabModeAsync, GrabModeAsync, CurrentTime ) ==
+        GrabSuccess )
+    {
+        _glfwWin.keyboardGrabbed = GL_TRUE;
+    }
 }
 
