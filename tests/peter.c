@@ -49,12 +49,6 @@ static void toggle_mouse_cursor(void)
     cursor_enabled = !cursor_enabled;
 }
 
-static void GLFWCALL mouse_button_callback(int button, int pressed)
-{
-    if (button == GLFW_MOUSE_BUTTON_LEFT)
-        toggle_mouse_cursor();
-}
-
 static void GLFWCALL mouse_position_callback(int x, int y)
 {
     printf("Mouse moved to: %i %i\n", x, y);
@@ -105,7 +99,6 @@ static GLboolean open_window(void)
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSetMousePosCallback(mouse_position_callback);
-    glfwSetMouseButtonCallback(mouse_button_callback);
     glfwSetKeyCallback(key_callback);
     glfwSwapInterval(1);
 
