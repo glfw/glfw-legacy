@@ -568,7 +568,7 @@ version of GLFW.</p>
   <li>OpenGL version is now only parsed once, at window creation time</li>
   <li>Changed <code>glfwSwapBuffers</code> to call <code>glfwPollEvents</code> <em>after</em> buffer swap</li>
   <li>Changed all comments in public header file to plain C style</li>
-  <li>Removed the keytest example program, which was superseded by the events test</li>
+  <li>Removed the <code>keytest</code> example program, as it was superseded by the <code>events</code> test</li>
   <li>Removed deprecated AmigaOS and DOS ports</li>
   <li>Removed all FPS counters from example programs</li>
   <li>Removed all unmaintained language bindings</li>
@@ -593,8 +593,9 @@ version of GLFW.</p>
   <li>[X11] Bugfix: Window decorations would not appear using certain versions of Compiz on Intel hardware</li>
   <li>[X11] Bugfix: Numeric keypad key symbols would change depending on Num Lock state</li>
   <li>[X11] Bugfix: Hidden cursor position snapped back when halfway from window center to edge</li>
+  <li>[X11] Bugfix: Not properly verifying that the window was mapped before making certain calls caused a <code>BadMatch</code> error</li>
   <li>[X11] Bugfix: The response to <code>_NET_WM_PING</code> events was malformed</li>
-  <li>[X11] Bugfix: Restoring an iconified fullscreen window caused the application to abort with a <code>BadMatch</code> Xlib error</li>
+  <li>[X11] Bugfix: Hidden cursor mode interfered with other applications when GLFW window was unfocused</li>
   <li>[X11] Bugfix: The invisible cursor objects used for hidden cursor mode were not freed</li>
   <li>[X11] Bugfix: EWMH-compliant window managers were incorrectly detected</li>
   <li>[X11] Bugfix: The EWMH code path for fullscreen windows did not present the window using <code>_NET_ACTIVE_WINDOW</code></li>
