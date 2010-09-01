@@ -15,7 +15,7 @@ LFLAGS = $(LIB) -framework AGL -framework OpenGL -framework Carbon -m32
 
 # Default: Build all tests
 all: Accuracy.app/Contents/MacOS/Accuracy \
-     Defaults.app/Contents/MacOS/Defaults \
+     defaults \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
      FSInput.app/Contents/MacOS/FSInput \
@@ -30,9 +30,8 @@ Accuracy.app/Contents/MacOS/Accuracy: accuracy.c $(LIB)
 	/bin/sh bundle.sh Accuracy
 	$(CC) $(CFLAGS) accuracy.c $(LFLAGS) -o Accuracy.app/Contents/MacOS/Accuracy
 
-Defaults.app/Contents/MacOS/Defaults: defaults.c $(LIB)
-	/bin/sh bundle.sh Defaults
-	$(CC) $(CFLAGS) defaults.c $(LFLAGS) -o Defaults.app/Contents/MacOS/Defaults
+defaults: defaults.c $(LIB)
+	$(CC) $(CFLAGS) defaults.c $(LFLAGS) -o defaults
 
 Events.app/Contents/MacOS/Events: events.c $(LIB)
 	/bin/sh bundle.sh Events
@@ -69,6 +68,6 @@ version: version.c $(LIB)
 	$(CC) $(CFLAGS) version.c $(LFLAGS) -o version
 
 clean:
-	rm -rf Accuracy.app Defaults.app Events.app FSAA.app FSInput.app \
+	rm -rf Accuracy.app defaults Events.app FSAA.app FSInput.app \
            Iconify.app joysticks Peter.app ReOpen.app Tearing.app version
 
