@@ -43,6 +43,16 @@ void *KCHRPtr;
 
 
 //========================================================================
+// Terminate GLFW when exiting application
+//========================================================================
+
+static void glfw_atexit( void )
+{
+    glfwTerminate();
+}
+
+
+//========================================================================
 // _glfwInitThreads() - Initialize GLFW thread package
 //========================================================================
 
@@ -138,6 +148,9 @@ int _glfwPlatformInit( void )
         fprintf( stderr, "glfwInit failing because it kind find the desktop display mode\n" );
         return GL_FALSE;
     }
+
+    // Install atexit routine
+    atexit( glfw_atexit );
 
     _glfwInitThreads();
 

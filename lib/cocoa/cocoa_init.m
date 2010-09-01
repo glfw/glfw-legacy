@@ -185,6 +185,16 @@ static void setUpMenuBar( void )
 }
 
 //========================================================================
+// Terminate GLFW when exiting application
+//========================================================================
+
+static void glfw_atexit( void )
+{
+    glfwTerminate();
+}
+
+
+//========================================================================
 // Initialize GLFW thread package
 //========================================================================
 
@@ -230,6 +240,9 @@ int _glfwPlatformInit( void )
     setUpMenuBar();
 
     [NSApp finishLaunching];
+
+    // Install atexit routine
+    atexit( glfw_atexit );
 
     initThreads();
 
