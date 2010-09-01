@@ -274,8 +274,11 @@ called before this function has succeeded.
 This function may take several seconds to complete on some systems, while
 on other systems it may take only a fraction of a second to complete.
 
-On Mac OS X, this function will change the current directory to the
-\textbf{Contents/Resources} subdirectory of the application's bundle, if
+This function registers a function calling \textbf{glfwTerminate} with the
+atexit facility of the C library.
+
+On Mac OS X, this function will change the current directory of the application
+to the \textbf{Contents/Resources} subdirectory of the application's bundle, if
 present.  For more information on bundles, see the Bundle Programming Guide
 provided by Apple.
 \end{refnotes}
