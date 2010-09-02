@@ -91,7 +91,7 @@ void _glfwChangeToResourcesDirectory( void )
 
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
     char resourcesPath[ _GLFW_MAX_PATH_LENGTH ];
-    
+
     CFStringRef lastComponent = CFURLCopyLastPathComponent( resourcesURL );
     if( kCFCompareEqualTo != CFStringCompare(
             CFSTR( "Resources" ),
@@ -100,7 +100,7 @@ void _glfwChangeToResourcesDirectory( void )
     {
         UNBUNDLED;
     }
-    
+
     CFRelease( lastComponent );
 
     if( !CFURLGetFileSystemRepresentation( resourcesURL,
@@ -129,11 +129,11 @@ int _glfwPlatformInit( void )
     _glfwWin.aglContext = NULL;
     _glfwWin.cglContext = NULL;
     _glfwWin.windowUPP = NULL;
-    
+
     _glfwInput.Modifiers = 0;
-    
+
     _glfwLibrary.Unbundled = 0;
-    
+
     _glfwLibrary.Libs.OpenGLFramework =
         CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
     if( _glfwLibrary.Libs.OpenGLFramework == NULL )
