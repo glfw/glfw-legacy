@@ -10,13 +10,13 @@ include_directories(
 
 set(libglfw_SOURCES
     ${common_SOURCES}
-    macosx_enable.c
-    macosx_fullscreen.c
-    macosx_glext.c
-    macosx_init.c
-    macosx_joystick.c
-    macosx_time.c
-    macosx_window.c)
+    carbon_enable.c
+    carbon_fullscreen.c
+    carbon_glext.c
+    carbon_init.c
+    carbon_joystick.c
+    carbon_time.c
+    carbon_window.c)
 
 add_library(libglfwStatic STATIC ${libglfw_SOURCES})
 add_library(libglfwShared SHARED ${libglfw_SOURCES}) 
