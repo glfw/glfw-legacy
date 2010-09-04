@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        x11_init.c
-// Platform:    X11 (Unix)
+// Platform:    X11/GLX
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -37,10 +37,39 @@
 //************************************************************************
 
 //========================================================================
+// Dynamically load libraries
+//========================================================================
+
+static void initLibraries( void )
+{
+#ifdef _GLFW_DLOPEN_LIBGL
+    int i;
+    char *libGL_names[ ] =
+    {
+        "libGL.so",
+        "libGL.so.1",
+        "/usr/lib/libGL.so",
+        "/usr/lib/libGL.so.1",
+        NULL
+    };
+
+    _glfwLibrary.Libs.libGL = NULL;
+    for( i = 0; !libGL_names[ i ] != NULL; i ++ )
+    {
+        _glfwLibrary.Libs.libGL = dlopen( libGL_names[ i ],
+                                          RTLD_LAZY | RTLD_GLOBAL );
+        if( _glfwLibrary.Libs.libGL )
+            break;
+    }
+#endif
+}
+
+
+//========================================================================
 // Terminate GLFW when exiting application
 //========================================================================
 
-void _glfwTerminate_atexit( void )
+static void glfw_atexit( void )
 {
     glfwTerminate();
 }
@@ -50,36 +79,54 @@ void _glfwTerminate_atexit( void )
 // Initialize X11 display
 //========================================================================
 
-static int _glfwInitDisplay( void )
+static int initDisplay( void )
 {
     // Open display
     _glfwLibrary.display = XOpenDisplay( 0 );
     if( !_glfwLibrary.display )
     {
+        fprintf(stderr, "Failed to open X display\n");
         return GL_FALSE;
     }
 
     // Check for XF86VidMode extension
 #ifdef _GLFW_HAS_XF86VIDMODE
-    _glfwLibrary.XF86VidMode.Available =
+    _glfwLibrary.XF86VidMode.available =
         XF86VidModeQueryExtension( _glfwLibrary.display,
-	                           &_glfwLibrary.XF86VidMode.EventBase,
-	                           &_glfwLibrary.XF86VidMode.ErrorBase);
+                                   &_glfwLibrary.XF86VidMode.eventBase,
+                                   &_glfwLibrary.XF86VidMode.errorBase);
 #else
-    _glfwLibrary.XF86VidMode.Available = 0;
+    _glfwLibrary.XF86VidMode.available = 0;
 #endif
 
     // Check for XRandR extension
 #ifdef _GLFW_HAS_XRANDR
-    _glfwLibrary.XRandR.Available =
+    _glfwLibrary.XRandR.available =
         XRRQueryExtension( _glfwLibrary.display,
-	                   &_glfwLibrary.XRandR.EventBase,
-			   &_glfwLibrary.XRandR.ErrorBase );
+                           &_glfwLibrary.XRandR.eventBase,
+                           &_glfwLibrary.XRandR.errorBase );
 #else
-    _glfwLibrary.XRandR.Available = 0;
+    _glfwLibrary.XRandR.available = 0;
 #endif
 
-     return GL_TRUE;
+    // Fullscreen & screen saver settings
+    // Check if GLX is supported on this display
+    if( !glXQueryExtension( _glfwLibrary.display, NULL, NULL ) )
+    {
+        fprintf(stderr, "GLX not supported\n");
+        return GL_FALSE;
+    }
+
+    // Retrieve GLX version
+    if( !glXQueryVersion( _glfwLibrary.display,
+                          &_glfwLibrary.glxMajor,
+                          &_glfwLibrary.glxMinor ) )
+    {
+        fprintf(stderr, "Unable to query GLX version\n");
+        return GL_FALSE;
+    }
+
+    return GL_TRUE;
 }
 
 
@@ -87,7 +134,7 @@ static int _glfwInitDisplay( void )
 // Terminate X11 display
 //========================================================================
 
-static void _glfwTerminateDisplay( void )
+static void terminateDisplay( void )
 {
     // Open display
     if( _glfwLibrary.display )
@@ -109,13 +156,16 @@ static void _glfwTerminateDisplay( void )
 int _glfwPlatformInit( void )
 {
     // Initialize display
-    if( !_glfwInitDisplay() )
+    if( !initDisplay() )
     {
         return GL_FALSE;
     }
 
+    // Try to load libGL.so if necessary
+    initLibraries();
+
     // Install atexit() routine
-    atexit( _glfwTerminate_atexit );
+    atexit( glfw_atexit );
 
     // Initialize joysticks
     _glfwInitJoysticks();
@@ -128,7 +178,7 @@ int _glfwPlatformInit( void )
 
 
 //========================================================================
-// Close window
+// Close window and shut down library
 //========================================================================
 
 int _glfwPlatformTerminate( void )
@@ -137,10 +187,19 @@ int _glfwPlatformTerminate( void )
     glfwCloseWindow();
 
     // Terminate display
-    _glfwTerminateDisplay();
+    terminateDisplay();
 
     // Terminate joysticks
     _glfwTerminateJoysticks();
+
+    // Unload libGL.so if necessary
+#ifdef _GLFW_DLOPEN_LIBGL
+    if( _glfwLibrary.Libs.libGL != NULL )
+    {
+        dlclose( _glfwLibrary.Libs.libGL );
+        _glfwLibrary.Libs.libGL = NULL;
+    }
+#endif
 
     return GL_TRUE;
 }

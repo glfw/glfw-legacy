@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        x11_enable.c
 // Platform:    X11 (Unix)
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -36,16 +36,29 @@
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformEnableSystemKeys() - Enable system keys
-// _glfwPlatformDisableSystemKeys() - Disable system keys
+// Enable system keys
 //========================================================================
 
 void _glfwPlatformEnableSystemKeys( void )
 {
-    // Not supported under X11 (yet)
+    if( _glfwWin.keyboardGrabbed )
+    {
+        XUngrabKeyboard( _glfwLibrary.display, CurrentTime );
+        _glfwWin.keyboardGrabbed = GL_FALSE;
+    }
 }
+
+//========================================================================
+// Disable system keys
+//========================================================================
 
 void _glfwPlatformDisableSystemKeys( void )
 {
-    // Not supported under X11 (yet)
+    if( XGrabKeyboard( _glfwLibrary.display, _glfwWin.window, True,
+                        GrabModeAsync, GrabModeAsync, CurrentTime ) ==
+        GrabSuccess )
+    {
+        _glfwWin.keyboardGrabbed = GL_TRUE;
+    }
 }
+

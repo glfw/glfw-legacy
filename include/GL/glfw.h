@@ -1,10 +1,10 @@
 /************************************************************************
  * GLFW - An OpenGL framework
- * File:        glfw.h
  * API version: 2.7
- * WWW:         http://glfw.sourceforge.net
+ * WWW:         http://www.glfw.org/
  *------------------------------------------------------------------------
- * Copyright (c) 2002-2006 Camilla Berglund
+ * Copyright (c) 2002-2006 Marcus Geelnard
+ * Copyright (c) 2006-2010 Camilla Berglund
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -252,7 +252,14 @@ extern "C" {
 #define GLFW_KEY_KP_DECIMAL   (GLFW_KEY_SPECIAL+60)
 #define GLFW_KEY_KP_EQUAL     (GLFW_KEY_SPECIAL+61)
 #define GLFW_KEY_KP_ENTER     (GLFW_KEY_SPECIAL+62)
-#define GLFW_KEY_LAST         GLFW_KEY_KP_ENTER
+#define GLFW_KEY_KP_NUM_LOCK  (GLFW_KEY_SPECIAL+63)
+#define GLFW_KEY_CAPS_LOCK    (GLFW_KEY_SPECIAL+64)
+#define GLFW_KEY_SCROLL_LOCK  (GLFW_KEY_SPECIAL+65)
+#define GLFW_KEY_PAUSE        (GLFW_KEY_SPECIAL+66)
+#define GLFW_KEY_LSUPER       (GLFW_KEY_SPECIAL+67)
+#define GLFW_KEY_RSUPER       (GLFW_KEY_SPECIAL+68)
+#define GLFW_KEY_MENU         (GLFW_KEY_SPECIAL+69)
+#define GLFW_KEY_LAST         GLFW_KEY_MENU
 
 /* Mouse button definitions */
 #define GLFW_MOUSE_BUTTON_1      0
@@ -269,7 +276,6 @@ extern "C" {
 #define GLFW_MOUSE_BUTTON_LEFT   GLFW_MOUSE_BUTTON_1
 #define GLFW_MOUSE_BUTTON_RIGHT  GLFW_MOUSE_BUTTON_2
 #define GLFW_MOUSE_BUTTON_MIDDLE GLFW_MOUSE_BUTTON_3
-
 
 /* Joystick identifiers */
 #define GLFW_JOYSTICK_1          0
@@ -295,11 +301,11 @@ extern "C" {
  * Other definitions
  *************************************************************************/
 
-/* Window mode tokens for glfwOpenWindow */
+/* glfwOpenWindow modes */
 #define GLFW_WINDOW               0x00010001
 #define GLFW_FULLSCREEN           0x00010002
 
-/* Window parameter tokens for glfwGetWindowParam */
+/* glfwGetWindowParam tokens */
 #define GLFW_OPENED               0x00020001
 #define GLFW_ACTIVE               0x00020002
 #define GLFW_ICONIFIED            0x00020003
@@ -311,7 +317,7 @@ extern "C" {
 #define GLFW_DEPTH_BITS           0x00020009
 #define GLFW_STENCIL_BITS         0x0002000A
 
-/* Window attribute tokens for both glfwGetWindowParam
+/* The following constants are used for both glfwGetWindowParam
  * and glfwOpenWindowHint
  */
 #define GLFW_REFRESH_RATE         0x0002000B
@@ -326,9 +332,14 @@ extern "C" {
 #define GLFW_OPENGL_VERSION_MAJOR 0x00020014
 #define GLFW_OPENGL_VERSION_MINOR 0x00020015
 #define GLFW_OPENGL_FORWARD_COMPAT 0x00020016
-#define GLFW_DEBUG_CONTEXT        0x00020017
+#define GLFW_OPENGL_DEBUG_CONTEXT 0x00020017
+#define GLFW_OPENGL_PROFILE       0x00020018
 
-/* Window enable tokens for glfwEnable/glfwDisable */
+/* GLFW_OPENGL_PROFILE tokens */
+#define GLFW_OPENGL_CORE_PROFILE  0x00050001
+#define GLFW_OPENGL_COMPAT_PROFILE 0x00050002
+
+/* glfwEnable/glfwDisable tokens */
 #define GLFW_MOUSE_CURSOR         0x00030001
 #define GLFW_STICKY_KEYS          0x00030002
 #define GLFW_STICKY_MOUSE_BUTTONS 0x00030003
@@ -336,7 +347,7 @@ extern "C" {
 #define GLFW_KEY_REPEAT           0x00030005
 #define GLFW_AUTO_POLL_EVENTS     0x00030006
 
-/* Joystick parameter tokens for glfwGetJoystickParam */
+/* glfwGetJoystickParam tokens */
 #define GLFW_PRESENT              0x00050001
 #define GLFW_AXES                 0x00050002
 #define GLFW_BUTTONS              0x00050003

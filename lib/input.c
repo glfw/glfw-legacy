@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        input.c
 // Platform:    Any
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -38,7 +38,7 @@
 GLFWAPI int glfwGetKey( int key )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GLFW_RELEASE;
     }
@@ -67,7 +67,7 @@ GLFWAPI int glfwGetKey( int key )
 GLFWAPI int glfwGetMouseButton( int button )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return GLFW_RELEASE;
     }
@@ -96,7 +96,7 @@ GLFWAPI int glfwGetMouseButton( int button )
 GLFWAPI void glfwGetMousePos( int *xpos, int *ypos )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -120,7 +120,7 @@ GLFWAPI void glfwGetMousePos( int *xpos, int *ypos )
 GLFWAPI void glfwSetMousePos( int xpos, int ypos )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -136,7 +136,7 @@ GLFWAPI void glfwSetMousePos( int xpos, int ypos )
     _glfwInput.MousePosY = ypos;
 
     // If we have a locked mouse, do not change cursor position
-    if( _glfwWin.MouseLock )
+    if( _glfwWin.mouseLock )
     {
         return;
     }
@@ -153,7 +153,7 @@ GLFWAPI void glfwSetMousePos( int xpos, int ypos )
 GLFWAPI int glfwGetMouseWheel( void )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return 0;
     }
@@ -170,7 +170,7 @@ GLFWAPI int glfwGetMouseWheel( void )
 GLFWAPI void glfwSetMouseWheel( int pos )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
@@ -187,13 +187,13 @@ GLFWAPI void glfwSetMouseWheel( int pos )
 GLFWAPI void glfwSetKeyCallback( GLFWkeyfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Set callback function
-    _glfwWin.KeyCallback = cbfun;
+    _glfwWin.keyCallback = cbfun;
 }
 
 
@@ -204,13 +204,13 @@ GLFWAPI void glfwSetKeyCallback( GLFWkeyfun cbfun )
 GLFWAPI void glfwSetCharCallback( GLFWcharfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Set callback function
-    _glfwWin.CharCallback = cbfun;
+    _glfwWin.charCallback = cbfun;
 }
 
 
@@ -221,13 +221,13 @@ GLFWAPI void glfwSetCharCallback( GLFWcharfun cbfun )
 GLFWAPI void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Set callback function
-    _glfwWin.MouseButtonCallback = cbfun;
+    _glfwWin.mouseButtonCallback = cbfun;
 }
 
 
@@ -238,13 +238,13 @@ GLFWAPI void glfwSetMouseButtonCallback( GLFWmousebuttonfun cbfun )
 GLFWAPI void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Set callback function
-    _glfwWin.MousePosCallback = cbfun;
+    _glfwWin.mousePosCallback = cbfun;
 
     // Call the callback function to let the application know the current
     // mouse position
@@ -262,13 +262,13 @@ GLFWAPI void glfwSetMousePosCallback( GLFWmouseposfun cbfun )
 GLFWAPI void glfwSetMouseWheelCallback( GLFWmousewheelfun cbfun )
 {
     // Is GLFW initialized?
-    if( !_glfwInitialized || !_glfwWin.Opened )
+    if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
     }
 
     // Set callback function
-    _glfwWin.MouseWheelCallback = cbfun;
+    _glfwWin.mouseWheelCallback = cbfun;
 
     // Call the callback function to let the application know the current
     // mouse wheel position

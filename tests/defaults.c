@@ -30,7 +30,7 @@ static Param parameters[] =
   { GLFW_OPENGL_VERSION_MAJOR, "OpenGL major" },
   { GLFW_OPENGL_VERSION_MINOR, "OpenGL minor" },
   { GLFW_OPENGL_FORWARD_COMPAT, "OpenGL forward compatible" },
-  { GLFW_DEBUG_CONTEXT, "debug context" },
+  { GLFW_OPENGL_DEBUG_CONTEXT, "debug context" },
 };
 
 int main(int argc, char** argv)

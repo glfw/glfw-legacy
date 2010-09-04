@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        internal.h
 // Platform:    Any
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -48,7 +48,7 @@
 //========================================================================
 
 // Internal key and button state/action definitions
-#define GLFW_STICK              2
+#define GLFW_STICK 2
 
 
 //========================================================================
@@ -61,11 +61,78 @@
 
 
 //------------------------------------------------------------------------
+// Window opening hints (set by glfwOpenWindowHint)
+// A bucket of semi-random stuff bunched together for historical reasons
+// This is used only by the platform independent code and only to store
+// parameters passed to us by glfwOpenWindowHint
+//------------------------------------------------------------------------
+typedef struct {
+    int         refreshRate;
+    int         accumRedBits;
+    int         accumGreenBits;
+    int         accumBlueBits;
+    int         accumAlphaBits;
+    int         auxBuffers;
+    int         stereo;
+    int         windowNoResize;
+    int         samples;
+    int         glMajor;
+    int         glMinor;
+    int         glForward;
+    int         glDebug;
+    int         glProfile;
+} _GLFWhints;
+
+
+//------------------------------------------------------------------------
 // Platform specific definitions goes in platform.h (which also includes
 // glfw.h)
 //------------------------------------------------------------------------
 
 #include "platform.h"
+
+
+//------------------------------------------------------------------------
+// Parameters relating to the creation of the context and window but not
+// directly related to the properties of the framebuffer
+// This is used to pass window and context creation parameters from the
+// platform independent code to the platform specific code
+//------------------------------------------------------------------------
+typedef struct {
+    int         mode;
+    int         refreshRate;
+    int         windowNoResize;
+    int         glMajor;
+    int         glMinor;
+    int         glForward;
+    int         glDebug;
+    int         glProfile;
+} _GLFWwndconfig;
+
+
+//------------------------------------------------------------------------
+// Framebuffer configuration descriptor, i.e. buffers and their sizes
+// Also a platform specific ID used to map back to the actual backend APIs
+// This is used to pass framebuffer parameters from the platform independent
+// code to the platform specific code, and also to enumerate and select
+// available framebuffer configurations
+//------------------------------------------------------------------------
+typedef struct {
+    int         redBits;
+    int         greenBits;
+    int         blueBits;
+    int         alphaBits;
+    int         depthBits;
+    int         stencilBits;
+    int         accumRedBits;
+    int         accumGreenBits;
+    int         accumBlueBits;
+    int         accumAlphaBits;
+    int         auxBuffers;
+    int         stereo;
+    int         samples;
+    GLFWintptr  platformID;
+} _GLFWfbconfig;
 
 
 //========================================================================
@@ -81,25 +148,14 @@ GLFWGLOBAL int _glfwInitialized;
 
 
 //------------------------------------------------------------------------
-// Window hints (set by glfwOpenWindowHint)
+// Abstract data stream (for image I/O)
 //------------------------------------------------------------------------
 typedef struct {
-    int          RefreshRate;
-    int          AccumRedBits;
-    int          AccumGreenBits;
-    int          AccumBlueBits;
-    int          AccumAlphaBits;
-    int          AuxBuffers;
-    int          Stereo;
-    int          WindowNoResize;
-    int		 Samples;
-    int          OpenGLMajor;
-    int          OpenGLMinor;
-    int          OpenGLForward;
-    int		 OpenGLDebug;
-} _GLFWhints;
-
-GLFWGLOBAL _GLFWhints _glfwWinHints;
+    FILE*   file;
+    void*   data;
+    long    position;
+    long    size;
+} _GLFWstream;
 
 
 //========================================================================
@@ -119,7 +175,7 @@ int  _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount );
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode );
 
 // OpenGL extensions
-int    _glfwPlatformExtensionSupported( const char *extension );
+int _glfwPlatformExtensionSupported( const char *extension );
 void * _glfwPlatformGetProcAddress( const char *procname );
 
 // Joystick
@@ -129,10 +185,10 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons, int numbut
 
 // Time
 double _glfwPlatformGetTime( void );
-void   _glfwPlatformSetTime( double time );
+void _glfwPlatformSetTime( double time );
 
 // Window management
-int  _glfwPlatformOpenWindow( int width, int height, int redbits, int greenbits, int bluebits, int alphabits, int depthbits, int stencilbits, int mode, _GLFWhints* hints );
+int  _glfwPlatformOpenWindow( int width, int height, const _GLFWwndconfig *wndconfig, const _GLFWfbconfig *fbconfig );
 void _glfwPlatformCloseWindow( void );
 void _glfwPlatformSetWindowTitle( const char *title );
 void _glfwPlatformSetWindowSize( int width, int height );
@@ -164,7 +220,13 @@ void _glfwInputChar( int character, int action );
 void _glfwInputMouseClick( int button, int action );
 
 // OpenGL extensions (glext.c)
+void _glfwParseGLVersion( int *major, int *minor, int *rev );
 int _glfwStringInExtensionString( const char *string, const GLubyte *extensions );
+
+// Framebuffer configs
+const _GLFWfbconfig *_glfwChooseFBConfig( const _GLFWfbconfig *desired,
+                                          const _GLFWfbconfig *alternatives,
+                                          unsigned int count );
 
 
 #endif // _internal_h_

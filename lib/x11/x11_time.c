@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        x11_time.c
-// Platform:    X11 (Unix)
+// Platform:    X11/GLX
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -40,7 +40,7 @@ void _glfwInitTimer( void )
     struct timeval  tv;
 
     // "Resolution" is 1 us
-    _glfwLibrary.Timer.Resolution = 1e-6;
+    _glfwLibrary.Timer.resolution = 1e-6;
 
     // Set start-time for timer
     gettimeofday( &tv, NULL );
@@ -66,7 +66,7 @@ double _glfwPlatformGetTime( void )
     t = (long long) tv.tv_sec * (long long) 1000000 +
 	(long long) tv.tv_usec;
 
-    return (double)(t - _glfwLibrary.Timer.t0) * _glfwLibrary.Timer.Resolution;
+    return (double)(t - _glfwLibrary.Timer.t0) * _glfwLibrary.Timer.resolution;
 }
 
 
@@ -84,6 +84,6 @@ void _glfwPlatformSetTime( double t )
 	 (long long) tv.tv_usec;
 
     // Calulate new starting time
-    _glfwLibrary.Timer.t0 = t0 - (long long)(t/_glfwLibrary.Timer.Resolution);
+    _glfwLibrary.Timer.t0 = t0 - (long long)(t/_glfwLibrary.Timer.resolution);
 }
 

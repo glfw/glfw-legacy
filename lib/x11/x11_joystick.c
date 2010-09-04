@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        x11_joystick.c
-// Platform:    X11 (Unix)
+// Platform:    X11/GLX
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -35,11 +35,6 @@
 // Note: Only Linux joystick input is supported at the moment. Other
 // systems will behave as if there are no joysticks connected.
 //========================================================================
-
-#ifdef linux
-#define _GLFW_USE_LINUX_JOYSTICKS
-#endif // linux
-
 
 
 //************************************************************************
@@ -126,7 +121,7 @@ void _glfwInitJoysticks( void )
             {
                 // Remember fd
                 _glfwJoy[ joy_count ].fd = fd;
-    
+
                 // Check that the joystick driver version is 1.0+
                 ioctl( fd, JSIOCGVERSION, &driver_version );
                 if( driver_version < 0x010000 )
@@ -135,15 +130,15 @@ void _glfwInitJoysticks( void )
                     close( fd );
                     continue;
                 }
-    
+
                 // Get number of joystick axes
                 ioctl( fd, JSIOCGAXES, &ret_data );
                 _glfwJoy[ joy_count ].NumAxes = (int) ret_data;
-    
+
                 // Get number of joystick buttons
                 ioctl( fd, JSIOCGBUTTONS, &ret_data );
                 _glfwJoy[ joy_count ].NumButtons = (int) ret_data;
-    
+
                 // Allocate memory for joystick state
                 _glfwJoy[ joy_count ].Axis =
                     (float *) malloc( sizeof(float) *
@@ -172,7 +167,7 @@ void _glfwInitJoysticks( void )
                 {
                     _glfwJoy[ joy_count ].Button[ n ] = GLFW_RELEASE;
                 }
-    
+
                 // The joystick is supported and connected
                 _glfwJoy[ joy_count ].Present = GL_TRUE;
                 joy_count ++;
@@ -214,16 +209,16 @@ void _glfwTerminateJoysticks( void )
 
 
 //========================================================================
-// _glfwPollJoystickEvents() - Empty joystick event queue
+// Empty joystick event queue
 //========================================================================
 
-static void _glfwPollJoystickEvents( void )
+static void pollJoystickEvents( void )
 {
 
 #ifdef _GLFW_USE_LINUX_JOYSTICKS
 
     struct js_event e;
-    int    i;
+    int i;
 
     // Get joystick events for all GLFW joysticks
     for( i = 0; i <= GLFW_JOYSTICK_LAST; ++ i )
@@ -310,7 +305,7 @@ int _glfwPlatformGetJoystickParam( int joy, int param )
 
 int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
 {
-    int       i;
+    int i;
 
     // Is joystick present?
     if( !_glfwJoy[ joy ].Present )
@@ -319,7 +314,7 @@ int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
     }
 
     // Update joystick state
-    _glfwPollJoystickEvents();
+    pollJoystickEvents();
 
     // Does the joystick support less axes than requested?
     if( _glfwJoy[ joy ].NumAxes < numaxes )
@@ -344,7 +339,7 @@ int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
 int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     int numbuttons )
 {
-    int       i;
+    int i;
 
     // Is joystick present?
     if( !_glfwJoy[ joy ].Present )
@@ -353,7 +348,7 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
     }
 
     // Update joystick state
-    _glfwPollJoystickEvents();
+    pollJoystickEvents();
 
     // Does the joystick support less buttons than requested?
     if( _glfwJoy[ joy ].NumButtons < numbuttons )
@@ -369,3 +364,4 @@ int _glfwPlatformGetJoystickButtons( int joy, unsigned char *buttons,
 
     return numbuttons;
 }
+
