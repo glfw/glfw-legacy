@@ -1,11 +1,13 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_init.c
-// Platform:    Mac OS X
+// Platform:    Carbon/AGL/CGL
 // API Version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2003      Keith Bauer
+// Copyright (c) 2003-2010 Camilla Berglund <elmindreda@elmindreda.org>
+// Copyright (c) 2006-2007 Robin Leffmann
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -41,8 +43,14 @@ void *KCHRPtr;
 
 
 //========================================================================
-// Initialize GLFW
+// Terminate GLFW when exiting application
 //========================================================================
+
+static void glfw_atexit( void )
+{
+    glfwTerminate();
+}
+
 
 #define NO_BUNDLE_MESSAGE \
     "Working in unbundled mode.  " \
@@ -58,12 +66,12 @@ void _glfwChangeToResourcesDirectory( void )
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     if( mainBundle == NULL )
     {
-	UNBUNDLED;
+        UNBUNDLED;
     }
 
     CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( mainBundle );
     char resourcesPath[ _GLFW_MAX_PATH_LENGTH ];
-    
+
     CFStringRef lastComponent = CFURLCopyLastPathComponent( resourcesURL );
     if( kCFCompareEqualTo != CFStringCompare(
             CFSTR( "Resources" ),
@@ -72,7 +80,7 @@ void _glfwChangeToResourcesDirectory( void )
     {
         UNBUNDLED;
     }
-    
+
     CFRelease( lastComponent );
 
     if( !CFURLGetFileSystemRepresentation( resourcesURL,
@@ -97,48 +105,34 @@ int _glfwPlatformInit( void )
     struct timeval tv;
     UInt32 nullDummy = 0;
 
-    _glfwWin.MacWindow = NULL;
-    _glfwWin.AGLContext = NULL;
-    _glfwWin.CGLContext = NULL;
-    _glfwWin.WindowFunctions = NULL;
-    _glfwWin.MouseUPP = NULL;
-    _glfwWin.CommandUPP = NULL;
-    _glfwWin.KeyboardUPP = NULL;
-    _glfwWin.WindowUPP = NULL;
-    
+    _glfwWin.window = NULL;
+    _glfwWin.aglContext = NULL;
+    _glfwWin.cglContext = NULL;
+    _glfwWin.windowUPP = NULL;
+
     _glfwInput.Modifiers = 0;
-    
+
     _glfwLibrary.Unbundled = 0;
-    
-    _glfwLibrary.Libs.OpenGLFramework
-        = CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
+
+    _glfwLibrary.Libs.OpenGLFramework =
+        CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
     if( _glfwLibrary.Libs.OpenGLFramework == NULL )
     {
-        fprintf(
-            stderr,
-            "glfwInit failing because you aren't linked to OpenGL\n" );
+        fprintf( stderr, "glfwInit failing because you aren't linked to OpenGL\n" );
         return GL_FALSE;
     }
 
     _glfwDesktopVideoMode = CGDisplayCurrentMode( kCGDirectMainDisplay );
     if( _glfwDesktopVideoMode == NULL )
     {
-        fprintf(
-            stderr,
-            "glfwInit failing because it kind find the desktop display mode\n" );
+        fprintf( stderr, "glfwInit failing because it kind find the desktop display mode\n" );
         return GL_FALSE;
     }
+
+    // Install atexit routine
+    atexit( glfw_atexit );
 
     _glfwChangeToResourcesDirectory();
-
-    if( !_glfwInstallEventHandlers() )
-    {
-    	fprintf(
-            stderr,
-            "glfwInit failing because it can't install event handlers\n" );
-        _glfwPlatformTerminate();
-        return GL_FALSE;
-    }
 
     // Ugly hack to reduce the nasty jump that occurs at the first non-
     // sys keypress, caused by OS X loading certain meta scripts used
@@ -160,22 +154,6 @@ int _glfwPlatformInit( void )
 
 int _glfwPlatformTerminate( void )
 {
-    if( _glfwWin.MouseUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.MouseUPP );
-        _glfwWin.MouseUPP = NULL;
-    }
-    if( _glfwWin.CommandUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.CommandUPP );
-        _glfwWin.CommandUPP = NULL;
-    }
-    if( _glfwWin.KeyboardUPP != NULL )
-    {
-        DisposeEventHandlerUPP( _glfwWin.KeyboardUPP );
-        _glfwWin.KeyboardUPP = NULL;
-    }
-    
     return GL_TRUE;
 }
 
