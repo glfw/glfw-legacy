@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        platform.h
-// Platform:    Windows
+// Platform:    Win32/WGL
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -35,6 +35,10 @@
 // This is the Windows version of GLFW
 #define _GLFW_WIN32
 
+// We don't need all the fancy stuff
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 
 // Include files
 #include <windows.h>
@@ -129,50 +133,82 @@ typedef struct tagKBDLLHOOKSTRUCT {
 #define XBUTTON2 2
 #endif
 
+#ifndef WGL_ARB_pixel_format
+
 // wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
 typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
-// wglChoosePixelFormatARB typedef
-typedef BOOL (WINAPI * WGLCHOOSEPIXELFORMATARB_T) (HDC, const int *, const FLOAT *, UINT, int *, UINT *);
 // wglGetPixelFormatAttribivARB typedef
 typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, const int *, int *);
 // wglGetExtensionStringEXT typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
 // wglGetExtensionStringARB typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
-// wglCreateContextAttribsARB typedef
-typedef HGLRC (APIENTRY * WGLCREATECONTEXTATTRIBSARB_T)( HDC, HGLRC, const int*);
 
 /* Constants for wglGetPixelFormatAttribivARB */
-#define WGL_DRAW_TO_WINDOW_ARB    0x2001
-#define WGL_SUPPORT_OPENGL_ARB    0x2010
-#define WGL_ACCELERATION_ARB      0x2003
-#define WGL_FULL_ACCELERATION_ARB 0x2027
-#define WGL_DOUBLE_BUFFER_ARB     0x2011
-#define WGL_STEREO_ARB            0x2012
-#define WGL_COLOR_BITS_ARB        0x2014
-#define WGL_RED_BITS_ARB          0x2015
-#define WGL_GREEN_BITS_ARB        0x2017
-#define WGL_BLUE_BITS_ARB         0x2019
-#define WGL_ALPHA_BITS_ARB        0x201B
-#define WGL_ACCUM_BITS_ARB        0x201D 
-#define WGL_ACCUM_RED_BITS_ARB    0x201E 
-#define WGL_ACCUM_GREEN_BITS_ARB  0x201F 
-#define WGL_ACCUM_BLUE_BITS_ARB   0x2020 
-#define WGL_ACCUM_ALPHA_BITS_ARB  0x2021 
-#define WGL_DEPTH_BITS_ARB        0x2022
-#define WGL_STENCIL_BITS_ARB      0x2023
-#define WGL_AUX_BUFFERS_ARB       0x2024 
-#define WGL_SAMPLE_BUFFERS_ARB    0x2041
-#define WGL_SAMPLES_ARB           0x2042
- 
-/* Constants for wglCreateContextAttribsARB */
+#define WGL_NUMBER_PIXEL_FORMATS_ARB    0x2000
+#define WGL_DRAW_TO_WINDOW_ARB          0x2001
+#define WGL_SUPPORT_OPENGL_ARB          0x2010
+#define WGL_ACCELERATION_ARB            0x2003
+#define WGL_DOUBLE_BUFFER_ARB           0x2011
+#define WGL_STEREO_ARB                  0x2012
+#define WGL_PIXEL_TYPE_ARB              0x2013
+#define WGL_COLOR_BITS_ARB              0x2014
+#define WGL_RED_BITS_ARB                0x2015
+#define WGL_GREEN_BITS_ARB              0x2017
+#define WGL_BLUE_BITS_ARB               0x2019
+#define WGL_ALPHA_BITS_ARB              0x201B
+#define WGL_ACCUM_BITS_ARB              0x201D
+#define WGL_ACCUM_RED_BITS_ARB          0x201E
+#define WGL_ACCUM_GREEN_BITS_ARB        0x201F
+#define WGL_ACCUM_BLUE_BITS_ARB         0x2020
+#define WGL_ACCUM_ALPHA_BITS_ARB        0x2021
+#define WGL_DEPTH_BITS_ARB              0x2022
+#define WGL_STENCIL_BITS_ARB            0x2023
+#define WGL_AUX_BUFFERS_ARB             0x2024
+#define WGL_SAMPLE_BUFFERS_ARB          0x2041
+#define WGL_SAMPLES_ARB                 0x2042
+
+/* Constants for WGL_ACCELERATION_ARB */
+#define WGL_NO_ACCELERATION_ARB         0x2025
+#define WGL_GENERIC_ACCELERATION_ARB    0x2026
+#define WGL_FULL_ACCELERATION_ARB       0x2027
+
+/* Constants for WGL_PIXEL_TYPE_ARB */
+#define WGL_TYPE_RGBA_ARB               0x202B
+#define WGL_TYPE_COLORINDEX_ARB         0x202C
+
+#endif /*WGL_ARB_pixel_format*/
+
+
+#ifndef WGL_ARB_create_context
+
+/* wglCreateContextAttribsARB */
+typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC, HGLRC, const int *);
+
+/* Tokens for wglCreateContextAttribsARB attributes */
 #define WGL_CONTEXT_MAJOR_VERSION_ARB          0x2091
 #define WGL_CONTEXT_MINOR_VERSION_ARB          0x2092
 #define WGL_CONTEXT_LAYER_PLANE_ARB            0x2093
 #define WGL_CONTEXT_FLAGS_ARB                  0x2094
+#define WGL_CONTEXT_PROFILE_MASK_ARB           0x9126
+
+/* Bits for WGL_CONTEXT_FLAGS_ARB */
 #define WGL_CONTEXT_DEBUG_BIT_ARB              0x0001
 #define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
-#define GL_ERROR_INVALID_VERSION_ARB           0x2095
+
+/* Bits for WGL_CONTEXT_PROFILE_MASK_ARB */
+#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+
+#endif /*WGL_ARB_create_context*/
+
+
+#ifndef GL_VERSION_3_0
+
+typedef const GLubyte * (APIENTRY *PFNGLGETSTRINGIPROC) (GLenum, GLuint);
+
+#endif /*GL_VERSION_3_0*/
+
 
 //========================================================================
 // DLLs that are loaded at glfwInit()
@@ -226,8 +262,14 @@ typedef DWORD (WINAPI * TIMEGETTIME_T) (void);
 
 
 //========================================================================
-// Global variables (GLFW internals)
+// GLFW platform specific types
 //========================================================================
+
+//------------------------------------------------------------------------
+// Pointer length integer
+//------------------------------------------------------------------------
+typedef INT_PTR GLFWintptr;
+
 
 //------------------------------------------------------------------------
 // Window structure
@@ -239,72 +281,82 @@ struct _GLFWwin_struct {
 // ========= PLATFORM INDEPENDENT MANDATORY PART =========================
 
     // User callback functions
-    GLFWwindowsizefun    WindowSizeCallback;
-    GLFWwindowclosefun   WindowCloseCallback;
-    GLFWwindowrefreshfun WindowRefreshCallback;
-    GLFWmousebuttonfun   MouseButtonCallback;
-    GLFWmouseposfun      MousePosCallback;
-    GLFWmousewheelfun    MouseWheelCallback;
-    GLFWkeyfun           KeyCallback;
-    GLFWcharfun          CharCallback;
+    GLFWwindowsizefun    windowSizeCallback;
+    GLFWwindowclosefun   windowCloseCallback;
+    GLFWwindowrefreshfun windowRefreshCallback;
+    GLFWmousebuttonfun   mouseButtonCallback;
+    GLFWmouseposfun      mousePosCallback;
+    GLFWmousewheelfun    mouseWheelCallback;
+    GLFWkeyfun           keyCallback;
+    GLFWcharfun          charCallback;
 
     // User selected window settings
-    int       Fullscreen;      // Fullscreen flag
-    int       MouseLock;       // Mouse-lock flag
-    int       AutoPollEvents;  // Auto polling flag
-    int       SysKeysDisabled; // System keys disabled flag
-    int       WindowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       fullscreen;      // Fullscreen flag
+    int       mouseLock;       // Mouse-lock flag
+    int       autoPollEvents;  // Auto polling flag
+    int       sysKeysDisabled; // System keys disabled flag
+    int       windowNoResize;  // Resize- and maximize gadgets disabled flag
+    int       refreshRate;     // Vertical monitor refresh rate
 
     // Window status & parameters
-    int       Opened;          // Flag telling if window is opened or not
-    int       Active;          // Application active flag
-    int       Iconified;       // Window iconified flag
-    int       Width, Height;   // Window width and heigth
-    int       Accelerated;     // GL_TRUE if window is HW accelerated
-    int       RedBits;
-    int       GreenBits;
-    int       BlueBits;
-    int       AlphaBits;
-    int       DepthBits;
-    int       StencilBits;
-    int       AccumRedBits;
-    int       AccumGreenBits;
-    int       AccumBlueBits;
-    int       AccumAlphaBits;
-    int       AuxBuffers;
-    int       Stereo;
-    int       RefreshRate;     // Vertical monitor refresh rate
-    int       Samples;
+    int       opened;          // Flag telling if window is opened or not
+    int       active;          // Application active flag
+    int       iconified;       // Window iconified flag
+    int       width, height;   // Window width and heigth
+    int       accelerated;     // GL_TRUE if window is HW accelerated
 
-    // Extensions & OpenGL version
-    int       GLVerMajor,GLVerMinor,GLForward,GLDebug;
+    // Framebuffer attributes
+    int       redBits;
+    int       greenBits;
+    int       blueBits;
+    int       alphaBits;
+    int       depthBits;
+    int       stencilBits;
+    int       accumRedBits;
+    int       accumGreenBits;
+    int       accumBlueBits;
+    int       accumAlphaBits;
+    int       auxBuffers;
+    int       stereo;
+    int       samples;
+
+    // OpenGL extensions and context attributes
+    int       has_GL_SGIS_generate_mipmap;
+    int       has_GL_ARB_texture_non_power_of_two;
+    int       glMajor, glMinor, glRevision;
+    int       glForward, glDebug, glProfile;
+
+    PFNGLGETSTRINGIPROC GetStringi;
 
 
 // ========= PLATFORM SPECIFIC PART ======================================
 
     // Platform specific window resources
     HDC       DC;              // Private GDI device context
-    HGLRC     RC;              // Permanent rendering context
-    HWND      Wnd;             // Window handle
-    ATOM      ClassAtom;       // Window class atom
-    int       ModeID;          // Mode ID for fullscreen mode
-    HHOOK     KeyboardHook;    // Keyboard hook handle
+    HGLRC     context;         // Permanent rendering context
+    HWND      window;          // Window handle
+    ATOM      classAtom;       // Window class atom
+    int       modeID;          // Mode ID for fullscreen mode
+    HHOOK     keyboardHook;    // Keyboard hook handle
     DWORD     dwStyle;         // Window styles used for window creation
     DWORD     dwExStyle;       // --"--
 
     // Platform specific extensions (context specific)
-    WGLSWAPINTERVALEXT_T           SwapInterval;
-    WGLCHOOSEPIXELFORMATARB_T      ChoosePixelFormat;
-    WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribiv;
+    WGLSWAPINTERVALEXT_T           SwapIntervalEXT;
+    WGLGETPIXELFORMATATTRIBIVARB_T GetPixelFormatAttribivARB;
     WGLGETEXTENSIONSSTRINGEXT_T    GetExtensionsStringEXT;
     WGLGETEXTENSIONSSTRINGARB_T    GetExtensionsStringARB;
-    WGLCREATECONTEXTATTRIBSARB_T   CreateContextAttribsARB;
+    PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContextAttribsARB;
+    GLboolean                      has_WGL_EXT_swap_control;
+    GLboolean                      has_WGL_ARB_multisample;
+    GLboolean                      has_WGL_ARB_pixel_format;
+    GLboolean                      has_WGL_ARB_create_context;
 
     // Various platform specific internal variables
-    int       OldMouseLock;    // Old mouse-lock flag (used for remembering
+    int       oldMouseLock;    // Old mouse-lock flag (used for remembering
                                // mouse-lock state when iconifying)
-    int       OldMouseLockValid;
-    int       DesiredRefreshRate; // Desired vertical monitor refresh rate
+    int       oldMouseLockValid;
+    int       desiredRefreshRate; // Desired vertical monitor refresh rate
 
 };
 
@@ -346,9 +398,12 @@ GLFWGLOBAL struct {
 //------------------------------------------------------------------------
 GLFWGLOBAL struct {
 
+    // Window opening hints
+    _GLFWhints      hints;
+
 // ========= PLATFORM SPECIFIC PART ======================================
 
-  HINSTANCE Instance;        // Instance of the application
+  HINSTANCE instance;        // Instance of the application
 
   // Timer data
   struct {
@@ -360,9 +415,9 @@ GLFWGLOBAL struct {
 
   // System information
   struct {
-      int     WinVer;
-      int     HasUnicode;
-      DWORD   ForegroundLockTimeout;
+      int     winVer;
+      int     hasUnicode;
+      DWORD   foregroundLockTimeout;
   } Sys;
 
 #if !defined(_GLFW_NO_DLOAD_WINMM) || !defined(_GLFW_NO_DLOAD_GDI32)

@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        win32_joystick.c
-// Platform:    Windows
+// Platform:    Win32/WGL
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -46,7 +46,7 @@ static int _glfwJoystickPresent( int joy )
 
     // Windows NT 4.0 MMSYSTEM only supports 2 sticks (other Windows
     // versions support 16 sticks)
-    if( _glfwLibrary.Sys.WinVer == _GLFW_WIN_NT4 && joy > GLFW_JOYSTICK_2 )
+    if( _glfwLibrary.Sys.winVer == _GLFW_WIN_NT4 && joy > GLFW_JOYSTICK_2 )
     {
         return GL_FALSE;
     }

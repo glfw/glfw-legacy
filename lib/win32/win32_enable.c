@@ -1,11 +1,11 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        win32_enable.c
-// Platform:    Windows
+// Platform:    Win32/WGL
 // API version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2002-2006 Marcus Geelnard
+// Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -36,23 +36,23 @@
 //************************************************************************
 
 //========================================================================
-// _glfwLLKeyboardProc() - Low level keyboard callback function (used to
-// disable system keys under Windows NT).
+// Low level keyboard hook (system callback) function
+// Used to disable system keys under Windows NT
 //========================================================================
 
-LRESULT CALLBACK _glfwLLKeyboardProc( int nCode, WPARAM wParam,
-    LPARAM lParam )
+static LRESULT CALLBACK keyboardHook( int nCode, WPARAM wParam, LPARAM lParam )
 {
-    BOOL syskeys = 0;
+    BOOL syskeys = FALSE;
     PKBDLLHOOKSTRUCT p;
 
     // We are only looking for keyboard events - interpret lParam as a
     // pointer to a KBDLLHOOKSTRUCT
     p = (PKBDLLHOOKSTRUCT) lParam;
 
-    // If nCode == HC_ACTION, then we have a keyboard event
     if( nCode == HC_ACTION )
     {
+        // We have a keyboard event
+
         switch( wParam )
         {
             case WM_KEYDOWN:
@@ -83,9 +83,9 @@ LRESULT CALLBACK _glfwLLKeyboardProc( int nCode, WPARAM wParam,
     if( syskeys )
     {
         // Pass the key event to our window message loop
-        if( _glfwWin.Opened )
+        if( _glfwWin.opened )
         {
-            PostMessage( _glfwWin.Wnd, (UINT) wParam, p->vkCode, 0 );
+            PostMessage( _glfwWin.window, (UINT) wParam, p->vkCode, 0 );
         }
 
         // We've taken care of it - don't let the system know about this
@@ -95,8 +95,7 @@ LRESULT CALLBACK _glfwLLKeyboardProc( int nCode, WPARAM wParam,
     else
     {
         // It's a harmless key press, let the system deal with it
-        return CallNextHookEx( _glfwWin.KeyboardHook, nCode, wParam,
-                               lParam );
+        return CallNextHookEx( _glfwWin.keyboardHook, nCode, wParam, lParam );
     }
 }
 
@@ -107,49 +106,50 @@ LRESULT CALLBACK _glfwLLKeyboardProc( int nCode, WPARAM wParam,
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformEnableSystemKeys() - Enable system keys
-// _glfwPlatformDisableSystemKeys() - Disable system keys
+// Enable system keys
 //========================================================================
 
 void _glfwPlatformEnableSystemKeys( void )
 {
-    BOOL bOld;
+    BOOL dummy;
 
     // Use different methods depending on operating system version
-    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.winVer >= _GLFW_WIN_NT4 )
     {
-        if( _glfwWin.KeyboardHook != NULL )
+        if( _glfwWin.keyboardHook != NULL )
         {
-            UnhookWindowsHookEx( _glfwWin.KeyboardHook );
-            _glfwWin.KeyboardHook = NULL;
+            UnhookWindowsHookEx( _glfwWin.keyboardHook );
+            _glfwWin.keyboardHook = NULL;
         }
     }
     else
     {
-        (void) SystemParametersInfo( SPI_SETSCREENSAVERRUNNING, FALSE,
-                                     &bOld, 0 );
+        (void) SystemParametersInfo( SPI_SETSCREENSAVERRUNNING, FALSE, &dummy, 0 );
     }
 }
 
+//========================================================================
+// Disable system keys
+//========================================================================
+
 void _glfwPlatformDisableSystemKeys( void )
 {
-    BOOL bOld;
+    BOOL dummy;
 
     // Use different methods depending on operating system version
-    if( _glfwLibrary.Sys.WinVer >= _GLFW_WIN_NT4 )
+    if( _glfwLibrary.Sys.winVer >= _GLFW_WIN_NT4 )
     {
         // Under Windows NT, install a low level keyboard hook
-        _glfwWin.KeyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,
-                                    _glfwLLKeyboardProc,
-                                    _glfwLibrary.Instance,
-                                    0 );
+        _glfwWin.keyboardHook = SetWindowsHookEx( WH_KEYBOARD_LL,
+                                                  keyboardHook,
+                                                  _glfwLibrary.instance,
+                                                  0 );
     }
     else
     {
         // Under Windows 95/98/ME, fool Windows that a screensaver
         // is running => prevents ALT+TAB, CTRL+ESC and CTRL+ALT+DEL
-        (void) SystemParametersInfo( SPI_SETSCREENSAVERRUNNING, TRUE,
-                                     &bOld, 0 );
+        (void) SystemParametersInfo( SPI_SETSCREENSAVERRUNNING, TRUE, &dummy, 0 );
     }
 }
 
