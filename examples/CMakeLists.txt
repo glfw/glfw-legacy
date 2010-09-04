@@ -5,7 +5,6 @@ link_libraries(libglfwStatic ${GLFW_LIBRARIES} ${OPENGL_glu_LIBRARY})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include ${OPENGL_INCLUDE_DIR})
 
-add_executable(joytest joytest.c)
 add_executable(listmodes listmodes.c)
 
 if(APPLE)
@@ -31,8 +30,8 @@ endif(MSVC)
 
 if(CYGWIN)
   # Set cross-compile and subsystem compile and link flags
-  set_target_properties(boing gears joytest listmodes splitview triangle wave PROPERTIES COMPILE_FLAGS "-mno-cygwin")
+  set_target_properties(boing gears listmodes splitview triangle wave PROPERTIES COMPILE_FLAGS "-mno-cygwin")
   set_target_properties(boing gears splitview triangle wave PROPERTIES LINK_FLAGS "-mno-cygwin -mwindows")
-  set_target_properties(listmodes joytest PROPERTIES LINK_FLAGS "-mno-cygwin -mconsole")
+  set_target_properties(listmodes PROPERTIES LINK_FLAGS "-mno-cygwin -mconsole")
 endif(CYGWIN)
 
