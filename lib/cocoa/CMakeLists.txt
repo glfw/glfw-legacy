@@ -8,21 +8,21 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/lib 
     ${GLFW_INCLUDE_DIR})
 
-set(macosx_SOURCES
-    macosx_enable.m
-    macosx_fullscreen.m
-    macosx_glext.m
-    macosx_init.m
-    macosx_joystick.m
-    macosx_time.m
-    macosx_window.m)
+set(cocoa_SOURCES
+    cocoa_enable.m
+    cocoa_fullscreen.m
+    cocoa_glext.m
+    cocoa_init.m
+    cocoa_joystick.m
+    cocoa_time.m
+    cocoa_window.m)
 
 # For some reason, CMake doesn't know about .m
-set_source_files_properties(${macosx_SOURCES} PROPERTIES LANGUAGE C)
+set_source_files_properties(${cocoa_SOURCES} PROPERTIES LANGUAGE C)
 
 set(libglfw_SOURCES
     ${common_SOURCES}
-    ${macosx_SOURCES})
+    ${cocoa_SOURCES})
 
 add_library(libglfwStatic STATIC ${libglfw_SOURCES})
 add_library(libglfwShared SHARED ${libglfw_SOURCES}) 
