@@ -1,11 +1,10 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_window.m
-// Platform:    Mac OS X
+// Platform:    Cocoa/NSOpenGL
 // API Version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2009-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -40,59 +39,11 @@
 
 @implementation GLFWWindowDelegate
 
-- (void)insertNewline:(id)sender
-{
-    // NOTE: This method is implemented because pressing Return makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)insertTab:(id)sender
-{
-    // NOTE: This method is implemented because pressing Tab makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveUp:(id)sender
-{
-    // NOTE: This method is implemented because pressing Up makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveDown:(id)sender
-{
-    // NOTE: This method is implemented because pressing Down makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveLeft:(id)sender
-{
-    // NOTE: This method is implemented because pressing Left makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
-- (void)moveRight:(id)sender
-{
-    // NOTE: This method is implemented because pressing Right makes
-    // NSKeyBindingManager tell NSWindow via doCommandBySelector: to do stuff
-    // we don't care about
-    // This is a hack and should be removed once a saner solution has been found
-}
-
 - (BOOL)windowShouldClose:(id)window
 {
-    if( _glfwWin.WindowCloseCallback )
+    if( _glfwWin.windowCloseCallback )
     {
-        if( !_glfwWin.WindowCloseCallback() )
+        if( !_glfwWin.windowCloseCallback() )
         {
             return NO;
         }
@@ -107,20 +58,22 @@
 {
     [_glfwWin.context update];
 
-    if( _glfwWin.WindowSizeCallback )
+    NSRect contentRect =
+        [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
+    _glfwWin.width = contentRect.size.width;
+    _glfwWin.height = contentRect.size.height;
+
+    if( _glfwWin.windowSizeCallback )
     {
-        NSRect contentRect =
-            [_glfwWin.window contentRectForFrameRect:[_glfwWin.window frame]];
-        _glfwWin.WindowSizeCallback( contentRect.size.width,
-                                     contentRect.size.height );
+        _glfwWin.windowSizeCallback( _glfwWin.width, _glfwWin.height );
     }
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
-    if( _glfwWin.WindowCloseCallback )
+    if( _glfwWin.windowCloseCallback )
     {
-        if( !_glfwWin.WindowCloseCallback() )
+        if( !_glfwWin.windowCloseCallback() )
         {
             return NSTerminateCancel;
         }
@@ -133,7 +86,7 @@
 
 @end
 
-// todo need to find mappings for F13-F15, volume down/up/mute, and eject.
+// TODO: Need to find mappings for F13-F15, volume down/up/mute, and eject.
 static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
 {
     /* 00 */ 'A',
@@ -160,7 +113,7 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 15 */ '4',
     /* 16 */ '6',
     /* 17 */ '5',
-    /* 18 */ GLFW_KEY_KP_EQUAL,
+    /* 18 */ '=',
     /* 19 */ '9',
     /* 1a */ '7',
     /* 1b */ '-',
@@ -190,34 +143,34 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 33 */ GLFW_KEY_BACKSPACE,
     /* 34 */ -1,
     /* 35 */ GLFW_KEY_ESC,
-    /* 36 */ -1, // GLFW_KEY_RCOMMAND
-    /* 37 */ -1, // GLFW_KEY_LCOMMAND
+    /* 36 */ GLFW_KEY_RSUPER,
+    /* 37 */ GLFW_KEY_LSUPER,
     /* 38 */ GLFW_KEY_LSHIFT,
-    /* 39 */ -1,
+    /* 39 */ GLFW_KEY_CAPS_LOCK,
     /* 3a */ GLFW_KEY_LALT,
     /* 3b */ GLFW_KEY_LCTRL,
     /* 3c */ GLFW_KEY_RSHIFT,
     /* 3d */ GLFW_KEY_RALT,
     /* 3e */ GLFW_KEY_RCTRL,
-    /* 3f */ -1,
-    /* 40 */ -1,
+    /* 3f */ -1, /*Function*/
+    /* 40 */ GLFW_KEY_F17,
     /* 41 */ GLFW_KEY_KP_DECIMAL,
     /* 42 */ -1,
     /* 43 */ GLFW_KEY_KP_MULTIPLY,
     /* 44 */ -1,
     /* 45 */ GLFW_KEY_KP_ADD,
     /* 46 */ -1,
-    /* 47 */ -1,
-    /* 48 */ -1,
-    /* 49 */ -1,
-    /* 4a */ -1,
+    /* 47 */ -1, /*KeypadClear*/
+    /* 48 */ -1, /*VolumeUp*/
+    /* 49 */ -1, /*VolumeDown*/
+    /* 4a */ -1, /*Mute*/
     /* 4b */ GLFW_KEY_KP_DIVIDE,
     /* 4c */ GLFW_KEY_KP_ENTER,
     /* 4d */ -1,
     /* 4e */ GLFW_KEY_KP_SUBTRACT,
-    /* 4f */ -1,
-    /* 50 */ -1,
-    /* 51 */ -1,
+    /* 4f */ GLFW_KEY_F18,
+    /* 50 */ GLFW_KEY_F19,
+    /* 51 */ GLFW_KEY_KP_EQUAL,
     /* 52 */ GLFW_KEY_KP_0,
     /* 53 */ GLFW_KEY_KP_1,
     /* 54 */ GLFW_KEY_KP_2,
@@ -226,7 +179,7 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 57 */ GLFW_KEY_KP_5,
     /* 58 */ GLFW_KEY_KP_6,
     /* 59 */ GLFW_KEY_KP_7,
-    /* 5a */ -1,
+    /* 5a */ GLFW_KEY_F20,
     /* 5b */ GLFW_KEY_KP_8,
     /* 5c */ GLFW_KEY_KP_9,
     /* 5d */ -1,
@@ -237,20 +190,20 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
     /* 62 */ GLFW_KEY_F7,
     /* 63 */ GLFW_KEY_F3,
     /* 64 */ GLFW_KEY_F8,
-    /* 65 */ -1,
+    /* 65 */ GLFW_KEY_F9,
     /* 66 */ -1,
-    /* 67 */ -1,
+    /* 67 */ GLFW_KEY_F11,
     /* 68 */ -1,
     /* 69 */ GLFW_KEY_F13,
     /* 6a */ GLFW_KEY_F16,
-    /* 6b */ -1,
+    /* 6b */ GLFW_KEY_F14,
     /* 6c */ -1,
-    /* 6d */ -1,
+    /* 6d */ GLFW_KEY_F10,
     /* 6e */ -1,
-    /* 6f */ -1,
+    /* 6f */ GLFW_KEY_F12,
     /* 70 */ -1,
-    /* 71 */ -1,
-    /* 72 */ GLFW_KEY_INSERT,
+    /* 71 */ GLFW_KEY_F15,
+    /* 72 */ GLFW_KEY_INSERT, /*Help*/
     /* 73 */ GLFW_KEY_HOME,
     /* 74 */ GLFW_KEY_PAGEUP,
     /* 75 */ GLFW_KEY_DEL,
@@ -270,7 +223,7 @@ static const unsigned int MAC_TO_GLFW_KEYCODE_MAPPING[128] =
 // Converts a Mac OS X keycode to a GLFW keycode
 //========================================================================
 
-static int _glfwFromMacKeyCode( unsigned int macKeyCode )
+static int convertMacKeyCode( unsigned int macKeyCode )
 {
     if( macKeyCode >= 128 )
     {
@@ -324,10 +277,10 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)mouseMoved:(NSEvent *)event
 {
-    if( _glfwWin.MouseLock )
+    if( _glfwWin.mouseLock )
     {
         _glfwInput.MousePosX += [event deltaX];
-        _glfwInput.MousePosY -= [event deltaY];
+        _glfwInput.MousePosY += [event deltaY];
     }
     else
     {
@@ -338,9 +291,9 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
         _glfwInput.MousePosY = [[_glfwWin.window contentView] bounds].size.height - p.y;
     }
 
-    if( _glfwWin.MousePosCallback )
+    if( _glfwWin.mousePosCallback )
     {
-        _glfwWin.MousePosCallback( _glfwInput.MousePosX, _glfwInput.MousePosY );
+        _glfwWin.mousePosCallback( _glfwInput.MousePosX, _glfwInput.MousePosY );
     }
 }
 
@@ -376,7 +329,9 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyDown:(NSEvent *)event
 {
-    int code = _glfwFromMacKeyCode( [event keyCode] );
+    NSUInteger length;
+    NSString* characters;
+    int i, code = convertMacKeyCode( [event keyCode] );
 
     if( code != -1 )
     {
@@ -384,22 +339,27 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
         if( [event modifierFlags] & NSCommandKeyMask )
         {
-            if( !_glfwWin.SysKeysDisabled )
+            if( !_glfwWin.sysKeysDisabled )
             {
                 [super keyDown:event];
             }
         }
         else
         {
-            // This eventually calls through to -insertText:
-            [self interpretKeyEvents:[NSArray arrayWithObject:event]];
+            characters = [event characters];
+            length = [characters length];
+
+            for( i = 0;  i < length;  i++ )
+            {
+                _glfwInputChar( [characters characterAtIndex:i], GLFW_PRESS );
+            }
         }
     }
 }
 
 - (void)flagsChanged:(NSEvent *)event
 {
-    unsigned int newModifierFlags = [event modifierFlags];
+    unsigned int newModifierFlags = [event modifierFlags] | NSDeviceIndependentModifierFlagsMask;
     int mode;
 
     if( newModifierFlags > _glfwWin.modifierFlags )
@@ -417,22 +377,21 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 
 - (void)keyUp:(NSEvent *)event
 {
-    int code = _glfwFromMacKeyCode( [event keyCode] );
+    NSUInteger length;
+    NSString* characters;
+    int i, code = convertMacKeyCode( [event keyCode] );
+
     if( code != -1 )
     {
         _glfwInputKey( code, GLFW_RELEASE );
-    }
-}
 
-- (void)insertText:(id)string
-{
-    unsigned int i, n = [string length];
+        characters = [event characters];
+        length = [characters length];
 
-    for( i = 0; i < n; i++ )
-    {
-        _glfwInputChar( [string characterAtIndex:i], GLFW_PRESS );
-
-        // TODO: Immediately release it too?  What does the mode even mean?
+        for( i = 0;  i < length;  i++ )
+        {
+            _glfwInputChar( [characters characterAtIndex:i], GLFW_RELEASE );
+        }
     }
 }
 
@@ -441,9 +400,9 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
     _glfwInput.WheelPosFloating += [event deltaY];
     _glfwInput.WheelPos = lrint(_glfwInput.WheelPosFloating);
 
-    if( _glfwWin.MouseWheelCallback )
+    if( _glfwWin.mouseWheelCallback )
     {
-        _glfwWin.MouseWheelCallback( _glfwInput.WheelPos );
+        _glfwWin.mouseWheelCallback( _glfwInput.WheelPos );
     }
 }
 
@@ -458,15 +417,23 @@ static int _glfwFromMacKeyCode( unsigned int macKeyCode )
 // created
 //========================================================================
 
-int _glfwPlatformOpenWindow( int width, int height,
-                             int redbits, int greenbits, int bluebits,
-                             int alphabits, int depthbits, int stencilbits,
-                             int mode, _GLFWhints* hints )
+int  _glfwPlatformOpenWindow( int width, int height,
+                              const _GLFWwndconfig *wndconfig,
+                              const _GLFWfbconfig *fbconfig )
 {
+    int colorBits;
+
     _glfwWin.pixelFormat = nil;
     _glfwWin.window = nil;
     _glfwWin.context = nil;
     _glfwWin.delegate = nil;
+
+    // Fail if OpenGL 3.0 or above was requested
+    if( wndconfig->glMajor > 2 )
+    {
+        _glfwPlatformCloseWindow();
+        return GL_FALSE;
+    }
 
     _glfwWin.delegate = [[GLFWWindowDelegate alloc] init];
     if( _glfwWin.delegate == nil )
@@ -478,9 +445,14 @@ int _glfwPlatformOpenWindow( int width, int height,
     [NSApp setDelegate:_glfwWin.delegate];
 
     // Mac OS X needs non-zero color size, so set resonable values
-    if( redbits + greenbits + bluebits < 15 )
+    colorBits = fbconfig->redBits + fbconfig->greenBits + fbconfig->blueBits;
+    if( colorBits == 0 )
     {
-        redbits = greenbits = bluebits = 8;
+        colorBits = 24;
+    }
+    else if( colorBits < 15 )
+    {
+        colorBits = 15;
     }
 
     // Ignored hints:
@@ -493,7 +465,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     // Aux buffers probably aren't accelerated either
 
     CFDictionaryRef fullscreenMode = NULL;
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         fullscreenMode =
             // I think it's safe to pass 0 to the refresh rate for this function
@@ -501,10 +473,10 @@ int _glfwPlatformOpenWindow( int width, int height,
             // doesn't specify refresh...
             CGDisplayBestModeForParametersAndRefreshRateWithProperty(
             CGMainDisplayID(),
-            redbits + greenbits + bluebits + alphabits,
+            colorBits + fbconfig->alphaBits,
             width,
             height,
-            hints->RefreshRate,
+            wndconfig->refreshRate,
             // Controversial, see macosx_fullscreen.m for discussion
             kCGDisplayModeIsSafeForHardware,
             NULL);
@@ -514,11 +486,11 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     unsigned int styleMask = 0;
-    if( mode == GLFW_WINDOW )
+    if( wndconfig->mode == GLFW_WINDOW )
     {
         styleMask = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
 
-        if( !hints->WindowNoResize )
+        if( !wndconfig->windowNoResize )
         {
             styleMask |= NSResizableWindowMask;
         }
@@ -530,15 +502,15 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     _glfwWin.window = [[NSWindow alloc]
         initWithContentRect:NSMakeRect(0, 0, width, height)
-                      styleMask:styleMask
-                        backing:NSBackingStoreBuffered
-                          defer:NO];
+                  styleMask:styleMask
+                    backing:NSBackingStoreBuffered
+                      defer:NO];
     [_glfwWin.window setContentView:[[GLFWContentView alloc] init]];
     [_glfwWin.window setDelegate:_glfwWin.delegate];
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
     [_glfwWin.window center];
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         CGCaptureAllDisplays();
         CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
@@ -552,7 +524,7 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     ADD_ATTR( NSOpenGLPFADoubleBuffer );
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         ADD_ATTR( NSOpenGLPFAFullScreen );
         ADD_ATTR( NSOpenGLPFANoRecovery );
@@ -560,45 +532,45 @@ int _glfwPlatformOpenWindow( int width, int height,
                    CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );
     }
 
-    ADD_ATTR2( NSOpenGLPFAColorSize, redbits + greenbits + bluebits );
+    ADD_ATTR2( NSOpenGLPFAColorSize, colorBits );
 
-    if( alphabits > 0)
+    if( fbconfig->alphaBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAlphaSize, alphabits );
+        ADD_ATTR2( NSOpenGLPFAAlphaSize, fbconfig->alphaBits );
     }
 
-    if( depthbits > 0)
+    if( fbconfig->depthBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFADepthSize, depthbits );
+        ADD_ATTR2( NSOpenGLPFADepthSize, fbconfig->depthBits );
     }
 
-    if( stencilbits > 0)
+    if( fbconfig->stencilBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAStencilSize, stencilbits );
+        ADD_ATTR2( NSOpenGLPFAStencilSize, fbconfig->stencilBits );
     }
 
-    int accumbits = hints->AccumRedBits + hints->AccumGreenBits +
-                    hints->AccumBlueBits + hints->AccumAlphaBits;
+    int accumBits = fbconfig->accumRedBits + fbconfig->accumGreenBits +
+                    fbconfig->accumBlueBits + fbconfig->accumAlphaBits;
 
-    if( accumbits > 0)
+    if( accumBits > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAccumSize, accumbits );
+        ADD_ATTR2( NSOpenGLPFAAccumSize, accumBits );
     }
 
-    if( hints->AuxBuffers > 0)
+    if( fbconfig->auxBuffers > 0)
     {
-        ADD_ATTR2( NSOpenGLPFAAuxBuffers, hints->AuxBuffers );
+        ADD_ATTR2( NSOpenGLPFAAuxBuffers, fbconfig->auxBuffers );
     }
 
-    if( hints->Stereo)
+    if( fbconfig->stereo)
     {
         ADD_ATTR( NSOpenGLPFAStereo );
     }
 
-    if( hints->Samples > 0)
+    if( fbconfig->samples > 0)
     {
         ADD_ATTR2( NSOpenGLPFASampleBuffers, 1 );
-        ADD_ATTR2( NSOpenGLPFASamples, hints->Samples );
+        ADD_ATTR2( NSOpenGLPFASamples, fbconfig->samples );
     }
 
     ADD_ATTR(0);
@@ -621,7 +593,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     [_glfwWin.window makeKeyAndOrderFront:nil];
     [_glfwWin.context setView:[_glfwWin.window contentView]];
 
-    if( mode == GLFW_FULLSCREEN )
+    if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         // TODO: Make this work on pre-Leopard systems
         [[_glfwWin.window contentView] enterFullScreenMode:[NSScreen mainScreen]
@@ -629,6 +601,10 @@ int _glfwPlatformOpenWindow( int width, int height,
     }
 
     [_glfwWin.context makeCurrentContext];
+
+    NSPoint point = [[NSCursor currentCursor] hotSpot];
+    _glfwInput.MousePosX = point.x;
+    _glfwInput.MousePosY = point.y;
 
     return GL_TRUE;
 }
@@ -641,7 +617,7 @@ void _glfwPlatformCloseWindow( void )
 {
     [_glfwWin.window orderOut:nil];
 
-    if( _glfwWin.Fullscreen )
+    if( _glfwWin.fullscreen )
     {
         [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
         CGDisplaySwitchToMode( CGMainDisplayID(),
@@ -756,60 +732,61 @@ void _glfwPlatformRefreshWindowParams( void )
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccelerated
                    forVirtualScreen:0];
-    _glfwWin.Accelerated = value;
+    _glfwWin.accelerated = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAlphaSize
                    forVirtualScreen:0];
-    _glfwWin.AlphaBits = value;
+    _glfwWin.alphaBits = value;
 
     // It seems that the color size includes the size of the alpha channel
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAColorSize
                    forVirtualScreen:0];
-    value -= _glfwWin.AlphaBits;
-    _glfwWin.RedBits = value / 3;
-    _glfwWin.GreenBits = value / 3;
-    _glfwWin.BlueBits = value / 3;
+    value -= _glfwWin.alphaBits;
+    _glfwWin.redBits = value / 3;
+    _glfwWin.greenBits = value / 3;
+    _glfwWin.blueBits = value / 3;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFADepthSize
                    forVirtualScreen:0];
-    _glfwWin.DepthBits = value;
+    _glfwWin.depthBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStencilSize
                    forVirtualScreen:0];
-    _glfwWin.StencilBits = value;
+    _glfwWin.stencilBits = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAccumSize
                    forVirtualScreen:0];
-    _glfwWin.AccumRedBits = value / 3;
-    _glfwWin.AccumGreenBits = value / 3;
-    _glfwWin.AccumBlueBits = value / 3;
+    _glfwWin.accumRedBits = value / 3;
+    _glfwWin.accumGreenBits = value / 3;
+    _glfwWin.accumBlueBits = value / 3;
 
     // TODO: Figure out what to set this value to
-    _glfwWin.AccumAlphaBits = 0;
+    _glfwWin.accumAlphaBits = 0;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAAuxBuffers
                    forVirtualScreen:0];
-    _glfwWin.AuxBuffers = value;
+    _glfwWin.auxBuffers = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFAStereo
                    forVirtualScreen:0];
-    _glfwWin.Stereo = value;
+    _glfwWin.stereo = value;
 
     [_glfwWin.pixelFormat getValues:&value
                        forAttribute:NSOpenGLPFASamples
                    forVirtualScreen:0];
-    _glfwWin.Samples = value;
+    _glfwWin.samples = value;
 
-    // These are forced to false as long as Mac OS X lacks support for OpenGL 3+
-    _glfwWin.GLForward = GL_FALSE;
-    _glfwWin.GLDebug = GL_FALSE;
+    // These are forced to false as long as Mac OS X lacks support for OpenGL 3.0+
+    _glfwWin.glForward = GL_FALSE;
+    _glfwWin.glDebug = GL_FALSE;
+    _glfwWin.glProfile = 0;
 }
 
 //========================================================================

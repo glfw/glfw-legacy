@@ -1,11 +1,10 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_fullscreen.m
-// Platform:    Mac OS X
+// Platform:    Cocoa/NSOpenGL
 // API Version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2009-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -34,7 +33,7 @@
 // Check whether the display mode should be included in enumeration
 //========================================================================
 
-static BOOL _glfwModeIsGood( NSDictionary *mode )
+static BOOL modeIsGood( NSDictionary *mode )
 {
     // This is a bit controversial, if you've got something other than an
     // LCD computer monitor as an output device you might not want these
@@ -43,20 +42,20 @@ static BOOL _glfwModeIsGood( NSDictionary *mode )
     // This seems like a decent compromise, but certain applications may
     // wish to patch this...
     return [[mode objectForKey:(id)kCGDisplayBitsPerPixel] intValue] >= 15 &&
-        [mode objectForKey:(id)kCGDisplayModeIsSafeForHardware] != nil &&
-        [mode objectForKey:(id)kCGDisplayModeIsStretched] == nil;
+           [mode objectForKey:(id)kCGDisplayModeIsSafeForHardware] != nil &&
+           [mode objectForKey:(id)kCGDisplayModeIsStretched] == nil;
 }
 
 //========================================================================
 // Convert Core Graphics display mode to GLFW video mode
 //========================================================================
 
-static GLFWvidmode _glfwVidmodeFromCGDisplayMode( NSDictionary *mode )
+static GLFWvidmode vidmodeFromCGDisplayMode( NSDictionary *mode )
 {
     unsigned int width = [[mode objectForKey:(id)kCGDisplayWidth] unsignedIntValue];
     unsigned int height = [[mode objectForKey:(id)kCGDisplayHeight] unsignedIntValue];
     unsigned int bps = [[mode objectForKey:(id)kCGDisplayBitsPerSample] unsignedIntValue];
-    
+
     GLFWvidmode result;
     result.Width = width;
     result.Height = height;
@@ -83,11 +82,10 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
     for( i = 0; i < n && i < (unsigned)maxcount; i++ )
     {
         NSDictionary *mode = [modes objectAtIndex:i];
-        if( _glfwModeIsGood( mode ) )
+        if( modeIsGood( mode ) )
         {
-            list[j++] = _glfwVidmodeFromCGDisplayMode( mode );
+            list[j++] = vidmodeFromCGDisplayMode( mode );
         }
-        
     }
 
     return j;
@@ -99,6 +97,6 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
-    *mode = _glfwVidmodeFromCGDisplayMode( _glfwLibrary.DesktopMode );
+    *mode = vidmodeFromCGDisplayMode( _glfwLibrary.DesktopMode );
 }
 

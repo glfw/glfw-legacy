@@ -1,11 +1,10 @@
 //========================================================================
 // GLFW - An OpenGL framework
-// File:        macosx_init.m
-// Platform:    Mac OS X
+// Platform:    Cocoa/NSOpenGL
 // API Version: 2.7
-// WWW:         http://glfw.sourceforge.net
+// WWW:         http://www.glfw.org/
 //------------------------------------------------------------------------
-// Copyright (c) 2002-2006 Camilla Berglund
+// Copyright (c) 2009-2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -33,6 +32,28 @@
 
 #include "internal.h"
 
+@interface GLFWApplication : NSApplication
+@end
+
+@implementation GLFWApplication
+
+// From http://cocoadev.com/index.pl?GameKeyboardHandlingAlmost
+// This works around an AppKit bug, where key up events while holding
+// down the command key don't get sent to the key window.
+- (void)sendEvent:(NSEvent *)event
+{
+    if( [event type] == NSKeyUp && ( [event modifierFlags] & NSCommandKeyMask ) )
+    {
+        [[self keyWindow] sendEvent:event];
+    }
+    else
+    {
+        [super sendEvent:event];
+    }
+}
+
+@end
+
 // Prior to Snow Leopard, we need to use this oddly-named semi-private API
 // to get the application menu working properly.  Need to be careful in
 // case it goes away in a future OS update.
@@ -51,10 +72,10 @@ NSString *GLFWNameKeys[] =
 //========================================================================
 // Try to figure out what the calling application is called
 //========================================================================
-static NSString *_glfwFindAppName( void )
+static NSString *findAppName( void )
 {
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-    
+
     unsigned int i;
     for( i = 0; i < sizeof(GLFWNameKeys) / sizeof(GLFWNameKeys[0]); i++ )
     {
@@ -66,7 +87,7 @@ static NSString *_glfwFindAppName( void )
             return name;
         }
     }
-    
+
     // If we get here, we're unbundled
     if( !_glfwLibrary.Unbundled )
     {
@@ -74,21 +95,21 @@ static NSString *_glfwFindAppName( void )
         // do no harm...
         ProcessSerialNumber psn = { 0, kCurrentProcess };
         TransformProcessType( &psn, kProcessTransformToForegroundApplication );
-        
+
         // Having the app in front of the terminal window is also generally
         // handy.  There is an NSApplication API to do this, but...
         SetFrontProcess( &psn );
-        
+
         _glfwLibrary.Unbundled = GL_TRUE;
     }
-    
+
     char **progname = _NSGetProgname();
     if( progname && *progname )
     {
         // TODO: UTF8?
         return [NSString stringWithUTF8String:*progname];
     }
-    
+
     // Really shouldn't get here
     return @"GLFW Application";
 }
@@ -100,18 +121,18 @@ static NSString *_glfwFindAppName( void )
 // localize(d|able), etc.  Loading a nib would save us this horror, but that
 // doesn't seem like a good thing to require of GLFW's clients.
 //========================================================================
-static void _glfwSetUpMenuBar( void )
+static void setUpMenuBar( void )
 {
-    NSString *appName = _glfwFindAppName();
-    
+    NSString *appName = findAppName();
+
     NSMenu *bar = [[NSMenu alloc] init];
     [NSApp setMainMenu:bar];
-    
+
     NSMenuItem *appMenuItem =
         [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
     NSMenu *appMenu = [[NSMenu alloc] init];
     [appMenuItem setSubmenu:appMenu];
-    
+
     [appMenu addItemWithTitle:[NSString stringWithFormat:@"About %@", appName]
                        action:@selector(orderFrontStandardAboutPanel:)
                 keyEquivalent:@""];
@@ -136,13 +157,13 @@ static void _glfwSetUpMenuBar( void )
     [appMenu addItemWithTitle:[NSString stringWithFormat:@"Quit %@", appName]
                        action:@selector(terminate:)
                 keyEquivalent:@"q"];
-    
+
     NSMenuItem *windowMenuItem =
         [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
     NSMenu *windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     [NSApp setWindowsMenu:windowMenu];
     [windowMenuItem setSubmenu:windowMenu];
-    
+
     [windowMenu addItemWithTitle:@"Miniaturize"
                           action:@selector(performMiniaturize:)
                    keyEquivalent:@"m"];
@@ -153,7 +174,7 @@ static void _glfwSetUpMenuBar( void )
     [windowMenu addItemWithTitle:@"Bring All to Front"
                           action:@selector(arrangeInFront:)
                    keyEquivalent:@""];
-    
+
     // At least guard the call to private API to avoid an exception if it
     // goes away.  Hopefully that means the worst we'll break in future is to
     // look ugly...
@@ -164,6 +185,20 @@ static void _glfwSetUpMenuBar( void )
 }
 
 //========================================================================
+// Terminate GLFW when exiting application
+//========================================================================
+
+static void glfw_atexit( void )
+{
+    glfwTerminate();
+}
+
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
 // Initialize the GLFW library
 //========================================================================
 
@@ -171,17 +206,29 @@ int _glfwPlatformInit( void )
 {
     _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 
-    [NSApplication sharedApplication];
+    // Implicitly create shared NSApplication instance
+    [GLFWApplication sharedApplication];
+
+    NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
+
+    if( access( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding], R_OK ) == 0 )
+    {
+        chdir( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding] );
+    }
+
     // Setting up menu bar must go exactly here else weirdness ensues
-    _glfwSetUpMenuBar();
+    setUpMenuBar();
 
     [NSApp finishLaunching];
-    
+
+    // Install atexit routine
+    atexit( glfw_atexit );
+
     _glfwPlatformSetTime( 0.0 );
-    
+
     _glfwLibrary.DesktopMode =
 	(NSDictionary *)CGDisplayCurrentMode( CGMainDisplayID() );
-    
+
     return GL_TRUE;
 }
 
