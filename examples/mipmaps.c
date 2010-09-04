@@ -1,47 +1,56 @@
 //========================================================================
-// This is a small test application for GLFW.
-// The program shows texture loading with mipmap generation and trilienar
-// filtering.
-// Note: For OpenGL 1.0 compability, we do not use texture objects (this
-// is no issue, since we only have one texture).
+// This is an example program for the GLFW library
+//
+// It shows texture loading with mipmap generation and rendering with
+// trilienar texture filtering
 //========================================================================
 
 #include <stdio.h>
+#include <stdlib.h>
+
 #include <GL/glfw.h>
-
-
-//========================================================================
-// main()
-//========================================================================
 
 int main( void )
 {
-    int     width, height, running, frames, x, y;
-    double  t, t0, fps;
-    char    titlestr[ 200 ];
+    int width, height, x;
+    double time;
+    GLboolean running;
+    GLuint textureID;
+    char* texturePath = "mipmaps.tga";
 
     // Initialise GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
+    }
 
     // Open OpenGL window
     if( !glfwOpenWindow( 640, 480, 0,0,0,0, 0,0, GLFW_WINDOW ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        return 0;
+        exit( EXIT_FAILURE );
     }
+
+    glfwSetWindowTitle( "Trilinear interpolation" );
 
     // Enable sticky keys
     glfwEnable( GLFW_STICKY_KEYS );
 
-    // Disable vertical sync (on cards that support it)
-    glfwSwapInterval( 0 );
+    // Enable vertical sync (on cards that support it)
+    glfwSwapInterval( 1 );
 
-    // Load texture from file, and build all mipmap levels. The
-    // texture is automatically uploaded to texture memory.
-    if( !glfwLoadTexture2D( "mipmaps.tga", GLFW_BUILD_MIPMAPS_BIT ) )
+    // Generate and bind our texture ID
+    glGenTextures( 1, &textureID );
+    glBindTexture( GL_TEXTURE_2D, textureID );
+
+    // Load texture from file into video memory, including mipmap levels
+    if( !glfwLoadTexture2D( texturePath, GLFW_BUILD_MIPMAPS_BIT ) )
     {
+        fprintf( stderr, "Failed to load texture %s\n", texturePath );
         glfwTerminate();
-        return 0;
+        exit( EXIT_FAILURE );
     }
 
     // Use trilinear interpolation (GL_LINEAR_MIPMAP_LINEAR)
@@ -50,29 +59,15 @@ int main( void )
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                      GL_LINEAR );
 
-    // Enable texturing
+    // Enable plain 2D texturing
     glEnable( GL_TEXTURE_2D );
 
-    // Main loop
     running = GL_TRUE;
-    frames = 0;
-    t0 = glfwGetTime();
     while( running )
     {
         // Get time and mouse position
-        t = glfwGetTime();
-        glfwGetMousePos( &x, &y );
-
-        // Calculate and display FPS (frames per second)
-        if( (t-t0) > 1.0 || frames == 0 )
-        {
-            fps = (double)frames / (t-t0);
-            sprintf( titlestr, "Trilinear interpolation (%.1f FPS)", fps );
-            glfwSetWindowTitle( titlestr );
-            t0 = t;
-            frames = 0;
-        }
-        frames ++;
+        time = glfwGetTime();
+        glfwGetMousePos( &x, NULL );
 
         // Get window size (may be different than the requested size)
         glfwGetWindowSize( &width, &height );
@@ -88,7 +83,7 @@ int main( void )
         // Select and setup the projection matrix
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
-        gluPerspective( 65.0f, (GLfloat)width/(GLfloat)height, 1.0f,
+        gluPerspective( 65.0f, (GLfloat)width / (GLfloat)height, 1.0f,
             50.0f );
 
         // Select and setup the modelview matrix
@@ -99,7 +94,7 @@ int main( void )
                    0.0f,  1.0f,   0.0f );  // Up-vector
 
         // Draw a textured quad
-        glRotatef( 0.05*(GLfloat)x + (GLfloat)t*5.0f, 0.0f, 1.0f, 0.0f );
+        glRotatef( 0.05f * (GLfloat)x + (GLfloat)time * 5.0f, 0.0f, 1.0f, 0.0f );
         glBegin( GL_QUADS );
           glTexCoord2f( -20.0f,  20.0f );
           glVertex3f( -50.0f, 0.0f, -50.0f );
@@ -122,5 +117,6 @@ int main( void )
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
+

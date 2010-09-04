@@ -185,7 +185,7 @@ const unsigned char floor_texture[ F_TEX_WIDTH * F_TEX_HEIGHT ] = {
 #define FOUNTAIN_RADIUS 1.6f
 
 // Minimum delta-time for particle phisics (s)
-#define MIN_DELTA_T     (BIRTH_INTERVAL*0.5)
+#define MIN_DELTA_T     (BIRTH_INTERVAL * 0.5f)
 
 
 //========================================================================
@@ -242,10 +242,10 @@ void InitParticle( PARTICLE *p, double t )
     p->z = FOUNTAIN_HEIGHT;
 
     // Start velocity is up (Z)...
-    p->vz = 0.7f + (0.3/4096.0) * (float) (rand() & 4095);
+    p->vz = 0.7f + (0.3f/4096.f) * (float) (rand() & 4095);
 
     // ...and a randomly chosen X/Y direction
-    xy_angle = (2.0*M_PI/4096.0) * (float) (rand() & 4095);
+    xy_angle = (2.f * (float)M_PI / 4096.f) * (float) (rand() & 4095);
     p->vx = 0.4f * (float) cos( xy_angle );
     p->vy = 0.4f * (float) sin( xy_angle );
 
@@ -685,8 +685,8 @@ void TesselateFloor( float x1, float y1, float x2, float y2,
     }
     else
     {
-        x = fabs(x1) < fabs(x2) ? fabs(x1) : fabs(x2);
-        y = fabs(y1) < fabs(y2) ? fabs(y1) : fabs(y2);
+        x = (float) (fabs(x1) < fabs(x2) ? fabs(x1) : fabs(x2));
+        y = (float) (fabs(y1) < fabs(y2) ? fabs(y1) : fabs(y2));
         delta = x*x + y*y;
     }
 
@@ -1021,13 +1021,18 @@ int main( int argc, char **argv )
     }
 
     // Initialize GLFW
-    glfwInit();
+    if( !glfwInit() )
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
+    }
 
     // Open OpenGL fullscreen window
-    if( !glfwOpenWindow( WIDTH, HEIGHT, 5,6,5,0, 16,0, GLFW_FULLSCREEN ) )
+    if( !glfwOpenWindow( WIDTH, HEIGHT, 0,0,0,0, 16,0, GLFW_FULLSCREEN ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit( 0 );
+        exit( EXIT_FAILURE );
     }
 
     // Set window title
@@ -1065,8 +1070,6 @@ int main( int argc, char **argv )
                   0, GL_LUMINANCE, GL_UNSIGNED_BYTE, floor_texture );
 
     // Check if we have GL_EXT_separate_specular_color, and if so use it
-    // (This extension should ALWAYS be used when OpenGL lighting is used
-    // together with texturing, since it gives more realistic results)
     if( glfwExtensionSupported( "GL_EXT_separate_specular_color" ) )
     {
         glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL_EXT,
@@ -1144,5 +1147,6 @@ int main( int argc, char **argv )
     // Terminate OpenGL
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
+

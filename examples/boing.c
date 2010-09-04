@@ -27,6 +27,7 @@
  * a hidden computer or VCR.
  *****************************************************************************/
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <GL/glfw.h>
@@ -45,29 +46,29 @@ void BounceBall( double dt );
 void DrawBoingBallBand( GLfloat long_lo, GLfloat long_hi );
 void DrawGrid( void );
 
-#define RADIUS           70.0
-#define STEP_LONGITUDE   22.5                   /* 22.5 makes 8 bands like original Boing */
-#define STEP_LATITUDE    22.5
+#define RADIUS           70.f
+#define STEP_LONGITUDE   22.5f                   /* 22.5 makes 8 bands like original Boing */
+#define STEP_LATITUDE    22.5f
 
-#define DIST_BALL       (RADIUS * 2.0 + RADIUS * 0.1)
+#define DIST_BALL       (RADIUS * 2.f + RADIUS * 0.1f)
 
-#define VIEW_SCENE_DIST (DIST_BALL * 3.0+ 200.0)/* distance from viewer to middle of boing area */
-#define GRID_SIZE       (RADIUS * 4.5)          /* length (width) of grid */
-#define BOUNCE_HEIGHT   (RADIUS * 2.1)
-#define BOUNCE_WIDTH    (RADIUS * 2.1)
+#define VIEW_SCENE_DIST (DIST_BALL * 3.f + 200.f)/* distance from viewer to middle of boing area */
+#define GRID_SIZE       (RADIUS * 4.5f)          /* length (width) of grid */
+#define BOUNCE_HEIGHT   (RADIUS * 2.1f)
+#define BOUNCE_WIDTH    (RADIUS * 2.1f)
 
-#define SHADOW_OFFSET_X -20.0
-#define SHADOW_OFFSET_Y  10.0
-#define SHADOW_OFFSET_Z   0.0
+#define SHADOW_OFFSET_X -20.f
+#define SHADOW_OFFSET_Y  10.f
+#define SHADOW_OFFSET_Z   0.f
 
-#define WALL_L_OFFSET   0.0
-#define WALL_R_OFFSET   5.0
+#define WALL_L_OFFSET   0.f
+#define WALL_R_OFFSET   5.f
 
 /* Animation speed (50.0 mimics the original GLUT demo speed) */
-#define ANIMATION_SPEED 50.0
+#define ANIMATION_SPEED 50.f
 
 /* Maximum allowed delta time per physics iteration */
-#define MAX_DELTA_T 0.02
+#define MAX_DELTA_T 0.02f
 
 /* Draw ball, or its shadow */
 typedef enum { DRAW_BALL, DRAW_BALL_SHADOW } DRAW_BALL_ENUM;
@@ -76,15 +77,15 @@ typedef enum { DRAW_BALL, DRAW_BALL_SHADOW } DRAW_BALL_ENUM;
 typedef struct {float x; float y; float z;} vertex_t;
 
 /* Global vars */
-GLfloat deg_rot_y       = 0.0;
-GLfloat deg_rot_y_inc   = 2.0;
+GLfloat deg_rot_y       = 0.f;
+GLfloat deg_rot_y_inc   = 2.f;
 GLfloat ball_x          = -RADIUS;
 GLfloat ball_y          = -RADIUS;
-GLfloat ball_x_inc      = 1.0;
-GLfloat ball_y_inc      = 2.0;
+GLfloat ball_x_inc      = 1.f;
+GLfloat ball_y_inc      = 2.f;
 DRAW_BALL_ENUM drawBallHow;
 double  t;
-double  t_old = 0.0;
+double  t_old = 0.f;
 double  dt;
 
 /* Random number generator */
@@ -103,8 +104,8 @@ double  dt;
  *****************************************************************************/
 GLfloat TruncateDeg( GLfloat deg )
 {
-   if ( deg >= 360.0 )
-      return (deg - 360.0);
+   if ( deg >= 360.f )
+      return (deg - 360.f);
    else
       return deg;
 }
@@ -173,8 +174,8 @@ GLfloat PerspectiveAngle( GLfloat size,
 {
    GLfloat radTheta, degTheta;
 
-   radTheta = 2.0 * atan2( size / 2.0, dist );
-   degTheta = (180.0 * radTheta) / M_PI;
+   radTheta = 2.f * (GLfloat) atan2( size / 2.f, dist );
+   degTheta = (180.f * radTheta) / (GLfloat) M_PI;
    return degTheta;
 }
 
@@ -191,7 +192,7 @@ void init( void )
    /*
     * Clear background.
     */
-   glClearColor( 0.55, 0.55, 0.55, 0.0 );
+   glClearColor( 0.55f, 0.55f, 0.55f, 0.f );
 
    glShadeModel( GL_FLAT );
 }
@@ -270,7 +271,7 @@ void DrawBoingBall( void )
        dt2 = dt_total > MAX_DELTA_T ? MAX_DELTA_T : dt_total;
        dt_total -= dt2;
        BounceBall( dt2 );
-       deg_rot_y = TruncateDeg( deg_rot_y + deg_rot_y_inc*(dt2*ANIMATION_SPEED) );
+       deg_rot_y = TruncateDeg( deg_rot_y + deg_rot_y_inc*((float)dt2*ANIMATION_SPEED) );
    }
 
    /* Set ball position */
@@ -335,28 +336,28 @@ void BounceBall( double dt )
    /* Bounce on walls */
    if ( ball_x >  (BOUNCE_WIDTH/2 + WALL_R_OFFSET ) )
    {
-      ball_x_inc = -0.5 - 0.75 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_x_inc = -0.5f - 0.75f * (GLfloat)rand() / (GLfloat)RAND_MAX;
       deg_rot_y_inc = -deg_rot_y_inc;
    }
    if ( ball_x < -(BOUNCE_HEIGHT/2 + WALL_L_OFFSET) )
    {
-      ball_x_inc =  0.5 + 0.75 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_x_inc =  0.5f + 0.75f * (GLfloat)rand() / (GLfloat)RAND_MAX;
       deg_rot_y_inc = -deg_rot_y_inc;
    }
 
    /* Bounce on floor / roof */
    if ( ball_y >  BOUNCE_HEIGHT/2      )
    {
-      ball_y_inc = -0.75 - 1.0 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_y_inc = -0.75f - 1.f * (GLfloat)rand() / (GLfloat)RAND_MAX;
    }
    if ( ball_y < -BOUNCE_HEIGHT/2*0.85 )
    {
-      ball_y_inc =  0.75 + 1.0 * (GLfloat)rand() / (GLfloat)RAND_MAX;
+      ball_y_inc =  0.75f + 1.f * (GLfloat)rand() / (GLfloat)RAND_MAX;
    }
 
    /* Update ball position */
-   ball_x += ball_x_inc * (dt*ANIMATION_SPEED);
-   ball_y += ball_y_inc * (dt*ANIMATION_SPEED);
+   ball_x += ball_x_inc * ((float)dt*ANIMATION_SPEED);
+   ball_y += ball_y_inc * ((float)dt*ANIMATION_SPEED);
 
   /*
    * Simulate the effects of gravity on Y movement.
@@ -367,7 +368,7 @@ void BounceBall( double dt )
    if ( deg > 80 ) deg = 80;
    if ( deg < 10 ) deg = 10;
 
-   ball_y_inc = sign * 4.0 * sin_deg( deg );
+   ball_y_inc = sign * 4.f * (float) sin_deg( deg );
 }
 
 
@@ -400,15 +401,15 @@ void DrawBoingBallBand( GLfloat long_lo,
       * Color this polygon with red or white.
       */
       if ( colorToggle )
-         glColor3f( 0.8, 0.1, 0.1 );
+         glColor3f( 0.8f, 0.1f, 0.1f );
       else
-         glColor3f( 0.95, 0.95, 0.95 );
+         glColor3f( 0.95f, 0.95f, 0.95f );
 #if 0
       if ( lat_deg >= 180 )
          if ( colorToggle )
-            glColor3f( 0.1, 0.8, 0.1 );
+            glColor3f( 0.1f, 0.8f, 0.1f );
          else
-            glColor3f( 0.5, 0.5, 0.95 );
+            glColor3f( 0.5f, 0.5f, 0.95f );
 #endif
       colorToggle = ! colorToggle;
 
@@ -416,28 +417,28 @@ void DrawBoingBallBand( GLfloat long_lo,
       * Change color if drawing shadow.
       */
       if ( drawBallHow == DRAW_BALL_SHADOW )
-         glColor3f( 0.35, 0.35, 0.35 );
+         glColor3f( 0.35f, 0.35f, 0.35f );
 
      /*
       * Assign each Y.
       */
-      vert_ne.y = vert_nw.y = cos_deg(long_hi) * RADIUS;
-      vert_sw.y = vert_se.y = cos_deg(long_lo) * RADIUS;
+      vert_ne.y = vert_nw.y = (float) cos_deg(long_hi) * RADIUS;
+      vert_sw.y = vert_se.y = (float) cos_deg(long_lo) * RADIUS;
 
      /*
       * Assign each X,Z with sin,cos values scaled by latitude radius indexed by longitude.
       * Eg, long=0 and long=180 are at the poles, so zero scale is sin(longitude),
       * while long=90 (sin(90)=1) is at equator.
       */
-      vert_ne.x = cos_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_se.x = cos_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo                  ));
-      vert_nw.x = cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_sw.x = cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo                  ));
+      vert_ne.x = (float) cos_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_se.x = (float) cos_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo                  ));
+      vert_nw.x = (float) cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_sw.x = (float) cos_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo                  ));
 
-      vert_ne.z = sin_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_se.z = sin_deg( lat_deg                 ) * (RADIUS * sin_deg( long_lo                  ));
-      vert_nw.z = sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo + STEP_LONGITUDE ));
-      vert_sw.z = sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * sin_deg( long_lo                  ));
+      vert_ne.z = (float) sin_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_se.z = (float) sin_deg( lat_deg                 ) * (RADIUS * (float) sin_deg( long_lo                  ));
+      vert_nw.z = (float) sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo + STEP_LONGITUDE ));
+      vert_sw.z = (float) sin_deg( lat_deg + STEP_LATITUDE ) * (RADIUS * (float) sin_deg( long_lo                  ));
 
      /*
       * Draw the facet.
@@ -516,7 +517,7 @@ void DrawGrid( void )
 
       glBegin( GL_POLYGON );
 
-      glColor3f( 0.6, 0.1, 0.6 );               /* purple */
+      glColor3f( 0.6f, 0.1f, 0.6f );               /* purple */
 
       glVertex3f( xr, yt, z_offset );       /* NE */
       glVertex3f( xl, yt, z_offset );       /* NW */
@@ -542,7 +543,7 @@ void DrawGrid( void )
 
       glBegin( GL_POLYGON );
 
-      glColor3f( 0.6, 0.1, 0.6 );               /* purple */
+      glColor3f( 0.6f, 0.1f, 0.6f );               /* purple */
 
       glVertex3f( xr, yt, z_offset );       /* NE */
       glVertex3f( xl, yt, z_offset );       /* NW */
@@ -567,12 +568,19 @@ int main( void )
    int running;
 
    /* Init GLFW */
-   glfwInit();
+   if( !glfwInit() )
+   {
+      fprintf( stderr, "Failed to initialize GLFW\n" );
+      exit( EXIT_FAILURE );
+   }
+
    if( !glfwOpenWindow( 400,400, 0,0,0,0, 16,0, GLFW_WINDOW ) )
    {
+       fprintf( stderr, "Failed to open GLFW window\n" );
        glfwTerminate();
-       return 0;
+       exit( EXIT_FAILURE );
    }
+
    glfwSetWindowTitle( "Boing (classic Amiga demo)" );
    glfwSetWindowSizeCallback( reshape );
    glfwEnable( GLFW_STICKY_KEYS );
@@ -602,5 +610,6 @@ int main( void )
    while( running );
 
    glfwTerminate();
-   return 0;
+   exit( EXIT_SUCCESS );
 }
+

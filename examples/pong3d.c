@@ -20,23 +20,23 @@
 #define HEIGHT       480
 
 // Player size (units)
-#define PLAYER_XSIZE  0.05
-#define PLAYER_YSIZE  0.15
+#define PLAYER_XSIZE  0.05f
+#define PLAYER_YSIZE  0.15f
 
 // Ball size (units)
-#define BALL_SIZE  0.02
+#define BALL_SIZE  0.02f
 
 // Maximum player movement speed (units / second)
-#define MAX_SPEED    1.5
+#define MAX_SPEED    1.5f
 
 // Player movement acceleration (units / seconds^2)
-#define ACCELERATION  4.0
+#define ACCELERATION  4.0f
 
 // Player movement deceleration (units / seconds^2)
-#define DECELERATION  2.0
+#define DECELERATION  2.0f
 
 // Ball movement speed (units / second)
-#define BALL_SPEED    0.4
+#define BALL_SPEED    0.4f
 
 // Menu options
 #define MENU_NONE    0
@@ -137,7 +137,7 @@ const GLfloat floor_ambient[4]   = {0.3f,0.3f,0.3f,1.0f};
 // LoadTextures() - Load textures from disk and upload to OpenGL card
 //========================================================================
 
-void LoadTextures( void )
+GLboolean LoadTextures( void )
 {
     int  i;
 
@@ -157,8 +157,14 @@ void LoadTextures( void )
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
         // Upload texture from file to texture memory
-        glfwLoadTexture2D( tex_name[ i ], 0 );
+        if( !glfwLoadTexture2D( tex_name[ i ], 0 ) )
+        {
+            fprintf( stderr, "Failed to load texture %s\n", tex_name[ i ] );
+            return GL_FALSE;
+        }
     }
+
+    return GL_TRUE;
 }
 
 
@@ -596,19 +602,19 @@ void UpdateDisplay( void )
     // Draw Player 1
     glMaterialfv( GL_FRONT, GL_DIFFUSE, player1_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, player1_ambient );
-    DrawBox( -1.0,              (GLfloat)player1.ypos-PLAYER_YSIZE, 0.0,
-             -1.0+PLAYER_XSIZE, (GLfloat)player1.ypos+PLAYER_YSIZE, 0.1 );
+    DrawBox( -1.f,              (GLfloat)player1.ypos-PLAYER_YSIZE, 0.f,
+             -1.f+PLAYER_XSIZE, (GLfloat)player1.ypos+PLAYER_YSIZE, 0.1f );
 
     // Draw Player 2
     glMaterialfv( GL_FRONT, GL_DIFFUSE, player2_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, player2_ambient );
-    DrawBox( 1.0-PLAYER_XSIZE, (GLfloat)player2.ypos-PLAYER_YSIZE, 0.0,
-             1.0,              (GLfloat)player2.ypos+PLAYER_YSIZE, 0.1 );
+    DrawBox( 1.f-PLAYER_XSIZE, (GLfloat)player2.ypos-PLAYER_YSIZE, 0.f,
+             1.f,              (GLfloat)player2.ypos+PLAYER_YSIZE, 0.1f );
 
     // Draw Ball
     glMaterialfv( GL_FRONT, GL_DIFFUSE, ball_diffuse );
     glMaterialfv( GL_FRONT, GL_AMBIENT, ball_ambient );
-    DrawBox( (GLfloat)ball.xpos-BALL_SIZE, (GLfloat)ball.ypos-BALL_SIZE, 0.0,
+    DrawBox( (GLfloat)ball.xpos-BALL_SIZE, (GLfloat)ball.ypos-BALL_SIZE, 0.f,
              (GLfloat)ball.xpos+BALL_SIZE, (GLfloat)ball.ypos+BALL_SIZE, BALL_SIZE*2 );
 
     // Top game field border
@@ -799,18 +805,26 @@ int main( void )
     // Initialize GLFW
     if( !glfwInit() )
     {
-        exit( 0 );
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        exit( EXIT_FAILURE );
     }
 
     // Open OpenGL window
     if( !glfwOpenWindow( WIDTH, HEIGHT, 0,0,0,0, 16,0, GLFW_FULLSCREEN ) )
     {
+        fprintf( stderr, "Failed to open GLFW window\n" );
         glfwTerminate();
-        exit( 0 );
+        exit( EXIT_FAILURE );
     }
 
+    glfwSwapInterval( 1 );
+
     // Load all textures
-    LoadTextures();
+    if( !LoadTextures() )
+    {
+        glfwTerminate();
+        exit( EXIT_FAILURE );
+    }
 
     // Main loop
     do
@@ -835,5 +849,6 @@ int main( void )
     // Terminate GLFW
     glfwTerminate();
 
-    return 0;
+    exit( EXIT_SUCCESS );
 }
+

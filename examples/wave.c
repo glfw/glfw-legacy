@@ -84,7 +84,7 @@ void initVertices( void )
       }
 
       vertex[p].g = (GLfloat)y/(GLfloat)GRIDH;
-      vertex[p].b = 1.0-((GLfloat)x/(GLfloat)GRIDW+(GLfloat)y/(GLfloat)GRIDH)/2.0;
+      vertex[p].b = 1.f-((GLfloat)x/(GLfloat)GRIDW+(GLfloat)y/(GLfloat)GRIDH)/2.f;
     }
 
   for(y=0;y<QUADH;y++)
@@ -343,6 +343,8 @@ int main(int argc, char* argv[])
 
   /* Set title */
   glfwSetWindowTitle( "Wave Simulation" );
+
+  glfwSwapInterval( 1 );
 
   /* Keyboard handler */
   glfwSetKeyCallback( handle_key_down );
