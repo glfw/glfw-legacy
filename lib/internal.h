@@ -147,17 +147,6 @@ GLFWGLOBAL int _glfwInitialized;
 #endif
 
 
-//------------------------------------------------------------------------
-// Abstract data stream (for image I/O)
-//------------------------------------------------------------------------
-typedef struct {
-    FILE*   file;
-    void*   data;
-    long    position;
-    long    size;
-} _GLFWstream;
-
-
 //========================================================================
 // Prototypes for platform specific implementation functions
 //========================================================================
