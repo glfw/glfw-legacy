@@ -133,15 +133,19 @@ typedef struct tagKBDLLHOOKSTRUCT {
 #define XBUTTON2 2
 #endif
 
+#ifndef WGL_EXT_swap_control
+
+/* Entry points */
+typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
+
+#endif /*WGL_EXT_swap_control*/
+
+
 #ifndef WGL_ARB_pixel_format
 
-// wglSwapIntervalEXT typedef (Win32 buffer-swap interval control)
-typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
-// wglGetPixelFormatAttribivARB typedef
+/* Entry points */
 typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, const int *, int *);
-// wglGetExtensionStringEXT typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
-// wglGetExtensionStringARB typedef
 typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
 
 /* Constants for wglGetPixelFormatAttribivARB */
@@ -182,7 +186,7 @@ typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
 
 #ifndef WGL_ARB_create_context
 
-/* wglCreateContextAttribsARB */
+/* Entry points */
 typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC, HGLRC, const int *);
 
 /* Tokens for wglCreateContextAttribsARB attributes */
