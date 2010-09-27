@@ -52,6 +52,17 @@
 //************************************************************************
 
 //========================================================================
+// Error handler for BadMatch errors when requesting context with
+// unavailable OpenGL versions using the GLX_ARB_create_context extension
+//========================================================================
+
+static int errorHandler( Display *display, XErrorEvent *event )
+{
+    return 0;
+}
+
+
+//========================================================================
 // Checks whether the event is a MapNotify for the specified window
 //========================================================================
 
@@ -629,11 +640,20 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
         setGLXattrib( attribs, index, None, None );
 
+        // This is the only place we set an Xlib error handler, and we only do
+        // it because glXCreateContextAttribsARB generates a BadMatch error if
+        // the requested OpenGL version is unavailable (instead of a civilized
+        // response like returning NULL)
+        XSetErrorHandler( errorHandler );
+
         _glfwWin.context = _glfwWin.CreateContextAttribsARB( _glfwLibrary.display,
                                                              *fbconfig,
                                                              NULL,
                                                              True,
                                                              attribs );
+
+        // We are done, so unset the error handler again (see above)
+        XSetErrorHandler( NULL );
     }
     else
     {
