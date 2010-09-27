@@ -485,14 +485,16 @@ none
 
 \begin{refdescription}
 This function sets additional properties for a window that is to be opened.
-For a hint to be registered, the function must be called before calling
-\textbf{glfwOpenWindow}. When the \textbf{glfwOpenWindow} function is
-called, any hints that were registered with the \textbf{glfwOpenWindowHint}
-function are used for setting the corresponding window properties, and
-then all hints are reset to their default values.
+For a hint to take effect, it must be set \emph{before} calling
+\textbf{glfwOpenWindow}.  When \textbf{glfwOpenWindow} is called, regardless of
+whether it succeeds, all window hints are reset to their default values.
 \end{refdescription}
 
 \begin{refnotes}
+All window hints are reset to their default values by each successful call to
+\textbf{glfwInit} and by each call to \textbf{glfwOpenWindow}, whether
+successful or not.
+
 In order to determine the actual properties of an opened window, use
 \textbf{glfwGetWindowParam} (after the window has been opened).
 
