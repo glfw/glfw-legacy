@@ -7,7 +7,7 @@
 
 <body>
 
-<h1>GLFW 2.7 source distribution</h1>
+<h1>GLFW 2.7.1 source distribution</h1>
 
 <ol>
  <li><a href="#intro">Introduction</a></li>
@@ -23,11 +23,11 @@
 <a name="intro">
 <h2>1. Introduction</h2>
 
-<p>Welcome to version 2.7 of the GLFW OpenGL framework, codenamed "Godot". GLFW
-is a free, open source, portable framework for OpenGL application development.
-In short, it is a library that provides a powerful API for handling operating
-system specific tasks, such as opening an OpenGL window, reading keyboard,
-mouse, joystick and time input, creating threads, and more.</p>
+<p>Welcome to version 2.7.1 of the GLFW OpenGL framework.  GLFW is a free, open
+source, portable framework for OpenGL application development.  In short, it is
+a library that provides a powerful API for handling operating system specific
+tasks, such as opening an OpenGL window, reading keyboard, mouse, joystick and
+time input, creating threads, and more.</p>
 
 <p>This is expected to be the last major release of the 2.x series, with the
 expectation being that most development will take place in the 3.0 branch.</p>
@@ -546,6 +546,12 @@ version of GLFW.</p>
 
 <a name="changelog">
 <h2>5. Version history</h2>
+
+<h3>v2.7.1</h3>
+<ul>
+  <li>Bugfix: The default OpenGL version in the <code>version</code> test was set to 1.1</li>
+  <li>[Win32] Bugfix: The <code>WGLSWAPINTERVALEXT_T</code> typedef was declared under <code>WGL_ARB_pixel_format</code></li>
+</ul>
 
 <h3>v2.7</h3>
 <ul>
