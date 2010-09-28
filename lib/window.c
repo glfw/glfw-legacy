@@ -579,6 +579,42 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         }
     }
 
+    // Read back the forward-compatible context flag, if applicable
+    if( _glfwWin.glMajor >= 3 )
+    {
+        GLint flags;
+        glGetIntegerv( GL_CONTEXT_FLAGS, &flags );
+
+        if( flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT )
+        {
+            _glfwWin.glForward = GL_TRUE;
+        }
+        else
+        {
+            _glfwWin.glForward = GL_FALSE;
+        }
+    }
+
+    // Read back the context profile, if applicable
+    if( _glfwWin.glMajor > 3 || ( _glfwWin.glMajor == 3 && _glfwWin.glMinor >= 2 ) )
+    {
+        GLint mask;
+        glGetIntegerv( GL_CONTEXT_PROFILE_MASK, &mask );
+
+        if( mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT )
+        {
+            _glfwWin.glProfile = GLFW_OPENGL_COMPAT_PROFILE;
+        }
+        else if( mask & GL_CONTEXT_CORE_PROFILE_BIT )
+        {
+            _glfwWin.glProfile = GLFW_OPENGL_CORE_PROFILE;
+        }
+        else
+        {
+            _glfwWin.glProfile = 0;
+        }
+    }
+
     // If full-screen mode was requested, disable mouse cursor
     if( mode == GLFW_FULLSCREEN )
     {
