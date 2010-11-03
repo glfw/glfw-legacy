@@ -589,6 +589,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     }
 
     _glfwWin.glProfile = 0;
+    _glfwWin.glForward = wndconfig.glForward;
 
     // Read back the context profile, if applicable
     if( _glfwWin.glMajor > 3 || ( _glfwWin.glMajor == 3 && _glfwWin.glMinor >= 2 ) )
