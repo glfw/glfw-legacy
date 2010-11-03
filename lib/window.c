@@ -33,6 +33,15 @@
 #include <limits.h>
 
 
+#ifndef GL_VERSION_3_2
+
+#define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
+#define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
+#define GL_CONTEXT_PROFILE_MASK           0x9126
+
+#endif /*GL_VERSION_3_2*/
+
+
 
 //************************************************************************
 //****                  GLFW internal functions                       ****
@@ -579,21 +588,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         }
     }
 
-    // Read back the forward-compatible context flag, if applicable
-    if( _glfwWin.glMajor >= 3 )
-    {
-        GLint flags;
-        glGetIntegerv( GL_CONTEXT_FLAGS, &flags );
-
-        if( flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT )
-        {
-            _glfwWin.glForward = GL_TRUE;
-        }
-        else
-        {
-            _glfwWin.glForward = GL_FALSE;
-        }
-    }
+    _glfwWin.glProfile = 0;
 
     // Read back the context profile, if applicable
     if( _glfwWin.glMajor > 3 || ( _glfwWin.glMajor == 3 && _glfwWin.glMinor >= 2 ) )
@@ -608,10 +603,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         else if( mask & GL_CONTEXT_CORE_PROFILE_BIT )
         {
             _glfwWin.glProfile = GLFW_OPENGL_CORE_PROFILE;
-        }
-        else
-        {
-            _glfwWin.glProfile = 0;
         }
     }
 
