@@ -202,6 +202,13 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
                 continue;
             }
 
+            // Only consider "hardware-accelerated" pixel formats
+            if( getPixelFormatAttrib( i, WGL_ACCELERATION_ARB ) ==
+                WGL_NO_ACCELERATION_ARB )
+            {
+                continue;
+            }
+
             result[*found].redBits = getPixelFormatAttrib( i, WGL_RED_BITS_ARB );
             result[*found].greenBits = getPixelFormatAttrib( i, WGL_GREEN_BITS_ARB );
             result[*found].blueBits = getPixelFormatAttrib( i, WGL_BLUE_BITS_ARB );
