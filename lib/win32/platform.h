@@ -136,28 +136,28 @@ typedef struct tagKBDLLHOOKSTRUCT {
 #ifndef WGL_EXT_swap_control
 
 /* Entry points */
-typedef int (APIENTRY * PFNWGLSWAPINTERVALEXT) (int);
+typedef int (APIENTRY * PFNWGLSWAPINTERVALEXTPROC) (int);
 
 #endif /*WGL_EXT_swap_control*/
 
 #ifndef WGL_ARB_extensions_string
 
 /* Entry points */
-typedef const char *(APIENTRY * PFNWGLGETEXTENSIONSSTRINGARB)( HDC );
+typedef const char *(APIENTRY * PFNWGLGETEXTENSIONSSTRINGARBPROC)( HDC );
 
 #endif /*WGL_ARB_extensions_string*/
 
 #ifndef WGL_EXT_extension_string
 
 /* Entry points */
-typedef const char *(APIENTRY * PFNWGLGETEXTENSIONSSTRINGEXT)( void );
+typedef const char *(APIENTRY * PFNWGLGETEXTENSIONSSTRINGEXTPROC)( void );
 
 #endif /*WGL_EXT_extension_string*/
 
 #ifndef WGL_ARB_pixel_format
 
 /* Entry points */
-typedef BOOL (WINAPI * PFNWGLGETPIXELFORMATATTRIBIVARB) (HDC, int, int, UINT, const int *, int *);
+typedef BOOL (WINAPI * PFNWGLGETPIXELFORMATATTRIBIVARBPROC) (HDC, int, int, UINT, const int *, int *);
 
 /* Constants for wglGetPixelFormatAttribivARB */
 #define WGL_NUMBER_PIXEL_FORMATS_ARB    0x2000
@@ -357,10 +357,10 @@ struct _GLFWwin_struct {
     DWORD     dwExStyle;       // --"--
 
     // Platform specific extensions (context specific)
-    PFNWGLSWAPINTERVALEXT           SwapIntervalEXT;
-    PFNWGLGETPIXELFORMATATTRIBIVARB GetPixelFormatAttribivARB;
-    PFNWGLGETEXTENSIONSSTRINGEXT    GetExtensionsStringEXT;
-    PFNWGLGETEXTENSIONSSTRINGARB    GetExtensionsStringARB;
+    PFNWGLSWAPINTERVALEXTPROC      SwapIntervalEXT;
+    PFNWGLGETPIXELFORMATATTRIBIVARBPROC GetPixelFormatAttribivARB;
+    PFNWGLGETEXTENSIONSSTRINGEXTPROC GetExtensionsStringEXT;
+    PFNWGLGETEXTENSIONSSTRINGARBPROC GetExtensionsStringARB;
     PFNWGLCREATECONTEXTATTRIBSARBPROC CreateContextAttribsARB;
     GLboolean                      has_WGL_EXT_swap_control;
     GLboolean                      has_WGL_ARB_multisample;
