@@ -140,13 +140,24 @@ typedef int (APIENTRY * WGLSWAPINTERVALEXT_T) (int);
 
 #endif /*WGL_EXT_swap_control*/
 
+#ifndef WGL_ARB_extensions_string
+
+/* Entry points */
+typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
+
+#endif /*WGL_ARB_extensions_string*/
+
+#ifndef WGL_EXT_extension_string
+
+/* Entry points */
+typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
+
+#endif /*WGL_EXT_extension_string*/
 
 #ifndef WGL_ARB_pixel_format
 
 /* Entry points */
 typedef BOOL (WINAPI * WGLGETPIXELFORMATATTRIBIVARB_T) (HDC, int, int, UINT, const int *, int *);
-typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGEXT_T)( void );
-typedef const char *(APIENTRY * WGLGETEXTENSIONSSTRINGARB_T)( HDC );
 
 /* Constants for wglGetPixelFormatAttribivARB */
 #define WGL_NUMBER_PIXEL_FORMATS_ARB    0x2000
