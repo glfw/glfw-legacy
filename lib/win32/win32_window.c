@@ -996,11 +996,11 @@ static void initWGLExtensions( void )
     _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
     _glfwWin.has_WGL_ARB_create_context = GL_FALSE;
 
-    _glfwWin.GetExtensionsStringEXT = (WGLGETEXTENSIONSSTRINGEXT_T)
+    _glfwWin.GetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXT)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
     if( !_glfwWin.GetExtensionsStringEXT )
     {
-        _glfwWin.GetExtensionsStringARB = (WGLGETEXTENSIONSSTRINGARB_T)
+        _glfwWin.GetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARB)
             wglGetProcAddress( "wglGetExtensionsStringARB" );
         if( !_glfwWin.GetExtensionsStringARB )
         {
@@ -1023,14 +1023,14 @@ static void initWGLExtensions( void )
     if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
     {
         _glfwWin.has_WGL_EXT_swap_control = GL_TRUE;
-        _glfwWin.SwapIntervalEXT = (WGLSWAPINTERVALEXT_T)
+        _glfwWin.SwapIntervalEXT = (PFNWGLSWAPINTERVALEXT)
             wglGetProcAddress( "wglSwapIntervalEXT" );
     }
 
     if( _glfwPlatformExtensionSupported( "WGL_ARB_pixel_format" ) )
     {
         _glfwWin.has_WGL_ARB_pixel_format = GL_TRUE;
-        _glfwWin.GetPixelFormatAttribivARB = (WGLGETPIXELFORMATATTRIBIVARB_T)
+        _glfwWin.GetPixelFormatAttribivARB = (PFNWGLGETPIXELFORMATATTRIBIVARB)
             wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
     }
 }
