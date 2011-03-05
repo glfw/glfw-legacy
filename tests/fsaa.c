@@ -61,6 +61,14 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    if (!glfwExtensionSupported("GL_ARB_multisample"))
+    {
+        glfwTerminate();
+
+        fprintf(stderr, "Context reports GL_ARB_multisample is not supported\n");
+        exit(EXIT_FAILURE);
+    }
+
     glfwSetWindowTitle("Aliasing Detector");
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSwapInterval(1);
