@@ -1,0 +1,8 @@
+This branch is no longer maintained.
+
+GLSDK is dead.
+
+GLFW 3.0 is usable.
+
+Go forth bravely.
+
