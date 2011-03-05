@@ -331,7 +331,8 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 {
     NSUInteger length;
     NSString* characters;
-    int i, code = convertMacKeyCode( [event keyCode] );
+    unsigned int i;
+    int code = convertMacKeyCode( [event keyCode] );
 
     if( code != -1 )
     {
@@ -379,7 +380,8 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 {
     NSUInteger length;
     NSString* characters;
-    int i, code = convertMacKeyCode( [event keyCode] );
+    unsigned int i;
+    int code = convertMacKeyCode( [event keyCode] );
 
     if( code != -1 )
     {
