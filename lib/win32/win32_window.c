@@ -299,7 +299,7 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
-    int flags, i = 0, attribs[9];
+    int flags, i = 0, attribs[40];
 
     if( !_glfw_DescribePixelFormat( dc, pixelFormat, sizeof(pfd), &pfd ) )
     {
