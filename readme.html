@@ -555,6 +555,7 @@ version of GLFW.</p>
   <li>Bugfix: The FSAA test did not check for the availability of <code>GL_ARB_multisample</code></li>
   <li>[Cocoa] Bugfix: The loop condition for saving video modes used the wrong index variable</li>
   <li>[X11] Bugfix: Calling <code>glXCreateContextAttribsARB</code> with an unavailable OpenGL version caused the application to terminate with a <code>BadMatch</code> Xlib error</li>
+  <li>[X11] Bugfix: <code>GLFW_WINDOW_NO_RESIZE</code> was honored in fullscreen mode</li>
   <li>[Win32] Bugfix: The <code>WGLSWAPINTERVALEXT_T</code>, <code>WGLGETEXTENSIONSSTRINGARB_T</code> and <code>WGLGETEXTENSIONSSTRINGEXT_T</code> typedefs were declared under <code>WGL_ARB_pixel_format</code></li>
   <li>[Win32] Bugfix: The array for WGL context attributes was too small and could overflow</li>
   <li>[Win32] Bugfix: Context creation using profiles did not check for the availability of <code>WGL_ARB_create_context_profile</code></li> 

@@ -905,7 +905,7 @@ static GLboolean createWindow( int width, int height,
 
         hints->flags = 0;
 
-        if( wndconfig->windowNoResize )
+        if( wndconfig->windowNoResize && !_glfwWin.fullscreen )
         {
             hints->flags |= (PMinSize | PMaxSize);
             hints->min_width  = hints->max_width  = _glfwWin.width;
