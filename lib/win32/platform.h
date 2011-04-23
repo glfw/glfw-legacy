@@ -366,6 +366,7 @@ struct _GLFWwin_struct {
     GLboolean                      has_WGL_ARB_multisample;
     GLboolean                      has_WGL_ARB_pixel_format;
     GLboolean                      has_WGL_ARB_create_context;
+    GLboolean                      has_WGL_ARB_create_context_profile;
 
     // Various platform specific internal variables
     int       oldMouseLock;    // Old mouse-lock flag (used for remembering

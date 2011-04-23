@@ -345,6 +345,11 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
 
         if( wndconfig->glProfile )
         {
+            if( !_glfwWin.has_WGL_ARB_create_context_profile )
+            {
+                return NULL;
+            }
+
             if( wndconfig->glProfile == GLFW_OPENGL_CORE_PROFILE )
             {
                 flags = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
@@ -995,6 +1000,7 @@ static void initWGLExtensions( void )
     _glfwWin.has_WGL_ARB_pixel_format = GL_FALSE;
     _glfwWin.has_WGL_ARB_multisample = GL_FALSE;
     _glfwWin.has_WGL_ARB_create_context = GL_FALSE;
+    _glfwWin.has_WGL_ARB_create_context_profile = GL_FALSE;
 
     _glfwWin.GetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)
         wglGetProcAddress( "wglGetExtensionsStringEXT" );
@@ -1018,6 +1024,14 @@ static void initWGLExtensions( void )
         _glfwWin.has_WGL_ARB_create_context = GL_TRUE;
         _glfwWin.CreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)
             wglGetProcAddress( "wglCreateContextAttribsARB" );
+    }
+
+    if( _glfwWin.has_WGL_ARB_create_context )
+    {
+        if( _glfwPlatformExtensionSupported( "WGL_ARB_create_context_profile" ) )
+        {
+            _glfwWin.has_WGL_ARB_create_context_profile = GL_TRUE;
+        }
     }
 
     if( _glfwPlatformExtensionSupported( "WGL_EXT_swap_control" ) )
