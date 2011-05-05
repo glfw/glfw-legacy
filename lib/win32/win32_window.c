@@ -1412,8 +1412,6 @@ int _glfwPlatformOpenWindow( int width, int height,
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
-
-        printf("Opol kapabarma\n");
     }
 
     if( _glfwWin.fullscreen )
