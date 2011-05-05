@@ -296,19 +296,19 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 // Creates an OpenGL context on the specified device context
 //========================================================================
 
-static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFormat )
+static GLboolean createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFormat )
 {
     PIXELFORMATDESCRIPTOR pfd;
     int flags, i = 0, attribs[40];
 
     if( !_glfw_DescribePixelFormat( dc, pixelFormat, sizeof(pfd), &pfd ) )
     {
-        return NULL;
+        return GL_FALSE;
     }
 
     if( !_glfw_SetPixelFormat( dc, pixelFormat, &pfd ) )
     {
-        return NULL;
+        return GL_FALSE;
     }
 
     if( _glfwWin.has_WGL_ARB_create_context )
@@ -347,7 +347,7 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
         {
             if( !_glfwWin.has_WGL_ARB_create_context_profile )
             {
-                return NULL;
+                return GL_FALSE;
             }
 
             if( wndconfig->glProfile == GLFW_OPENGL_CORE_PROFILE )
@@ -365,10 +365,22 @@ static HGLRC createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pixelFo
 
         attribs[i++] = 0;
 
-        return _glfwWin.CreateContextAttribsARB( dc, NULL, attribs );
+        _glfwWin.context = _glfwWin.CreateContextAttribsARB( dc, NULL, attribs );
+        if( !_glfwWin.context )
+        {
+            return GL_FALSE;
+        }
+    }
+    else
+    {
+        _glfwWin.context = wglCreateContext( dc );
+        if( !_glfwWin.context )
+        {
+            return GL_FALSE;
+        }
     }
 
-    return wglCreateContext( dc );
+    return GL_TRUE;
 }
 
 
@@ -1216,8 +1228,7 @@ static int createWindow( const _GLFWwndconfig *wndconfig,
         return GL_FALSE;
     }
 
-    _glfwWin.context = createContext( _glfwWin.DC, wndconfig, pixelFormat );
-    if( !_glfwWin.context )
+    if( !createContext( _glfwWin.DC, wndconfig, pixelFormat ) )
     {
         fprintf( stderr, "Unable to create OpenGL context\n" );
         return GL_FALSE;
@@ -1321,17 +1332,7 @@ int _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    if( wndconfig->glMajor > 2 )
-    {
-        if( !_glfwWin.has_WGL_ARB_create_context )
-        {
-            fprintf( stderr, "OpenGL 3.0+ is not supported\n" );
-            _glfwPlatformCloseWindow();
-            return GL_FALSE;
-        }
-
-        recreateContext = GL_TRUE;
-    }
+    _glfwRefreshContextParams();
 
     if( fbconfig->samples > 0 )
     {
@@ -1341,6 +1342,47 @@ int _glfwPlatformOpenWindow( int width, int height,
         if( _glfwWin.has_WGL_ARB_multisample && _glfwWin.has_WGL_ARB_pixel_format )
         {
             // We appear to have both the FSAA extension and the means to ask for it
+            recreateContext = GL_TRUE;
+        }
+    }
+
+    if( wndconfig->glMajor > 2 )
+    {
+        if ( wndconfig->glMajor != _glfwWin.glMajor ||
+             wndconfig->glMinor != _glfwWin.glMinor )
+        {
+            // We want a different OpenGL version, but can we get it?
+            // Otherwise, if we got a version greater than required, that's fine,
+            // whereas if we got a version lesser than required, it will be dealt
+            // with in glfwOpenWindow
+
+            if( _glfwWin.has_WGL_ARB_create_context )
+            {
+                recreateContext = GL_TRUE;
+            }
+        }
+
+        if( wndconfig->glForward )
+        {
+            if( !_glfwWin.has_WGL_ARB_create_context )
+            {
+                // Forward-compatibility is a hard constraint
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
+
+            recreateContext = GL_TRUE;
+        }
+
+        if( wndconfig->glProfile )
+        {
+            if( !_glfwWin.has_WGL_ARB_create_context_profile )
+            {
+                // Context profile is a hard constraint
+                _glfwPlatformCloseWindow();
+                return GL_FALSE;
+            }
+
             recreateContext = GL_TRUE;
         }
     }
@@ -1370,6 +1412,8 @@ int _glfwPlatformOpenWindow( int width, int height,
             _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
+
+        printf("Opol kapabarma\n");
     }
 
     if( _glfwWin.fullscreen )

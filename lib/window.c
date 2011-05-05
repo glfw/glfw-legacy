@@ -553,12 +553,9 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     // Flag that window is now opened
     _glfwWin.opened = GL_TRUE;
 
-    // Get window parameters (such as color buffer bits etc)
+    // Read back window and context parameters
     _glfwPlatformRefreshWindowParams();
-
-    // Get OpenGL version
-    _glfwParseGLVersion( &_glfwWin.glMajor, &_glfwWin.glMinor,
-                         &_glfwWin.glRevision );
+    _glfwRefreshContextParams();
 
     if( _glfwWin.glMajor < wndconfig.glMajor ||
         ( _glfwWin.glMajor == wndconfig.glMajor &&
@@ -585,25 +582,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         {
             _glfwPlatformCloseWindow();
             return GL_FALSE;
-        }
-    }
-
-    _glfwWin.glProfile = 0;
-    _glfwWin.glForward = wndconfig.glForward;
-
-    // Read back the context profile, if applicable
-    if( _glfwWin.glMajor > 3 || ( _glfwWin.glMajor == 3 && _glfwWin.glMinor >= 2 ) )
-    {
-        GLint mask;
-        glGetIntegerv( GL_CONTEXT_PROFILE_MASK, &mask );
-
-        if( mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT )
-        {
-            _glfwWin.glProfile = GLFW_OPENGL_COMPAT_PROFILE;
-        }
-        else if( mask & GL_CONTEXT_CORE_PROFILE_BIT )
-        {
-            _glfwWin.glProfile = GLFW_OPENGL_CORE_PROFILE;
         }
     }
 

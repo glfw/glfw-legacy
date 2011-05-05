@@ -36,7 +36,15 @@
 //************************************************************************
 
 #ifndef GL_VERSION_3_0
-#define GL_NUM_EXTENSIONS 0x821D
+#define GL_NUM_EXTENSIONS                 0x821D
+#define GL_CONTEXT_FLAGS                  0x821E
+#define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT 0x0001
+#endif
+
+#ifndef GL_VERSION_3_2
+#define GL_CONTEXT_CORE_PROFILE_BIT       0x00000001
+#define GL_CONTEXT_COMPATIBILITY_PROFILE_BIT 0x00000002
+#define GL_CONTEXT_PROFILE_MASK           0x9126
 #endif
 
 //========================================================================
@@ -121,6 +129,47 @@ int _glfwStringInExtensionString( const char *string,
     return GL_TRUE;
 }
 
+
+//========================================================================
+// Reads back OpenGL context properties from the current context
+//========================================================================
+
+void _glfwRefreshContextParams( void )
+{
+    _glfwParseGLVersion( &_glfwWin.glMajor, &_glfwWin.glMinor,
+                         &_glfwWin.glRevision );
+
+    _glfwWin.glProfile = 0;
+    _glfwWin.glForward = GL_FALSE;
+
+    // Read back the context profile, if applicable
+    if( _glfwWin.glMajor >= 3 )
+    {
+        GLint flags;
+        glGetIntegerv( GL_CONTEXT_FLAGS, &flags );
+
+        if( flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT )
+        {
+            _glfwWin.glForward = GL_TRUE;
+        }
+    }
+
+    if( _glfwWin.glMajor > 3 ||
+        ( _glfwWin.glMajor == 3 && _glfwWin.glMinor >= 2 ) )
+    {
+        GLint mask;
+        glGetIntegerv( GL_CONTEXT_PROFILE_MASK, &mask );
+
+        if( mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT )
+        {
+            _glfwWin.glProfile = GLFW_OPENGL_COMPAT_PROFILE;
+        }
+        else if( mask & GL_CONTEXT_CORE_PROFILE_BIT )
+        {
+            _glfwWin.glProfile = GLFW_OPENGL_CORE_PROFILE;
+        }
+    }
+}
 
 
 //************************************************************************
