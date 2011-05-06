@@ -308,19 +308,16 @@ void _glfwRestoreVideoMode( void )
         {
             XRRScreenConfiguration *sc;
 
-            if( _glfwLibrary.XRandR.available )
-            {
-                sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
+            sc = XRRGetScreenInfo( _glfwLibrary.display, _glfwWin.root );
 
-                XRRSetScreenConfig( _glfwLibrary.display,
-                                    sc,
-                                    _glfwWin.root,
-                                    _glfwWin.FS.oldSizeID,
-                                    _glfwWin.FS.oldRotation,
-                                    CurrentTime );
+            XRRSetScreenConfig( _glfwLibrary.display,
+                                sc,
+                                _glfwWin.root,
+                                _glfwWin.FS.oldSizeID,
+                                _glfwWin.FS.oldRotation,
+                                CurrentTime );
 
-                XRRFreeScreenConfigInfo( sc );
-            }
+            XRRFreeScreenConfigInfo( sc );
         }
 #elif defined( _GLFW_HAS_XF86VIDMODE )
         if( _glfwLibrary.XF86VidMode.available )
