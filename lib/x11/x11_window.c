@@ -1426,7 +1426,6 @@ int _glfwPlatformOpenWindow( int width, int height,
         fbconfigs = getFBConfigs( &fbcount );
         if( !fbconfigs )
         {
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -1434,7 +1433,6 @@ int _glfwPlatformOpenWindow( int width, int height,
         if( !result )
         {
             free( fbconfigs );
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -1444,13 +1442,11 @@ int _glfwPlatformOpenWindow( int width, int height,
 
     if( !createContext( wndconfig, (GLXFBConfigID) closest.platformID ) )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     if( !createWindow( width, height, wndconfig ) )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 

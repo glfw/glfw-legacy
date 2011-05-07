@@ -1312,7 +1312,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( !_glfwWin.classAtom )
     {
         fprintf( stderr, "Failed to register GLFW window class\n" );
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -1328,7 +1327,6 @@ int _glfwPlatformOpenWindow( int width, int height,
     if( !createWindow( wndconfig, fbconfig ) )
     {
         fprintf( stderr, "Failed to create GLFW window\n" );
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -1367,7 +1365,6 @@ int _glfwPlatformOpenWindow( int width, int height,
             if( !_glfwWin.has_WGL_ARB_create_context )
             {
                 // Forward-compatibility is a hard constraint
-                _glfwPlatformCloseWindow();
                 return GL_FALSE;
             }
 
@@ -1379,7 +1376,6 @@ int _glfwPlatformOpenWindow( int width, int height,
             if( !_glfwWin.has_WGL_ARB_create_context_profile )
             {
                 // Context profile is a hard constraint
-                _glfwPlatformCloseWindow();
                 return GL_FALSE;
             }
 
@@ -1409,7 +1405,6 @@ int _glfwPlatformOpenWindow( int width, int height,
         if( !createWindow( wndconfig, fbconfig ) )
         {
             fprintf( stderr, "Unable to re-create GLFW window\n" );
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
     }

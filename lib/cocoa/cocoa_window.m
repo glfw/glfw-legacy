@@ -431,14 +431,12 @@ int  _glfwPlatformOpenWindow( int width, int height,
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
     _glfwWin.delegate = [[GLFWWindowDelegate alloc] init];
     if( _glfwWin.delegate == nil )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -578,7 +576,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
     _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
     if( _glfwWin.pixelFormat == nil )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -586,7 +583,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                                                   shareContext:nil];
     if( _glfwWin.context == nil )
     {
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 

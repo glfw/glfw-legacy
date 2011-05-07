@@ -547,6 +547,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     // Platform specific window opening routine
     if( !_glfwPlatformOpenWindow( width, height, &wndconfig, &fbconfig ) )
     {
+        glfwCloseWindow();
         return GL_FALSE;
     }
 
@@ -561,7 +562,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         ( _glfwWin.glMajor == wndconfig.glMajor &&
           _glfwWin.glMinor < wndconfig.glMinor ) )
     {
-        _glfwPlatformCloseWindow();
+        glfwCloseWindow();
         return GL_FALSE;
     }
 
@@ -580,7 +581,7 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         _glfwWin.GetStringi = (PFNGLGETSTRINGIPROC) glfwGetProcAddress( "glGetStringi" );
         if( !_glfwWin.GetStringi )
         {
-            _glfwPlatformCloseWindow();
+            glfwCloseWindow();
             return GL_FALSE;
         }
     }
@@ -679,7 +680,6 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
     _glfwPlatformCloseWindow();
 
     memset( &_glfwWin, 0, sizeof(_glfwWin) );
-    _glfwWin.opened = GL_FALSE;
 }
 
 
