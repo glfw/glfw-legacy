@@ -554,6 +554,7 @@ version of GLFW.</p>
   <li>Bugfix: The default OpenGL version in the <code>version</code> test was set to 1.1</li>
   <li>Bugfix: The FSAA test did not check for the availability of <code>GL_ARB_multisample</code></li>
   <li>Bugfix: The window could be left in a closed state but still be flagged as open</li>
+  <li>Bugfix: <code>glfwGetWindowSize</code> did not check whether GLFW was initialized or whether the window was open</li>
   <li>[Cocoa] Bugfix: The loop condition for saving video modes used the wrong index variable</li>
   <li>[X11] Bugfix: Calling <code>glXCreateContextAttribsARB</code> with an unavailable OpenGL version caused the application to terminate with a <code>BadMatch</code> Xlib error</li>
   <li>[X11] Bugfix: <code>GLFW_WINDOW_NO_RESIZE</code> was honored in fullscreen mode</li>

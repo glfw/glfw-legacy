@@ -700,11 +700,16 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title )
 
 
 //========================================================================
-// glfwGetWindowSize() - Get the window size
+// Get the window size
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 {
+    if( !_glfwInitialized || !_glfwWin.opened )
+    {
+        return;
+    }
+
     if( width != NULL )
     {
         *width = _glfwWin.width;
