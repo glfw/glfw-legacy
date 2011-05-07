@@ -684,12 +684,11 @@ GLFWAPI void GLFWAPIENTRY glfwCloseWindow( void )
 
 
 //========================================================================
-// glfwSetWindowTitle() - Set the window title
+// Set the window title
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowTitle( const char *title )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
