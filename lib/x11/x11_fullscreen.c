@@ -558,7 +558,7 @@ void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
             XFree( modelist );
         }
 
-    return;
+        return;
     }
 #endif
 
