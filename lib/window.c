@@ -815,11 +815,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
         return;
     }
 
-    // Update display-buffer
-    if( _glfwWin.opened )
-    {
-        _glfwPlatformSwapBuffers();
-    }
+    _glfwPlatformSwapBuffers();
 
     // Check for window messages
     if( _glfwWin.autoPollEvents )
