@@ -556,6 +556,7 @@ version of GLFW.</p>
   <li>Bugfix: The window could be left in a closed state but still be flagged as open</li>
   <li>Bugfix: <code>glfwGetWindowSize</code> did not check whether GLFW was initialized or whether the window was open</li>
   <li>[Cocoa] Bugfix: The loop condition for saving video modes used the wrong index variable</li>
+  <li>[Cocoa] Bugfix: The iconified and active window states were not tracked</li>
   <li>[X11] Bugfix: Calling <code>glXCreateContextAttribsARB</code> with an unavailable OpenGL version caused the application to terminate with a <code>BadMatch</code> Xlib error</li>
   <li>[X11] Bugfix: <code>GLFW_WINDOW_NO_RESIZE</code> was honored in fullscreen mode</li>
   <li>[Win32] Bugfix: The <code>WGLSWAPINTERVALEXT_T</code>, <code>WGLGETEXTENSIONSSTRINGARB_T</code> and <code>WGLGETEXTENSIONSSTRINGEXT_T</code> typedefs were declared under <code>WGL_ARB_pixel_format</code></li>

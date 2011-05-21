@@ -69,6 +69,27 @@
     }
 }
 
+- (void)windowDidMiniaturize:(NSNotification *)notification
+{
+    _glfwWin.iconified = GL_TRUE;
+}
+
+- (void)windowDidDeminiaturize:(NSNotification *)notification
+{
+    _glfwWin.iconified = GL_FALSE;
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    _glfwWin.active = GL_TRUE;
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification
+{
+    _glfwWin.active = GL_FALSE;
+    _glfwInputDeactivation();
+}
+
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     if( _glfwWin.windowCloseCallback )
