@@ -94,8 +94,7 @@ void _glfwParseGLVersion( int *major, int *minor, int *rev )
 }
 
 //========================================================================
-// _glfwStringInExtensionString() - Check if a string can be found in an
-// OpenGL extension string
+// Check if a string can be found in an OpenGL extension string
 //========================================================================
 
 int _glfwStringInExtensionString( const char *string,
@@ -240,8 +239,8 @@ GLFWAPI int GLFWAPIENTRY glfwExtensionSupported( const char *extension )
 
 
 //========================================================================
-// glfwGetProcAddress() - Get the function pointer to an OpenGL function.
-// This function can be used to get access to extended OpenGL functions.
+// Get the function pointer to an OpenGL function.  This function can be
+// used to get access to extended OpenGL functions.
 //========================================================================
 
 GLFWAPI void * GLFWAPIENTRY glfwGetProcAddress( const char *procname )

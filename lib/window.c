@@ -92,7 +92,7 @@ void _glfwInputDeactivation( void )
 
 
 //========================================================================
-// _glfwClearInput() - Clear all input state
+// Clear all input state
 //========================================================================
 
 void _glfwClearInput( void )
@@ -131,7 +131,7 @@ void _glfwClearInput( void )
 
 
 //========================================================================
-// _glfwInputKey() - Register keyboard activity
+// Register keyboard activity
 //========================================================================
 
 void _glfwInputKey( int key, int action )
@@ -225,7 +225,7 @@ void _glfwInputChar( int character, int action )
 
 
 //========================================================================
-// _glfwInputMouseClick() - Register mouse button clicks
+// Register mouse button clicks
 //========================================================================
 
 void _glfwInputMouseClick( int button, int action )
@@ -722,7 +722,7 @@ GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 
 
 //========================================================================
-// glfwSetWindowSize() - Set the window size
+// Set the window size
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
@@ -749,7 +749,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 
 
 //========================================================================
-// glfwSetWindowPos() - Set the window position
+// Set the window position
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
@@ -767,7 +767,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 
 
 //========================================================================
-// glfwIconfyWindow() - Window iconification
+// Window iconification
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
@@ -784,7 +784,7 @@ GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 
 
 //========================================================================
-// glfwRestoreWindow() - Window un-iconification
+// Window un-iconification
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
@@ -826,7 +826,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 
 
 //========================================================================
-// glfwSwapInterval() - Set double buffering swap interval (0 = vsync off)
+// Set double buffering swap interval (0 = vsync off)
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
@@ -843,7 +843,7 @@ GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
 
 
 //========================================================================
-// glfwGetWindowParam() - Get window parameter
+// Get window parameter
 //========================================================================
 
 GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
@@ -922,8 +922,7 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 
 
 //========================================================================
-// glfwSetWindowSizeCallback() - Set callback function for window size
-// changes
+// Set callback function for window size changes
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
@@ -946,8 +945,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 }
 
 //========================================================================
-// glfwSetWindowCloseCallback() - Set callback function for window close
-// events
+// Set callback function for window close events
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
@@ -964,8 +962,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 
 
 //========================================================================
-// glfwSetWindowRefreshCallback() - Set callback function for window
-// refresh events
+// Set callback function for window refresh events
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
@@ -982,7 +979,7 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbf
 
 
 //========================================================================
-// glfwPollEvents() - Poll for new window and input events
+// Poll for new window and input events
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
@@ -999,7 +996,7 @@ GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 
 
 //========================================================================
-// glfwWaitEvents() - Wait for new window and input events
+// Wait for new window and input events
 //========================================================================
 
 GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
