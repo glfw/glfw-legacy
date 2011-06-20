@@ -53,7 +53,7 @@ static void glfw_atexit( void )
 
 
 //========================================================================
-// _glfwInitThreads() - Initialize GLFW thread package
+// Initialize GLFW thread package
 //========================================================================
 
 static void _glfwInitThreads( void )
@@ -80,6 +80,11 @@ static void _glfwInitThreads( void )
     fprintf(stderr, NO_BUNDLE_MESSAGE); \
     _glfwLibrary.Unbundled = 1; \
     return
+
+//========================================================================
+// Changes the current directory to the Resources directory of the bundle
+// we're in, or leaves it alone if we're not inside a bundle
+//========================================================================
 
 void _glfwChangeToResourcesDirectory( void )
 {
@@ -119,6 +124,14 @@ void _glfwChangeToResourcesDirectory( void )
         UNBUNDLED;
     }
 }
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
+// Initialize various GLFW state
+//========================================================================
 
 int _glfwPlatformInit( void )
 {
@@ -173,6 +186,10 @@ int _glfwPlatformInit( void )
 
     return GL_TRUE;
 }
+
+//========================================================================
+// Close window and kill all threads
+//========================================================================
 
 int _glfwPlatformTerminate( void )
 {

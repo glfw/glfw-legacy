@@ -42,7 +42,7 @@
 //************************************************************************
 
 //========================================================================
-// _glfwInitLibraries() - Load necessary libraries (DLLs)
+// Load necessary libraries (DLLs)
 //========================================================================
 
 static int _glfwInitLibraries( void )
@@ -113,7 +113,7 @@ static int _glfwInitLibraries( void )
 
 
 //========================================================================
-// _glfwFreeLibraries() - Unload used libraries (DLLs)
+// Unload used libraries (DLLs)
 //========================================================================
 
 static void _glfwFreeLibraries( void )
@@ -139,7 +139,7 @@ static void _glfwFreeLibraries( void )
 
 
 //========================================================================
-// _glfwInitThreads() - Initialize GLFW thread package
+// Initialize GLFW thread package
 //========================================================================
 
 static void _glfwInitThreads( void )
@@ -161,7 +161,7 @@ static void _glfwInitThreads( void )
 
 
 //========================================================================
-// _glfwTerminateThreads() - Terminate GLFW thread package
+// Terminate GLFW thread package
 //========================================================================
 
 static void _glfwTerminateThreads( void )
@@ -202,7 +202,7 @@ static void _glfwTerminateThreads( void )
 
 
 //========================================================================
-// _glfwTerminate_atexit() - Terminate GLFW when exiting application
+// Terminate GLFW when exiting application
 //========================================================================
 
 void _glfwTerminate_atexit( void )
@@ -217,7 +217,7 @@ void _glfwTerminate_atexit( void )
 //************************************************************************
 
 //========================================================================
-// _glfwPlatformInit() - Initialize various GLFW state
+// Initialize various GLFW state
 //========================================================================
 
 int _glfwPlatformInit( void )
@@ -323,7 +323,7 @@ int _glfwPlatformInit( void )
 
 
 //========================================================================
-// _glfwPlatformTerminate() - Close window and kill all threads
+// Close window and kill all threads
 //========================================================================
 
 int _glfwPlatformTerminate( void )
