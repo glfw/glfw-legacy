@@ -682,7 +682,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     if( !iconified )
                     {
                         // Minimize window
-                        CloseWindow( _glfwWin.window );
+                        ShowWindow( _glfwWin.window, SW_MINIMIZE );
                         iconified = GL_TRUE;
                     }
 
@@ -710,7 +710,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                     if( iconified )
                     {
                         // Restore window
-                        OpenIcon( _glfwWin.window );
+                        ShowWindow( _glfwWin.window, SW_RESTORE );
                         iconified = GL_FALSE;
 
                         // Activate window
@@ -1550,7 +1550,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
 void _glfwPlatformIconifyWindow( void )
 {
     // Iconify window
-    CloseWindow( _glfwWin.window );
+    ShowWindow( _glfwWin.window, SW_MINIMIZE );
     _glfwWin.iconified = GL_TRUE;
 
     // If we are in fullscreen mode we need to change video modes
@@ -1584,7 +1584,7 @@ void _glfwPlatformRestoreWindow( void )
     }
 
     // Un-iconify window
-    OpenIcon( _glfwWin.window );
+    ShowWindow( _glfwWin.window, SW_RESTORE );
 
     // Make sure that our window ends up on top of things
     ShowWindow( _glfwWin.window, SW_SHOW );
