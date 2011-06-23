@@ -581,6 +581,12 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
         _glfwWin.GetStringi = (PFNGLGETSTRINGIPROC) glfwGetProcAddress( "glGetStringi" );
         if( !_glfwWin.GetStringi )
         {
+            // This is a very common problem among people who compile GLFW
+            // on X11/GLX using custom build systems, as it needs explicit
+            // configuration in order to work
+            //
+            // See readme.html section 2.2 for details
+
             glfwCloseWindow();
             return GL_FALSE;
         }
