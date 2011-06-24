@@ -45,6 +45,8 @@ static void GLFWCALL window_size_callback(int width, int height)
 
 int main(void)
 {
+    int samples;
+
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -73,7 +75,7 @@ int main(void)
     glfwSetWindowSizeCallback(window_size_callback);
     glfwSwapInterval(1);
 
-    int samples = glfwGetWindowParam(GLFW_FSAA_SAMPLES);
+    samples = glfwGetWindowParam(GLFW_FSAA_SAMPLES);
     if (samples)
         printf("Context reports FSAA is supported with %i samples\n", samples);
     else
