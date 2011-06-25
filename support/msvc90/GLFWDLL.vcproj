@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../lib&quot;;&quot;$(ProjectDir)../../lib/win32&quot;;&quot;$(ProjectDir)../../include&quot;"
-				PreprocessorDefinitions="GLFW_BUILD_DLL"
+				PreprocessorDefinitions="GLFW_BUILD_DLL;_GLFW_NO_DLOAD_GDI32;_GLFW_NO_DLOAD_WINMM"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib"
 				OutputFile="$(OutDir)\GLFW.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="$(ProjectDir)\..\..\lib\win32\glfwdll.def"
@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)../../lib&quot;;&quot;$(ProjectDir)../../lib/win32&quot;;&quot;$(ProjectDir)../../include&quot;"
-				PreprocessorDefinitions="GLFW_BUILD_DLL"
+				PreprocessorDefinitions="GLFW_BUILD_DLL;_GLFW_NO_DLOAD_GDI32;_GLFW_NO_DLOAD_WINMM"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib"
+				AdditionalDependencies="opengl32.lib;winmm.lib"
 				OutputFile="$(OutDir)\GLFW.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="$(ProjectDir)\..\..\lib\win32\glfwdll.def"

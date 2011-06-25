@@ -18,7 +18,7 @@ VERMINOR = 7
 ##########################################################################
 CC         = gcc
 CFLAGS     = -c -I. -I.. -Wall -O2
-CFLAGS_DLL = $(CFLAGS) -mdll -DGLFW_BUILD_DLL
+CFLAGS_DLL = $(CFLAGS) -mdll -DGLFW_BUILD_DLL -D_GLFW_NO_DLOAD_GDI32 -D_GLFW_NO_DLOAD_WINMM
 
 HEADERS = ../../include/GL/glfw.h ../internal.h platform.h
 
@@ -32,7 +32,7 @@ LIBFLAGS  = -rcs
 # DLL
 LINK      = dllwrap
 LINKFLAGS = -s -Wl,--major-image-version,$(VERMAJOR),--minor-image-version,$(VERMINOR)
-LINKLIBS  = -lopengl32
+LINKLIBS  = -lopengl32 -lwinmm -lgdi32
 
 DLLTOOL   = dlltool
 
