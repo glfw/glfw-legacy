@@ -559,6 +559,9 @@ version of GLFW.</p>
   <li>[Cocoa] Bugfix: The iconified and active window states were not tracked</li>
   <li>[X11] Bugfix: Calling <code>glXCreateContextAttribsARB</code> with an unavailable OpenGL version caused the application to terminate with a <code>BadMatch</code> Xlib error</li>
   <li>[X11] Bugfix: <code>GLFW_WINDOW_NO_RESIZE</code> was honored in fullscreen mode</li>
+  <li>[Win32] Added Visual C++ 2010 project files for the GLFW DLL and static library to the <code>support/msvc100</code> directory</li>
+  <li>[Win32] Enabled <code>_GLFW_NO_DLOAD_GDI32</code> and <code>_GLFW_NO_DLOAD_WINMM</code> for the DLL build</li>
+  <li>[Win32] Bugfix: <code>compile.bat</code> used Unix-style line endings</li>
   <li>[Win32] Bugfix: The <code>WGLSWAPINTERVALEXT_T</code>, <code>WGLGETEXTENSIONSSTRINGARB_T</code> and <code>WGLGETEXTENSIONSSTRINGEXT_T</code> typedefs were declared under <code>WGL_ARB_pixel_format</code></li>
   <li>[Win32] Bugfix: The array for WGL context attributes was too small and could overflow</li>
   <li>[Win32] Bugfix: Context creation using profiles did not check for the availability of <code>WGL_ARB_create_context_profile</code></li> 
