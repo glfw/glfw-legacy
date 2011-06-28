@@ -1,5 +1,5 @@
-BINARIES = accuracy defaults events fsaa fsinput iconify joysticks peter \
-           reopen tearing version
+BINARIES = accuracy defaults dynamic events fsaa fsinput \
+           iconify joysticks peter reopen tearing version
 
 HEADER = ../include/GL/glfw.h
 
@@ -10,6 +10,9 @@ accuracy: accuracy.c $(LIB) $(HEADER)
 
 defaults: defaults.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) defaults.c $(LFLAGS) -o $@
+
+dynamic: dynamic.c $(SOLIB) $(HEADER)
+	$(CC) $(CFLAGS) dynamic.c $(SO_LFLAGS) -o $@
 
 events: events.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) events.c $(LFLAGS) -o $@
