@@ -61,22 +61,22 @@ if [ "x$CC" = x ]; then
   CC=cc
 fi
 
-# These will contain flags shared between the GLFW library and binaries
+# These will contain flags needed by both the GLFW library and programs
 # They are also used by the compile and link tests below
 # Note that CFLAGS and LFLAGS remain unmodified and are checked again
 # before file generation
 GLFW_CFLAGS="$CFLAGS"
 GLFW_LFLAGS="$LFLAGS -lGL"
 
-# These will contain all flags needed by the GLFW library
+# These will contain flags needed by the GLFW library
 GLFW_LIB_CFLAGS=
 GLFW_LIB_LFLAGS=
 
-# These will contain all flags needed by binaries
+# These will contain flags needed by programs using GLFW
 GLFW_BIN_CFLAGS=
 GLFW_BIN_LFLAGS=
 
-# This will contain platform-specific flags for the GLFW shared library
+# This will contain flags needed by the GLFW shared library
 SOFLAGS=
 
 
