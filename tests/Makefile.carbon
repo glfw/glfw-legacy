@@ -10,12 +10,15 @@ CC     = gcc
 CFLAGS = -I../include -m32
 
 # Linker settings
-LIB    = ../lib/carbon/libglfw.a
-LFLAGS = $(LIB) -framework AGL -framework OpenGL -framework Carbon -m32
+LIB       = ../lib/carbon/libglfw.a
+SOLIB     = ../lib/carbon/libglfw.dylib
+LFLAGS    = $(LIB) -framework AGL -framework OpenGL -framework Carbon -m32
+SO_LFLAGS = $(SOLIB) -framework OpenGL -m32
 
 # Default: Build all tests
 all: Accuracy.app/Contents/MacOS/Accuracy \
      defaults \
+     Dynamic.app/Contents/MacOS/Dynamic \
      Events.app/Contents/MacOS/Events \
      FSAA.app/Contents/MacOS/FSAA \
      FSInput.app/Contents/MacOS/FSInput \
@@ -32,6 +35,10 @@ Accuracy.app/Contents/MacOS/Accuracy: accuracy.c $(LIB)
 
 defaults: defaults.c $(LIB)
 	$(CC) $(CFLAGS) defaults.c $(LFLAGS) -o defaults
+
+Dynamic.app/Contents/MacOS/Dynamic: dynamic.c $(SOLIB)
+	/bin/sh bundle.sh Dynamic
+	$(CC) $(CFLAGS) dynamic.c $(SO_LFLAGS) -o Dynamic.app/Contents/MacOS/Dynamic
 
 Events.app/Contents/MacOS/Events: events.c $(LIB)
 	/bin/sh bundle.sh Events
@@ -68,6 +75,6 @@ version: version.c $(LIB)
 	$(CC) $(CFLAGS) version.c $(LFLAGS) -o version
 
 clean:
-	rm -rf Accuracy.app defaults Events.app FSAA.app FSInput.app \
+	rm -rf Accuracy.app defaults Dynamic.app Events.app FSAA.app FSInput.app \
            Iconify.app joysticks Peter.app ReOpen.app Tearing.app version
 

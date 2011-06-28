@@ -8,15 +8,17 @@
 CC     = gcc
 CFLAGS = -I../include -Wall -O2 -mwin32 -mno-cygwin
 
-LIB    = ../lib/win32/libglfw.a
-LFLAGS = -mno-cygwin $(LIB) -lglu32 -lopengl32 
+LIB       = ../lib/win32/libglfw.a
+SOLIB     = ../lib/win32/libglfwdll.a
+LFLAGS    = -mno-cygwin $(LIB) -lglu32 -lopengl32 
+SO_LFLAGS = -mno-cygwin $(SOLIB) -lglu32 -lopengl32 
 
 WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
-BINARIES = accuracy.exe defaults.exe events.exe fsaa.exe fsinput.exe \
-           iconify.exe joysticks.exe peter.exe reopen.exe tearing.exe \
-           version.exe
+BINARIES = accuracy.exe defaults.exe dynamic.exe events.exe fsaa.exe \
+	   fsinput.exe iconify.exe joysticks.exe peter.exe reopen.exe \
+	   tearing.exe version.exe
 
 HEADER = ../include/GL/glfw.h
 
@@ -27,6 +29,9 @@ accuracy.exe: accuracy.c $(LIB) $(HEADER)
 
 defaults.exe: defaults.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(CONSOLE) defaults.c $(LFLAGS) -o $@
+
+dynamic.exe: dynamic.c $(SOLIB) $(HEADER)
+	$(TARGET)$(CC) $(CFLAGS) $(WINDOWS) dynamic.c $(SO_LFLAGS) -o $@
 
 events.exe: events.c $(LIB) $(HEADER)
 	$(CC) $(CFLAGS) $(CONSOLE) events.c $(LFLAGS) -o $@
