@@ -392,7 +392,7 @@ GLFWGLOBAL struct {
         long long   t0;
     } Timer;
 
-#if defined(_GLFW_DLOPEN_LIBGL)
+#if defined(_GLFW_HAS_DLOPEN)
     struct {
         void       *libGL;  // dlopen handle for libGL.so
     } Libs;
