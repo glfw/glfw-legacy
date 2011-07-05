@@ -431,7 +431,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
     _GLFWfbconfig fbconfig;
     _GLFWwndconfig wndconfig;
 
-    // Is GLFW initialized?
     if( !_glfwInitialized || _glfwWin.opened )
     {
         return GL_FALSE;
@@ -613,7 +612,6 @@ GLFWAPI int GLFWAPIENTRY glfwOpenWindow( int width, int height,
 
 GLFWAPI void GLFWAPIENTRY glfwOpenWindowHint( int target, int hint )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized )
     {
         return;
@@ -733,7 +731,6 @@ GLFWAPI void GLFWAPIENTRY glfwGetWindowSize( int *width, int *height )
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.iconified )
     {
         return;
@@ -760,7 +757,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSize( int width, int height )
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.fullscreen ||
         _glfwWin.iconified )
     {
@@ -778,7 +774,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowPos( int x, int y )
 
 GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened || _glfwWin.iconified )
     {
         return;
@@ -795,7 +790,6 @@ GLFWAPI void GLFWAPIENTRY glfwIconifyWindow( void )
 
 GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened || !_glfwWin.iconified )
     {
         return;
@@ -815,7 +809,6 @@ GLFWAPI void GLFWAPIENTRY glfwRestoreWindow( void )
 
 GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -837,7 +830,6 @@ GLFWAPI void GLFWAPIENTRY glfwSwapBuffers( void )
 
 GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -854,7 +846,6 @@ GLFWAPI void GLFWAPIENTRY glfwSwapInterval( int interval )
 
 GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized )
     {
         return 0;
@@ -933,7 +924,6 @@ GLFWAPI int GLFWAPIENTRY glfwGetWindowParam( int param )
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -956,7 +946,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowSizeCallback( GLFWwindowsizefun cbfun )
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -973,7 +962,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowCloseCallback( GLFWwindowclosefun cbfun )
 
 GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbfun )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -990,7 +978,6 @@ GLFWAPI void GLFWAPIENTRY glfwSetWindowRefreshCallback( GLFWwindowrefreshfun cbf
 
 GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
@@ -1007,7 +994,6 @@ GLFWAPI void GLFWAPIENTRY glfwPollEvents( void )
 
 GLFWAPI void GLFWAPIENTRY glfwWaitEvents( void )
 {
-    // Is GLFW initialized?
     if( !_glfwInitialized || !_glfwWin.opened )
     {
         return;
