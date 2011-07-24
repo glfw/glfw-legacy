@@ -40,6 +40,7 @@ defaults: defaults.c $(LIB)
 
 Dynamic.app/Contents/MacOS/Dynamic: dynamic.c $(SOLIB)
 	/bin/sh bundle.sh Dynamic
+	cp $(SOLIB) Dynamics.app/Contents/MacOS/
 	$(CC) $(CFLAGS) dynamic.c $(SO_LFLAGS) -o Dynamic.app/Contents/MacOS/Dynamic
 
 Events.app/Contents/MacOS/Events: events.c $(LIB)
