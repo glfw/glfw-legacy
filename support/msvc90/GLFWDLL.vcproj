@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib;winmm.lib"
+				AdditionalDependencies="opengl32.lib winmm.lib"
 				OutputFile="$(OutDir)\GLFW.dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="$(ProjectDir)\..\..\lib\win32\glfwdll.def"
