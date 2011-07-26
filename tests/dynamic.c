@@ -40,6 +40,17 @@ static void GLFWCALL window_size_callback(int width, int height)
 
 int main(void)
 {
+    int major, minor, rev;
+    glfwGetVersion(&major, &minor, &rev);
+
+    if (major != GLFW_VERSION_MAJOR ||
+        minor != GLFW_VERSION_MINOR ||
+        rev != GLFW_VERSION_REVISION)
+    {
+        fprintf(stderr, "GLFW library version mismatch\n");
+        exit(EXIT_FAILURE);
+    }
+
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
