@@ -29,13 +29,11 @@ a library that provides a powerful API for handling operating system specific
 tasks, such as opening an OpenGL window, reading keyboard, mouse, joystick and
 time input, creating threads, and more.</p>
 
-<p>This is expected to be the last major release of the 2.x series, with the
-expectation being that most development will take place in the 3.0 branch.</p>
+<p>GLFW 2.7 is expected to be the last major release of the 2.x series, with
+most development now being done on what will become version 3.0.</p>
 
-<p>only major additions in this release is support for creating OpenGL contexts
-of version 3.0 and above, and a new Cocoa port for Mac OS X 10.5 and above.
-Note that as Mac OS X does not yet support OpenGL 3.0, attempts to create such
-a context on that system will fail.</p>
+<p>This release only adds bug fixes for a number of minor issues in 2.7.</p>
+
 
 <a name="compiling">
 <h2>2. Compiling GLFW and the example programs</h2>
@@ -57,8 +55,8 @@ programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
 
 <p>Currently supported compilers and systems are:</p>
 
-<ol>
-  <li>Microsoft Visual C++ 9.0 and above</li>
+<ul>
+  <li>Microsoft Visual C++ 2008 and later</li>
   <li>MSYS or Cygwin for Windows</li>
   <li>Bare MinGW for Windows</li>
   <li>LCC-Win32 for Windows</li>
@@ -66,10 +64,11 @@ programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
   <li>MinGW cross-compilation for Unix or Unix-like systems</li>
   <li>Unix or Unix-like systems running the X Window System</li>
   <li>Apple GCC or Clang on Mac OS X</li>
-</ol>
+</ul>
 
-<p>There are also project files available for Microsoft Visual C++ 9.0 in the
-<code>support/msvc90</code> directory.</p>
+<p>There are also project files available for Microsoft Visual C++ 2008 and
+2010 in the <code>support/msvc90</code> and <code>support/msvc100</code>
+directories.</p>
 
 <p>If your compiler/system is not in the list, you may have to create new
 makefiles in the <code>lib\win32</code>, <code>lib/x11</code> or
@@ -92,11 +91,11 @@ listed below already does this, but you need to do it yourself if you are
 making a custom build.  Without this macro, the GLFW DLL will not export
 functions correctly and code calling the DLL will be incorrectly generated.</p>
 
-<h4>2.1.1 Microsoft Visual C++ 9.0 and above</h4>
+<h4>2.1.1 Microsoft Visual C++ 2008 and later</h4>
 
 <p>Project files for both the static and dynamic versions of the GLFW library
-are provided in the <code>support/msvc90</code> directory, as well as project
-files for all example and test programs.</p>
+are provided in the <code>support/msvc90</code> and
+<code>support/msvc100</code> directories.</p>
 
 
 <h4>2.1.2 MSYS or Cygwin on Windows</h4>
@@ -1020,7 +1019,8 @@ version of GLFW.</p>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;x11</code></td><td>&nbsp;</td><td>Unix/X11 specific implementation</td></tr>
 <tr valign="top"><td><code>support</code></td><td>&nbsp;</td><td>&nbsp;</td></tr>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;d</code></td><td>&nbsp;</td><td>D support</td></tr>
-<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc90</code></td><td>&nbsp;</td><td>Project files for Visual C++ 9.0</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc90</code></td><td>&nbsp;</td><td>Project files for Visual C++ 2008</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc100</code></td><td>&nbsp;</td><td>Project files for Visual C++ 2010</td></tr>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;pascal</code></td><td>&nbsp;</td><td>Pascal support</td></tr>
 <tr valign="top"><td><code>tests</code></td><td>&nbsp;</td><td>Several test programs in C</td></tr>
 </table>
