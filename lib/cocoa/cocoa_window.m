@@ -824,10 +824,7 @@ void _glfwPlatformRefreshWindowParams( void )
                    forVirtualScreen:0];
     _glfwWin.samples = value;
 
-    // These are forced to false as long as Mac OS X lacks support for OpenGL 3.0+
-    _glfwWin.glForward = GL_FALSE;
     _glfwWin.glDebug = GL_FALSE;
-    _glfwWin.glProfile = 0;
 }
 
 //========================================================================
