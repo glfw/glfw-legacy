@@ -384,9 +384,11 @@ If you want to create a context using the core profile as available in \OpenGL\
 version 3.2 and above, set the GLFW\_OPENGL\_PROFILE hint accordingly.  Note that
 as above you have to set a valid minimum version for this to work.
 
-Also note that at the time of this release, Mac OS X did not support \OpenGL\
-version 3.0 or above; thus GLFW cannot create contexts of versions above 2.1
-on that platform.
+Note that versions of Mac OS X before 10.7 does not support \OpenGL\ 3.0 or
+later, and that at the time of this release, Mac OS X 10.7 only supports 
+forward-compatible \OpenGL\ 3.2 core profile contexts.  Due to the way default
+values work in \GLFW\, you do not need to specify either GLFW\_FORWARD\_COMPAT
+or GLFW\_OPENGL\_PROFILE for this to work.
 
 Besides the parameters that are given with the \textbf{glfwOpenWindow} and
 \textbf{glfwOpenWindowHint} functions, a few more properties of a window

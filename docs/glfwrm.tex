@@ -3217,8 +3217,18 @@ setting the GLFW\_OPENGL\_PROFILE hint to anything but zero will cause
 %-------------------------------------------------------------------------
 \section{OpenGL 3.0+ on Mac OS X}
 
-At the time of writing, Mac OS X does not support OpenGL 3.0 or above.
-Because of this, the GLFW\_OPENGL\_VERSION\_MAJOR and
+Support for OpenGL 3.0 and above was introduced with Mac OS X 10.7, and even
+then forward-compatible OpenGL 3.2 core profile contexts are supported and
+there is no mechanism for requesting debug contexts.  Earlier versions of Mac
+OS X supports at most OpenGL version 2.1.
+
+Because of this, on Mac OS X 10.7, the GLFW\_OPENGL\_VERSION\_MAJOR and
+GLFW\_OPENGL\_VERSION\_MINOR hints will fail if given a version above 3.2, the
+GLFW\_OPENGL\_DEBUG\_CONTEXT and GLFW\_FORWARD\_COMPAT hints are ignored, and
+setting the GLFW\_OPENGL\_PROFILE hint to anything except zero or
+GLFW\_OPENGL\_CORE\_PROFILE will cause \textbf{glfwOpenWindow} to fail.                      
+
+Also, on Mac OS X 10.6 and below, the GLFW\_OPENGL\_VERSION\_MAJOR and
 GLFW\_OPENGL\_VERSION\_MINOR hints will fail if given a version above 2.1, the
 GLFW\_OPENGL\_DEBUG\_CONTEXT hint will have no effect, and setting the
 GLFW\_OPENGL\_PROFILE or GLFW\_FORWARD\_COMPAT hints to a non-zero value will
