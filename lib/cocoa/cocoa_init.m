@@ -32,6 +32,17 @@
 
 #include "internal.h"
 
+@interface GLFWThread : NSThread
+@end
+
+@implementation GLFWThread
+
+- (void)main
+{
+}
+
+@end
+
 @interface GLFWApplication : NSApplication
 @end
 
@@ -50,18 +61,6 @@
     {
         [super sendEvent:event];
     }
-
-    // Explain to Cocoa that we might be planning on using POSIX threads
-
-    NSThread* thread = [[NSThread alloc] initWithTarget:self
-                                               selector:@selector(doNothing)
-                                                 object:nil];
-    [thread start];
-    [thread release];
-}
-
-- (void)doNothing:(id)nothing
-{
 }
 
 @end
@@ -247,6 +246,10 @@ int _glfwPlatformInit( void )
     {
         return GL_FALSE;
     }
+
+    GLFWThread* thread = [[GLFWThread alloc] init];
+    [thread start];
+    [thread release];
 
     NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
 
