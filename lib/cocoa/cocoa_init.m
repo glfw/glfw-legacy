@@ -32,6 +32,9 @@
 
 #include "internal.h"
 
+@interface GLFWApplication : NSApplication
+@end
+
 @implementation GLFWApplication
 
 // From http://cocoadev.com/index.pl?GameKeyboardHandlingAlmost
