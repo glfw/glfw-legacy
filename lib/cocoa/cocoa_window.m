@@ -472,7 +472,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     {
         return GL_FALSE;
     }
-#endif /*__MAX_OS_X_VERSION_MAX_ALLOWED*/
+#endif /*MAC_OS_X_VERSION_MAX_ALLOWED*/
 
     _glfwWin.delegate = [[GLFWWindowDelegate alloc] init];
     if( _glfwWin.delegate == nil )
@@ -573,7 +573,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     {
         ADD_ATTR2( NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core );
     }
-#endif /*__MAX_OS_X_VERSION_MAX_ALLOWED*/
+#endif /*MAC_OS_X_VERSION_MAX_ALLOWED*/
 
     ADD_ATTR2( NSOpenGLPFAColorSize, colorBits );
 
