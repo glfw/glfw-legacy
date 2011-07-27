@@ -32,9 +32,6 @@
 
 #include "internal.h"
 
-@interface GLFWApplication : NSApplication
-@end
-
 @implementation GLFWApplication
 
 // From http://cocoadev.com/index.pl?GameKeyboardHandlingAlmost
@@ -50,6 +47,18 @@
     {
         [super sendEvent:event];
     }
+
+    // Explain to Cocoa that we might be planning on using POSIX threads
+
+    NSThread* thread = [[NSThread alloc] initWithTarget:self
+                                               selector:@selector(doNothing)
+                                                 object:nil];
+    [thread start];
+    [thread release];
+}
+
+- (void)doNothing:(id)nothing
+{
 }
 
 @end
