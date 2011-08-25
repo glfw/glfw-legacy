@@ -36,6 +36,8 @@
 #include <stdlib.h>
 
 static GLboolean cursor_enabled = GL_TRUE;
+static int cursor_x = 0;
+static int cursor_y = 0;
 
 static GLboolean open_window(void);
 
@@ -51,7 +53,9 @@ static void toggle_mouse_cursor(void)
 
 static void GLFWCALL mouse_position_callback(int x, int y)
 {
-    printf("Mouse moved to: %i %i\n", x, y);
+    printf("Mouse moved to: %i %i offset %i %i\n", x, y, x - cursor_x, y - cursor_y);
+    cursor_x = x;
+    cursor_y = y;
 }
 
 static void GLFWCALL key_callback(int key, int action)
@@ -86,15 +90,13 @@ static void GLFWCALL window_size_callback(int width, int height)
 
 static GLboolean open_window(void)
 {
-    int x, y;
-
     if (!glfwOpenWindow(0, 0, 0, 0, 0, 0, 0, 0, GLFW_WINDOW))
         return GL_FALSE;
 
     glfwSetWindowTitle("Peter Detector");
 
-    glfwGetMousePos(&x, &y);
-    printf("Mouse position: %i %i\n", x, y);
+    glfwGetMousePos(&cursor_x, &cursor_y);
+    printf("Mouse position: %i %i\n", cursor_x, cursor_y);
 
     glfwDisable(GLFW_AUTO_POLL_EVENTS);
     glfwSetWindowSizeCallback(window_size_callback);
