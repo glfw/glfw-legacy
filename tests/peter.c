@@ -94,6 +94,7 @@ static GLboolean open_window(void)
         return GL_FALSE;
 
     glfwSetWindowTitle("Peter Detector");
+    glfwSetWindowPos(150, 150);
 
     glfwGetMousePos(&cursor_x, &cursor_y);
     printf("Mouse position: %i %i\n", cursor_x, cursor_y);
