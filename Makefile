@@ -48,7 +48,8 @@ default:
 	@echo "  $(MAKE) cocoa-clean       to remove any files generated for Cocoa on Mac OS X"
 	@echo "  $(MAKE) cocoa-install     to install the GLFW library and header"
 	@echo "-----------------------------------------------------------------------------"
-	@echo " There are also Visual Studio 2008 project files available in support/msvc80"
+	@echo " There are also Visual Studio 2008 and 2010 project files available in the"
+	@echo " support/msvc90 and support/msvc100 directories, respectively"
 	@echo "-----------------------------------------------------------------------------"
 
 
