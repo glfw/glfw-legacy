@@ -144,11 +144,9 @@ regularly tested with Wine.</p>
 
 <p>Compiler and link library capabilities are auto-detected with a script
 called <code>compile.sh</code>.  Note that you don't need to run this script
-yourself, as it is run automatically when necessary.  It has been tested under
-Ubuntu Linux, Slackware Linux, Debian GNU/Linux and others and should
-hopefully run on the majority of available Unix-like systems and generate
-functional Makefiles.  You do not have to run the script manually, since it is
-called from the top-level makefile.</p>
+yourself, as it is run automatically by the top-level makefile when necessary.
+It has been tested on FreeBSD and many Linux distributions and should hopefully
+run correctly on the majority of available Unix-like systems.</p>
 
 <p>If you wish to customize the compilation or link flags for GLFW, set the
 <code>CFLAGS</code> or <code>LFLAGS</code> environment variables as needed
