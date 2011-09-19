@@ -685,9 +685,9 @@ libdir=\${exec_prefix}/lib
 
 Name: GLFW
 Description: A portable framework for OpenGL development
-Version: 2.7
+Version: 2.7.3
 URL: http://www.glfw.org/
-Requires: gl x11 $PKG_LIBS
+Requires.private: gl x11 $PKG_LIBS
 Libs: -L\${libdir} -lglfw $LFLAGS_THREAD
 Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF
