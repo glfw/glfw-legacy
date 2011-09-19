@@ -325,7 +325,7 @@ if [ "x$has_pthread" = xyes ]; then
   has_sched_yield=no
 
   LFLAGS_OLD="$GLFW_LFLAGS"
-  LFLAGS_THREAD=
+  LFLAGS_YIELD=
 
   cat > conftest.c <<EOF
 #include <pthread.h>
@@ -340,8 +340,8 @@ EOF
   fi
 
   if [ "x$has_sched_yield" = xno ]; then
-    LFLAGS_THREAD="-lrt"
-    GLFW_LFLAGS="$LFLAGS_OLD $LFLAGS_THREAD"
+    LFLAGS_YIELD="-lrt"
+    GLFW_LFLAGS="$LFLAGS_OLD $LFLAGS_YIELD"
     if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
       rm -f conftest*
       has_sched_yield=yes
@@ -357,7 +357,7 @@ EOF
 
   if [ "x$has_sched_yield" = xyes ]; then
     GLFW_LIB_CFLAGS="$GLFW_LIB_CFLAGS -D_GLFW_HAS_SCHED_YIELD"
-    GLFW_LIB_LFLAGS="$GLFW_LIB_LFLAGS $LFLAGS_THREAD"
+    GLFW_LIB_LFLAGS="$GLFW_LIB_LFLAGS $LFLAGS_YIELD"
   fi
 
 fi
