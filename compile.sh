@@ -669,17 +669,25 @@ echo "Creating $MKNAME" 1>&6
 
 echo "$self: Creating $MKNAME" >&5
 
+if [ "x$has_xrandr" = xyes ]; then
+    PKG_LIBS="${PKG_LIBS} xrandr"
+fi
+
+if [ "x$has_xf86vm" = xyes ]; then
+    PKG_LIBS="${PKG_LIBS} xxf86vm"
+fi
+
 cat > "$MKNAME" <<EOF
 prefix=@PREFIX@
-exec_prefix=@PREFIX@
-libdir=@PREFIX@/lib
-includedir=@PREFIX@/include
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
 
 Name: GLFW
 Description: A portable framework for OpenGL development
 Version: 2.7
 URL: http://www.glfw.org/
-Requires: gl x11 xrandr
+Requires: gl x11 $PKG_LIBS
 Libs: -L\${libdir} -lglfw $LFLAGS_THREAD
 Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF
