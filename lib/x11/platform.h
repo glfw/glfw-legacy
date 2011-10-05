@@ -388,8 +388,9 @@ GLFWGLOBAL struct {
 
     // Timer data
     struct {
+        GLboolean   monotonic;
         double      resolution;
-        long long   t0;
+        long long   base;
     } Timer;
 
 #if defined(_GLFW_HAS_DLOPEN)
