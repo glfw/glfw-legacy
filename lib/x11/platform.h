@@ -39,6 +39,7 @@
 // Include files
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <signal.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
