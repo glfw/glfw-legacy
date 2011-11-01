@@ -364,6 +364,52 @@ fi
 
 
 ##########################################################################
+# Check for clock_gettime support
+##########################################################################
+echo -n "Checking for clock_gettime... " 1>&6
+echo "$self: Checking for clock_gettime" >&5
+has_clock_gettime=no
+
+cat > conftest.c <<EOF
+#include <time.h>
+int main() {
+clock_gettime(0, 0);
+return 0;}
+EOF
+
+LFLAGS_OLD="$GLFW_LFLAGS"
+LFLAGS_CLOCK=
+
+if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+  rm -f conftest*
+  has_clock_gettime=yes
+else
+  echo "$self: failed program was:" >&5
+  cat conftest.c >&5
+fi
+
+if [ "x$has_clock_gettime" = xno ]; then
+  LFLAGS_CLOCK="-lrt"
+  GLFW_LFLAGS="$LFLAGS_OLD $LFLAGS_CLOCK"
+  if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
+    rm -f conftest*
+    has_clock_gettime=yes
+  else
+    echo "$self: failed program was:" >&5
+    cat conftest.c >&5
+  fi
+fi
+
+GLFW_LFLAGS="$LFLAGS_OLD"
+
+echo "$has_clock_gettime" 1>&6
+
+if [ "x$has_clock_gettime" = xyes ]; then
+  GLFW_LIB_LFLAGS="$GLFW_LIB_LFLAGS $LFLAGS_CLOCK"
+fi
+
+
+##########################################################################
 # Check for glXGetProcAddressXXX availability
 ##########################################################################
 echo -n "Checking for glXGetProcAddress variants... " 1>&6
