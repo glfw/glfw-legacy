@@ -17,8 +17,8 @@ WINDOWS = -mwindows -e _mainCRTStartup
 CONSOLE = -mconsole
 
 BINARIES = accuracy.exe defaults.exe dynamic.exe events.exe fsaa.exe \
-	   fsinput.exe iconify.exe joysticks.exe peter.exe reopen.exe \
-	   tearing.exe version.exe
+           fsinput.exe iconify.exe joysticks.exe peter.exe reopen.exe \
+           tearing.exe version.exe
 
 HEADER = ../include/GL/glfw.h
 
