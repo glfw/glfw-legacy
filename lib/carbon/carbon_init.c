@@ -61,6 +61,11 @@ static void glfw_atexit( void )
     _glfwLibrary.Unbundled = 1; \
     return
 
+//========================================================================
+// Changes the current directory to the Resources directory of the bundle
+// we're in, or leaves it alone if we're not inside a bundle
+//========================================================================
+
 void _glfwChangeToResourcesDirectory( void )
 {
     CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -99,6 +104,14 @@ void _glfwChangeToResourcesDirectory( void )
         UNBUNDLED;
     }
 }
+
+//************************************************************************
+//****               Platform implementation functions                ****
+//************************************************************************
+
+//========================================================================
+// Initialize various GLFW state
+//========================================================================
 
 int _glfwPlatformInit( void )
 {
@@ -151,6 +164,10 @@ int _glfwPlatformInit( void )
 
     return GL_TRUE;
 }
+
+//========================================================================
+// Close window
+//========================================================================
 
 int _glfwPlatformTerminate( void )
 {

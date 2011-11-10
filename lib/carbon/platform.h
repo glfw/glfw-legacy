@@ -177,8 +177,6 @@ struct _GLFWwin_struct {
     int       samples;
 
     // OpenGL extensions and context attributes
-    int       has_GL_SGIS_generate_mipmap;
-    int       has_GL_ARB_texture_non_power_of_two;
     int       glMajor, glMinor, glRevision;
     int       glForward, glDebug, glProfile;
 
@@ -257,6 +255,7 @@ GLFWGLOBAL struct {
     int Unbundled;
 
 } _glfwLibrary;
+
 
 
 //========================================================================

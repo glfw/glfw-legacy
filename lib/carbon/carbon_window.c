@@ -623,8 +623,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
     if( wndconfig->glMajor > 2 )
     {
         fprintf( stderr, "OpenGL 3.0+ is not yet supported on Mac OS X\n" );
-
-        _glfwPlatformCloseWindow();
         return GL_FALSE;
     }
 
@@ -633,16 +631,12 @@ int  _glfwPlatformOpenWindow( int width, int height,
         if( GetCurrentProcess( &psn ) != noErr )
         {
             fprintf( stderr, "Failed to get the process serial number\n" );
-
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
         if( TransformProcessType( &psn, kProcessTransformToForegroundApplication ) != noErr )
         {
             fprintf( stderr, "Failed to become a foreground application\n" );
-
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -651,8 +645,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
             if( SetFrontProcess( &psn ) != noErr )
             {
                 fprintf( stderr, "Failed to become the front process\n" );
-
-                _glfwPlatformCloseWindow();
                 return GL_FALSE;
             }
         }
@@ -660,10 +652,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     if( !installEventHandlers() )
     {
-        fprintf( stderr,
-                 "Failed to install Carbon application event handlers\n" );
-
-        _glfwPlatformTerminate();
+        fprintf( stderr, "Failed to install Carbon application event handlers\n" );
         return GL_FALSE;
     }
 
@@ -718,7 +707,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to choose AGL pixel format: %s\n",
                      aglErrorString( aglGetError() ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -731,7 +719,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to create AGL context: %s\n",
                      aglErrorString( aglGetError() ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -764,7 +751,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
         {
             fprintf( stderr, "Failed to create Carbon window\n" );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -780,7 +766,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
         {
             fprintf( stderr, "Failed to install Carbon window event handler\n" );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -797,7 +782,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to set the AGL context as the Carbon window drawable: %s\n",
                      aglErrorString( aglGetError() ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -808,7 +792,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to make AGL context current: %s\n",
                      aglErrorString( aglGetError() ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -874,7 +857,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to choose CGL pixel format: %s\n",
                      CGLErrorString( cglErr ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -886,7 +868,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to create CGL context: %s\n",
                      CGLErrorString( cglErr ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -904,7 +885,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
             fprintf( stderr,
                      "Failed to capture Core Graphics displays\n");
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -922,7 +902,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
             fprintf( stderr,
                      "Failed to retrieve Core Graphics display mode\n");
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -933,7 +912,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
             fprintf( stderr,
                      "Failed to switch to Core Graphics display mode\n");
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -945,7 +923,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to make CGL context current: %s\n",
                      CGLErrorString( cglErr ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
 
@@ -956,7 +933,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
                      "Failed to set CGL fullscreen mode: %s\n",
                      CGLErrorString( cglErr ) );
 
-            _glfwPlatformCloseWindow();
             return GL_FALSE;
         }
     }
