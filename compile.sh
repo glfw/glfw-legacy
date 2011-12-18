@@ -373,7 +373,9 @@ has_clock_gettime=no
 cat > conftest.c <<EOF
 #include <time.h>
 int main() {
+#if defined( _POSIX_TIMERS ) && defined( _POSIX_MONOTONIC_CLOCK )
 clock_gettime(0, 0);
+#endif
 return 0;}
 EOF
 
