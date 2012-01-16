@@ -155,12 +155,7 @@ int _glfwPlatformInit( void )
         return GL_FALSE;
     }
 
-    _glfwDesktopVideoMode = CGDisplayCurrentMode( kCGDirectMainDisplay );
-    if( _glfwDesktopVideoMode == NULL )
-    {
-        fprintf( stderr, "glfwInit failing because it kind find the desktop display mode\n" );
-        return GL_FALSE;
-    }
+    _glfwPlatformGetDesktopMode( &_glfwLibrary.desktopMode );
 
     // Install atexit routine
     atexit( glfw_atexit );

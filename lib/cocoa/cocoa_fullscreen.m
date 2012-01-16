@@ -97,6 +97,6 @@ int _glfwPlatformGetVideoModes( GLFWvidmode *list, int maxcount )
 
 void _glfwPlatformGetDesktopMode( GLFWvidmode *mode )
 {
-    *mode = vidmodeFromCGDisplayMode( _glfwLibrary.DesktopMode );
+    *mode = vidmodeFromCGDisplayMode( CGDisplayCurrentMode( CGMainDisplayID() ) );
 }
 

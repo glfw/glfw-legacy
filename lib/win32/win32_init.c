@@ -312,6 +312,8 @@ int _glfwPlatformInit( void )
     // Initialise thread package
     _glfwInitThreads();
 
+    _glfwPlatformGetDesktopMode( &_glfwLibrary.desktopMode );
+
     // Install atexit() routine
     atexit( _glfwTerminate_atexit );
 

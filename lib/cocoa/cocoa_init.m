@@ -263,15 +263,14 @@ int _glfwPlatformInit( void )
 
     [NSApp finishLaunching];
 
+    _glfwPlatformGetDesktopMode( &_glfwLibrary.desktopMode );
+
     // Install atexit routine
     atexit( glfw_atexit );
 
     initThreads();
 
     _glfwPlatformSetTime( 0.0 );
-
-    _glfwLibrary.DesktopMode =
-	(NSDictionary *)CGDisplayCurrentMode( CGMainDisplayID() );
 
     return GL_TRUE;
 }
