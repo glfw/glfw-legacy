@@ -155,6 +155,8 @@ GLFWGLOBAL struct {
 
     int Unbundled;
 
+    id originalMode;
+
     id AutoreleasePool;
 
 } _glfwLibrary;

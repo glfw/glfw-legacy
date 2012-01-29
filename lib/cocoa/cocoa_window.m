@@ -549,6 +549,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
+        _glfwLibrary.originalMode = (NSDictionary*)
+            CGDisplayCurrentMode( CGMainDisplayID() );
+
         CGCaptureAllDisplays();
         CGDisplaySwitchToMode( CGMainDisplayID(), fullscreenMode );
     }
@@ -663,7 +666,7 @@ void _glfwPlatformCloseWindow( void )
     {
         [[_glfwWin.window contentView] exitFullScreenModeWithOptions:nil];
         CGDisplaySwitchToMode( CGMainDisplayID(),
-                               (CFDictionaryRef)_glfwLibrary.DesktopMode );
+                               (CFDictionaryRef)_glfwLibrary.originalMode );
         CGReleaseAllDisplays();
     }
 
