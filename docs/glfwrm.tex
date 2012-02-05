@@ -1695,6 +1695,9 @@ A window has to be opened for this function to have any effect.
 Mouse motion events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
 (with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
+
+When a callback function is set, it will be called with the current mouse
+coordinates before this function returns.
 \end{refnotes}
 
 
@@ -1737,6 +1740,9 @@ A window has to be opened for this function to have any effect.
 Mouse wheel events are recorded continuously, but only reported when
 \textbf{glfwPollEvents}, \textbf{glfwWaitEvents} or \textbf{glfwSwapBuffers}
 (with GLFW\_AUTO\_POLL\_EVENTS enabled) is called.
+
+When a callback function is set, it will be called with the current wheel
+position before this function returns.
 \end{refnotes}
 
 

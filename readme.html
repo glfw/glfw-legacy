@@ -548,6 +548,7 @@ version of GLFW.</p>
 <ul>
   <li>Added <code>GLFW_INCLUDE_GL3</code> macro for including the new <code>gl3.h</code> instead of <code>gl.h</code></li>
   <li>Bugfix: The returned desktop mode did not reflect the display mode as it was before the window was opened.</li>
+  <li>Bugfix: The reference manual did not note that <code>glfwSetMousePosCallback</code> and <code>glfwSetMouseWheelCallback</code> called the new callback before returning</li>
   <li>[X11] Added the POSIX <code>CLOCK_MONOTONIC</code> time source as the preferred method (backported from 3.0)</li>
   <li>[X11] Bugfix: Added missing <code>Requires:</code> line to pkg-config file generation</li>
   <li>[X11] Bugfix: Threading link flags were discarded before pkg-config file generation</li>
