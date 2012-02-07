@@ -32,7 +32,15 @@ threads, and more.</p>
 <p>GLFW 2.7 is expected to be the last major release of the 2.x series, with
 most development now being done on what will become version 3.0.</p>
 
-<p>This release is <blink>NOT YET DESCRIBED</blink>.</p>
+<p>This release replaces Cygwin cross-compilation with better MinGW and MSYS
+support, adds support for POSIX monotonic timers, adds the
+<code>GLFW_INCLUDE_GL3</code> to make GLFW include the draft <code>gl3.h</code>
+header instead of <code>gl.h</code> and fixes a number of bugs.</p>
+
+<p>At the time of this release, the draft <code>gl3.h</code> header is by
+default only available on OS X Lion.  Until it is included in other development
+environments, it can be downloaded from the
+<a href="http://www.opengl.org/registry/">OpenGL Registry</a>.</p>
 
 
 <a name="compiling">
