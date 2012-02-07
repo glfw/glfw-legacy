@@ -53,6 +53,13 @@ install: libglfw.a libglfw.pc
 
 
 ##########################################################################
+# Install GLFW header and static and dynamic libraries
+##########################################################################
+dist-install: install
+	$(INSTALL) -c -m 644 libglfw.dylib $(PREFIX)/lib/libglfw.dylib
+
+
+##########################################################################
 # Object files for the GLFW library
 ##########################################################################
 OBJS = \

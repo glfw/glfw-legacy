@@ -170,6 +170,9 @@ cocoa-clean:
 	cd examples;  $(MAKE) -f Makefile.cocoa clean
 	cd tests;     $(MAKE) -f Makefile.cocoa clean
 
-cocoa-install:
+cocoa-install: cocoa
 	cd lib/cocoa; $(MAKE) -f Makefile.cocoa install
+
+cocoa-dist-install: cocoa
+	cd lib/cocoa; $(MAKE) -f Makefile.cocoa dist-install
 
