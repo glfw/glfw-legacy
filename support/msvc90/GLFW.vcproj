@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -78,6 +78,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copy vc90.pdb to executable directories"
+				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests"
 			/>
 		</Configuration>
 		<Configuration
@@ -141,6 +143,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Copy vc90.pdb to executable directories"
+				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests"
 			/>
 		</Configuration>
 	</Configurations>
