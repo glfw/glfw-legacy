@@ -55,7 +55,7 @@ install: libglfw.a libglfw.pc
 ##########################################################################
 # Install GLFW header and static and dynamic libraries
 ##########################################################################
-dist-install: install
+dist-install: libglfw.dylib install
 	$(INSTALL) -c -m 644 libglfw.dylib $(PREFIX)/lib/libglfw.dylib
 
 
