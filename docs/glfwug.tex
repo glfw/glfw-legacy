@@ -128,6 +128,27 @@ read some user keyboard input.
 
 
 %-------------------------------------------------------------------------
+\section{Including the GLFW header}
+The usual way of including the \GLFW\ header is:
+\begin{lstlisting}
+#include <GL/glfw.h>
+\end{lstlisting}
+
+This header defines all the constants, types and function prototypes of the
+\GLFW\ API.  It also by default includes the \OpenGL\ and GLU header files
+provided by your development environment and defines all the necessary constants
+and types that are necessary for these headers to work on that particular
+platform.
+
+By default, the regular \textbf{gl.h} header is included. If you wish to include
+the draft \textbf{gl3.h} header instead, define \textbf{GLFW\_INCLUDE\_GL3}
+before the inclusion of the GLFW header.
+
+By default, the \textbf{glu.h} header is included.  If you wish to avoid this,
+define \textbf{GLFW\_NO\_GLU} before the inclusion of the GLFW header.
+
+
+%-------------------------------------------------------------------------
 \section{Initializing GLFW}
 Before using any of the \GLFW\ functions, it is necessary to call
 \textbf{glfwInit}. It initializes the parts of \GLFW\ that are not dependent on
