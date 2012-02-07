@@ -367,10 +367,9 @@ include the <code>GL/glfw.h</code> header file, i.e.:</p>
 <blockquote><code>#include &lt;GL/glfw.h&gt;</code></blockquote>
 
 <p>This defines all the constants, types and function prototypes of the GLFW
-API.  It also includes the <code>gl.h</code> and </code>GL/glu.h</code> header
-files, and - this is very important - <em>it defines all the necessary
-constants and types that are necessary for the OpenGL headers to work on
-different platforms</em>.</p>
+API.  It also includes the OpenGL and GLU header files, and defines all the
+necessary constants and types that are necessary for these headers to work on
+that particular platform.</p>
 
 <p>For example, under Microsoft Windows you are normally required to include
 <code>windows.h</code> before you include <code>GL/gl.h</code>.  This would
@@ -381,15 +380,23 @@ your program to check which platform it is being compiled on.</p>
 <code>windows.h</code>, but rather by itself duplicating the necessary parts of
 it.  This way, the namespace won't be cluttered by the entire Windows API.</p>
 
+<p>By default, the regular <code>gl.h</code> OpenGL header is included. If you
+wish to include the draft <code>gl3.h</code> header instead, define
+<code>GLFW_INCLUDE_GL3</code> before the inclusion of the GLFW header.</p>
+
+<p>By default, the <code>glu.h</code> GLU header is included.  If you wish to
+avoid this, define <code>GLFW_NO_GLU</code> before the inclusion of the GLFW
+header.</p>
+
 <p>In other words:
 <ul>
-  <li>Do <em>not</em> include <code>GL/gl.h</code> or <code>GL/glu.h</code>
+  <li>Do <em>not</em> include <code>gl.h</code> or <code>glu.h</code>
       yourself, as GLFW does this for you</li>
-  <li>Do <em>not</em> include <code>windows.h</code> unless you actually need
+  <li>Do <em>not</em> include <code>windows.h</code> unless you need
       direct access to the Windows API</li>
-  <li>If you <em>do</em> need to include <code>windows.h</code>, do it
-      <em>before</em> including <code>GL/glfw.h</code> and the GLFW header will
-      detect this.</p>
+  <li>If you <em>do</em> include <code>windows.h</code>, do it
+      <em>before</em> including <code>GL/glfw.h</code>.  The GLFW header will
+      detect this and act appropriately.</li>
 </ul>
 
 <p>Also note that if you are using an OpenGL extension loading library such as
