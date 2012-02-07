@@ -375,9 +375,9 @@ different platforms</em>.</p>
 <p>For example, under Microsoft Windows you are normally required to include
 <code>windows.h</code> before you include <code>GL/gl.h</code>.  This would
 however make your code dependent on the Windows platform, or at least require
-your program to check which platform it is being compiled on.
+your program to check which platform it is being compiled on.</p>
 
-The GLFW header file takes care of this for you, not by including
+<p>The GLFW header file takes care of this for you, not by including
 <code>windows.h</code>, but rather by itself duplicating the necessary parts of
 it.  This way, the namespace won't be cluttered by the entire Windows API.</p>
 
