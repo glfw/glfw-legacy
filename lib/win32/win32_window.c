@@ -775,7 +775,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             {
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_PRESS );
             }
-            return 0;
+            break;
           }
 
         case WM_KEYUP:
@@ -797,7 +797,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 translateChar( (DWORD) wParam, (DWORD) lParam, GLFW_RELEASE );
             }
 
-            return 0;
+            break;
         }
 
         case WM_LBUTTONDOWN:
