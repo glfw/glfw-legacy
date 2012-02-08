@@ -64,12 +64,10 @@ programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
 <p>Currently supported compilers and systems are:</p>
 
 <ul>
-  <li>Microsoft Visual C++ 2008 and later</li>
-  <li>MSYS or Cygwin for Windows</li>
-  <li>Bare MinGW for Windows</li>
-  <li>LCC-Win32 for Windows</li>
+  <li>Microsoft Visual C++ 2008 and 2010</li>
+  <li>MinGW with or without MSYS</li>
+  <li>MinGW cross-compilation for Unix-like systems</li>
   <li>OpenWatcom for Windows</li>
-  <li>MinGW cross-compilation for Unix or Unix-like systems</li>
   <li>Unix or Unix-like systems running the X Window System</li>
   <li>Apple GCC or Clang on Mac OS X</li>
 </ul>
@@ -99,31 +97,61 @@ listed below already does this, but you need to do it yourself if you are
 making a custom build.  Without this macro, the GLFW DLL will not export
 functions correctly and code calling the DLL will be incorrectly generated.</p>
 
-<h4>2.1.1 Microsoft Visual C++ 2008 and later</h4>
+<h4>2.1.1 Microsoft Visual C++ 2008 and 2010</h4>
 
 <p>Project files for both the static and dynamic versions of the GLFW library
 are provided in the <code>support/msvc90</code> and
 <code>support/msvc100</code> directories.</p>
 
 
-<h4>2.1.2 MSYS or Cygwin on Windows</h4>
+<h4>2.1.2 MinGW on Windows</h4>
 
-<p>GLFW can be cross-compiled to native Win32 code using the Cygwin
-environment.  The Cygwin build path will also work on MinGW with MSYS.</p>
+<p>GLFW can be compiled using only
+<a href="http://www.mingw.org/">MinGW</a>.  Open a Windows command prompt,
+enter the root directory of the GLFW source distribution and use the
+<code>win32-mingw</code> target:</p>
 
-<p>Open a Cygwin or MSYS shell, enter the GLFW root directory and run make with
-the <code>win32-cygwin</code> target.</p>
-
-
-<h4>2.1.3 Bare MinGW on Windows</h4>
-
-<p>GLFW can be compiled using only bare bone MinGW, using the Windows
-command-line environment for file management.  Open a regular command prompt,
-enter the GLFW root directory and run the MinGW make program
-<code>mingw32-make</code> with the <code>win32-mingw</code> target.</p>
+<blockquote><code>mingw32-make win32-mingw</code></blockquote>
 
 
-<h4>2.1.4 OpenWatcom on Windows</h4>
+<h4>2.1.3 MSYS and MinGW on Windows</h4>
+
+<p>If you have both <a href="http://www.mingw.org/">MinGW and MSYS</a>
+installed, a better alternative is to use the built-in MSYS support.  Open an
+MSYS shell, enter the root directory of the GLFW source distribution and use
+the <code>win32-msys</code> target:</p>
+
+<blockquote><code>mingw32-make win32-msys</code></blockquote>
+
+
+<h4>2.1.4 Cygwin's MinGW on Windows</h4>
+
+<p>GLFW can be cross-compiled to native Win32 code using the MinGW packages in
+<a href="http://www.cygwin.com/">Cygwin</a> (the newer <code>mingw-</code>
+packages, not the older <code>gcc-mingw-</code> ones).  Open a Cygwin shell,
+enter the root directory of the GLFW source distribution and use the
+<code>cross-mgw</code> target:</p>                                       
+
+<blockquote><code>env TARGET=i686-pc-mingw32- make cross-mgw</code></blockquote>
+
+<p>This results in binaries that are functionally identical to those produced
+by the other MinGW variants, i.e. they will use <code>msvcrt.dll</code> as libc
+and will have no dependency on Cygwin.</p>
+
+
+<h4>2.1.5 MinGW cross-compilation for Unix or Unix-like systems</h4>
+
+<p>Some Unix-like systems have a MinGW cross-compilation package for compiling
+native Win32 binaries, for example the <code>mingw32</code> package on Debian
+GNU/Linux and its derivatives.  You can use this to build Win32 binaries of
+GLFW and all examples without having to run Microsoft Windows or even Wine.
+
+Use the regular make program with the <code>cross-mgw</code> target.  You may
+also need to adjust the <code>TARGET</code> environment variable, depending on
+how packagers named the binaries.</p>
+
+
+<h4>2.1.6 OpenWatcom on Windows</h4>
 
 <p>GLFW can be compiled using <a href="http://www.openwatcom.org/">OpenWatcom</a>
 for Windows by running the following in the GLFW root directory:</p>
@@ -136,16 +164,6 @@ set up all the required environment variables.  If <code>nmake</code> is
 unavailable, you probably have to run <code>WATCOM\setvars.bat</code> from the
 command prompt first, where <code>WATCOM</code> is the directory in which you
 installed OpenWatcom (e.g. <code>C:\Watcom</code>).</p>
-
-
-<h4>2.1.5 MinGW cross-compilation for Unix or Unix-like systems</h4>
-
-<p>Some Unix-like systems have a MinGW cross-compilation package for compiling
-native Win32 binaries, for example the <code>mingw32</code> package on Debian
-GNU/Linux and its derivatives.  You can use this to build Win32 binaries of
-GLFW and all examples without having to run Microsoft Windows.  Use the regular
-make program with the <code>cross-mgw</code> target.  These binaries are also
-regularly tested with Wine.</p>
 
 
 <h3>2.2 X11 on Unix-like systems</h3>
