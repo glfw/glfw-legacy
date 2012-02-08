@@ -49,17 +49,18 @@ environments, it can be downloaded from the
 <p>A top level makefile can be found in the root directory of the GLFW
 distribution that has been designed to work with several compilers. If you
 simply enter the GLFW root directory in a shell and type <code>make</code> (or
-<code>nmake</code> or <code>gmake</code>, depending on the name of your make
-tool), and a list should appear with the currently supported options for
+<code>nmake</code>, <code>mingw32-make</code>, <code>gnumake</code>,
+<code>gmake</code> or something else, depending on your development
+envronment), and a list should appear with the currently supported options for
 systems and compilers.</p>
 
-<p>For example, one of the options is to compile GLFW for Windows with the
-LCC-Win32 C compiler, i.e.:</p>
+<p>For example, one of the options is to compile GLFW for Windows using MinGW
+and MSYS.  To do this, use:</p>
 
-<blockquote><code>make win32-lcc</code></blockquote>
+<blockquote><code>make win32-msys</code></blockquote>
 
-<p>That will compile the GLFW static link library and the supplied example
-programs. For Windows compilers, a Win32 DLL will also be compiled.</p>
+<p>This will compile the GLFW static library and DLL as well as the supplied
+example and test programs.</p>
 
 <p>Currently supported compilers and systems are:</p>
 
