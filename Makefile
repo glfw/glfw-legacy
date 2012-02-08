@@ -58,10 +58,10 @@ default:
 ###########################################################################
 
 win32-mingw:
-	@.\\compile.bat $(MAKE) mingw
+	@cmd /c compile.bat $(MAKE) mingw
 
 mingw-clean:
-	@.\\compile.bat CLEAN
+	@cmd /c compile.bat CLEAN
 
 
 ###########################################################################
