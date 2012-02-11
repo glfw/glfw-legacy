@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)Static"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -49,7 +49,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
 			<Tool
@@ -79,13 +79,13 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copy vc90.pdb to executable directories"
-				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests"
+				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)Static"
 			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="0"
@@ -114,7 +114,6 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="0"
 				CompileAs="1"
 			/>
 			<Tool
@@ -144,7 +143,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copy vc90.pdb to executable directories"
-				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests"
+				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
