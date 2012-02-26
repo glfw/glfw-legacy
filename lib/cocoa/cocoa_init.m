@@ -81,6 +81,43 @@ NSString *GLFWNameKeys[] =
 };
 
 //========================================================================
+// Change to our application bundle's resources directory, if present
+//========================================================================
+static void changeToResourcesDirectory(void)
+{
+    char resourcesPath[MAXPATHLEN];
+
+    CFBundleRef bundle = CFBundleGetMainBundle();
+    if (!bundle)
+        return;
+
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
+
+    CFStringRef last = CFURLCopyLastPathComponent(resourcesURL);
+    if (CFStringCompare(CFSTR("Resources"), last, 0) != kCFCompareEqualTo)
+    {
+        CFRelease(last);
+        CFRelease(resourcesURL);
+        return;
+    }
+
+    CFRelease(last);
+
+    if (!CFURLGetFileSystemRepresentation(resourcesURL,
+                                          true,
+                                          (UInt8*) resourcesPath,
+                                          MAXPATHLEN))
+    {
+        CFRelease(resourcesURL);
+        return;
+    }
+
+    CFRelease(resourcesURL);
+
+    chdir(resourcesPath);
+}
+
+//========================================================================
 // Try to figure out what the calling application is called
 //========================================================================
 static NSString *findAppName( void )
@@ -251,12 +288,7 @@ int _glfwPlatformInit( void )
     [thread start];
     [thread release];
 
-    NSString* resourcePath = [[NSBundle mainBundle] resourcePath];
-
-    if( access( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding], R_OK ) == 0 )
-    {
-        chdir( [resourcePath cStringUsingEncoding:NSUTF8StringEncoding] );
-    }
+    changeToResourcesDirectory();
 
     // Setting up menu bar must go exactly here else weirdness ensues
     setUpMenuBar();
