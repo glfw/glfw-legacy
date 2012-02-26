@@ -31,6 +31,188 @@
 
 #include <AvailabilityMacros.h>
 
+// Needed for _NSGetProgname
+#include <crt_externs.h>
+
+//========================================================================
+// GLFW application class
+//========================================================================
+
+@interface GLFWApplication : NSApplication
+@end
+
+@implementation GLFWApplication
+
+// From http://cocoadev.com/index.pl?GameKeyboardHandlingAlmost
+// This works around an AppKit bug, where key up events while holding
+// down the command key don't get sent to the key window.
+- (void)sendEvent:(NSEvent *)event
+{
+    if( [event type] == NSKeyUp && ( [event modifierFlags] & NSCommandKeyMask ) )
+    {
+        [[self keyWindow] sendEvent:event];
+    }
+    else
+    {
+        [super sendEvent:event];
+    }
+}
+
+@end
+
+// Prior to Snow Leopard, we need to use this oddly-named semi-private API
+// to get the application menu working properly.  Need to be careful in
+// case it goes away in a future OS update.
+@interface NSApplication (NSAppleMenu)
+- (void)setAppleMenu:(NSMenu *)m;
+@end
+
+//========================================================================
+// Try to figure out what the calling application is called
+//========================================================================
+static NSString *findAppName( void )
+{
+    // Keys to search for as potential application names
+    NSString *keys[] =
+    {
+        @"CFBundleDisplayName",
+        @"CFBundleName",
+        @"CFBundleExecutable",
+    };
+
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+
+    unsigned int i;
+    for( i = 0; i < sizeof(keys) / sizeof(keys[0]); i++ )
+    {
+        id name = [infoDictionary objectForKey:keys[i]];
+        if (name &&
+            [name isKindOfClass:[NSString class]] &&
+            ![@"" isEqualToString:name])
+        {
+            return name;
+        }
+    }
+
+    // If we get here, we're unbundled
+    if( !_glfwLibrary.Unbundled )
+    {
+        // Could do this only if we discover we're unbundled, but it should
+        // do no harm...
+        ProcessSerialNumber psn = { 0, kCurrentProcess };
+        TransformProcessType( &psn, kProcessTransformToForegroundApplication );
+
+        // Having the app in front of the terminal window is also generally
+        // handy.  There is an NSApplication API to do this, but...
+        SetFrontProcess( &psn );
+
+        _glfwLibrary.Unbundled = GL_TRUE;
+    }
+
+    char **progname = _NSGetProgname();
+    if( progname && *progname )
+    {
+        // TODO: UTF8?
+        return [NSString stringWithUTF8String:*progname];
+    }
+
+    // Really shouldn't get here
+    return @"GLFW Application";
+}
+
+//========================================================================
+// Set up the menu bar (manually)
+// This is nasty, nasty stuff -- calls to undocumented semi-private APIs that
+// could go away at any moment, lots of stuff that really should be
+// localize(d|able), etc.  Loading a nib would save us this horror, but that
+// doesn't seem like a good thing to require of GLFW's clients.
+//========================================================================
+static void setUpMenuBar( void )
+{
+    NSString *appName = findAppName();
+
+    NSMenu *bar = [[NSMenu alloc] init];
+    [NSApp setMainMenu:bar];
+
+    NSMenuItem *appMenuItem =
+        [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
+    NSMenu *appMenu = [[NSMenu alloc] init];
+    [appMenuItem setSubmenu:appMenu];
+
+    [appMenu addItemWithTitle:[NSString stringWithFormat:@"About %@", appName]
+                       action:@selector(orderFrontStandardAboutPanel:)
+                keyEquivalent:@""];
+    [appMenu addItem:[NSMenuItem separatorItem]];
+    NSMenu *servicesMenu = [[NSMenu alloc] init];
+    [NSApp setServicesMenu:servicesMenu];
+    [[appMenu addItemWithTitle:@"Services"
+                       action:NULL
+                keyEquivalent:@""] setSubmenu:servicesMenu];
+    [appMenu addItem:[NSMenuItem separatorItem]];
+    [appMenu addItemWithTitle:[NSString stringWithFormat:@"Hide %@", appName]
+                       action:@selector(hide:)
+                keyEquivalent:@"h"];
+    [[appMenu addItemWithTitle:@"Hide Others"
+                       action:@selector(hideOtherApplications:)
+                keyEquivalent:@"h"]
+        setKeyEquivalentModifierMask:NSAlternateKeyMask | NSCommandKeyMask];
+    [appMenu addItemWithTitle:@"Show All"
+                       action:@selector(unhideAllApplications:)
+                keyEquivalent:@""];
+    [appMenu addItem:[NSMenuItem separatorItem]];
+    [appMenu addItemWithTitle:[NSString stringWithFormat:@"Quit %@", appName]
+                       action:@selector(terminate:)
+                keyEquivalent:@"q"];
+
+    NSMenuItem *windowMenuItem =
+        [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
+    NSMenu *windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
+    [NSApp setWindowsMenu:windowMenu];
+    [windowMenuItem setSubmenu:windowMenu];
+
+    [windowMenu addItemWithTitle:@"Miniaturize"
+                          action:@selector(performMiniaturize:)
+                   keyEquivalent:@"m"];
+    [windowMenu addItemWithTitle:@"Zoom"
+                          action:@selector(performZoom:)
+                   keyEquivalent:@""];
+    [windowMenu addItem:[NSMenuItem separatorItem]];
+    [windowMenu addItemWithTitle:@"Bring All to Front"
+                          action:@selector(arrangeInFront:)
+                   keyEquivalent:@""];
+
+    // At least guard the call to private API to avoid an exception if it
+    // goes away.  Hopefully that means the worst we'll break in future is to
+    // look ugly...
+    if( [NSApp respondsToSelector:@selector(setAppleMenu:)] )
+    {
+        [NSApp setAppleMenu:appMenu];
+    }
+}
+
+//========================================================================
+// Initialize the Cocoa Application Kit
+//========================================================================
+static GLboolean initializeAppKit( void )
+{
+    if( NSApp )
+    {
+        return GL_TRUE;
+    }
+
+    // Implicitly create shared NSApplication instance
+    [GLFWApplication sharedApplication];
+
+    // Setting up the menu bar must go between sharedApplication
+    // above and finishLaunching below, in order to properly emulate the
+    // behavior of NSApplicationMain
+    setUpMenuBar();
+
+    [NSApp finishLaunching];
+
+    return GL_TRUE;
+}
+
 //========================================================================
 // Delegate for window related notifications
 // (but also used as an application delegate)
@@ -445,6 +627,11 @@ int  _glfwPlatformOpenWindow( int width, int height,
                               const _GLFWfbconfig *fbconfig )
 {
     int colorBits;
+
+    if( !initializeAppKit() )
+    {
+        return GL_FALSE;
+    }
 
     _glfwWin.pixelFormat = nil;
     _glfwWin.window = nil;
