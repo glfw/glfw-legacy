@@ -627,11 +627,6 @@ int  _glfwPlatformOpenWindow( int width, int height,
         return GL_FALSE;
     }
 
-    _glfwWin.pixelFormat = nil;
-    _glfwWin.window = nil;
-    _glfwWin.context = nil;
-    _glfwWin.delegate = nil;
-
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1070
     // Fail if any OpenGL version above 2.1 other than 3.2 was requested
     if( wndconfig->glMajor > 3 ||

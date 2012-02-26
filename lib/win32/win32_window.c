@@ -1302,10 +1302,6 @@ int _glfwPlatformOpenWindow( int width, int height,
 {
     GLboolean recreateContext = GL_FALSE;
 
-    // Clear platform specific GLFW window state
-    _glfwWin.classAtom         = 0;
-    _glfwWin.oldMouseLockValid = GL_FALSE;
-
     _glfwWin.desiredRefreshRate = wndconfig->refreshRate;
 
     _glfwWin.classAtom = registerWindowClass();
