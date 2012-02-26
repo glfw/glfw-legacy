@@ -94,20 +94,14 @@ static NSString *findAppName( void )
         }
     }
 
-    // If we get here, we're unbundled
-    if( !_glfwLibrary.Unbundled )
-    {
-        // Could do this only if we discover we're unbundled, but it should
-        // do no harm...
-        ProcessSerialNumber psn = { 0, kCurrentProcess };
-        TransformProcessType( &psn, kProcessTransformToForegroundApplication );
+    // Could do this only if we discover we're unbundled, but it should
+    // do no harm...
+    ProcessSerialNumber psn = { 0, kCurrentProcess };
+    TransformProcessType( &psn, kProcessTransformToForegroundApplication );
 
-        // Having the app in front of the terminal window is also generally
-        // handy.  There is an NSApplication API to do this, but...
-        SetFrontProcess( &psn );
-
-        _glfwLibrary.Unbundled = GL_TRUE;
-    }
+    // Having the app in front of the terminal window is also generally
+    // handy.  There is an NSApplication API to do this, but...
+    SetFrontProcess( &psn );
 
     char **progname = _NSGetProgname();
     if( progname && *progname )

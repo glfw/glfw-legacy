@@ -153,8 +153,6 @@ GLFWGLOBAL struct {
     // dlopen handle for dynamically-loading extension function pointers
     void *OpenGLFramework;
 
-    int Unbundled;
-
     id originalMode;
 
     id AutoreleasePool;
