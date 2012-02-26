@@ -607,7 +607,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     // TODO: Break up this function!
 
-    _glfwWin.refreshRate = wndconfig->refreshRate;
+    _glfwWin.refreshRate    = wndconfig->refreshRate;
+    _glfwWin.windowNoResize = wndconfig->windowNoResize;
 
     // Fail if OpenGL 3.0 or above was requested
     if( wndconfig->glMajor > 2 )

@@ -1303,6 +1303,7 @@ int _glfwPlatformOpenWindow( int width, int height,
     GLboolean recreateContext = GL_FALSE;
 
     _glfwWin.desiredRefreshRate = wndconfig->refreshRate;
+    _glfwWin.windowNoResize     = wndconfig->windowNoResize;
 
     _glfwWin.classAtom = registerWindowClass();
     if( !_glfwWin.classAtom )

@@ -622,6 +622,8 @@ int  _glfwPlatformOpenWindow( int width, int height,
 {
     int colorBits;
 
+    _glfwWin.windowNoResize = wndconfig->windowNoResize;
+
     if( !initializeAppKit() )
     {
         return GL_FALSE;
