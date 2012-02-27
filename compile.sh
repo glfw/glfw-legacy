@@ -370,17 +370,21 @@ echo -n "Checking for clock_gettime... " 1>&6
 echo "$self: Checking for clock_gettime" >&5
 has_clock_gettime=no
 
+LFLAGS_OLD="$GLFW_LFLAGS"
+LFLAGS_CLOCK=
+GLFW_LFLAGS="$LFLAGS_CLOCK"
+
 cat > conftest.c <<EOF
 #include <time.h>
+#include <unistd.h>
 int main() {
 #if defined( _POSIX_TIMERS ) && defined( _POSIX_MONOTONIC_CLOCK )
 clock_gettime(0, 0);
+#else
+#error "clock_gettime support not detected"
 #endif
 return 0;}
 EOF
-
-LFLAGS_OLD="$GLFW_LFLAGS"
-LFLAGS_CLOCK=
 
 if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
   rm -f conftest*
@@ -392,7 +396,7 @@ fi
 
 if [ "x$has_clock_gettime" = xno ]; then
   LFLAGS_CLOCK="-lrt"
-  GLFW_LFLAGS="$LFLAGS_OLD $LFLAGS_CLOCK"
+  GLFW_LFLAGS="$LFLAGS_CLOCK"
   if { (eval echo $self: \"$link\") 1>&5; (eval $link) 2>&5; }; then
     rm -f conftest*
     has_clock_gettime=yes
