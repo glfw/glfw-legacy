@@ -333,6 +333,7 @@ int main() {sched_yield(); return 0;}
 EOF
 
   if { (eval echo $self: \"$compile\") 1>&5; (eval $compile) 2>&5; }; then
+    rm -f conftest*
     has_sched_yield=yes
   else
     echo "$self: failed program was:" >&5
