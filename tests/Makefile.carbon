@@ -19,7 +19,7 @@ SO_LFLAGS = $(SOLIB) -framework OpenGL -m32
 all: Accuracy.app/Contents/MacOS/Accuracy \
      defaults \
      Dynamic.app/Contents/MacOS/Dynamic \
-     Events.app/Contents/MacOS/Events \
+     events \
      FSAA.app/Contents/MacOS/FSAA \
      FSInput.app/Contents/MacOS/FSInput \
      Iconify.app/Contents/MacOS/Iconify \
@@ -41,9 +41,8 @@ Dynamic.app/Contents/MacOS/Dynamic: dynamic.c $(SOLIB)
 	cp $(SOLIB) Dynamic.app/Contents/MacOS/
 	$(CC) $(CFLAGS) dynamic.c $(SO_LFLAGS) -o Dynamic.app/Contents/MacOS/Dynamic
 
-Events.app/Contents/MacOS/Events: events.c $(LIB)
-	/bin/sh bundle.sh Events
-	$(CC) $(CFLAGS) events.c $(LFLAGS) -o Events.app/Contents/MacOS/Events
+events: events.c $(LIB)
+	$(CC) $(CFLAGS) events.c $(LFLAGS) -o events
 
 FSAA.app/Contents/MacOS/FSAA: fsaa.c $(LIB)
 	/bin/sh bundle.sh FSAA
@@ -76,6 +75,6 @@ version: version.c $(LIB)
 	$(CC) $(CFLAGS) version.c $(LFLAGS) -o version
 
 clean:
-	rm -rf Accuracy.app defaults Dynamic.app Events.app FSAA.app FSInput.app \
+	rm -rf Accuracy.app defaults Dynamic.app events FSAA.app FSInput.app \
            Iconify.app joysticks Peter.app ReOpen.app Tearing.app version
 
