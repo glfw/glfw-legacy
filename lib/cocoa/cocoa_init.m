@@ -43,38 +43,38 @@
 //========================================================================
 // Change to our application bundle's resources directory, if present
 //========================================================================
-static void changeToResourcesDirectory(void)
+static void changeToResourcesDirectory( void )
 {
     char resourcesPath[MAXPATHLEN];
 
     CFBundleRef bundle = CFBundleGetMainBundle();
-    if (!bundle)
+    if( !bundle )
         return;
 
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL( bundle );
 
-    CFStringRef last = CFURLCopyLastPathComponent(resourcesURL);
-    if (CFStringCompare(CFSTR("Resources"), last, 0) != kCFCompareEqualTo)
+    CFStringRef last = CFURLCopyLastPathComponent( resourcesURL );
+    if( CFStringCompare( CFSTR( "Resources" ), last, 0 ) != kCFCompareEqualTo )
     {
-        CFRelease(last);
-        CFRelease(resourcesURL);
+        CFRelease( last );
+        CFRelease( resourcesURL );
         return;
     }
 
-    CFRelease(last);
+    CFRelease( last );
 
-    if (!CFURLGetFileSystemRepresentation(resourcesURL,
-                                          true,
-                                          (UInt8*) resourcesPath,
-                                          MAXPATHLEN))
+    if( !CFURLGetFileSystemRepresentation( ResourcesURL,
+                                           True,
+                                           (UInt8*) resourcesPath,
+                                           MAXPATHLEN) )
     {
-        CFRelease(resourcesURL);
+        CFRelease( resourcesURL );
         return;
     }
 
-    CFRelease(resourcesURL);
+    CFRelease( resourcesURL );
 
-    chdir(resourcesPath);
+    chdir( resourcesPath );
 }
 
 //========================================================================

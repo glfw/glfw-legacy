@@ -86,9 +86,9 @@ static NSString *findAppName( void )
     for( i = 0; i < sizeof(keys) / sizeof(keys[0]); i++ )
     {
         id name = [infoDictionary objectForKey:keys[i]];
-        if (name &&
+        if( name &&
             [name isKindOfClass:[NSString class]] &&
-            ![@"" isEqualToString:name])
+            ![@"" isEqualToString:name] )
         {
             return name;
         }
@@ -597,7 +597,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 - (void)scrollWheel:(NSEvent *)event
 {
     _glfwInput.WheelPosFloating += [event deltaY];
-    _glfwInput.WheelPos = lrint(_glfwInput.WheelPosFloating);
+    _glfwInput.WheelPos = lrint( _glfwInput.WheelPosFloating );
 
     if( _glfwWin.mouseWheelCallback )
     {
@@ -716,7 +716,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     }
 
     _glfwWin.window = [[NSWindow alloc]
-        initWithContentRect:NSMakeRect(0, 0, width, height)
+        initWithContentRect:NSMakeRect( 0, 0, width, height )
                   styleMask:styleMask
                     backing:NSBackingStoreBuffered
                       defer:NO];
@@ -798,7 +798,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
         ADD_ATTR2( NSOpenGLPFASamples, fbconfig->samples );
     }
 
-    ADD_ATTR(0);
+    ADD_ATTR( 0 );
 
     _glfwWin.pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
     if( _glfwWin.pixelFormat == nil )
@@ -882,7 +882,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
 
 void _glfwPlatformSetWindowSize( int width, int height )
 {
-    [_glfwWin.window setContentSize:NSMakeSize(width, height)];
+    [_glfwWin.window setContentSize:NSMakeSize( width, height )];
 }
 
 //========================================================================
@@ -1024,12 +1024,12 @@ void _glfwPlatformPollEvents( void )
                                       inMode:NSDefaultRunLoopMode
                                      dequeue:YES];
 
-        if (event)
+        if( event )
         {
             [NSApp sendEvent:event];
         }
     }
-    while (event);
+    while( event );
 
     [_glfwLibrary.AutoreleasePool drain];
     _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
