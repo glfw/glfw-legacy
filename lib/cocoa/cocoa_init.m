@@ -63,8 +63,8 @@ static void changeToResourcesDirectory( void )
 
     CFRelease( last );
 
-    if( !CFURLGetFileSystemRepresentation( ResourcesURL,
-                                           True,
+    if( !CFURLGetFileSystemRepresentation( resourcesURL,
+                                           true,
                                            (UInt8*) resourcesPath,
                                            MAXPATHLEN) )
     {
