@@ -1090,11 +1090,6 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // calculating the maximum y coordinate of all screens, since Cocoa's
     // "global coordinates" are upside down from CG's...
 
-    // Without this (once per app run, but it's convenient to do it here)
-    // events will be suppressed for a default of 0.25 seconds after we
-    // move the cursor.
-    CGSetLocalEventsSuppressionInterval( 0.0 );
-
     NSPoint localPoint = NSMakePoint( x, y );
     NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
     CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;

@@ -139,6 +139,14 @@ int _glfwPlatformInit( void )
 
     initThreads();
 
+    _glfwLibrary.eventSource = CGEventSourceCreate( kCGEventSourceStateHIDSystemState );
+    if( !_glfwLibrary.eventSource )
+    {
+        return GL_FALSE;
+    }
+
+    CGEventSourceSetLocalEventsSuppressionInterval( _glfwLibrary.eventSource, 0.0 );
+
     _glfwPlatformSetTime( 0.0 );
 
     return GL_TRUE;
@@ -156,6 +164,12 @@ int _glfwPlatformTerminate( void )
 
     // TODO: Kill all non-main threads?
     // TODO: Probably other cleanup
+
+    if( _glfwLibrary.eventSource )
+    {
+        CFRelease( _glfwLibrary.eventSource );
+        _glfwLibrary.eventSource = NULL;
+    }
 
     [_glfwLibrary.AutoreleasePool release];
     _glfwLibrary.AutoreleasePool = nil;

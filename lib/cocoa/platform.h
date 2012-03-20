@@ -37,6 +37,7 @@
 #if defined(__OBJC__)
 #import <Cocoa/Cocoa.h>
 #else
+#include <ApplicationServices/ApplicationServices.h>
 typedef void *id;
 #endif
 
@@ -156,6 +157,8 @@ GLFWGLOBAL struct {
     id originalMode;
 
     id AutoreleasePool;
+
+    CGEventSourceRef eventSource;
 
 } _glfwLibrary;
 
