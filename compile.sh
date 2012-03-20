@@ -379,7 +379,7 @@ cat > conftest.c <<EOF
 #include <time.h>
 #include <unistd.h>
 int main() {
-#if defined( _POSIX_TIMERS ) && defined( _POSIX_MONOTONIC_CLOCK )
+#if defined( CLOCK_MONOTONIC )
 clock_gettime(0, 0);
 #else
 #error "clock_gettime support not detected"

@@ -578,6 +578,7 @@ version of GLFW.</p>
 <h3>v2.7.4</h3>
 <ul>
   <li>[X11] Bugfix: The library containing <code>clock_gettime</code> was not detected</li>
+  <li>[X11] Bugfix: The POSIX monotonic clock was detected using a non-POSIX macro</li>
   <li>[Cocoa] Replaced deprecated Core Graphics event suppression call</li>
   <li>[Cocoa] Bugfix: The <code>GLFW_WINDOW_NO_RESIZE</code> window parameter was always zero</li>
   <li>[Cocoa] Bugfix: <code>glfwInit</code> changed the current directory without a bundle resource directory (backported from 3.0)</li>
