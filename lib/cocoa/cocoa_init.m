@@ -145,7 +145,8 @@ int _glfwPlatformInit( void )
         return GL_FALSE;
     }
 
-    CGEventSourceSetLocalEventsSuppressionInterval( _glfwLibrary.eventSource, 0.0 );
+    CGEventSourceSetLocalEventsSuppressionInterval( _glfwLibrary.eventSource,
+                                                    0.0 );
 
     _glfwPlatformSetTime( 0.0 );
 
