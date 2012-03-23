@@ -254,4 +254,12 @@ pthread_mutex_lock( &_glfwThrd.CriticalSection );
 pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 
 
+//========================================================================
+// Prototypes for platform specific internal functions
+//========================================================================
+
+// Time
+void _glfwInitTimer( void );
+
+
 #endif // _platform_h_

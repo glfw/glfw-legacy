@@ -144,6 +144,8 @@ int _glfwPlatformInit( void )
 
     initThreads();
 
+    _glfwInitTimer();
+
     _glfwLibrary.eventSource = CGEventSourceCreate( kCGEventSourceStateHIDSystemState );
     if( !_glfwLibrary.eventSource )
     {
