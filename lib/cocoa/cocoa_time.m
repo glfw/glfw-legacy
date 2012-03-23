@@ -44,6 +44,7 @@ double _glfwPlatformGetTime( void )
     return [NSDate timeIntervalSinceReferenceDate] - _glfwLibrary.Timer.t0;
 }
 
+
 //========================================================================
 // Set timer value in seconds
 //========================================================================
@@ -52,6 +53,7 @@ void _glfwPlatformSetTime( double time )
 {
     _glfwLibrary.Timer.t0 = [NSDate timeIntervalSinceReferenceDate] - time;
 }
+
 
 //========================================================================
 // Put a thread to sleep for a specified amount of time

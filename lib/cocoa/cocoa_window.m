@@ -70,6 +70,7 @@
 //========================================================================
 // Try to figure out what the calling application is called
 //========================================================================
+
 static NSString *findAppName( void )
 {
     // Keys to search for as potential application names
@@ -114,6 +115,7 @@ static NSString *findAppName( void )
     return @"GLFW Application";
 }
 
+
 //========================================================================
 // Set up the menu bar (manually)
 // This is nasty, nasty stuff -- calls to undocumented semi-private APIs that
@@ -121,6 +123,7 @@ static NSString *findAppName( void )
 // localize(d|able), etc.  Loading a nib would save us this horror, but that
 // doesn't seem like a good thing to require of GLFW's clients.
 //========================================================================
+
 static void setUpMenuBar( void )
 {
     NSString *appName = findAppName();
@@ -184,9 +187,11 @@ static void setUpMenuBar( void )
     }
 }
 
+
 //========================================================================
 // Initialize the Cocoa Application Kit
 //========================================================================
+
 static GLboolean initializeAppKit( void )
 {
     if( NSApp )
@@ -206,6 +211,7 @@ static GLboolean initializeAppKit( void )
 
     return GL_TRUE;
 }
+
 
 //========================================================================
 // Delegate for window related notifications
@@ -435,6 +441,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
     return table[macKeyCode];
 }
 
+
 //========================================================================
 // Content view class for the GLFW window
 //========================================================================
@@ -606,6 +613,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 }
 
 @end
+
 
 //************************************************************************
 //****               Platform implementation functions                ****
@@ -832,6 +840,7 @@ int  _glfwPlatformOpenWindow( int width, int height,
     return GL_TRUE;
 }
 
+
 //========================================================================
 // Properly kill the window / video display
 //========================================================================
@@ -866,6 +875,7 @@ void _glfwPlatformCloseWindow( void )
     // TODO: Probably more cleanup
 }
 
+
 //========================================================================
 // Set the window title
 //========================================================================
@@ -876,6 +886,7 @@ void _glfwPlatformSetWindowTitle( const char *title )
                      encoding:NSISOLatin1StringEncoding]];
 }
 
+
 //========================================================================
 // Set the window size
 //========================================================================
@@ -884,6 +895,7 @@ void _glfwPlatformSetWindowSize( int width, int height )
 {
     [_glfwWin.window setContentSize:NSMakeSize( width, height )];
 }
+
 
 //========================================================================
 // Set the window position
@@ -904,6 +916,7 @@ void _glfwPlatformSetWindowPos( int x, int y )
                       display:YES];
 }
 
+
 //========================================================================
 // Iconify the window
 //========================================================================
@@ -913,6 +926,7 @@ void _glfwPlatformIconifyWindow( void )
     [_glfwWin.window miniaturize:nil];
 }
 
+
 //========================================================================
 // Restore (un-iconify) the window
 //========================================================================
@@ -921,6 +935,7 @@ void _glfwPlatformRestoreWindow( void )
 {
     [_glfwWin.window deminiaturize:nil];
 }
+
 
 //========================================================================
 // Swap buffers
@@ -932,6 +947,7 @@ void _glfwPlatformSwapBuffers( void )
     [_glfwWin.context flushBuffer];
 }
 
+
 //========================================================================
 // Set double buffering swap interval
 //========================================================================
@@ -941,6 +957,7 @@ void _glfwPlatformSwapInterval( int interval )
     GLint sync = interval;
     [_glfwWin.context setValues:&sync forParameter:NSOpenGLCPSwapInterval];
 }
+
 
 //========================================================================
 // Write back window parameters into GLFW window structure
@@ -1009,6 +1026,7 @@ void _glfwPlatformRefreshWindowParams( void )
     _glfwWin.glDebug = GL_FALSE;
 }
 
+
 //========================================================================
 // Poll for new window and input events
 //========================================================================
@@ -1035,6 +1053,7 @@ void _glfwPlatformPollEvents( void )
     _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
 }
 
+
 //========================================================================
 // Wait for new window and input events
 //========================================================================
@@ -1053,6 +1072,7 @@ void _glfwPlatformWaitEvents( void )
     _glfwPlatformPollEvents();
 }
 
+
 //========================================================================
 // Hide mouse cursor (lock it)
 //========================================================================
@@ -1063,6 +1083,7 @@ void _glfwPlatformHideMouseCursor( void )
     CGAssociateMouseAndMouseCursorPosition( false );
 }
 
+
 //========================================================================
 // Show mouse cursor (unlock it)
 //========================================================================
@@ -1072,6 +1093,7 @@ void _glfwPlatformShowMouseCursor( void )
     [NSCursor unhide];
     CGAssociateMouseAndMouseCursorPosition( true );
 }
+
 
 //========================================================================
 // Set physical mouse cursor position

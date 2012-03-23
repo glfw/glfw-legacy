@@ -43,6 +43,7 @@ int _glfwPlatformGetJoystickParam( int joy, int param )
     return 0;
 }
 
+
 //========================================================================
 // Get joystick axis positions
 //========================================================================
@@ -52,6 +53,7 @@ int _glfwPlatformGetJoystickPos( int joy, float *pos, int numaxes )
     // TODO: Implement this.
     return 0;
 }
+
 
 //========================================================================
 // Get joystick button states
