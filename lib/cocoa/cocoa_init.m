@@ -27,6 +27,8 @@
 //
 //========================================================================
 
+#include <sys/param.h>
+
 #include "internal.h"
 
 @interface GLFWThread : NSThread

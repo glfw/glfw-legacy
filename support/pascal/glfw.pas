@@ -55,7 +55,7 @@ const
   //========================================================================
   GLFW_VERSION_MAJOR    = 2;
   GLFW_VERSION_MINOR    = 7;
-  GLFW_VERSION_REVISION = 4;
+  GLFW_VERSION_REVISION = 5;
 
   //========================================================================
   // Input handling definitions
