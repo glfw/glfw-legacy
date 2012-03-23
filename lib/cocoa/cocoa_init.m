@@ -122,7 +122,7 @@ static void initThreads( void )
 
 int _glfwPlatformInit( void )
 {
-    _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
+    _glfwLibrary.autoreleasePool = [[NSAutoreleasePool alloc] init];
 
     _glfwLibrary.OpenGLFramework =
         CFBundleGetBundleWithIdentifier( CFSTR( "com.apple.opengl" ) );
@@ -178,8 +178,8 @@ int _glfwPlatformTerminate( void )
         _glfwLibrary.eventSource = NULL;
     }
 
-    [_glfwLibrary.AutoreleasePool release];
-    _glfwLibrary.AutoreleasePool = nil;
+    [_glfwLibrary.autoreleasePool release];
+    _glfwLibrary.autoreleasePool = nil;
 
     return GL_TRUE;
 }

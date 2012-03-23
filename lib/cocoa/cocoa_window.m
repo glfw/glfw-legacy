@@ -1049,8 +1049,8 @@ void _glfwPlatformPollEvents( void )
     }
     while( event );
 
-    [_glfwLibrary.AutoreleasePool drain];
-    _glfwLibrary.AutoreleasePool = [[NSAutoreleasePool alloc] init];
+    [_glfwLibrary.autoreleasePool drain];
+    _glfwLibrary.autoreleasePool = [[NSAutoreleasePool alloc] init];
 }
 
 

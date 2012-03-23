@@ -156,7 +156,7 @@ GLFWGLOBAL struct {
 
     id originalMode;
 
-    id AutoreleasePool;
+    id autoreleasePool;
 
     CGEventSourceRef eventSource;
 
