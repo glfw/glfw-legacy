@@ -148,8 +148,9 @@ GLFWGLOBAL struct {
 
     // Timer data
     struct {
-        double t0;
-    } Timer;
+        double base;
+        double resolution;
+    } timer;
 
     // dlopen handle for dynamically-loading extension function pointers
     void *OpenGLFramework;
