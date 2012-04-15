@@ -142,8 +142,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copy vc90.pdb to executable directories"
-				CommandLine="copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\examples&#x0D;&#x0A;copy $(OutDir)\vc90.pdb $(ProjectDir)..\..\tests&#x0D;&#x0A;"
+				Description=""
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
