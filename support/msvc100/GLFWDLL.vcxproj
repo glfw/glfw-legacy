@@ -108,6 +108,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\..\..\lib;$(SolutionDir)\..\..\lib\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
