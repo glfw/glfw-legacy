@@ -50,7 +50,7 @@ alias GLUtesselator GLUtesselatorObj;
 alias GLUtesselator GLUtriangulatorObj;
 
 /* Internal convenience typedef */
-typedef void (* _GLUfuncptr)();
+alias void (* _GLUfuncptr)();
 
 
 

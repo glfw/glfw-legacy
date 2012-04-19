@@ -261,15 +261,15 @@ alias void* GLFWmutex;
 alias void* GLFWcond;
 
 // Function pointer types
-typedef void (* GLFWwindowsizefun)(int, int);
-typedef int  (* GLFWwindowclosefun)();
-typedef void (* GLFWwindowrefreshfun)();
-typedef void (* GLFWmousebuttonfun)(int, int);
-typedef void (* GLFWmouseposfun)(int, int);
-typedef void (* GLFWmousewheelfun)(int);
-typedef void (* GLFWkeyfun)(int, int);
-typedef void (* GLFWcharfun)(int, int);
-typedef void (* GLFWthreadfun)(void *);
+alias void (* GLFWwindowsizefun)(int, int);
+alias int  (* GLFWwindowclosefun)();
+alias void (* GLFWwindowrefreshfun)();
+alias void (* GLFWmousebuttonfun)(int, int);
+alias void (* GLFWmouseposfun)(int, int);
+alias void (* GLFWmousewheelfun)(int);
+alias void (* GLFWkeyfun)(int, int);
+alias void (* GLFWcharfun)(int, int);
+alias void (* GLFWthreadfun)(void *);
 
 
 //========================================================================

@@ -1258,138 +1258,138 @@ void glInterleavedArrays( GLenum format, GLsizei stride, in GLvoid *pointer );
  ************************************************************************/
 
 /* OpenGL 1.2 */
-typedef void (* PFNGLBLENDCOLORPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-typedef void (* PFNGLBLENDEQUATIONPROC) (GLenum mode);
-typedef void (* PFNGLDRAWRANGEELEMENTSPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
-typedef void (* PFNGLCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-typedef void (* PFNGLCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLCOPYCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLGETCOLORTABLEPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
-typedef void (* PFNGLCOPYCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLCONVOLUTIONPARAMETERFPROC) (GLenum target, GLenum pname, GLfloat params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERIPROC) (GLenum target, GLenum pname, GLint params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLCOPYCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLCOPYCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
-typedef void (* PFNGLGETCONVOLUTIONFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLGETCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETSEPARABLEFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
-typedef void (* PFNGLSEPARABLEFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
-typedef void (* PFNGLGETHISTOGRAMPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-typedef void (* PFNGLGETHISTOGRAMPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETHISTOGRAMPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETMINMAXPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-typedef void (* PFNGLGETMINMAXPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETMINMAXPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLHISTOGRAMPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
-typedef void (* PFNGLMINMAXPROC) (GLenum target, GLenum internalformat, GLboolean sink);
-typedef void (* PFNGLRESETHISTOGRAMPROC) (GLenum target);
-typedef void (* PFNGLRESETMINMAXPROC) (GLenum target);
-typedef void (* PFNGLTEXIMAGE3DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-typedef void (* PFNGLTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
-typedef void (* PFNGLCOPYTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void (* PFNGLBLENDCOLORPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+alias void (* PFNGLBLENDEQUATIONPROC) (GLenum mode);
+alias void (* PFNGLDRAWRANGEELEMENTSPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
+alias void (* PFNGLCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
+alias void (* PFNGLCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOPYCOLORTABLEPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLGETCOLORTABLEPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
+alias void (* PFNGLGETCOLORTABLEPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCOLORTABLEPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
+alias void (* PFNGLCOPYCOLORSUBTABLEPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLCONVOLUTIONPARAMETERFPROC) (GLenum target, GLenum pname, GLfloat params);
+alias void (* PFNGLCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLCONVOLUTIONPARAMETERIPROC) (GLenum target, GLenum pname, GLint params);
+alias void (* PFNGLCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOPYCONVOLUTIONFILTER1DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLCOPYCONVOLUTIONFILTER2DPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void (* PFNGLGETCONVOLUTIONFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLGETCONVOLUTIONPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCONVOLUTIONPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETSEPARABLEFILTERPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
+alias void (* PFNGLSEPARABLEFILTER2DPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
+alias void (* PFNGLGETHISTOGRAMPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
+alias void (* PFNGLGETHISTOGRAMPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETHISTOGRAMPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETMINMAXPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
+alias void (* PFNGLGETMINMAXPARAMETERFVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETMINMAXPARAMETERIVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLHISTOGRAMPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
+alias void (* PFNGLMINMAXPROC) (GLenum target, GLenum internalformat, GLboolean sink);
+alias void (* PFNGLRESETHISTOGRAMPROC) (GLenum target);
+alias void (* PFNGLRESETMINMAXPROC) (GLenum target);
+alias void (* PFNGLTEXIMAGE3DPROC) (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLCOPYTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 
 
 /* OpenGL 1.3 */
-typedef void (* PFNGLACTIVETEXTUREPROC) (GLenum texture);
-typedef void (* PFNGLCLIENTACTIVETEXTUREPROC) (GLenum texture);
-typedef void (* PFNGLMULTITEXCOORD1DPROC) (GLenum target, GLdouble s);
-typedef void (* PFNGLMULTITEXCOORD1DVPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD1FPROC) (GLenum target, GLfloat s);
-typedef void (* PFNGLMULTITEXCOORD1FVPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD1IPROC) (GLenum target, GLint s);
-typedef void (* PFNGLMULTITEXCOORD1IVPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD1SPROC) (GLenum target, GLshort s);
-typedef void (* PFNGLMULTITEXCOORD1SVPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD2DPROC) (GLenum target, GLdouble s, GLdouble t);
-typedef void (* PFNGLMULTITEXCOORD2DVPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD2FPROC) (GLenum target, GLfloat s, GLfloat t);
-typedef void (* PFNGLMULTITEXCOORD2FVPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD2IPROC) (GLenum target, GLint s, GLint t);
-typedef void (* PFNGLMULTITEXCOORD2IVPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD2SPROC) (GLenum target, GLshort s, GLshort t);
-typedef void (* PFNGLMULTITEXCOORD2SVPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD3DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
-typedef void (* PFNGLMULTITEXCOORD3DVPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD3FPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r);
-typedef void (* PFNGLMULTITEXCOORD3FVPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD3IPROC) (GLenum target, GLint s, GLint t, GLint r);
-typedef void (* PFNGLMULTITEXCOORD3IVPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD3SPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
-typedef void (* PFNGLMULTITEXCOORD3SVPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD4DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
-typedef void (* PFNGLMULTITEXCOORD4DVPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD4FPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
-typedef void (* PFNGLMULTITEXCOORD4FVPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD4IPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
-typedef void (* PFNGLMULTITEXCOORD4IVPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD4SPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
-typedef void (* PFNGLMULTITEXCOORD4SVPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLLOADTRANSPOSEMATRIXFPROC) (GLfloat *m);
-typedef void (* PFNGLLOADTRANSPOSEMATRIXDPROC) (GLdouble *m);
-typedef void (* PFNGLMULTTRANSPOSEMATRIXFPROC) (GLfloat *m);
-typedef void (* PFNGLMULTTRANSPOSEMATRIXDPROC) (GLdouble *m);
-typedef void (* PFNGLSAMPLECOVERAGEPROC) (GLclampf value, GLboolean invert);
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE3DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE2DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE1DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLGETCOMPRESSEDTEXIMAGEPROC) (GLenum target, GLint level, void *img);
+alias void (* PFNGLACTIVETEXTUREPROC) (GLenum texture);
+alias void (* PFNGLCLIENTACTIVETEXTUREPROC) (GLenum texture);
+alias void (* PFNGLMULTITEXCOORD1DPROC) (GLenum target, GLdouble s);
+alias void (* PFNGLMULTITEXCOORD1DVPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD1FPROC) (GLenum target, GLfloat s);
+alias void (* PFNGLMULTITEXCOORD1FVPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD1IPROC) (GLenum target, GLint s);
+alias void (* PFNGLMULTITEXCOORD1IVPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD1SPROC) (GLenum target, GLshort s);
+alias void (* PFNGLMULTITEXCOORD1SVPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD2DPROC) (GLenum target, GLdouble s, GLdouble t);
+alias void (* PFNGLMULTITEXCOORD2DVPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD2FPROC) (GLenum target, GLfloat s, GLfloat t);
+alias void (* PFNGLMULTITEXCOORD2FVPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD2IPROC) (GLenum target, GLint s, GLint t);
+alias void (* PFNGLMULTITEXCOORD2IVPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD2SPROC) (GLenum target, GLshort s, GLshort t);
+alias void (* PFNGLMULTITEXCOORD2SVPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD3DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
+alias void (* PFNGLMULTITEXCOORD3DVPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD3FPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r);
+alias void (* PFNGLMULTITEXCOORD3FVPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD3IPROC) (GLenum target, GLint s, GLint t, GLint r);
+alias void (* PFNGLMULTITEXCOORD3IVPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD3SPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
+alias void (* PFNGLMULTITEXCOORD3SVPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD4DPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
+alias void (* PFNGLMULTITEXCOORD4DVPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD4FPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
+alias void (* PFNGLMULTITEXCOORD4FVPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD4IPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
+alias void (* PFNGLMULTITEXCOORD4IVPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD4SPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
+alias void (* PFNGLMULTITEXCOORD4SVPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLLOADTRANSPOSEMATRIXFPROC) (GLfloat *m);
+alias void (* PFNGLLOADTRANSPOSEMATRIXDPROC) (GLdouble *m);
+alias void (* PFNGLMULTTRANSPOSEMATRIXFPROC) (GLfloat *m);
+alias void (* PFNGLMULTTRANSPOSEMATRIXDPROC) (GLdouble *m);
+alias void (* PFNGLSAMPLECOVERAGEPROC) (GLclampf value, GLboolean invert);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE3DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE2DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE1DPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLGETCOMPRESSEDTEXIMAGEPROC) (GLenum target, GLint level, void *img);
 
 /* OpenGL 1.4 */
-typedef void (* PFNGLFOGCOORDFPROC) (GLfloat coord);
-typedef void (* PFNGLFOGCOORDFVPROC) (GLfloat *coord);
-typedef void (* PFNGLFOGCOORDDPROC) (GLdouble coord);
-typedef void (* PFNGLFOGCOORDDVPROC) (GLdouble *coord);
-typedef void (* PFNGLFOGCOORDPOINTERPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLMULTIDRAWARRAYSPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-typedef void (* PFNGLMULTIDRAWELEMENTSPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid **indices, GLsizei primcount);
-typedef void (* PFNGLPOINTPARAMETERFPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLPOINTPARAMETERFVPROC) (GLenum pname, GLfloat *params);
-typedef void (* PFNGLSECONDARYCOLOR3BPROC) (GLbyte red, GLbyte green, GLbyte blue);
-typedef void (* PFNGLSECONDARYCOLOR3BVPROC) (GLbyte *v);
-typedef void (* PFNGLSECONDARYCOLOR3DPROC) (GLdouble red, GLdouble green, GLdouble blue);
-typedef void (* PFNGLSECONDARYCOLOR3DVPROC) (GLdouble *v);
-typedef void (* PFNGLSECONDARYCOLOR3FPROC) (GLfloat red, GLfloat green, GLfloat blue);
-typedef void (* PFNGLSECONDARYCOLOR3FVPROC) (GLfloat *v);
-typedef void (* PFNGLSECONDARYCOLOR3IPROC) (GLint red, GLint green, GLint blue);
-typedef void (* PFNGLSECONDARYCOLOR3IVPROC) (GLint *v);
-typedef void (* PFNGLSECONDARYCOLOR3SPROC) (GLshort red, GLshort green, GLshort blue);
-typedef void (* PFNGLSECONDARYCOLOR3SVPROC) (GLshort *v);
-typedef void (* PFNGLSECONDARYCOLOR3UBPROC) (GLubyte red, GLubyte green, GLubyte blue);
-typedef void (* PFNGLSECONDARYCOLOR3UBVPROC) (GLubyte *v);
-typedef void (* PFNGLSECONDARYCOLOR3UIPROC) (GLuint red, GLuint green, GLuint blue);
-typedef void (* PFNGLSECONDARYCOLOR3UIVPROC) (GLuint *v);
-typedef void (* PFNGLSECONDARYCOLOR3USPROC) (GLushort red, GLushort green, GLushort blue);
-typedef void (* PFNGLSECONDARYCOLOR3USVPROC) (GLushort *v);
-typedef void (* PFNGLSECONDARYCOLORPOINTERPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
-typedef void (* PFNGLWINDOWPOS2DPROC) (GLdouble x, GLdouble y);
-typedef void (* PFNGLWINDOWPOS2FPROC) (GLfloat x, GLfloat y);
-typedef void (* PFNGLWINDOWPOS2IPROC) (GLint x, GLint y);
-typedef void (* PFNGLWINDOWPOS2SPROC) (GLshort x, GLshort y);
-typedef void (* PFNGLWINDOWPOS2DVPROC) (GLdouble *p);
-typedef void (* PFNGLWINDOWPOS2FVPROC) (GLfloat *p);
-typedef void (* PFNGLWINDOWPOS2IVPROC) (GLint *p);
-typedef void (* PFNGLWINDOWPOS2SVPROC) (GLshort *p);
-typedef void (* PFNGLWINDOWPOS3DPROC) (GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLWINDOWPOS3FPROC) (GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLWINDOWPOS3IPROC) (GLint x, GLint y, GLint z);
-typedef void (* PFNGLWINDOWPOS3SPROC) (GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLWINDOWPOS3DVPROC) (GLdouble *p);
-typedef void (* PFNGLWINDOWPOS3FVPROC) (GLfloat *p);
-typedef void (* PFNGLWINDOWPOS3IVPROC) (GLint *p);
-typedef void (* PFNGLWINDOWPOS3SVPROC) (GLshort *p);
+alias void (* PFNGLFOGCOORDFPROC) (GLfloat coord);
+alias void (* PFNGLFOGCOORDFVPROC) (GLfloat *coord);
+alias void (* PFNGLFOGCOORDDPROC) (GLdouble coord);
+alias void (* PFNGLFOGCOORDDVPROC) (GLdouble *coord);
+alias void (* PFNGLFOGCOORDPOINTERPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLMULTIDRAWARRAYSPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
+alias void (* PFNGLMULTIDRAWELEMENTSPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid **indices, GLsizei primcount);
+alias void (* PFNGLPOINTPARAMETERFPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPOINTPARAMETERFVPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLSECONDARYCOLOR3BPROC) (GLbyte red, GLbyte green, GLbyte blue);
+alias void (* PFNGLSECONDARYCOLOR3BVPROC) (GLbyte *v);
+alias void (* PFNGLSECONDARYCOLOR3DPROC) (GLdouble red, GLdouble green, GLdouble blue);
+alias void (* PFNGLSECONDARYCOLOR3DVPROC) (GLdouble *v);
+alias void (* PFNGLSECONDARYCOLOR3FPROC) (GLfloat red, GLfloat green, GLfloat blue);
+alias void (* PFNGLSECONDARYCOLOR3FVPROC) (GLfloat *v);
+alias void (* PFNGLSECONDARYCOLOR3IPROC) (GLint red, GLint green, GLint blue);
+alias void (* PFNGLSECONDARYCOLOR3IVPROC) (GLint *v);
+alias void (* PFNGLSECONDARYCOLOR3SPROC) (GLshort red, GLshort green, GLshort blue);
+alias void (* PFNGLSECONDARYCOLOR3SVPROC) (GLshort *v);
+alias void (* PFNGLSECONDARYCOLOR3UBPROC) (GLubyte red, GLubyte green, GLubyte blue);
+alias void (* PFNGLSECONDARYCOLOR3UBVPROC) (GLubyte *v);
+alias void (* PFNGLSECONDARYCOLOR3UIPROC) (GLuint red, GLuint green, GLuint blue);
+alias void (* PFNGLSECONDARYCOLOR3UIVPROC) (GLuint *v);
+alias void (* PFNGLSECONDARYCOLOR3USPROC) (GLushort red, GLushort green, GLushort blue);
+alias void (* PFNGLSECONDARYCOLOR3USVPROC) (GLushort *v);
+alias void (* PFNGLSECONDARYCOLORPOINTERPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void (* PFNGLWINDOWPOS2DPROC) (GLdouble x, GLdouble y);
+alias void (* PFNGLWINDOWPOS2FPROC) (GLfloat x, GLfloat y);
+alias void (* PFNGLWINDOWPOS2IPROC) (GLint x, GLint y);
+alias void (* PFNGLWINDOWPOS2SPROC) (GLshort x, GLshort y);
+alias void (* PFNGLWINDOWPOS2DVPROC) (GLdouble *p);
+alias void (* PFNGLWINDOWPOS2FVPROC) (GLfloat *p);
+alias void (* PFNGLWINDOWPOS2IVPROC) (GLint *p);
+alias void (* PFNGLWINDOWPOS2SVPROC) (GLshort *p);
+alias void (* PFNGLWINDOWPOS3DPROC) (GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLWINDOWPOS3FPROC) (GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLWINDOWPOS3IPROC) (GLint x, GLint y, GLint z);
+alias void (* PFNGLWINDOWPOS3SPROC) (GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLWINDOWPOS3DVPROC) (GLdouble *p);
+alias void (* PFNGLWINDOWPOS3FVPROC) (GLfloat *p);
+alias void (* PFNGLWINDOWPOS3IVPROC) (GLint *p);
+alias void (* PFNGLWINDOWPOS3SVPROC) (GLshort *p);
 
 
 
@@ -3595,945 +3595,945 @@ const uint GL_FOG_SPECULAR_TEXTURE_WIN       = 0x80EC;
  ************************************************************************/
 
 /* GL_ARB_multitexture */
-typedef void (* PFNGLACTIVETEXTUREARBPROC) (GLenum texture);
-typedef void (* PFNGLCLIENTACTIVETEXTUREARBPROC) (GLenum texture);
-typedef void (* PFNGLMULTITEXCOORD1DARBPROC) (GLenum target, GLdouble s);
-typedef void (* PFNGLMULTITEXCOORD1DVARBPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD1FARBPROC) (GLenum target, GLfloat s);
-typedef void (* PFNGLMULTITEXCOORD1FVARBPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD1IARBPROC) (GLenum target, GLint s);
-typedef void (* PFNGLMULTITEXCOORD1IVARBPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD1SARBPROC) (GLenum target, GLshort s);
-typedef void (* PFNGLMULTITEXCOORD1SVARBPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD2DARBPROC) (GLenum target, GLdouble s, GLdouble t);
-typedef void (* PFNGLMULTITEXCOORD2DVARBPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD2FARBPROC) (GLenum target, GLfloat s, GLfloat t);
-typedef void (* PFNGLMULTITEXCOORD2FVARBPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, GLint t);
-typedef void (* PFNGLMULTITEXCOORD2IVARBPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD2SARBPROC) (GLenum target, GLshort s, GLshort t);
-typedef void (* PFNGLMULTITEXCOORD2SVARBPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD3DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
-typedef void (* PFNGLMULTITEXCOORD3DVARBPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD3FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r);
-typedef void (* PFNGLMULTITEXCOORD3FVARBPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD3IARBPROC) (GLenum target, GLint s, GLint t, GLint r);
-typedef void (* PFNGLMULTITEXCOORD3IVARBPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD3SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
-typedef void (* PFNGLMULTITEXCOORD3SVARBPROC) (GLenum target, GLshort *v);
-typedef void (* PFNGLMULTITEXCOORD4DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
-typedef void (* PFNGLMULTITEXCOORD4DVARBPROC) (GLenum target, GLdouble *v);
-typedef void (* PFNGLMULTITEXCOORD4FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
-typedef void (* PFNGLMULTITEXCOORD4FVARBPROC) (GLenum target, GLfloat *v);
-typedef void (* PFNGLMULTITEXCOORD4IARBPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
-typedef void (* PFNGLMULTITEXCOORD4IVARBPROC) (GLenum target, GLint *v);
-typedef void (* PFNGLMULTITEXCOORD4SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
-typedef void (* PFNGLMULTITEXCOORD4SVARBPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLACTIVETEXTUREARBPROC) (GLenum texture);
+alias void (* PFNGLCLIENTACTIVETEXTUREARBPROC) (GLenum texture);
+alias void (* PFNGLMULTITEXCOORD1DARBPROC) (GLenum target, GLdouble s);
+alias void (* PFNGLMULTITEXCOORD1DVARBPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD1FARBPROC) (GLenum target, GLfloat s);
+alias void (* PFNGLMULTITEXCOORD1FVARBPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD1IARBPROC) (GLenum target, GLint s);
+alias void (* PFNGLMULTITEXCOORD1IVARBPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD1SARBPROC) (GLenum target, GLshort s);
+alias void (* PFNGLMULTITEXCOORD1SVARBPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD2DARBPROC) (GLenum target, GLdouble s, GLdouble t);
+alias void (* PFNGLMULTITEXCOORD2DVARBPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD2FARBPROC) (GLenum target, GLfloat s, GLfloat t);
+alias void (* PFNGLMULTITEXCOORD2FVARBPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD2IARBPROC) (GLenum target, GLint s, GLint t);
+alias void (* PFNGLMULTITEXCOORD2IVARBPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD2SARBPROC) (GLenum target, GLshort s, GLshort t);
+alias void (* PFNGLMULTITEXCOORD2SVARBPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD3DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r);
+alias void (* PFNGLMULTITEXCOORD3DVARBPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD3FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r);
+alias void (* PFNGLMULTITEXCOORD3FVARBPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD3IARBPROC) (GLenum target, GLint s, GLint t, GLint r);
+alias void (* PFNGLMULTITEXCOORD3IVARBPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD3SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r);
+alias void (* PFNGLMULTITEXCOORD3SVARBPROC) (GLenum target, GLshort *v);
+alias void (* PFNGLMULTITEXCOORD4DARBPROC) (GLenum target, GLdouble s, GLdouble t, GLdouble r, GLdouble q);
+alias void (* PFNGLMULTITEXCOORD4DVARBPROC) (GLenum target, GLdouble *v);
+alias void (* PFNGLMULTITEXCOORD4FARBPROC) (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
+alias void (* PFNGLMULTITEXCOORD4FVARBPROC) (GLenum target, GLfloat *v);
+alias void (* PFNGLMULTITEXCOORD4IARBPROC) (GLenum target, GLint s, GLint t, GLint r, GLint q);
+alias void (* PFNGLMULTITEXCOORD4IVARBPROC) (GLenum target, GLint *v);
+alias void (* PFNGLMULTITEXCOORD4SARBPROC) (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
+alias void (* PFNGLMULTITEXCOORD4SVARBPROC) (GLenum target, GLshort *v);
 
 /* GL_ARB_transpose_matrix */
-typedef void (* PFNGLLOADTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
-typedef void (* PFNGLLOADTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
-typedef void (* PFNGLMULTTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
-typedef void (* PFNGLMULTTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
+alias void (* PFNGLLOADTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
+alias void (* PFNGLLOADTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
+alias void (* PFNGLMULTTRANSPOSEMATRIXFARBPROC) (GLfloat *m);
+alias void (* PFNGLMULTTRANSPOSEMATRIXDARBPROC) (GLdouble *m);
 
 /* GL_ARB_multisample */
-typedef void (* PFNGLSAMPLECOVERAGEARBPROC) (GLclampf value, GLboolean invert);
+alias void (* PFNGLSAMPLECOVERAGEARBPROC) (GLclampf value, GLboolean invert);
 
 /* GL_ARB_texture_compression */
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE3DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXIMAGE1DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
-typedef void (* PFNGLGETCOMPRESSEDTEXIMAGEARBPROC) (GLenum target, GLint level, void *img);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE3DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE2DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXIMAGE1DARBPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE3DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE2DARBPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLCOMPRESSEDTEXSUBIMAGE1DARBPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, GLvoid *data);
+alias void (* PFNGLGETCOMPRESSEDTEXIMAGEARBPROC) (GLenum target, GLint level, void *img);
 
 /* GL_ARB_point_parameters */
-typedef void (* PFNGLPOINTPARAMETERFARBPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLPOINTPARAMETERFVARBPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLPOINTPARAMETERFARBPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPOINTPARAMETERFVARBPROC) (GLenum pname, GLfloat *params);
 
 /* GL_ARB_vertex_blend */
-typedef void (* PFNGLWEIGHTBVARBPROC) (GLint size, GLbyte *weights);
-typedef void (* PFNGLWEIGHTSVARBPROC) (GLint size, GLshort *weights);
-typedef void (* PFNGLWEIGHTIVARBPROC) (GLint size, GLint *weights);
-typedef void (* PFNGLWEIGHTFVARBPROC) (GLint size, GLfloat *weights);
-typedef void (* PFNGLWEIGHTDVARBPROC) (GLint size, GLdouble *weights);
-typedef void (* PFNGLWEIGHTUBVARBPROC) (GLint size, GLubyte *weights);
-typedef void (* PFNGLWEIGHTUSVARBPROC) (GLint size, GLushort *weights);
-typedef void (* PFNGLWEIGHTUIVARBPROC) (GLint size, GLuint *weights);
-typedef void (* PFNGLWEIGHTPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLVERTEXBLENDARBPROC) (GLint count);
+alias void (* PFNGLWEIGHTBVARBPROC) (GLint size, GLbyte *weights);
+alias void (* PFNGLWEIGHTSVARBPROC) (GLint size, GLshort *weights);
+alias void (* PFNGLWEIGHTIVARBPROC) (GLint size, GLint *weights);
+alias void (* PFNGLWEIGHTFVARBPROC) (GLint size, GLfloat *weights);
+alias void (* PFNGLWEIGHTDVARBPROC) (GLint size, GLdouble *weights);
+alias void (* PFNGLWEIGHTUBVARBPROC) (GLint size, GLubyte *weights);
+alias void (* PFNGLWEIGHTUSVARBPROC) (GLint size, GLushort *weights);
+alias void (* PFNGLWEIGHTUIVARBPROC) (GLint size, GLuint *weights);
+alias void (* PFNGLWEIGHTPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLVERTEXBLENDARBPROC) (GLint count);
 
 /* GL_ARB_matrix_palette */
-typedef void (* PFNGLCURRENTPALETTEMATRIXARBPROC) (GLint index);
-typedef void (* PFNGLMATRIXINDEXUBVARBPROC) (GLint size, GLubyte *indices);
-typedef void (* PFNGLMATRIXINDEXUSVARBPROC) (GLint size, GLushort *indices);
-typedef void (* PFNGLMATRIXINDEXUIVARBPROC) (GLint size, GLuint *indices);
-typedef void (* PFNGLMATRIXINDEXPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLCURRENTPALETTEMATRIXARBPROC) (GLint index);
+alias void (* PFNGLMATRIXINDEXUBVARBPROC) (GLint size, GLubyte *indices);
+alias void (* PFNGLMATRIXINDEXUSVARBPROC) (GLint size, GLushort *indices);
+alias void (* PFNGLMATRIXINDEXUIVARBPROC) (GLint size, GLuint *indices);
+alias void (* PFNGLMATRIXINDEXPOINTERARBPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 
 /* GL_ARB_window_pos */
-typedef void (* PFNGLWINDOWPOS2DARBPROC) (GLdouble x, GLdouble y);
-typedef void (* PFNGLWINDOWPOS2DVARBPROC) (GLdouble *v);
-typedef void (* PFNGLWINDOWPOS2FARBPROC) (GLfloat x, GLfloat y);
-typedef void (* PFNGLWINDOWPOS2FVARBPROC) (GLfloat *v);
-typedef void (* PFNGLWINDOWPOS2IARBPROC) (GLint x, GLint y);
-typedef void (* PFNGLWINDOWPOS2IVARBPROC) (GLint *v);
-typedef void (* PFNGLWINDOWPOS2SARBPROC) (GLshort x, GLshort y);
-typedef void (* PFNGLWINDOWPOS2SVARBPROC) (GLshort *v);
-typedef void (* PFNGLWINDOWPOS3DARBPROC) (GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLWINDOWPOS3DVARBPROC) (GLdouble *v);
-typedef void (* PFNGLWINDOWPOS3FARBPROC) (GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLWINDOWPOS3FVARBPROC) (GLfloat *v);
-typedef void (* PFNGLWINDOWPOS3IARBPROC) (GLint x, GLint y, GLint z);
-typedef void (* PFNGLWINDOWPOS3IVARBPROC) (GLint *v);
-typedef void (* PFNGLWINDOWPOS3SARBPROC) (GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLWINDOWPOS3SVARBPROC) (GLshort *v);
+alias void (* PFNGLWINDOWPOS2DARBPROC) (GLdouble x, GLdouble y);
+alias void (* PFNGLWINDOWPOS2DVARBPROC) (GLdouble *v);
+alias void (* PFNGLWINDOWPOS2FARBPROC) (GLfloat x, GLfloat y);
+alias void (* PFNGLWINDOWPOS2FVARBPROC) (GLfloat *v);
+alias void (* PFNGLWINDOWPOS2IARBPROC) (GLint x, GLint y);
+alias void (* PFNGLWINDOWPOS2IVARBPROC) (GLint *v);
+alias void (* PFNGLWINDOWPOS2SARBPROC) (GLshort x, GLshort y);
+alias void (* PFNGLWINDOWPOS2SVARBPROC) (GLshort *v);
+alias void (* PFNGLWINDOWPOS3DARBPROC) (GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLWINDOWPOS3DVARBPROC) (GLdouble *v);
+alias void (* PFNGLWINDOWPOS3FARBPROC) (GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLWINDOWPOS3FVARBPROC) (GLfloat *v);
+alias void (* PFNGLWINDOWPOS3IARBPROC) (GLint x, GLint y, GLint z);
+alias void (* PFNGLWINDOWPOS3IVARBPROC) (GLint *v);
+alias void (* PFNGLWINDOWPOS3SARBPROC) (GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLWINDOWPOS3SVARBPROC) (GLshort *v);
 
 /* GL_ARB_vertex_program */
-typedef void (* PFNGLVERTEXATTRIB1SARBPROC) (GLuint index, GLshort x);
-typedef void (* PFNGLVERTEXATTRIB1FARBPROC) (GLuint index, GLfloat x);
-typedef void (* PFNGLVERTEXATTRIB1DARBPROC) (GLuint index, GLdouble x);
-typedef void (* PFNGLVERTEXATTRIB2SARBPROC) (GLuint index, GLshort x, GLshort y);
-typedef void (* PFNGLVERTEXATTRIB2FARBPROC) (GLuint index, GLfloat x, GLfloat y);
-typedef void (* PFNGLVERTEXATTRIB2DARBPROC) (GLuint index, GLdouble x, GLdouble y);
-typedef void (* PFNGLVERTEXATTRIB3SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLVERTEXATTRIB3FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLVERTEXATTRIB3DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLVERTEXATTRIB4SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-typedef void (* PFNGLVERTEXATTRIB4FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLVERTEXATTRIB4DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLVERTEXATTRIB4NUBARBPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-typedef void (* PFNGLVERTEXATTRIB1SVARBPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB1FVARBPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB1DVARBPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB2SVARBPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB2FVARBPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB2DVARBPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB3SVARBPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB3FVARBPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB3DVARBPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB4BVARBPROC) (GLuint index, GLbyte *v);
-typedef void (* PFNGLVERTEXATTRIB4SVARBPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB4IVARBPROC) (GLuint index, GLint *v);
-typedef void (* PFNGLVERTEXATTRIB4UBVARBPROC) (GLuint index, GLubyte *v);
-typedef void (* PFNGLVERTEXATTRIB4USVARBPROC) (GLuint index, GLushort *v);
-typedef void (* PFNGLVERTEXATTRIB4UIVARBPROC) (GLuint index, GLuint *v);
-typedef void (* PFNGLVERTEXATTRIB4FVARBPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB4DVARBPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB4NBVARBPROC) (GLuint index, GLbyte *v);
-typedef void (* PFNGLVERTEXATTRIB4NSVARBPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB4NIVARBPROC) (GLuint index, GLint *v);
-typedef void (* PFNGLVERTEXATTRIB4NUBVARBPROC) (GLuint index, GLubyte *v);
-typedef void (* PFNGLVERTEXATTRIB4NUSVARBPROC) (GLuint index, GLushort *v);
-typedef void (* PFNGLVERTEXATTRIB4NUIVARBPROC) (GLuint index, GLuint *v);
-typedef void (* PFNGLVERTEXATTRIBPOINTERARBPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLENABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
-typedef void (* PFNGLDISABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
-typedef void (* PFNGLPROGRAMSTRINGARBPROC) (GLenum target, GLenum format, GLsizei len, GLvoid *string);
-typedef void (* PFNGLBINDPROGRAMARBPROC) (GLenum target, GLuint program);
-typedef void (* PFNGLDELETEPROGRAMSARBPROC) (GLsizei n, GLuint *programs);
-typedef void (* PFNGLGENPROGRAMSARBPROC) (GLsizei n, GLuint *programs);
-typedef void (* PFNGLPROGRAMENVPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLPROGRAMENVPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-typedef void (* PFNGLPROGRAMENVPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLPROGRAMENVPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-typedef void (* PFNGLPROGRAMLOCALPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLPROGRAMLOCALPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-typedef void (* PFNGLPROGRAMLOCALPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLPROGRAMLOCALPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-typedef void (* PFNGLGETPROGRAMENVPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-typedef void (* PFNGLGETPROGRAMENVPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-typedef void (* PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
-typedef void (* PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
-typedef void (* PFNGLGETPROGRAMIVARBPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETPROGRAMSTRINGARBPROC) (GLenum target, GLenum pname, GLvoid *string);
-typedef void (* PFNGLGETVERTEXATTRIBDVARBPROC) (GLuint index, GLenum pname, GLdouble *params);
-typedef void (* PFNGLGETVERTEXATTRIBFVARBPROC) (GLuint index, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETVERTEXATTRIBIVARBPROC) (GLuint index, GLenum pname, GLint *params);
-typedef void (* PFNGLGETVERTEXATTRIBPOINTERVARBPROC) (GLuint index, GLenum pname, GLvoid **pointer);
-typedef GLboolean (* PFNGLISPROGRAMARBPROC) (GLuint program);
+alias void (* PFNGLVERTEXATTRIB1SARBPROC) (GLuint index, GLshort x);
+alias void (* PFNGLVERTEXATTRIB1FARBPROC) (GLuint index, GLfloat x);
+alias void (* PFNGLVERTEXATTRIB1DARBPROC) (GLuint index, GLdouble x);
+alias void (* PFNGLVERTEXATTRIB2SARBPROC) (GLuint index, GLshort x, GLshort y);
+alias void (* PFNGLVERTEXATTRIB2FARBPROC) (GLuint index, GLfloat x, GLfloat y);
+alias void (* PFNGLVERTEXATTRIB2DARBPROC) (GLuint index, GLdouble x, GLdouble y);
+alias void (* PFNGLVERTEXATTRIB3SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLVERTEXATTRIB3FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLVERTEXATTRIB3DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLVERTEXATTRIB4SARBPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+alias void (* PFNGLVERTEXATTRIB4FARBPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLVERTEXATTRIB4DARBPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLVERTEXATTRIB4NUBARBPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+alias void (* PFNGLVERTEXATTRIB1SVARBPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB1FVARBPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB1DVARBPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB2SVARBPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB2FVARBPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB2DVARBPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB3SVARBPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB3FVARBPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB3DVARBPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB4BVARBPROC) (GLuint index, GLbyte *v);
+alias void (* PFNGLVERTEXATTRIB4SVARBPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB4IVARBPROC) (GLuint index, GLint *v);
+alias void (* PFNGLVERTEXATTRIB4UBVARBPROC) (GLuint index, GLubyte *v);
+alias void (* PFNGLVERTEXATTRIB4USVARBPROC) (GLuint index, GLushort *v);
+alias void (* PFNGLVERTEXATTRIB4UIVARBPROC) (GLuint index, GLuint *v);
+alias void (* PFNGLVERTEXATTRIB4FVARBPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB4DVARBPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB4NBVARBPROC) (GLuint index, GLbyte *v);
+alias void (* PFNGLVERTEXATTRIB4NSVARBPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB4NIVARBPROC) (GLuint index, GLint *v);
+alias void (* PFNGLVERTEXATTRIB4NUBVARBPROC) (GLuint index, GLubyte *v);
+alias void (* PFNGLVERTEXATTRIB4NUSVARBPROC) (GLuint index, GLushort *v);
+alias void (* PFNGLVERTEXATTRIB4NUIVARBPROC) (GLuint index, GLuint *v);
+alias void (* PFNGLVERTEXATTRIBPOINTERARBPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLENABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
+alias void (* PFNGLDISABLEVERTEXATTRIBARRAYARBPROC) (GLuint index);
+alias void (* PFNGLPROGRAMSTRINGARBPROC) (GLenum target, GLenum format, GLsizei len, GLvoid *string);
+alias void (* PFNGLBINDPROGRAMARBPROC) (GLenum target, GLuint program);
+alias void (* PFNGLDELETEPROGRAMSARBPROC) (GLsizei n, GLuint *programs);
+alias void (* PFNGLGENPROGRAMSARBPROC) (GLsizei n, GLuint *programs);
+alias void (* PFNGLPROGRAMENVPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLPROGRAMENVPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
+alias void (* PFNGLPROGRAMENVPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLPROGRAMENVPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
+alias void (* PFNGLPROGRAMLOCALPARAMETER4DARBPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLPROGRAMLOCALPARAMETER4DVARBPROC) (GLenum target, GLuint index, GLdouble *params);
+alias void (* PFNGLPROGRAMLOCALPARAMETER4FARBPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLPROGRAMLOCALPARAMETER4FVARBPROC) (GLenum target, GLuint index, GLfloat *params);
+alias void (* PFNGLGETPROGRAMENVPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
+alias void (* PFNGLGETPROGRAMENVPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
+alias void (* PFNGLGETPROGRAMLOCALPARAMETERDVARBPROC) (GLenum target, GLuint index, GLdouble *params);
+alias void (* PFNGLGETPROGRAMLOCALPARAMETERFVARBPROC) (GLenum target, GLuint index, GLfloat *params);
+alias void (* PFNGLGETPROGRAMIVARBPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETPROGRAMSTRINGARBPROC) (GLenum target, GLenum pname, GLvoid *string);
+alias void (* PFNGLGETVERTEXATTRIBDVARBPROC) (GLuint index, GLenum pname, GLdouble *params);
+alias void (* PFNGLGETVERTEXATTRIBFVARBPROC) (GLuint index, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETVERTEXATTRIBIVARBPROC) (GLuint index, GLenum pname, GLint *params);
+alias void (* PFNGLGETVERTEXATTRIBPOINTERVARBPROC) (GLuint index, GLenum pname, GLvoid **pointer);
+alias GLboolean (* PFNGLISPROGRAMARBPROC) (GLuint program);
 
 /* GL_ARB_vertex_buffer_object */
-typedef int GLsizeiptrARB;
-typedef int GLintptrARB;
-typedef void (* PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
-typedef void (* PFNGLDELETEBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
-typedef void (* PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
-typedef GLboolean (* PFNGLISBUFFERARBPROC) (GLuint buffer);
-typedef void (* PFNGLBUFFERDATAARBPROC) (GLenum target, GLsizeiptrARB size, void *data, GLenum usage);
-typedef void (* PFNGLBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data);
-typedef void (* PFNGLGETBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data);
-typedef void * (* PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access);
-typedef GLboolean (* PFNGLUNMAPBUFFERARBPROC) (GLenum target);
-typedef void (* PFNGLGETBUFFERPARAMETERIVARBPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETBUFFERPOINTERVARBPROC) (GLenum target, GLenum pname, void **params);
+alias int GLsizeiptrARB;
+alias int GLintptrARB;
+alias void (* PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
+alias void (* PFNGLDELETEBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
+alias void (* PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
+alias GLboolean (* PFNGLISBUFFERARBPROC) (GLuint buffer);
+alias void (* PFNGLBUFFERDATAARBPROC) (GLenum target, GLsizeiptrARB size, void *data, GLenum usage);
+alias void (* PFNGLBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data);
+alias void (* PFNGLGETBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data);
+alias void * (* PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access);
+alias GLboolean (* PFNGLUNMAPBUFFERARBPROC) (GLenum target);
+alias void (* PFNGLGETBUFFERPARAMETERIVARBPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETBUFFERPOINTERVARBPROC) (GLenum target, GLenum pname, void **params);
 
 /* GL_EXT_blend_color */
-typedef void (* PFNGLBLENDCOLOREXTPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+alias void (* PFNGLBLENDCOLOREXTPROC) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 
 /* GL_EXT_polygon_offset */
-typedef void (* PFNGLPOLYGONOFFSETEXTPROC) (GLfloat factor, GLfloat bias);
+alias void (* PFNGLPOLYGONOFFSETEXTPROC) (GLfloat factor, GLfloat bias);
 
 /* GL_EXT_texture3D */
-typedef void (* PFNGLTEXIMAGE3DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-typedef void (* PFNGLTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXIMAGE3DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *pixels);
 
 /* GL_SGIS_texture_filter4 */
-typedef void (* PFNGLGETTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLfloat *weights);
-typedef void (* PFNGLTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLsizei n, GLfloat *weights);
+alias void (* PFNGLGETTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLfloat *weights);
+alias void (* PFNGLTEXFILTERFUNCSGISPROC) (GLenum target, GLenum filter, GLsizei n, GLfloat *weights);
 
 /* GL_EXT_subtexture */
-typedef void (* PFNGLTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
-typedef void (* PFNGLTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
 
 /* GL_EXT_copy_texture */
-typedef void (* PFNGLCOPYTEXIMAGE1DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
-typedef void (* PFNGLCOPYTEXIMAGE2DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
-typedef void (* PFNGLCOPYTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLCOPYTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-typedef void (* PFNGLCOPYTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void (* PFNGLCOPYTEXIMAGE1DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLint border);
+alias void (* PFNGLCOPYTEXIMAGE2DEXTPROC) (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
+alias void (* PFNGLCOPYTEXSUBIMAGE1DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLCOPYTEXSUBIMAGE2DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void (* PFNGLCOPYTEXSUBIMAGE3DEXTPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 
 /* GL_EXT_histogram */
-typedef void (* PFNGLGETHISTOGRAMEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-typedef void (* PFNGLGETHISTOGRAMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETHISTOGRAMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETMINMAXEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
-typedef void (* PFNGLGETMINMAXPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETMINMAXPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLHISTOGRAMEXTPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
-typedef void (* PFNGLMINMAXEXTPROC) (GLenum target, GLenum internalformat, GLboolean sink);
-typedef void (* PFNGLRESETHISTOGRAMEXTPROC) (GLenum target);
-typedef void (* PFNGLRESETMINMAXEXTPROC) (GLenum target);
+alias void (* PFNGLGETHISTOGRAMEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
+alias void (* PFNGLGETHISTOGRAMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETHISTOGRAMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETMINMAXEXTPROC) (GLenum target, GLboolean reset, GLenum format, GLenum type, GLvoid *values);
+alias void (* PFNGLGETMINMAXPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETMINMAXPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLHISTOGRAMEXTPROC) (GLenum target, GLsizei width, GLenum internalformat, GLboolean sink);
+alias void (* PFNGLMINMAXEXTPROC) (GLenum target, GLenum internalformat, GLboolean sink);
+alias void (* PFNGLRESETHISTOGRAMEXTPROC) (GLenum target);
+alias void (* PFNGLRESETMINMAXEXTPROC) (GLenum target);
 
 /* GL_EXT_convolution */
-typedef void (* PFNGLCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLCONVOLUTIONPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint params);
-typedef void (* PFNGLCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
-typedef void (* PFNGLGETCONVOLUTIONFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
-typedef void (* PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETSEPARABLEFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
-typedef void (* PFNGLSEPARABLEFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
+alias void (* PFNGLCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLCONVOLUTIONPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat params);
+alias void (* PFNGLCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLCONVOLUTIONPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint params);
+alias void (* PFNGLCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOPYCONVOLUTIONFILTER1DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLCOPYCONVOLUTIONFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
+alias void (* PFNGLGETCONVOLUTIONFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *image);
+alias void (* PFNGLGETCONVOLUTIONPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCONVOLUTIONPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETSEPARABLEFILTEREXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *row, GLvoid *column, GLvoid *span);
+alias void (* PFNGLSEPARABLEFILTER2DEXTPROC) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *row, GLvoid *column);
 
 /* GL_EXT_texture_object */
-typedef GLboolean (* PFNGLARETEXTURESRESIDENTEXTPROC) (GLsizei n, GLuint *textures, GLboolean *residences);
-typedef void (* PFNGLBINDTEXTUREEXTPROC) (GLenum target, GLuint texture);
-typedef void (* PFNGLDELETETEXTURESEXTPROC) (GLsizei n, GLuint *textures);
-typedef void (* PFNGLGENTEXTURESEXTPROC) (GLsizei n, GLuint *textures);
-typedef GLboolean (* PFNGLISTEXTUREEXTPROC) (GLuint texture);
-typedef void (* PFNGLPRIORITIZETEXTURESEXTPROC) (GLsizei n, GLuint *textures, GLclampf *priorities);
+alias GLboolean (* PFNGLARETEXTURESRESIDENTEXTPROC) (GLsizei n, GLuint *textures, GLboolean *residences);
+alias void (* PFNGLBINDTEXTUREEXTPROC) (GLenum target, GLuint texture);
+alias void (* PFNGLDELETETEXTURESEXTPROC) (GLsizei n, GLuint *textures);
+alias void (* PFNGLGENTEXTURESEXTPROC) (GLsizei n, GLuint *textures);
+alias GLboolean (* PFNGLISTEXTUREEXTPROC) (GLuint texture);
+alias void (* PFNGLPRIORITIZETEXTURESEXTPROC) (GLsizei n, GLuint *textures, GLclampf *priorities);
 
 /* GL_EXT_vertex_array */
-typedef void (* PFNGLARRAYELEMENTEXTPROC) (GLint i);
-typedef void (* PFNGLCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-typedef void (* PFNGLDRAWARRAYSEXTPROC) (GLenum mode, GLint first, GLsizei count);
-typedef void (* PFNGLEDGEFLAGPOINTEREXTPROC) (GLsizei stride, GLsizei count, GLboolean *pointer);
-typedef void (* PFNGLGETPOINTERVEXTPROC) (GLenum pname, GLvoid* *params);
-typedef void (* PFNGLINDEXPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-typedef void (* PFNGLNORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-typedef void (* PFNGLTEXCOORDPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
-typedef void (* PFNGLVERTEXPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void (* PFNGLARRAYELEMENTEXTPROC) (GLint i);
+alias void (* PFNGLCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void (* PFNGLDRAWARRAYSEXTPROC) (GLenum mode, GLint first, GLsizei count);
+alias void (* PFNGLEDGEFLAGPOINTEREXTPROC) (GLsizei stride, GLsizei count, GLboolean *pointer);
+alias void (* PFNGLGETPOINTERVEXTPROC) (GLenum pname, GLvoid* *params);
+alias void (* PFNGLINDEXPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void (* PFNGLNORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void (* PFNGLTEXCOORDPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
+alias void (* PFNGLVERTEXPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLsizei count, GLvoid *pointer);
 
 /* GL_EXT_blend_minmax */
-typedef void (* PFNGLBLENDEQUATIONEXTPROC) (GLenum mode);
+alias void (* PFNGLBLENDEQUATIONEXTPROC) (GLenum mode);
 
 /* GL_EXT_point_parameters */
-typedef void (* PFNGLPOINTPARAMETERFEXTPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLPOINTPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLPOINTPARAMETERFEXTPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPOINTPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
 
 /* GL_EXT_color_subtable */
-typedef void (* PFNGLCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
-typedef void (* PFNGLCOPYCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLsizei count, GLenum format, GLenum type, GLvoid *data);
+alias void (* PFNGLCOPYCOLORSUBTABLEEXTPROC) (GLenum target, GLsizei start, GLint x, GLint y, GLsizei width);
 
 /* GL_EXT_paletted_texture */
-typedef void (* PFNGLCOLORTABLEEXTPROC) (GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-typedef void (* PFNGLGETCOLORTABLEEXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *data);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLCOLORTABLEEXTPROC) (GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
+alias void (* PFNGLGETCOLORTABLEEXTPROC) (GLenum target, GLenum format, GLenum type, GLvoid *data);
+alias void (* PFNGLGETCOLORTABLEPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETCOLORTABLEPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
 
 /* GL_EXT_index_material */
-typedef void (* PFNGLINDEXMATERIALEXTPROC) (GLenum face, GLenum mode);
+alias void (* PFNGLINDEXMATERIALEXTPROC) (GLenum face, GLenum mode);
 
 /* GL_EXT_index_func */
-typedef void (* PFNGLINDEXFUNCEXTPROC) (GLenum func, GLclampf reference);
+alias void (* PFNGLINDEXFUNCEXTPROC) (GLenum func, GLclampf reference);
 
 /* GL_EXT_compiled_vertex_array */
-typedef void (* PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
-typedef void (* PFNGLUNLOCKARRAYSEXTPROC) ();
+alias void (* PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
+alias void (* PFNGLUNLOCKARRAYSEXTPROC) ();
 
 /* GL_EXT_cull_vertex */
-typedef void (* PFNGLCULLPARAMETERDVEXTPROC) (GLenum pname, GLdouble *params);
-typedef void (* PFNGLCULLPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLCULLPARAMETERDVEXTPROC) (GLenum pname, GLdouble *params);
+alias void (* PFNGLCULLPARAMETERFVEXTPROC) (GLenum pname, GLfloat *params);
 
 /* GL_EXT_draw_range_elements */
-typedef void (* PFNGLDRAWRANGEELEMENTSEXTPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
+alias void (* PFNGLDRAWRANGEELEMENTSEXTPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLvoid *indices);
 
 /* GL_EXT_light_texture */
-typedef void (* PFNGLAPPLYTEXTUREEXTPROC) (GLenum mode);
-typedef void (* PFNGLTEXTURELIGHTEXTPROC) (GLenum pname);
-typedef void (* PFNGLTEXTUREMATERIALEXTPROC) (GLenum face, GLenum mode);
+alias void (* PFNGLAPPLYTEXTUREEXTPROC) (GLenum mode);
+alias void (* PFNGLTEXTURELIGHTEXTPROC) (GLenum pname);
+alias void (* PFNGLTEXTUREMATERIALEXTPROC) (GLenum face, GLenum mode);
 
 /* GL_EXT_pixel_transform */
-typedef void (* PFNGLPIXELTRANSFORMPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint param);
-typedef void (* PFNGLPIXELTRANSFORMPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat param);
-typedef void (* PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLPIXELTRANSFORMPARAMETERIEXTPROC) (GLenum target, GLenum pname, GLint param);
+alias void (* PFNGLPIXELTRANSFORMPARAMETERFEXTPROC) (GLenum target, GLenum pname, GLfloat param);
+alias void (* PFNGLPIXELTRANSFORMPARAMETERIVEXTPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLPIXELTRANSFORMPARAMETERFVEXTPROC) (GLenum target, GLenum pname, GLfloat *params);
 
 /* GL_EXT_secondary_color */
-typedef void (* PFNGLSECONDARYCOLOR3BEXTPROC) (GLbyte red, GLbyte green, GLbyte blue);
-typedef void (* PFNGLSECONDARYCOLOR3BVEXTPROC) (GLbyte *v);
-typedef void (* PFNGLSECONDARYCOLOR3DEXTPROC) (GLdouble red, GLdouble green, GLdouble blue);
-typedef void (* PFNGLSECONDARYCOLOR3DVEXTPROC) (GLdouble *v);
-typedef void (* PFNGLSECONDARYCOLOR3FEXTPROC) (GLfloat red, GLfloat green, GLfloat blue);
-typedef void (* PFNGLSECONDARYCOLOR3FVEXTPROC) (GLfloat *v);
-typedef void (* PFNGLSECONDARYCOLOR3IEXTPROC) (GLint red, GLint green, GLint blue);
-typedef void (* PFNGLSECONDARYCOLOR3IVEXTPROC) (GLint *v);
-typedef void (* PFNGLSECONDARYCOLOR3SEXTPROC) (GLshort red, GLshort green, GLshort blue);
-typedef void (* PFNGLSECONDARYCOLOR3SVEXTPROC) (GLshort *v);
-typedef void (* PFNGLSECONDARYCOLOR3UBEXTPROC) (GLubyte red, GLubyte green, GLubyte blue);
-typedef void (* PFNGLSECONDARYCOLOR3UBVEXTPROC) (GLubyte *v);
-typedef void (* PFNGLSECONDARYCOLOR3UIEXTPROC) (GLuint red, GLuint green, GLuint blue);
-typedef void (* PFNGLSECONDARYCOLOR3UIVEXTPROC) (GLuint *v);
-typedef void (* PFNGLSECONDARYCOLOR3USEXTPROC) (GLushort red, GLushort green, GLushort blue);
-typedef void (* PFNGLSECONDARYCOLOR3USVEXTPROC) (GLushort *v);
-typedef void (* PFNGLSECONDARYCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLSECONDARYCOLOR3BEXTPROC) (GLbyte red, GLbyte green, GLbyte blue);
+alias void (* PFNGLSECONDARYCOLOR3BVEXTPROC) (GLbyte *v);
+alias void (* PFNGLSECONDARYCOLOR3DEXTPROC) (GLdouble red, GLdouble green, GLdouble blue);
+alias void (* PFNGLSECONDARYCOLOR3DVEXTPROC) (GLdouble *v);
+alias void (* PFNGLSECONDARYCOLOR3FEXTPROC) (GLfloat red, GLfloat green, GLfloat blue);
+alias void (* PFNGLSECONDARYCOLOR3FVEXTPROC) (GLfloat *v);
+alias void (* PFNGLSECONDARYCOLOR3IEXTPROC) (GLint red, GLint green, GLint blue);
+alias void (* PFNGLSECONDARYCOLOR3IVEXTPROC) (GLint *v);
+alias void (* PFNGLSECONDARYCOLOR3SEXTPROC) (GLshort red, GLshort green, GLshort blue);
+alias void (* PFNGLSECONDARYCOLOR3SVEXTPROC) (GLshort *v);
+alias void (* PFNGLSECONDARYCOLOR3UBEXTPROC) (GLubyte red, GLubyte green, GLubyte blue);
+alias void (* PFNGLSECONDARYCOLOR3UBVEXTPROC) (GLubyte *v);
+alias void (* PFNGLSECONDARYCOLOR3UIEXTPROC) (GLuint red, GLuint green, GLuint blue);
+alias void (* PFNGLSECONDARYCOLOR3UIVEXTPROC) (GLuint *v);
+alias void (* PFNGLSECONDARYCOLOR3USEXTPROC) (GLushort red, GLushort green, GLushort blue);
+alias void (* PFNGLSECONDARYCOLOR3USVEXTPROC) (GLushort *v);
+alias void (* PFNGLSECONDARYCOLORPOINTEREXTPROC) (GLint size, GLenum type, GLsizei stride, GLvoid *pointer);
 
 /* GL_EXT_texture_perturb_normal */
-typedef void (* PFNGLTEXTURENORMALEXTPROC) (GLenum mode);
+alias void (* PFNGLTEXTURENORMALEXTPROC) (GLenum mode);
 
 /* GL_EXT_multi_draw_arrays */
-typedef void (* PFNGLMULTIDRAWARRAYSEXTPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-typedef void (* PFNGLMULTIDRAWELEMENTSEXTPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
+alias void (* PFNGLMULTIDRAWARRAYSEXTPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
+alias void (* PFNGLMULTIDRAWELEMENTSEXTPROC) (GLenum mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount);
 
 /* GL_EXT_fog_coord */
-typedef void (* PFNGLFOGCOORDFEXTPROC) (GLfloat coord);
-typedef void (* PFNGLFOGCOORDFVEXTPROC) (GLfloat *coord);
-typedef void (* PFNGLFOGCOORDDEXTPROC) (GLdouble coord);
-typedef void (* PFNGLFOGCOORDDVEXTPROC) (GLdouble *coord);
-typedef void (* PFNGLFOGCOORDPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLFOGCOORDFEXTPROC) (GLfloat coord);
+alias void (* PFNGLFOGCOORDFVEXTPROC) (GLfloat *coord);
+alias void (* PFNGLFOGCOORDDEXTPROC) (GLdouble coord);
+alias void (* PFNGLFOGCOORDDVEXTPROC) (GLdouble *coord);
+alias void (* PFNGLFOGCOORDPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
 
 /* GL_EXT_coordinate_frame */
-typedef void (* PFNGLTANGENT3BEXTPROC) (GLbyte tx, GLbyte ty, GLbyte tz);
-typedef void (* PFNGLTANGENT3BVEXTPROC) (GLbyte *v);
-typedef void (* PFNGLTANGENT3DEXTPROC) (GLdouble tx, GLdouble ty, GLdouble tz);
-typedef void (* PFNGLTANGENT3DVEXTPROC) (GLdouble *v);
-typedef void (* PFNGLTANGENT3FEXTPROC) (GLfloat tx, GLfloat ty, GLfloat tz);
-typedef void (* PFNGLTANGENT3FVEXTPROC) (GLfloat *v);
-typedef void (* PFNGLTANGENT3IEXTPROC) (GLint tx, GLint ty, GLint tz);
-typedef void (* PFNGLTANGENT3IVEXTPROC) (GLint *v);
-typedef void (* PFNGLTANGENT3SEXTPROC) (GLshort tx, GLshort ty, GLshort tz);
-typedef void (* PFNGLTANGENT3SVEXTPROC) (GLshort *v);
-typedef void (* PFNGLBINORMAL3BEXTPROC) (GLbyte bx, GLbyte by, GLbyte bz);
-typedef void (* PFNGLBINORMAL3BVEXTPROC) (GLbyte *v);
-typedef void (* PFNGLBINORMAL3DEXTPROC) (GLdouble bx, GLdouble by, GLdouble bz);
-typedef void (* PFNGLBINORMAL3DVEXTPROC) (GLdouble *v);
-typedef void (* PFNGLBINORMAL3FEXTPROC) (GLfloat bx, GLfloat by, GLfloat bz);
-typedef void (* PFNGLBINORMAL3FVEXTPROC) (GLfloat *v);
-typedef void (* PFNGLBINORMAL3IEXTPROC) (GLint bx, GLint by, GLint bz);
-typedef void (* PFNGLBINORMAL3IVEXTPROC) (GLint *v);
-typedef void (* PFNGLBINORMAL3SEXTPROC) (GLshort bx, GLshort by, GLshort bz);
-typedef void (* PFNGLBINORMAL3SVEXTPROC) (GLshort *v);
-typedef void (* PFNGLTANGENTPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLBINORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLTANGENT3BEXTPROC) (GLbyte tx, GLbyte ty, GLbyte tz);
+alias void (* PFNGLTANGENT3BVEXTPROC) (GLbyte *v);
+alias void (* PFNGLTANGENT3DEXTPROC) (GLdouble tx, GLdouble ty, GLdouble tz);
+alias void (* PFNGLTANGENT3DVEXTPROC) (GLdouble *v);
+alias void (* PFNGLTANGENT3FEXTPROC) (GLfloat tx, GLfloat ty, GLfloat tz);
+alias void (* PFNGLTANGENT3FVEXTPROC) (GLfloat *v);
+alias void (* PFNGLTANGENT3IEXTPROC) (GLint tx, GLint ty, GLint tz);
+alias void (* PFNGLTANGENT3IVEXTPROC) (GLint *v);
+alias void (* PFNGLTANGENT3SEXTPROC) (GLshort tx, GLshort ty, GLshort tz);
+alias void (* PFNGLTANGENT3SVEXTPROC) (GLshort *v);
+alias void (* PFNGLBINORMAL3BEXTPROC) (GLbyte bx, GLbyte by, GLbyte bz);
+alias void (* PFNGLBINORMAL3BVEXTPROC) (GLbyte *v);
+alias void (* PFNGLBINORMAL3DEXTPROC) (GLdouble bx, GLdouble by, GLdouble bz);
+alias void (* PFNGLBINORMAL3DVEXTPROC) (GLdouble *v);
+alias void (* PFNGLBINORMAL3FEXTPROC) (GLfloat bx, GLfloat by, GLfloat bz);
+alias void (* PFNGLBINORMAL3FVEXTPROC) (GLfloat *v);
+alias void (* PFNGLBINORMAL3IEXTPROC) (GLint bx, GLint by, GLint bz);
+alias void (* PFNGLBINORMAL3IVEXTPROC) (GLint *v);
+alias void (* PFNGLBINORMAL3SEXTPROC) (GLshort bx, GLshort by, GLshort bz);
+alias void (* PFNGLBINORMAL3SVEXTPROC) (GLshort *v);
+alias void (* PFNGLTANGENTPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLBINORMALPOINTEREXTPROC) (GLenum type, GLsizei stride, GLvoid *pointer);
 
 /* GL_EXT_blend_func_separate */
-typedef void (* PFNGLBLENDFUNCSEPARATEEXTPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
-typedef void (* PFNGLBLENDFUNCSEPARATEINGRPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void (* PFNGLBLENDFUNCSEPARATEEXTPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
+alias void (* PFNGLBLENDFUNCSEPARATEINGRPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
 
 /* GL_EXT_vertex_weighting */
-typedef void (* PFNGLVERTEXWEIGHTFEXTPROC) (GLfloat weight);
-typedef void (* PFNGLVERTEXWEIGHTFVEXTPROC) (GLfloat *weight);
-typedef void (* PFNGLVERTEXWEIGHTPOINTEREXTPROC) (GLsizei size, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLVERTEXWEIGHTFEXTPROC) (GLfloat weight);
+alias void (* PFNGLVERTEXWEIGHTFVEXTPROC) (GLfloat *weight);
+alias void (* PFNGLVERTEXWEIGHTPOINTEREXTPROC) (GLsizei size, GLenum type, GLsizei stride, GLvoid *pointer);
 
 /* GL_EXT_multisample */
-typedef void (* PFNGLSAMPLEMASKEXTPROC) (GLclampf value, GLboolean invert);
-typedef void (* PFNGLSAMPLEPATTERNEXTPROC) (GLenum pattern);
+alias void (* PFNGLSAMPLEMASKEXTPROC) (GLclampf value, GLboolean invert);
+alias void (* PFNGLSAMPLEPATTERNEXTPROC) (GLenum pattern);
 
 /* GL_EXT_vertex_shader */
-typedef void (* PFNGLBEGINVERTEXSHADEREXTPROC) ();
-typedef void (* PFNGLENDVERTEXSHADEREXTPROC) ();
-typedef void (* PFNGLBINDVERTEXSHADEREXTPROC) (GLuint id);
-typedef GLuint (* PFNGLGENVERTEXSHADERSEXTPROC) (GLuint range);
-typedef void (* PFNGLDELETEVERTEXSHADEREXTPROC) (GLuint id);
-typedef void (* PFNGLSHADEROP1EXTPROC) (GLenum op, GLuint res, GLuint arg1);
-typedef void (* PFNGLSHADEROP2EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2);
-typedef void (* PFNGLSHADEROP3EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2, GLuint arg3);
-typedef void (* PFNGLSWIZZLEEXTPROC) (GLuint res, GLuint in_, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
-typedef void (* PFNGLWRITEMASKEXTPROC) (GLuint res, GLuint in_, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
-typedef void (* PFNGLINSERTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
-typedef void (* PFNGLEXTRACTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
-typedef GLuint (* PFNGLGENSYMBOLSEXTPROC) (GLenum datatype, GLenum storagetype, GLenum range, GLuint components);
-typedef void (* PFNGLSETINVARIANTEXTPROC) (GLuint id, GLenum type, void *addr);
-typedef void (* PFNGLSETLOCALCONSTANTEXTPROC) (GLuint id, GLenum type, void *addr);
-typedef void (* PFNGLVARIANTBVEXTPROC) (GLuint id, GLbyte *addr);
-typedef void (* PFNGLVARIANTSVEXTPROC) (GLuint id, GLshort *addr);
-typedef void (* PFNGLVARIANTIVEXTPROC) (GLuint id, GLint *addr);
-typedef void (* PFNGLVARIANTFVEXTPROC) (GLuint id, GLfloat *addr);
-typedef void (* PFNGLVARIANTDVEXTPROC) (GLuint id, GLdouble *addr);
-typedef void (* PFNGLVARIANTUBVEXTPROC) (GLuint id, GLubyte *addr);
-typedef void (* PFNGLVARIANTUSVEXTPROC) (GLuint id, GLushort *addr);
-typedef void (* PFNGLVARIANTUIVEXTPROC) (GLuint id, GLuint *addr);
-typedef void (* PFNGLVARIANTPOINTEREXTPROC) (GLuint id, GLenum type, GLuint stride, void *addr);
-typedef void (* PFNGLENABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
-typedef void (* PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
-typedef GLuint (* PFNGLBINDLIGHTPARAMETEREXTPROC) (GLenum light, GLenum value);
-typedef GLuint (* PFNGLBINDMATERIALPARAMETEREXTPROC) (GLenum face, GLenum value);
-typedef GLuint (* PFNGLBINDTEXGENPARAMETEREXTPROC) (GLenum unit, GLenum coord, GLenum value);
-typedef GLuint (* PFNGLBINDTEXTUREUNITPARAMETEREXTPROC) (GLenum unit, GLenum value);
-typedef GLuint (* PFNGLBINDPARAMETEREXTPROC) (GLenum value);
-typedef GLboolean (* PFNGLISVARIANTENABLEDEXTPROC) (GLuint id, GLenum cap);
-typedef void (* PFNGLGETVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-typedef void (* PFNGLGETVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-typedef void (* PFNGLGETVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
-typedef void (* PFNGLGETVARIANTPOINTERVEXTPROC) (GLuint id, GLenum value, GLvoid* *data);
-typedef void (* PFNGLGETINVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-typedef void (* PFNGLGETINVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-typedef void (* PFNGLGETINVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
-typedef void (* PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
-typedef void (* PFNGLGETLOCALCONSTANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
-typedef void (* PFNGLGETLOCALCONSTANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
+alias void (* PFNGLBEGINVERTEXSHADEREXTPROC) ();
+alias void (* PFNGLENDVERTEXSHADEREXTPROC) ();
+alias void (* PFNGLBINDVERTEXSHADEREXTPROC) (GLuint id);
+alias GLuint (* PFNGLGENVERTEXSHADERSEXTPROC) (GLuint range);
+alias void (* PFNGLDELETEVERTEXSHADEREXTPROC) (GLuint id);
+alias void (* PFNGLSHADEROP1EXTPROC) (GLenum op, GLuint res, GLuint arg1);
+alias void (* PFNGLSHADEROP2EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2);
+alias void (* PFNGLSHADEROP3EXTPROC) (GLenum op, GLuint res, GLuint arg1, GLuint arg2, GLuint arg3);
+alias void (* PFNGLSWIZZLEEXTPROC) (GLuint res, GLuint in_, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
+alias void (* PFNGLWRITEMASKEXTPROC) (GLuint res, GLuint in_, GLenum outX, GLenum outY, GLenum outZ, GLenum outW);
+alias void (* PFNGLINSERTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
+alias void (* PFNGLEXTRACTCOMPONENTEXTPROC) (GLuint res, GLuint src, GLuint num);
+alias GLuint (* PFNGLGENSYMBOLSEXTPROC) (GLenum datatype, GLenum storagetype, GLenum range, GLuint components);
+alias void (* PFNGLSETINVARIANTEXTPROC) (GLuint id, GLenum type, void *addr);
+alias void (* PFNGLSETLOCALCONSTANTEXTPROC) (GLuint id, GLenum type, void *addr);
+alias void (* PFNGLVARIANTBVEXTPROC) (GLuint id, GLbyte *addr);
+alias void (* PFNGLVARIANTSVEXTPROC) (GLuint id, GLshort *addr);
+alias void (* PFNGLVARIANTIVEXTPROC) (GLuint id, GLint *addr);
+alias void (* PFNGLVARIANTFVEXTPROC) (GLuint id, GLfloat *addr);
+alias void (* PFNGLVARIANTDVEXTPROC) (GLuint id, GLdouble *addr);
+alias void (* PFNGLVARIANTUBVEXTPROC) (GLuint id, GLubyte *addr);
+alias void (* PFNGLVARIANTUSVEXTPROC) (GLuint id, GLushort *addr);
+alias void (* PFNGLVARIANTUIVEXTPROC) (GLuint id, GLuint *addr);
+alias void (* PFNGLVARIANTPOINTEREXTPROC) (GLuint id, GLenum type, GLuint stride, void *addr);
+alias void (* PFNGLENABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
+alias void (* PFNGLDISABLEVARIANTCLIENTSTATEEXTPROC) (GLuint id);
+alias GLuint (* PFNGLBINDLIGHTPARAMETEREXTPROC) (GLenum light, GLenum value);
+alias GLuint (* PFNGLBINDMATERIALPARAMETEREXTPROC) (GLenum face, GLenum value);
+alias GLuint (* PFNGLBINDTEXGENPARAMETEREXTPROC) (GLenum unit, GLenum coord, GLenum value);
+alias GLuint (* PFNGLBINDTEXTUREUNITPARAMETEREXTPROC) (GLenum unit, GLenum value);
+alias GLuint (* PFNGLBINDPARAMETEREXTPROC) (GLenum value);
+alias GLboolean (* PFNGLISVARIANTENABLEDEXTPROC) (GLuint id, GLenum cap);
+alias void (* PFNGLGETVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
+alias void (* PFNGLGETVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
+alias void (* PFNGLGETVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
+alias void (* PFNGLGETVARIANTPOINTERVEXTPROC) (GLuint id, GLenum value, GLvoid* *data);
+alias void (* PFNGLGETINVARIANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
+alias void (* PFNGLGETINVARIANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
+alias void (* PFNGLGETINVARIANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
+alias void (* PFNGLGETLOCALCONSTANTBOOLEANVEXTPROC) (GLuint id, GLenum value, GLboolean *data);
+alias void (* PFNGLGETLOCALCONSTANTINTEGERVEXTPROC) (GLuint id, GLenum value, GLint *data);
+alias void (* PFNGLGETLOCALCONSTANTFLOATVEXTPROC) (GLuint id, GLenum value, GLfloat *data);
 
 /* GL_EXT_stencil_two_side */
-typedef void (* PFNGLACTIVESTENCILFACEEXTPROC) (GLenum face);
+alias void (* PFNGLACTIVESTENCILFACEEXTPROC) (GLenum face);
 
 /* GL_SGI_color_table */
-typedef void (* PFNGLCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
-typedef void (* PFNGLCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLCOPYCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
-typedef void (* PFNGLGETCOLORTABLESGIPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLsizei width, GLenum format, GLenum type, GLvoid *table);
+alias void (* PFNGLCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLCOPYCOLORTABLESGIPROC) (GLenum target, GLenum internalformat, GLint x, GLint y, GLsizei width);
+alias void (* PFNGLGETCOLORTABLESGIPROC) (GLenum target, GLenum format, GLenum type, GLvoid *table);
+alias void (* PFNGLGETCOLORTABLEPARAMETERFVSGIPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCOLORTABLEPARAMETERIVSGIPROC) (GLenum target, GLenum pname, GLint *params);
 
 /* GL_SGIX_pixel_texture */
-typedef void (* PFNGLPIXELTEXGENSGIXPROC) (GLenum mode);
+alias void (* PFNGLPIXELTEXGENSGIXPROC) (GLenum mode);
 
 /* GL_SGIS_pixel_texture */
-typedef void (* PFNGLPIXELTEXGENPARAMETERISGISPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
-typedef void (* PFNGLPIXELTEXGENPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
-typedef void (* PFNGLGETPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLPIXELTEXGENPARAMETERISGISPROC) (GLenum pname, GLint param);
+alias void (* PFNGLPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLPIXELTEXGENPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLGETPIXELTEXGENPARAMETERIVSGISPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLGETPIXELTEXGENPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
 
 /* GL_SGIS_texture4D */
-typedef void (* PFNGLTEXIMAGE4DSGISPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLint border, GLenum format, GLenum type, GLvoid *pixels);
-typedef void (* PFNGLTEXSUBIMAGE4DSGISPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint woffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXIMAGE4DSGISPROC) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLint border, GLenum format, GLenum type, GLvoid *pixels);
+alias void (* PFNGLTEXSUBIMAGE4DSGISPROC) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint woffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei size4d, GLenum format, GLenum type, GLvoid *pixels);
 
 /* GL_SGIS_detail_texture */
-typedef void (* PFNGLDETAILTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
-typedef void (* PFNGLGETDETAILTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
+alias void (* PFNGLDETAILTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
+alias void (* PFNGLGETDETAILTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
 
 /* GL_SGIS_sharpen_texture */
-typedef void (* PFNGLSHARPENTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
-typedef void (* PFNGLGETSHARPENTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
+alias void (* PFNGLSHARPENTEXFUNCSGISPROC) (GLenum target, GLsizei n, GLfloat *points);
+alias void (* PFNGLGETSHARPENTEXFUNCSGISPROC) (GLenum target, GLfloat *points);
 
 /* GL_SGIS_multisample */
-typedef void (* PFNGLSAMPLEMASKSGISPROC) (GLclampf value, GLboolean invert);
-typedef void (* PFNGLSAMPLEPATTERNSGISPROC) (GLenum pattern);
+alias void (* PFNGLSAMPLEMASKSGISPROC) (GLclampf value, GLboolean invert);
+alias void (* PFNGLSAMPLEPATTERNSGISPROC) (GLenum pattern);
 
 /* GL_SGIX_sprite */
-typedef void (* PFNGLSPRITEPARAMETERFSGIXPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLSPRITEPARAMETERFVSGIXPROC) (GLenum pname, GLfloat *params);
-typedef void (* PFNGLSPRITEPARAMETERISGIXPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLSPRITEPARAMETERIVSGIXPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLSPRITEPARAMETERFSGIXPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLSPRITEPARAMETERFVSGIXPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLSPRITEPARAMETERISGIXPROC) (GLenum pname, GLint param);
+alias void (* PFNGLSPRITEPARAMETERIVSGIXPROC) (GLenum pname, GLint *params);
 
 /* GL_SGIS_point_parameters */
-typedef void (* PFNGLPOINTPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLPOINTPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLPOINTPARAMETERFSGISPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPOINTPARAMETERFVSGISPROC) (GLenum pname, GLfloat *params);
 
 /* GL_SGIX_instruments */
-typedef GLint (* PFNGLGETINSTRUMENTSSGIXPROC) ();
-typedef void (* PFNGLINSTRUMENTSBUFFERSGIXPROC) (GLsizei size, GLint *buffer);
-typedef GLint (* PFNGLPOLLINSTRUMENTSSGIXPROC) (GLint *marker_p);
-typedef void (* PFNGLREADINSTRUMENTSSGIXPROC) (GLint marker);
-typedef void (* PFNGLSTARTINSTRUMENTSSGIXPROC) ();
-typedef void (* PFNGLSTOPINSTRUMENTSSGIXPROC) (GLint marker);
+alias GLint (* PFNGLGETINSTRUMENTSSGIXPROC) ();
+alias void (* PFNGLINSTRUMENTSBUFFERSGIXPROC) (GLsizei size, GLint *buffer);
+alias GLint (* PFNGLPOLLINSTRUMENTSSGIXPROC) (GLint *marker_p);
+alias void (* PFNGLREADINSTRUMENTSSGIXPROC) (GLint marker);
+alias void (* PFNGLSTARTINSTRUMENTSSGIXPROC) ();
+alias void (* PFNGLSTOPINSTRUMENTSSGIXPROC) (GLint marker);
 
 /* GL_SGIX_framezoom */
-typedef void (* PFNGLFRAMEZOOMSGIXPROC) (GLint factor);
+alias void (* PFNGLFRAMEZOOMSGIXPROC) (GLint factor);
 
 /* GL_SGIX_tag_sample_buffer */
-typedef void (* PFNGLTAGSAMPLEBUFFERSGIXPROC) ();
+alias void (* PFNGLTAGSAMPLEBUFFERSGIXPROC) ();
 
 /* GL_SGIX_polynomial_ffd */
-typedef void (* PFNGLDEFORMATIONMAP3DSGIXPROC) (GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, GLdouble *points);
-typedef void (* PFNGLDEFORMATIONMAP3FSGIXPROC) (GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat w1, GLfloat w2, GLint wstride, GLint worder, GLfloat *points);
-typedef void (* PFNGLDEFORMSGIXPROC) (GLbitfield mask);
-typedef void (* PFNGLLOADIDENTITYDEFORMATIONMAPSGIXPROC) (GLbitfield mask);
+alias void (* PFNGLDEFORMATIONMAP3DSGIXPROC) (GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, GLdouble w1, GLdouble w2, GLint wstride, GLint worder, GLdouble *points);
+alias void (* PFNGLDEFORMATIONMAP3FSGIXPROC) (GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, GLfloat w1, GLfloat w2, GLint wstride, GLint worder, GLfloat *points);
+alias void (* PFNGLDEFORMSGIXPROC) (GLbitfield mask);
+alias void (* PFNGLLOADIDENTITYDEFORMATIONMAPSGIXPROC) (GLbitfield mask);
 
 /* GL_SGIX_reference_plane */
-typedef void (* PFNGLREFERENCEPLANESGIXPROC) (GLdouble *equation);
+alias void (* PFNGLREFERENCEPLANESGIXPROC) (GLdouble *equation);
 
 /* GL_SGIX_flush_raster */
-typedef void (* PFNGLFLUSHRASTERSGIXPROC) ();
+alias void (* PFNGLFLUSHRASTERSGIXPROC) ();
 
 /* GL_SGIS_fog_function */
-typedef void (* PFNGLFOGFUNCSGISPROC) (GLsizei n, GLfloat *points);
-typedef void (* PFNGLGETFOGFUNCSGISPROC) (GLfloat *points);
+alias void (* PFNGLFOGFUNCSGISPROC) (GLsizei n, GLfloat *points);
+alias void (* PFNGLGETFOGFUNCSGISPROC) (GLfloat *points);
 
 /* GL_HP_image_transform */
-typedef void (* PFNGLIMAGETRANSFORMPARAMETERIHPPROC) (GLenum target, GLenum pname, GLint param);
-typedef void (* PFNGLIMAGETRANSFORMPARAMETERFHPPROC) (GLenum target, GLenum pname, GLfloat param);
-typedef void (* PFNGLIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLIMAGETRANSFORMPARAMETERIHPPROC) (GLenum target, GLenum pname, GLint param);
+alias void (* PFNGLIMAGETRANSFORMPARAMETERFHPPROC) (GLenum target, GLenum pname, GLfloat param);
+alias void (* PFNGLIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETIMAGETRANSFORMPARAMETERIVHPPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETIMAGETRANSFORMPARAMETERFVHPPROC) (GLenum target, GLenum pname, GLfloat *params);
 
 /* GL_PGI_misc_hints */
-typedef void (* PFNGLHINTPGIPROC) (GLenum target, GLint mode);
+alias void (* PFNGLHINTPGIPROC) (GLenum target, GLint mode);
 
 /* GL_SGIX_list_priority */
-typedef void (* PFNGLGETLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
-typedef void (* PFNGLLISTPARAMETERFSGIXPROC) (GLuint list, GLenum pname, GLfloat param);
-typedef void (* PFNGLLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
-typedef void (* PFNGLLISTPARAMETERISGIXPROC) (GLuint list, GLenum pname, GLint param);
-typedef void (* PFNGLLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
+alias void (* PFNGLGETLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
+alias void (* PFNGLLISTPARAMETERFSGIXPROC) (GLuint list, GLenum pname, GLfloat param);
+alias void (* PFNGLLISTPARAMETERFVSGIXPROC) (GLuint list, GLenum pname, GLfloat *params);
+alias void (* PFNGLLISTPARAMETERISGIXPROC) (GLuint list, GLenum pname, GLint param);
+alias void (* PFNGLLISTPARAMETERIVSGIXPROC) (GLuint list, GLenum pname, GLint *params);
 
 /* GL_SGIX_fragment_lighting */
-typedef void (* PFNGLFRAGMENTCOLORMATERIALSGIXPROC) (GLenum face, GLenum mode);
-typedef void (* PFNGLFRAGMENTLIGHTFSGIXPROC) (GLenum light, GLenum pname, GLfloat param);
-typedef void (* PFNGLFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
-typedef void (* PFNGLFRAGMENTLIGHTISGIXPROC) (GLenum light, GLenum pname, GLint param);
-typedef void (* PFNGLFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
-typedef void (* PFNGLFRAGMENTLIGHTMODELFSGIXPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLFRAGMENTLIGHTMODELFVSGIXPROC) (GLenum pname, GLfloat *params);
-typedef void (* PFNGLFRAGMENTLIGHTMODELISGIXPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLFRAGMENTLIGHTMODELIVSGIXPROC) (GLenum pname, GLint *params);
-typedef void (* PFNGLFRAGMENTMATERIALFSGIXPROC) (GLenum face, GLenum pname, GLfloat param);
-typedef void (* PFNGLFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
-typedef void (* PFNGLFRAGMENTMATERIALISGIXPROC) (GLenum face, GLenum pname, GLint param);
-typedef void (* PFNGLFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
-typedef void (* PFNGLGETFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
-typedef void (* PFNGLGETFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
-typedef void (* PFNGLLIGHTENVISGIXPROC) (GLenum pname, GLint param);
+alias void (* PFNGLFRAGMENTCOLORMATERIALSGIXPROC) (GLenum face, GLenum mode);
+alias void (* PFNGLFRAGMENTLIGHTFSGIXPROC) (GLenum light, GLenum pname, GLfloat param);
+alias void (* PFNGLFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
+alias void (* PFNGLFRAGMENTLIGHTISGIXPROC) (GLenum light, GLenum pname, GLint param);
+alias void (* PFNGLFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
+alias void (* PFNGLFRAGMENTLIGHTMODELFSGIXPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLFRAGMENTLIGHTMODELFVSGIXPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLFRAGMENTLIGHTMODELISGIXPROC) (GLenum pname, GLint param);
+alias void (* PFNGLFRAGMENTLIGHTMODELIVSGIXPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLFRAGMENTMATERIALFSGIXPROC) (GLenum face, GLenum pname, GLfloat param);
+alias void (* PFNGLFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
+alias void (* PFNGLFRAGMENTMATERIALISGIXPROC) (GLenum face, GLenum pname, GLint param);
+alias void (* PFNGLFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
+alias void (* PFNGLGETFRAGMENTLIGHTFVSGIXPROC) (GLenum light, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETFRAGMENTLIGHTIVSGIXPROC) (GLenum light, GLenum pname, GLint *params);
+alias void (* PFNGLGETFRAGMENTMATERIALFVSGIXPROC) (GLenum face, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETFRAGMENTMATERIALIVSGIXPROC) (GLenum face, GLenum pname, GLint *params);
+alias void (* PFNGLLIGHTENVISGIXPROC) (GLenum pname, GLint param);
 
 /* GL_SGIX_async */
-typedef void (* PFNGLASYNCMARKERSGIXPROC) (GLuint marker);
-typedef GLint (* PFNGLFINISHASYNCSGIXPROC) (GLuint *markerp);
-typedef GLint (* PFNGLPOLLASYNCSGIXPROC) (GLuint *markerp);
-typedef GLuint (* PFNGLGENASYNCMARKERSSGIXPROC) (GLsizei range);
-typedef void (* PFNGLDELETEASYNCMARKERSSGIXPROC) (GLuint marker, GLsizei range);
-typedef GLboolean (* PFNGLISASYNCMARKERSGIXPROC) (GLuint marker);
+alias void (* PFNGLASYNCMARKERSGIXPROC) (GLuint marker);
+alias GLint (* PFNGLFINISHASYNCSGIXPROC) (GLuint *markerp);
+alias GLint (* PFNGLPOLLASYNCSGIXPROC) (GLuint *markerp);
+alias GLuint (* PFNGLGENASYNCMARKERSSGIXPROC) (GLsizei range);
+alias void (* PFNGLDELETEASYNCMARKERSSGIXPROC) (GLuint marker, GLsizei range);
+alias GLboolean (* PFNGLISASYNCMARKERSGIXPROC) (GLuint marker);
 
 /* GL_INTEL_parallel_arrays */
-typedef void (* PFNGLVERTEXPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
-typedef void (* PFNGLNORMALPOINTERVINTELPROC) (GLenum type, GLvoid* *pointer);
-typedef void (* PFNGLCOLORPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
-typedef void (* PFNGLTEXCOORDPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
+alias void (* PFNGLVERTEXPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
+alias void (* PFNGLNORMALPOINTERVINTELPROC) (GLenum type, GLvoid* *pointer);
+alias void (* PFNGLCOLORPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
+alias void (* PFNGLTEXCOORDPOINTERVINTELPROC) (GLint size, GLenum type, GLvoid* *pointer);
 
 /* GL_SUNX_constant_data */
-typedef void (* PFNGLFINISHTEXTURESUNXPROC) ();
+alias void (* PFNGLFINISHTEXTURESUNXPROC) ();
 
 /* GL_SUN_global_alpha */
-typedef void (* PFNGLGLOBALALPHAFACTORBSUNPROC) (GLbyte factor);
-typedef void (* PFNGLGLOBALALPHAFACTORSSUNPROC) (GLshort factor);
-typedef void (* PFNGLGLOBALALPHAFACTORISUNPROC) (GLint factor);
-typedef void (* PFNGLGLOBALALPHAFACTORFSUNPROC) (GLfloat factor);
-typedef void (* PFNGLGLOBALALPHAFACTORDSUNPROC) (GLdouble factor);
-typedef void (* PFNGLGLOBALALPHAFACTORUBSUNPROC) (GLubyte factor);
-typedef void (* PFNGLGLOBALALPHAFACTORUSSUNPROC) (GLushort factor);
-typedef void (* PFNGLGLOBALALPHAFACTORUISUNPROC) (GLuint factor);
+alias void (* PFNGLGLOBALALPHAFACTORBSUNPROC) (GLbyte factor);
+alias void (* PFNGLGLOBALALPHAFACTORSSUNPROC) (GLshort factor);
+alias void (* PFNGLGLOBALALPHAFACTORISUNPROC) (GLint factor);
+alias void (* PFNGLGLOBALALPHAFACTORFSUNPROC) (GLfloat factor);
+alias void (* PFNGLGLOBALALPHAFACTORDSUNPROC) (GLdouble factor);
+alias void (* PFNGLGLOBALALPHAFACTORUBSUNPROC) (GLubyte factor);
+alias void (* PFNGLGLOBALALPHAFACTORUSSUNPROC) (GLushort factor);
+alias void (* PFNGLGLOBALALPHAFACTORUISUNPROC) (GLuint factor);
 
 /* GL_SUN_triangle_list */
-typedef void (* PFNGLREPLACEMENTCODEUISUNPROC) (GLuint code);
-typedef void (* PFNGLREPLACEMENTCODEUSSUNPROC) (GLushort code);
-typedef void (* PFNGLREPLACEMENTCODEUBSUNPROC) (GLubyte code);
-typedef void (* PFNGLREPLACEMENTCODEUIVSUNPROC) (GLuint *code);
-typedef void (* PFNGLREPLACEMENTCODEUSVSUNPROC) (GLushort *code);
-typedef void (* PFNGLREPLACEMENTCODEUBVSUNPROC) (GLubyte *code);
-typedef void (* PFNGLREPLACEMENTCODEPOINTERSUNPROC) (GLenum type, GLsizei stride, GLvoid* *pointer);
+alias void (* PFNGLREPLACEMENTCODEUISUNPROC) (GLuint code);
+alias void (* PFNGLREPLACEMENTCODEUSSUNPROC) (GLushort code);
+alias void (* PFNGLREPLACEMENTCODEUBSUNPROC) (GLubyte code);
+alias void (* PFNGLREPLACEMENTCODEUIVSUNPROC) (GLuint *code);
+alias void (* PFNGLREPLACEMENTCODEUSVSUNPROC) (GLushort *code);
+alias void (* PFNGLREPLACEMENTCODEUBVSUNPROC) (GLubyte *code);
+alias void (* PFNGLREPLACEMENTCODEPOINTERSUNPROC) (GLenum type, GLsizei stride, GLvoid* *pointer);
 
 /* GL_SUN_vertex */
-typedef void (* PFNGLCOLOR4UBVERTEX2FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y);
-typedef void (* PFNGLCOLOR4UBVERTEX2FVSUNPROC) (GLubyte *c, GLfloat *v);
-typedef void (* PFNGLCOLOR4UBVERTEX3FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLCOLOR4UBVERTEX3FVSUNPROC) (GLubyte *c, GLfloat *v);
-typedef void (* PFNGLCOLOR3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLCOLOR3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *v);
-typedef void (* PFNGLNORMAL3FVERTEX3FSUNPROC) (GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLNORMAL3FVERTEX3FVSUNPROC) (GLfloat *n, GLfloat *v);
-typedef void (* PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLTEXCOORD2FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLTEXCOORD2FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *v);
-typedef void (* PFNGLTEXCOORD4FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLTEXCOORD4FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *v);
-typedef void (* PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC) (GLfloat *tc, GLubyte *c, GLfloat *v);
-typedef void (* PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *v);
-typedef void (* PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC) (GLuint rc, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC) (GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC) (GLuint *rc, GLubyte *c, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *n, GLfloat *v);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
+alias void (* PFNGLCOLOR4UBVERTEX2FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y);
+alias void (* PFNGLCOLOR4UBVERTEX2FVSUNPROC) (GLubyte *c, GLfloat *v);
+alias void (* PFNGLCOLOR4UBVERTEX3FSUNPROC) (GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLCOLOR4UBVERTEX3FVSUNPROC) (GLubyte *c, GLfloat *v);
+alias void (* PFNGLCOLOR3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLCOLOR3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *v);
+alias void (* PFNGLNORMAL3FVERTEX3FSUNPROC) (GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLNORMAL3FVERTEX3FVSUNPROC) (GLfloat *n, GLfloat *v);
+alias void (* PFNGLCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *c, GLfloat *n, GLfloat *v);
+alias void (* PFNGLTEXCOORD2FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLTEXCOORD2FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *v);
+alias void (* PFNGLTEXCOORD4FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLTEXCOORD4FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *v);
+alias void (* PFNGLTEXCOORD2FCOLOR4UBVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLTEXCOORD2FCOLOR4UBVERTEX3FVSUNPROC) (GLfloat *tc, GLubyte *c, GLfloat *v);
+alias void (* PFNGLTEXCOORD2FCOLOR3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLTEXCOORD2FCOLOR3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *v);
+alias void (* PFNGLTEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLTEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *n, GLfloat *v);
+alias void (* PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLTEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
+alias void (* PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FSUNPROC) (GLfloat s, GLfloat t, GLfloat p, GLfloat q, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLTEXCOORD4FCOLOR4FNORMAL3FVERTEX4FVSUNPROC) (GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUIVERTEX3FSUNPROC) (GLuint rc, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUIVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FSUNPROC) (GLuint rc, GLubyte r, GLubyte g, GLubyte b, GLubyte a, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR4UBVERTEX3FVSUNPROC) (GLuint *rc, GLubyte *c, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUINORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *n, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUICOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *c, GLfloat *n, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *n, GLfloat *v);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FSUNPROC) (GLuint rc, GLfloat s, GLfloat t, GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLREPLACEMENTCODEUITEXCOORD2FCOLOR4FNORMAL3FVERTEX3FVSUNPROC) (GLuint *rc, GLfloat *tc, GLfloat *c, GLfloat *n, GLfloat *v);
 
 /* GL_NV_vertex_array_range */
-typedef void (* PFNGLFLUSHVERTEXARRAYRANGENVPROC) ();
-typedef void (* PFNGLVERTEXARRAYRANGENVPROC) (GLsizei length, GLvoid *pointer);
+alias void (* PFNGLFLUSHVERTEXARRAYRANGENVPROC) ();
+alias void (* PFNGLVERTEXARRAYRANGENVPROC) (GLsizei length, GLvoid *pointer);
 
 /* GL_NV_primitive_restart */
-typedef void (* PFNGLPRIMITIVERESTARTNVPROC) ();
-typedef void (* PFNGLPRIMITIVERESTARTINDEXNVPROC) (GLuint index);
+alias void (* PFNGLPRIMITIVERESTARTNVPROC) ();
+alias void (* PFNGLPRIMITIVERESTARTINDEXNVPROC) (GLuint index);
 
 /* GL_NV_register_combiners */
-typedef void (* PFNGLCOMBINERPARAMETERFVNVPROC) (GLenum pname, GLfloat *params);
-typedef void (* PFNGLCOMBINERPARAMETERFNVPROC) (GLenum pname, GLfloat param);
-typedef void (* PFNGLCOMBINERPARAMETERIVNVPROC) (GLenum pname, GLint *params);
-typedef void (* PFNGLCOMBINERPARAMETERINVPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLCOMBINERINPUTNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
-typedef void (* PFNGLCOMBINEROUTPUTNVPROC) (GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLboolean abDotProduct, GLboolean cdDotProduct, GLboolean muxSum);
-typedef void (* PFNGLFINALCOMBINERINPUTNVPROC) (GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
-typedef void (* PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLint *params);
-typedef void (* PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLint *params);
-typedef void (* PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC) (GLenum variable, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC) (GLenum variable, GLenum pname, GLint *params);
+alias void (* PFNGLCOMBINERPARAMETERFVNVPROC) (GLenum pname, GLfloat *params);
+alias void (* PFNGLCOMBINERPARAMETERFNVPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLCOMBINERPARAMETERIVNVPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLCOMBINERPARAMETERINVPROC) (GLenum pname, GLint param);
+alias void (* PFNGLCOMBINERINPUTNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
+alias void (* PFNGLCOMBINEROUTPUTNVPROC) (GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLboolean abDotProduct, GLboolean cdDotProduct, GLboolean muxSum);
+alias void (* PFNGLFINALCOMBINERINPUTNVPROC) (GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage);
+alias void (* PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum variable, GLenum pname, GLint *params);
+alias void (* PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC) (GLenum stage, GLenum portion, GLenum pname, GLint *params);
+alias void (* PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC) (GLenum variable, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC) (GLenum variable, GLenum pname, GLint *params);
 
 /* GL_NV_fragment_program */
-typedef void (* PFNGLPROGRAMNAMEDPARAMETER4FNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLPROGRAMNAMEDPARAMETER4DNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat v[]);
-typedef void (* PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble v[]);
-typedef void (* PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat *params);
-typedef void (* PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble *params);
+alias void (* PFNGLPROGRAMNAMEDPARAMETER4FNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLPROGRAMNAMEDPARAMETER4DNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLPROGRAMNAMEDPARAMETER4FVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat v[]);
+alias void (* PFNGLPROGRAMNAMEDPARAMETER4DVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble v[]);
+alias void (* PFNGLGETPROGRAMNAMEDPARAMETERFVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLfloat *params);
+alias void (* PFNGLGETPROGRAMNAMEDPARAMETERDVNVPROC) (GLuint id, GLsizei len, GLubyte *name, GLdouble *params);
 
 /* GL_NV_half_float */
-typedef ushort GLhalf;
-typedef void (* PFNGLVERTEX2HNVPROC) (GLhalf x, GLhalf y);
-typedef void (* PFNGLVERTEX2HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLVERTEX3HNVPROC) (GLhalf x, GLhalf y, GLhalf z);
-typedef void (* PFNGLVERTEX3HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLVERTEX4HNVPROC) (GLhalf x, GLhalf y, GLhalf z, GLhalf w);
-typedef void (* PFNGLVERTEX4HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLNORMAL3HNVPROC) (GLhalf nx, GLhalf ny, GLhalf nz);
-typedef void (* PFNGLNORMAL3HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLCOLOR3HNVPROC) (GLhalf red, GLhalf green, GLhalf blue);
-typedef void (* PFNGLCOLOR3HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLCOLOR4HNVPROC) (GLhalf red, GLhalf green, GLhalf blue, GLhalf alpha);
-typedef void (* PFNGLCOLOR4HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLTEXCOORD1HNVPROC) (GLhalf s);
-typedef void (* PFNGLTEXCOORD1HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLTEXCOORD2HNVPROC) (GLhalf s, GLhalf t);
-typedef void (* PFNGLTEXCOORD2HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLTEXCOORD3HNVPROC) (GLhalf s, GLhalf t, GLhalf r);
-typedef void (* PFNGLTEXCOORD3HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLTEXCOORD4HNVPROC) (GLhalf s, GLhalf t, GLhalf r, GLhalf q);
-typedef void (* PFNGLTEXCOORD4HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLMULTITEXCOORD1HNVPROC) (GLenum target, GLhalf s);
-typedef void (* PFNGLMULTITEXCOORD1HVNVPROC) (GLenum target, GLhalf *v);
-typedef void (* PFNGLMULTITEXCOORD2HNVPROC) (GLenum target, GLhalf s, GLhalf t);
-typedef void (* PFNGLMULTITEXCOORD2HVNVPROC) (GLenum target, GLhalf *v);
-typedef void (* PFNGLMULTITEXCOORD3HNVPROC) (GLenum target, GLhalf s, GLhalf t, GLhalf r);
-typedef void (* PFNGLMULTITEXCOORD3HVNVPROC) (GLenum target, GLhalf *v);
-typedef void (* PFNGLMULTITEXCOORD4HNVPROC) (GLenum target, GLhalf s, GLhalf t, GLhalf r, GLhalf q);
-typedef void (* PFNGLMULTITEXCOORD4HVNVPROC) (GLenum target, GLhalf *v);
-typedef void (* PFNGLFOGCOORDHNVPROC) (GLhalf fog);
-typedef void (* PFNGLFOGCOORDHVNVPROC) (GLhalf *fog);
-typedef void (* PFNGLSECONDARYCOLOR3HNVPROC) (GLhalf red, GLhalf green, GLhalf blue);
-typedef void (* PFNGLSECONDARYCOLOR3HVNVPROC) (GLhalf *v);
-typedef void (* PFNGLVERTEXWEIGHTHNVPROC) (GLhalf weight);
-typedef void (* PFNGLVERTEXWEIGHTHVNVPROC) (GLhalf *weight);
-typedef void (* PFNGLVERTEXATTRIB1HNVPROC) (GLuint index, GLhalf x);
-typedef void (* PFNGLVERTEXATTRIB1HVNVPROC) (GLuint index, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIB2HNVPROC) (GLuint index, GLhalf x, GLhalf y);
-typedef void (* PFNGLVERTEXATTRIB2HVNVPROC) (GLuint index, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIB3HNVPROC) (GLuint index, GLhalf x, GLhalf y, GLhalf z);
-typedef void (* PFNGLVERTEXATTRIB3HVNVPROC) (GLuint index, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIB4HNVPROC) (GLuint index, GLhalf x, GLhalf y, GLhalf z, GLhalf w);
-typedef void (* PFNGLVERTEXATTRIB4HVNVPROC) (GLuint index, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIBS1HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIBS2HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIBS3HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
-typedef void (* PFNGLVERTEXATTRIBS4HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
+alias ushort GLhalf;
+alias void (* PFNGLVERTEX2HNVPROC) (GLhalf x, GLhalf y);
+alias void (* PFNGLVERTEX2HVNVPROC) (GLhalf *v);
+alias void (* PFNGLVERTEX3HNVPROC) (GLhalf x, GLhalf y, GLhalf z);
+alias void (* PFNGLVERTEX3HVNVPROC) (GLhalf *v);
+alias void (* PFNGLVERTEX4HNVPROC) (GLhalf x, GLhalf y, GLhalf z, GLhalf w);
+alias void (* PFNGLVERTEX4HVNVPROC) (GLhalf *v);
+alias void (* PFNGLNORMAL3HNVPROC) (GLhalf nx, GLhalf ny, GLhalf nz);
+alias void (* PFNGLNORMAL3HVNVPROC) (GLhalf *v);
+alias void (* PFNGLCOLOR3HNVPROC) (GLhalf red, GLhalf green, GLhalf blue);
+alias void (* PFNGLCOLOR3HVNVPROC) (GLhalf *v);
+alias void (* PFNGLCOLOR4HNVPROC) (GLhalf red, GLhalf green, GLhalf blue, GLhalf alpha);
+alias void (* PFNGLCOLOR4HVNVPROC) (GLhalf *v);
+alias void (* PFNGLTEXCOORD1HNVPROC) (GLhalf s);
+alias void (* PFNGLTEXCOORD1HVNVPROC) (GLhalf *v);
+alias void (* PFNGLTEXCOORD2HNVPROC) (GLhalf s, GLhalf t);
+alias void (* PFNGLTEXCOORD2HVNVPROC) (GLhalf *v);
+alias void (* PFNGLTEXCOORD3HNVPROC) (GLhalf s, GLhalf t, GLhalf r);
+alias void (* PFNGLTEXCOORD3HVNVPROC) (GLhalf *v);
+alias void (* PFNGLTEXCOORD4HNVPROC) (GLhalf s, GLhalf t, GLhalf r, GLhalf q);
+alias void (* PFNGLTEXCOORD4HVNVPROC) (GLhalf *v);
+alias void (* PFNGLMULTITEXCOORD1HNVPROC) (GLenum target, GLhalf s);
+alias void (* PFNGLMULTITEXCOORD1HVNVPROC) (GLenum target, GLhalf *v);
+alias void (* PFNGLMULTITEXCOORD2HNVPROC) (GLenum target, GLhalf s, GLhalf t);
+alias void (* PFNGLMULTITEXCOORD2HVNVPROC) (GLenum target, GLhalf *v);
+alias void (* PFNGLMULTITEXCOORD3HNVPROC) (GLenum target, GLhalf s, GLhalf t, GLhalf r);
+alias void (* PFNGLMULTITEXCOORD3HVNVPROC) (GLenum target, GLhalf *v);
+alias void (* PFNGLMULTITEXCOORD4HNVPROC) (GLenum target, GLhalf s, GLhalf t, GLhalf r, GLhalf q);
+alias void (* PFNGLMULTITEXCOORD4HVNVPROC) (GLenum target, GLhalf *v);
+alias void (* PFNGLFOGCOORDHNVPROC) (GLhalf fog);
+alias void (* PFNGLFOGCOORDHVNVPROC) (GLhalf *fog);
+alias void (* PFNGLSECONDARYCOLOR3HNVPROC) (GLhalf red, GLhalf green, GLhalf blue);
+alias void (* PFNGLSECONDARYCOLOR3HVNVPROC) (GLhalf *v);
+alias void (* PFNGLVERTEXWEIGHTHNVPROC) (GLhalf weight);
+alias void (* PFNGLVERTEXWEIGHTHVNVPROC) (GLhalf *weight);
+alias void (* PFNGLVERTEXATTRIB1HNVPROC) (GLuint index, GLhalf x);
+alias void (* PFNGLVERTEXATTRIB1HVNVPROC) (GLuint index, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIB2HNVPROC) (GLuint index, GLhalf x, GLhalf y);
+alias void (* PFNGLVERTEXATTRIB2HVNVPROC) (GLuint index, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIB3HNVPROC) (GLuint index, GLhalf x, GLhalf y, GLhalf z);
+alias void (* PFNGLVERTEXATTRIB3HVNVPROC) (GLuint index, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIB4HNVPROC) (GLuint index, GLhalf x, GLhalf y, GLhalf z, GLhalf w);
+alias void (* PFNGLVERTEXATTRIB4HVNVPROC) (GLuint index, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIBS1HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIBS2HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIBS3HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
+alias void (* PFNGLVERTEXATTRIBS4HVNVPROC) (GLuint index, GLsizei n, GLhalf *v);
 
 /* GL_NV_stencil_two_side */
-typedef void (* PFNGLACTIVESTENCILFACENVPROC) (GLenum face);
+alias void (* PFNGLACTIVESTENCILFACENVPROC) (GLenum face);
 
 /* GL_MESA_resize_buffers */
-typedef void (* PFNGLRESIZEBUFFERSMESAPROC) ();
+alias void (* PFNGLRESIZEBUFFERSMESAPROC) ();
 
 /* GL_MESA_window_pos */
-typedef void (* PFNGLWINDOWPOS2DMESAPROC) (GLdouble x, GLdouble y);
-typedef void (* PFNGLWINDOWPOS2DVMESAPROC) (GLdouble *v);
-typedef void (* PFNGLWINDOWPOS2FMESAPROC) (GLfloat x, GLfloat y);
-typedef void (* PFNGLWINDOWPOS2FVMESAPROC) (GLfloat *v);
-typedef void (* PFNGLWINDOWPOS2IMESAPROC) (GLint x, GLint y);
-typedef void (* PFNGLWINDOWPOS2IVMESAPROC) (GLint *v);
-typedef void (* PFNGLWINDOWPOS2SMESAPROC) (GLshort x, GLshort y);
-typedef void (* PFNGLWINDOWPOS2SVMESAPROC) (GLshort *v);
-typedef void (* PFNGLWINDOWPOS3DMESAPROC) (GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLWINDOWPOS3DVMESAPROC) (GLdouble *v);
-typedef void (* PFNGLWINDOWPOS3FMESAPROC) (GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLWINDOWPOS3FVMESAPROC) (GLfloat *v);
-typedef void (* PFNGLWINDOWPOS3IMESAPROC) (GLint x, GLint y, GLint z);
-typedef void (* PFNGLWINDOWPOS3IVMESAPROC) (GLint *v);
-typedef void (* PFNGLWINDOWPOS3SMESAPROC) (GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLWINDOWPOS3SVMESAPROC) (GLshort *v);
-typedef void (* PFNGLWINDOWPOS4DMESAPROC) (GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLWINDOWPOS4DVMESAPROC) (GLdouble *v);
-typedef void (* PFNGLWINDOWPOS4FMESAPROC) (GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLWINDOWPOS4FVMESAPROC) (GLfloat *v);
-typedef void (* PFNGLWINDOWPOS4IMESAPROC) (GLint x, GLint y, GLint z, GLint w);
-typedef void (* PFNGLWINDOWPOS4IVMESAPROC) (GLint *v);
-typedef void (* PFNGLWINDOWPOS4SMESAPROC) (GLshort x, GLshort y, GLshort z, GLshort w);
-typedef void (* PFNGLWINDOWPOS4SVMESAPROC) (GLshort *v);
+alias void (* PFNGLWINDOWPOS2DMESAPROC) (GLdouble x, GLdouble y);
+alias void (* PFNGLWINDOWPOS2DVMESAPROC) (GLdouble *v);
+alias void (* PFNGLWINDOWPOS2FMESAPROC) (GLfloat x, GLfloat y);
+alias void (* PFNGLWINDOWPOS2FVMESAPROC) (GLfloat *v);
+alias void (* PFNGLWINDOWPOS2IMESAPROC) (GLint x, GLint y);
+alias void (* PFNGLWINDOWPOS2IVMESAPROC) (GLint *v);
+alias void (* PFNGLWINDOWPOS2SMESAPROC) (GLshort x, GLshort y);
+alias void (* PFNGLWINDOWPOS2SVMESAPROC) (GLshort *v);
+alias void (* PFNGLWINDOWPOS3DMESAPROC) (GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLWINDOWPOS3DVMESAPROC) (GLdouble *v);
+alias void (* PFNGLWINDOWPOS3FMESAPROC) (GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLWINDOWPOS3FVMESAPROC) (GLfloat *v);
+alias void (* PFNGLWINDOWPOS3IMESAPROC) (GLint x, GLint y, GLint z);
+alias void (* PFNGLWINDOWPOS3IVMESAPROC) (GLint *v);
+alias void (* PFNGLWINDOWPOS3SMESAPROC) (GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLWINDOWPOS3SVMESAPROC) (GLshort *v);
+alias void (* PFNGLWINDOWPOS4DMESAPROC) (GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLWINDOWPOS4DVMESAPROC) (GLdouble *v);
+alias void (* PFNGLWINDOWPOS4FMESAPROC) (GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLWINDOWPOS4FVMESAPROC) (GLfloat *v);
+alias void (* PFNGLWINDOWPOS4IMESAPROC) (GLint x, GLint y, GLint z, GLint w);
+alias void (* PFNGLWINDOWPOS4IVMESAPROC) (GLint *v);
+alias void (* PFNGLWINDOWPOS4SMESAPROC) (GLshort x, GLshort y, GLshort z, GLshort w);
+alias void (* PFNGLWINDOWPOS4SVMESAPROC) (GLshort *v);
 
 /* GL_IBM_multimode_draw_arrays */
-typedef void (* PFNGLMULTIMODEDRAWARRAYSIBMPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount, GLint modestride);
-typedef void (* PFNGLMULTIMODEDRAWELEMENTSIBMPROC) (GLenum *mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint modestride);
+alias void (* PFNGLMULTIMODEDRAWARRAYSIBMPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount, GLint modestride);
+alias void (* PFNGLMULTIMODEDRAWELEMENTSIBMPROC) (GLenum *mode, GLsizei *count, GLenum type, GLvoid* *indices, GLsizei primcount, GLint modestride);
 
 /* GL_IBM_vertex_array_lists */
-typedef void (* PFNGLCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLSECONDARYCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLEDGEFLAGPOINTERLISTIBMPROC) (GLint stride, GLboolean* *pointer, GLint ptrstride);
-typedef void (* PFNGLFOGCOORDPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLINDEXPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLNORMALPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLTEXCOORDPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
-typedef void (* PFNGLVERTEXPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLSECONDARYCOLORPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLEDGEFLAGPOINTERLISTIBMPROC) (GLint stride, GLboolean* *pointer, GLint ptrstride);
+alias void (* PFNGLFOGCOORDPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLINDEXPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLNORMALPOINTERLISTIBMPROC) (GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLTEXCOORDPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
+alias void (* PFNGLVERTEXPOINTERLISTIBMPROC) (GLint size, GLenum type, GLint stride, GLvoid* *pointer, GLint ptrstride);
 
 /* GL_3DFX_tbuffer */
-typedef void (* PFNGLTBUFFERMASK3DFXPROC) (GLuint mask);
+alias void (* PFNGLTBUFFERMASK3DFXPROC) (GLuint mask);
 
 /* GL_SGIS_texture_color_mask */
-typedef void (* PFNGLTEXTURECOLORMASKSGISPROC) (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+alias void (* PFNGLTEXTURECOLORMASKSGISPROC) (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
 
 /* GL_SGIX_igloo_interface */
-typedef void (* PFNGLIGLOOINTERFACESGIXPROC) (GLenum pname, GLvoid *params);
+alias void (* PFNGLIGLOOINTERFACESGIXPROC) (GLenum pname, GLvoid *params);
 
 /* GL_NV_fence */
-typedef void (* PFNGLDELETEFENCESNVPROC) (GLsizei n, GLuint *fences);
-typedef void (* PFNGLGENFENCESNVPROC) (GLsizei n, GLuint *fences);
-typedef GLboolean (* PFNGLISFENCENVPROC) (GLuint fence);
-typedef GLboolean (* PFNGLTESTFENCENVPROC) (GLuint fence);
-typedef void (* PFNGLGETFENCEIVNVPROC) (GLuint fence, GLenum pname, GLint *params);
-typedef void (* PFNGLFINISHFENCENVPROC) (GLuint fence);
-typedef void (* PFNGLSETFENCENVPROC) (GLuint fence, GLenum condition);
+alias void (* PFNGLDELETEFENCESNVPROC) (GLsizei n, GLuint *fences);
+alias void (* PFNGLGENFENCESNVPROC) (GLsizei n, GLuint *fences);
+alias GLboolean (* PFNGLISFENCENVPROC) (GLuint fence);
+alias GLboolean (* PFNGLTESTFENCENVPROC) (GLuint fence);
+alias void (* PFNGLGETFENCEIVNVPROC) (GLuint fence, GLenum pname, GLint *params);
+alias void (* PFNGLFINISHFENCENVPROC) (GLuint fence);
+alias void (* PFNGLSETFENCENVPROC) (GLuint fence, GLenum condition);
 
 /* GL_NV_element_array */
-typedef void (* PFNGLELEMENTPOINTERNVPROC) (GLenum type, GLvoid *pointer);
-typedef void (* PFNGLDRAWELEMENTARRAYNVPROC) (GLenum mode, GLint first, GLsizei count);
-typedef void (* PFNGLDRAWRANGEELEMENTARRAYNVPROC) (GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count);
-typedef void (* PFNGLMULTIDRAWELEMENTARRAYNVPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
-typedef void (* PFNGLMULTIDRAWRANGEELEMENTARRAYNVPROC) (GLenum mode, GLuint start, GLuint end, GLint *first, GLsizei *count, GLsizei primcount);
+alias void (* PFNGLELEMENTPOINTERNVPROC) (GLenum type, GLvoid *pointer);
+alias void (* PFNGLDRAWELEMENTARRAYNVPROC) (GLenum mode, GLint first, GLsizei count);
+alias void (* PFNGLDRAWRANGEELEMENTARRAYNVPROC) (GLenum mode, GLuint start, GLuint end, GLint first, GLsizei count);
+alias void (* PFNGLMULTIDRAWELEMENTARRAYNVPROC) (GLenum mode, GLint *first, GLsizei *count, GLsizei primcount);
+alias void (* PFNGLMULTIDRAWRANGEELEMENTARRAYNVPROC) (GLenum mode, GLuint start, GLuint end, GLint *first, GLsizei *count, GLsizei primcount);
 
 /* GL_NV_evaluators */
-typedef void (* PFNGLMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLint uorder, GLint vorder, GLboolean packed, GLvoid *points);
-typedef void (* PFNGLMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLboolean packed, GLvoid *points);
-typedef void (* PFNGLGETMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
-typedef void (* PFNGLGETMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETMAPATTRIBPARAMETERIVNVPROC) (GLenum target, GLuint index, GLenum pname, GLint *params);
-typedef void (* PFNGLGETMAPATTRIBPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
-typedef void (* PFNGLEVALMAPSNVPROC) (GLenum target, GLenum mode);
+alias void (* PFNGLMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLint uorder, GLint vorder, GLboolean packed, GLvoid *points);
+alias void (* PFNGLMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETMAPCONTROLPOINTSNVPROC) (GLenum target, GLuint index, GLenum type, GLsizei ustride, GLsizei vstride, GLboolean packed, GLvoid *points);
+alias void (* PFNGLGETMAPPARAMETERIVNVPROC) (GLenum target, GLenum pname, GLint *params);
+alias void (* PFNGLGETMAPPARAMETERFVNVPROC) (GLenum target, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETMAPATTRIBPARAMETERIVNVPROC) (GLenum target, GLuint index, GLenum pname, GLint *params);
+alias void (* PFNGLGETMAPATTRIBPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
+alias void (* PFNGLEVALMAPSNVPROC) (GLenum target, GLenum mode);
 
 /* GL_NV_register_combiners2 */
-typedef void (* PFNGLCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
+alias void (* PFNGLCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC) (GLenum stage, GLenum pname, GLfloat *params);
 
 /* GL_NV_vertex_program */
-typedef GLboolean (* PFNGLAREPROGRAMSRESIDENTNVPROC) (GLsizei n, GLuint *programs, GLboolean *residences);
-typedef void (* PFNGLBINDPROGRAMNVPROC) (GLenum target, GLuint id);
-typedef void (* PFNGLDELETEPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-typedef void (* PFNGLEXECUTEPROGRAMNVPROC) (GLenum target, GLuint id, GLfloat *params);
-typedef void (* PFNGLGENPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-typedef void (* PFNGLGETPROGRAMPARAMETERDVNVPROC) (GLenum target, GLuint index, GLenum pname, GLdouble *params);
-typedef void (* PFNGLGETPROGRAMPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETPROGRAMIVNVPROC) (GLuint id, GLenum pname, GLint *params);
-typedef void (* PFNGLGETPROGRAMSTRINGNVPROC) (GLuint id, GLenum pname, GLubyte *program);
-typedef void (* PFNGLGETTRACKMATRIXIVNVPROC) (GLenum target, GLuint address, GLenum pname, GLint *params);
-typedef void (* PFNGLGETVERTEXATTRIBDVNVPROC) (GLuint index, GLenum pname, GLdouble *params);
-typedef void (* PFNGLGETVERTEXATTRIBFVNVPROC) (GLuint index, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETVERTEXATTRIBIVNVPROC) (GLuint index, GLenum pname, GLint *params);
-typedef void (* PFNGLGETVERTEXATTRIBPOINTERVNVPROC) (GLuint index, GLenum pname, GLvoid* *pointer);
-typedef GLboolean (* PFNGLISPROGRAMNVPROC) (GLuint id);
-typedef void (* PFNGLLOADPROGRAMNVPROC) (GLenum target, GLuint id, GLsizei len, GLubyte *program);
-typedef void (* PFNGLPROGRAMPARAMETER4DNVPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLPROGRAMPARAMETER4DVNVPROC) (GLenum target, GLuint index, GLdouble *v);
-typedef void (* PFNGLPROGRAMPARAMETER4FNVPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLPROGRAMPARAMETER4FVNVPROC) (GLenum target, GLuint index, GLfloat *v);
-typedef void (* PFNGLPROGRAMPARAMETERS4DVNVPROC) (GLenum target, GLuint index, GLuint count, GLdouble *v);
-typedef void (* PFNGLPROGRAMPARAMETERS4FVNVPROC) (GLenum target, GLuint index, GLuint count, GLfloat *v);
-typedef void (* PFNGLREQUESTRESIDENTPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
-typedef void (* PFNGLTRACKMATRIXNVPROC) (GLenum target, GLuint address, GLenum matrix, GLenum transform);
-typedef void (* PFNGLVERTEXATTRIBPOINTERNVPROC) (GLuint index, GLint fsize, GLenum type, GLsizei stride, GLvoid *pointer);
-typedef void (* PFNGLVERTEXATTRIB1DNVPROC) (GLuint index, GLdouble x);
-typedef void (* PFNGLVERTEXATTRIB1DVNVPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB1FNVPROC) (GLuint index, GLfloat x);
-typedef void (* PFNGLVERTEXATTRIB1FVNVPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB1SNVPROC) (GLuint index, GLshort x);
-typedef void (* PFNGLVERTEXATTRIB1SVNVPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB2DNVPROC) (GLuint index, GLdouble x, GLdouble y);
-typedef void (* PFNGLVERTEXATTRIB2DVNVPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB2FNVPROC) (GLuint index, GLfloat x, GLfloat y);
-typedef void (* PFNGLVERTEXATTRIB2FVNVPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB2SNVPROC) (GLuint index, GLshort x, GLshort y);
-typedef void (* PFNGLVERTEXATTRIB2SVNVPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB3DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLVERTEXATTRIB3DVNVPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB3FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLVERTEXATTRIB3FVNVPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB3SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLVERTEXATTRIB3SVNVPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB4DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLVERTEXATTRIB4DVNVPROC) (GLuint index, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIB4FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLVERTEXATTRIB4FVNVPROC) (GLuint index, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIB4SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-typedef void (* PFNGLVERTEXATTRIB4SVNVPROC) (GLuint index, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIB4UBNVPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-typedef void (* PFNGLVERTEXATTRIB4UBVNVPROC) (GLuint index, GLubyte *v);
-typedef void (* PFNGLVERTEXATTRIBS1DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIBS1FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIBS1SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIBS2DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIBS2FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIBS2SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIBS3DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIBS3FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIBS3SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIBS4DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
-typedef void (* PFNGLVERTEXATTRIBS4FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
-typedef void (* PFNGLVERTEXATTRIBS4SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
-typedef void (* PFNGLVERTEXATTRIBS4UBVNVPROC) (GLuint index, GLsizei count, GLubyte *v);
+alias GLboolean (* PFNGLAREPROGRAMSRESIDENTNVPROC) (GLsizei n, GLuint *programs, GLboolean *residences);
+alias void (* PFNGLBINDPROGRAMNVPROC) (GLenum target, GLuint id);
+alias void (* PFNGLDELETEPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
+alias void (* PFNGLEXECUTEPROGRAMNVPROC) (GLenum target, GLuint id, GLfloat *params);
+alias void (* PFNGLGENPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
+alias void (* PFNGLGETPROGRAMPARAMETERDVNVPROC) (GLenum target, GLuint index, GLenum pname, GLdouble *params);
+alias void (* PFNGLGETPROGRAMPARAMETERFVNVPROC) (GLenum target, GLuint index, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETPROGRAMIVNVPROC) (GLuint id, GLenum pname, GLint *params);
+alias void (* PFNGLGETPROGRAMSTRINGNVPROC) (GLuint id, GLenum pname, GLubyte *program);
+alias void (* PFNGLGETTRACKMATRIXIVNVPROC) (GLenum target, GLuint address, GLenum pname, GLint *params);
+alias void (* PFNGLGETVERTEXATTRIBDVNVPROC) (GLuint index, GLenum pname, GLdouble *params);
+alias void (* PFNGLGETVERTEXATTRIBFVNVPROC) (GLuint index, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETVERTEXATTRIBIVNVPROC) (GLuint index, GLenum pname, GLint *params);
+alias void (* PFNGLGETVERTEXATTRIBPOINTERVNVPROC) (GLuint index, GLenum pname, GLvoid* *pointer);
+alias GLboolean (* PFNGLISPROGRAMNVPROC) (GLuint id);
+alias void (* PFNGLLOADPROGRAMNVPROC) (GLenum target, GLuint id, GLsizei len, GLubyte *program);
+alias void (* PFNGLPROGRAMPARAMETER4DNVPROC) (GLenum target, GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLPROGRAMPARAMETER4DVNVPROC) (GLenum target, GLuint index, GLdouble *v);
+alias void (* PFNGLPROGRAMPARAMETER4FNVPROC) (GLenum target, GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLPROGRAMPARAMETER4FVNVPROC) (GLenum target, GLuint index, GLfloat *v);
+alias void (* PFNGLPROGRAMPARAMETERS4DVNVPROC) (GLenum target, GLuint index, GLuint count, GLdouble *v);
+alias void (* PFNGLPROGRAMPARAMETERS4FVNVPROC) (GLenum target, GLuint index, GLuint count, GLfloat *v);
+alias void (* PFNGLREQUESTRESIDENTPROGRAMSNVPROC) (GLsizei n, GLuint *programs);
+alias void (* PFNGLTRACKMATRIXNVPROC) (GLenum target, GLuint address, GLenum matrix, GLenum transform);
+alias void (* PFNGLVERTEXATTRIBPOINTERNVPROC) (GLuint index, GLint fsize, GLenum type, GLsizei stride, GLvoid *pointer);
+alias void (* PFNGLVERTEXATTRIB1DNVPROC) (GLuint index, GLdouble x);
+alias void (* PFNGLVERTEXATTRIB1DVNVPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB1FNVPROC) (GLuint index, GLfloat x);
+alias void (* PFNGLVERTEXATTRIB1FVNVPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB1SNVPROC) (GLuint index, GLshort x);
+alias void (* PFNGLVERTEXATTRIB1SVNVPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB2DNVPROC) (GLuint index, GLdouble x, GLdouble y);
+alias void (* PFNGLVERTEXATTRIB2DVNVPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB2FNVPROC) (GLuint index, GLfloat x, GLfloat y);
+alias void (* PFNGLVERTEXATTRIB2FVNVPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB2SNVPROC) (GLuint index, GLshort x, GLshort y);
+alias void (* PFNGLVERTEXATTRIB2SVNVPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB3DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLVERTEXATTRIB3DVNVPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB3FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLVERTEXATTRIB3FVNVPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB3SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLVERTEXATTRIB3SVNVPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB4DNVPROC) (GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLVERTEXATTRIB4DVNVPROC) (GLuint index, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIB4FNVPROC) (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLVERTEXATTRIB4FVNVPROC) (GLuint index, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIB4SNVPROC) (GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
+alias void (* PFNGLVERTEXATTRIB4SVNVPROC) (GLuint index, GLshort *v);
+alias void (* PFNGLVERTEXATTRIB4UBNVPROC) (GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
+alias void (* PFNGLVERTEXATTRIB4UBVNVPROC) (GLuint index, GLubyte *v);
+alias void (* PFNGLVERTEXATTRIBS1DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIBS1FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIBS1SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
+alias void (* PFNGLVERTEXATTRIBS2DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIBS2FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIBS2SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
+alias void (* PFNGLVERTEXATTRIBS3DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIBS3FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIBS3SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
+alias void (* PFNGLVERTEXATTRIBS4DVNVPROC) (GLuint index, GLsizei count, GLdouble *v);
+alias void (* PFNGLVERTEXATTRIBS4FVNVPROC) (GLuint index, GLsizei count, GLfloat *v);
+alias void (* PFNGLVERTEXATTRIBS4SVNVPROC) (GLuint index, GLsizei count, GLshort *v);
+alias void (* PFNGLVERTEXATTRIBS4UBVNVPROC) (GLuint index, GLsizei count, GLubyte *v);
 
 /* GL_ATI_envmap_bumpmap */
-typedef void (* PFNGLTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
-typedef void (* PFNGLTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
-typedef void (* PFNGLGETTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
-typedef void (* PFNGLGETTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
+alias void (* PFNGLTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
+alias void (* PFNGLTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
+alias void (* PFNGLGETTEXBUMPPARAMETERIVATIPROC) (GLenum pname, GLint *param);
+alias void (* PFNGLGETTEXBUMPPARAMETERFVATIPROC) (GLenum pname, GLfloat *param);
 
 /* GL_ATI_fragment_shader */
-typedef GLuint (* PFNGLGENFRAGMENTSHADERSATIPROC) (GLuint range);
-typedef void (* PFNGLBINDFRAGMENTSHADERATIPROC) (GLuint id);
-typedef void (* PFNGLDELETEFRAGMENTSHADERATIPROC) (GLuint id);
-typedef void (* PFNGLBEGINFRAGMENTSHADERATIPROC) ();
-typedef void (* PFNGLENDFRAGMENTSHADERATIPROC) ();
-typedef void (* PFNGLPASSTEXCOORDATIPROC) (GLuint dst, GLuint coord, GLenum swizzle);
-typedef void (* PFNGLSAMPLEMAPATIPROC) (GLuint dst, GLuint interp, GLenum swizzle);
-typedef void (* PFNGLCOLORFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
-typedef void (* PFNGLCOLORFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
-typedef void (* PFNGLCOLORFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
-typedef void (* PFNGLALPHAFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
-typedef void (* PFNGLALPHAFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
-typedef void (* PFNGLALPHAFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
-typedef void (* PFNGLSETFRAGMENTSHADERCONSTANTATIPROC) (GLuint dst, GLfloat *value);
+alias GLuint (* PFNGLGENFRAGMENTSHADERSATIPROC) (GLuint range);
+alias void (* PFNGLBINDFRAGMENTSHADERATIPROC) (GLuint id);
+alias void (* PFNGLDELETEFRAGMENTSHADERATIPROC) (GLuint id);
+alias void (* PFNGLBEGINFRAGMENTSHADERATIPROC) ();
+alias void (* PFNGLENDFRAGMENTSHADERATIPROC) ();
+alias void (* PFNGLPASSTEXCOORDATIPROC) (GLuint dst, GLuint coord, GLenum swizzle);
+alias void (* PFNGLSAMPLEMAPATIPROC) (GLuint dst, GLuint interp, GLenum swizzle);
+alias void (* PFNGLCOLORFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
+alias void (* PFNGLCOLORFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
+alias void (* PFNGLCOLORFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMask, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
+alias void (* PFNGLALPHAFRAGMENTOP1ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod);
+alias void (* PFNGLALPHAFRAGMENTOP2ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod);
+alias void (* PFNGLALPHAFRAGMENTOP3ATIPROC) (GLenum op, GLuint dst, GLuint dstMod, GLuint arg1, GLuint arg1Rep, GLuint arg1Mod, GLuint arg2, GLuint arg2Rep, GLuint arg2Mod, GLuint arg3, GLuint arg3Rep, GLuint arg3Mod);
+alias void (* PFNGLSETFRAGMENTSHADERCONSTANTATIPROC) (GLuint dst, GLfloat *value);
 
 /* GL_ATI_pn_triangles */
-typedef void (* PFNGLPNTRIANGLESIATIPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLPNTRIANGLESFATIPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLPNTRIANGLESIATIPROC) (GLenum pname, GLint param);
+alias void (* PFNGLPNTRIANGLESFATIPROC) (GLenum pname, GLfloat param);
 
 /* GL_ATI_vertex_array_object */
-typedef GLuint (* PFNGLNEWOBJECTBUFFERATIPROC) (GLsizei size, GLvoid *pointer, GLenum usage);
-typedef GLboolean (* PFNGLISOBJECTBUFFERATIPROC) (GLuint buffer);
-typedef void (* PFNGLUPDATEOBJECTBUFFERATIPROC) (GLuint buffer, GLuint offset, GLsizei size, GLvoid *pointer, GLenum preserve);
-typedef void (* PFNGLGETOBJECTBUFFERFVATIPROC) (GLuint buffer, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETOBJECTBUFFERIVATIPROC) (GLuint buffer, GLenum pname, GLint *params);
-typedef void (* PFNGLDELETEOBJECTBUFFERATIPROC) (GLuint buffer);
-typedef void (* PFNGLARRAYOBJECTATIPROC) (GLenum array, GLint size, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
-typedef void (* PFNGLGETARRAYOBJECTFVATIPROC) (GLenum array, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETARRAYOBJECTIVATIPROC) (GLenum array, GLenum pname, GLint *params);
-typedef void (* PFNGLVARIANTARRAYOBJECTATIPROC) (GLuint id, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
-typedef void (* PFNGLGETVARIANTARRAYOBJECTFVATIPROC) (GLuint id, GLenum pname, GLfloat *params);
-typedef void (* PFNGLGETVARIANTARRAYOBJECTIVATIPROC) (GLuint id, GLenum pname, GLint *params);
+alias GLuint (* PFNGLNEWOBJECTBUFFERATIPROC) (GLsizei size, GLvoid *pointer, GLenum usage);
+alias GLboolean (* PFNGLISOBJECTBUFFERATIPROC) (GLuint buffer);
+alias void (* PFNGLUPDATEOBJECTBUFFERATIPROC) (GLuint buffer, GLuint offset, GLsizei size, GLvoid *pointer, GLenum preserve);
+alias void (* PFNGLGETOBJECTBUFFERFVATIPROC) (GLuint buffer, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETOBJECTBUFFERIVATIPROC) (GLuint buffer, GLenum pname, GLint *params);
+alias void (* PFNGLDELETEOBJECTBUFFERATIPROC) (GLuint buffer);
+alias void (* PFNGLARRAYOBJECTATIPROC) (GLenum array, GLint size, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
+alias void (* PFNGLGETARRAYOBJECTFVATIPROC) (GLenum array, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETARRAYOBJECTIVATIPROC) (GLenum array, GLenum pname, GLint *params);
+alias void (* PFNGLVARIANTARRAYOBJECTATIPROC) (GLuint id, GLenum type, GLsizei stride, GLuint buffer, GLuint offset);
+alias void (* PFNGLGETVARIANTARRAYOBJECTFVATIPROC) (GLuint id, GLenum pname, GLfloat *params);
+alias void (* PFNGLGETVARIANTARRAYOBJECTIVATIPROC) (GLuint id, GLenum pname, GLint *params);
 
 /* GL_ATI_vertex_streams */
-typedef void (* PFNGLVERTEXSTREAM1SATIPROC) (GLenum stream, GLshort x);
-typedef void (* PFNGLVERTEXSTREAM1SVATIPROC) (GLenum stream, GLshort *coords);
-typedef void (* PFNGLVERTEXSTREAM1IATIPROC) (GLenum stream, GLint x);
-typedef void (* PFNGLVERTEXSTREAM1IVATIPROC) (GLenum stream, GLint *coords);
-typedef void (* PFNGLVERTEXSTREAM1FATIPROC) (GLenum stream, GLfloat x);
-typedef void (* PFNGLVERTEXSTREAM1FVATIPROC) (GLenum stream, GLfloat *coords);
-typedef void (* PFNGLVERTEXSTREAM1DATIPROC) (GLenum stream, GLdouble x);
-typedef void (* PFNGLVERTEXSTREAM1DVATIPROC) (GLenum stream, GLdouble *coords);
-typedef void (* PFNGLVERTEXSTREAM2SATIPROC) (GLenum stream, GLshort x, GLshort y);
-typedef void (* PFNGLVERTEXSTREAM2SVATIPROC) (GLenum stream, GLshort *coords);
-typedef void (* PFNGLVERTEXSTREAM2IATIPROC) (GLenum stream, GLint x, GLint y);
-typedef void (* PFNGLVERTEXSTREAM2IVATIPROC) (GLenum stream, GLint *coords);
-typedef void (* PFNGLVERTEXSTREAM2FATIPROC) (GLenum stream, GLfloat x, GLfloat y);
-typedef void (* PFNGLVERTEXSTREAM2FVATIPROC) (GLenum stream, GLfloat *coords);
-typedef void (* PFNGLVERTEXSTREAM2DATIPROC) (GLenum stream, GLdouble x, GLdouble y);
-typedef void (* PFNGLVERTEXSTREAM2DVATIPROC) (GLenum stream, GLdouble *coords);
-typedef void (* PFNGLVERTEXSTREAM3SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z);
-typedef void (* PFNGLVERTEXSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
-typedef void (* PFNGLVERTEXSTREAM3IATIPROC) (GLenum stream, GLint x, GLint y, GLint z);
-typedef void (* PFNGLVERTEXSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
-typedef void (* PFNGLVERTEXSTREAM3FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z);
-typedef void (* PFNGLVERTEXSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
-typedef void (* PFNGLVERTEXSTREAM3DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z);
-typedef void (* PFNGLVERTEXSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
-typedef void (* PFNGLVERTEXSTREAM4SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z, GLshort w);
-typedef void (* PFNGLVERTEXSTREAM4SVATIPROC) (GLenum stream, GLshort *coords);
-typedef void (* PFNGLVERTEXSTREAM4IATIPROC) (GLenum stream, GLint x, GLint y, GLint z, GLint w);
-typedef void (* PFNGLVERTEXSTREAM4IVATIPROC) (GLenum stream, GLint *coords);
-typedef void (* PFNGLVERTEXSTREAM4FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-typedef void (* PFNGLVERTEXSTREAM4FVATIPROC) (GLenum stream, GLfloat *coords);
-typedef void (* PFNGLVERTEXSTREAM4DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (* PFNGLVERTEXSTREAM4DVATIPROC) (GLenum stream, GLdouble *coords);
-typedef void (* PFNGLNORMALSTREAM3BATIPROC) (GLenum stream, GLbyte nx, GLbyte ny, GLbyte nz);
-typedef void (* PFNGLNORMALSTREAM3BVATIPROC) (GLenum stream, GLbyte *coords);
-typedef void (* PFNGLNORMALSTREAM3SATIPROC) (GLenum stream, GLshort nx, GLshort ny, GLshort nz);
-typedef void (* PFNGLNORMALSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
-typedef void (* PFNGLNORMALSTREAM3IATIPROC) (GLenum stream, GLint nx, GLint ny, GLint nz);
-typedef void (* PFNGLNORMALSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
-typedef void (* PFNGLNORMALSTREAM3FATIPROC) (GLenum stream, GLfloat nx, GLfloat ny, GLfloat nz);
-typedef void (* PFNGLNORMALSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
-typedef void (* PFNGLNORMALSTREAM3DATIPROC) (GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz);
-typedef void (* PFNGLNORMALSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
-typedef void (* PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC) (GLenum stream);
-typedef void (* PFNGLVERTEXBLENDENVIATIPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLVERTEXBLENDENVFATIPROC) (GLenum pname, GLfloat param);
+alias void (* PFNGLVERTEXSTREAM1SATIPROC) (GLenum stream, GLshort x);
+alias void (* PFNGLVERTEXSTREAM1SVATIPROC) (GLenum stream, GLshort *coords);
+alias void (* PFNGLVERTEXSTREAM1IATIPROC) (GLenum stream, GLint x);
+alias void (* PFNGLVERTEXSTREAM1IVATIPROC) (GLenum stream, GLint *coords);
+alias void (* PFNGLVERTEXSTREAM1FATIPROC) (GLenum stream, GLfloat x);
+alias void (* PFNGLVERTEXSTREAM1FVATIPROC) (GLenum stream, GLfloat *coords);
+alias void (* PFNGLVERTEXSTREAM1DATIPROC) (GLenum stream, GLdouble x);
+alias void (* PFNGLVERTEXSTREAM1DVATIPROC) (GLenum stream, GLdouble *coords);
+alias void (* PFNGLVERTEXSTREAM2SATIPROC) (GLenum stream, GLshort x, GLshort y);
+alias void (* PFNGLVERTEXSTREAM2SVATIPROC) (GLenum stream, GLshort *coords);
+alias void (* PFNGLVERTEXSTREAM2IATIPROC) (GLenum stream, GLint x, GLint y);
+alias void (* PFNGLVERTEXSTREAM2IVATIPROC) (GLenum stream, GLint *coords);
+alias void (* PFNGLVERTEXSTREAM2FATIPROC) (GLenum stream, GLfloat x, GLfloat y);
+alias void (* PFNGLVERTEXSTREAM2FVATIPROC) (GLenum stream, GLfloat *coords);
+alias void (* PFNGLVERTEXSTREAM2DATIPROC) (GLenum stream, GLdouble x, GLdouble y);
+alias void (* PFNGLVERTEXSTREAM2DVATIPROC) (GLenum stream, GLdouble *coords);
+alias void (* PFNGLVERTEXSTREAM3SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z);
+alias void (* PFNGLVERTEXSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
+alias void (* PFNGLVERTEXSTREAM3IATIPROC) (GLenum stream, GLint x, GLint y, GLint z);
+alias void (* PFNGLVERTEXSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
+alias void (* PFNGLVERTEXSTREAM3FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z);
+alias void (* PFNGLVERTEXSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
+alias void (* PFNGLVERTEXSTREAM3DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z);
+alias void (* PFNGLVERTEXSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
+alias void (* PFNGLVERTEXSTREAM4SATIPROC) (GLenum stream, GLshort x, GLshort y, GLshort z, GLshort w);
+alias void (* PFNGLVERTEXSTREAM4SVATIPROC) (GLenum stream, GLshort *coords);
+alias void (* PFNGLVERTEXSTREAM4IATIPROC) (GLenum stream, GLint x, GLint y, GLint z, GLint w);
+alias void (* PFNGLVERTEXSTREAM4IVATIPROC) (GLenum stream, GLint *coords);
+alias void (* PFNGLVERTEXSTREAM4FATIPROC) (GLenum stream, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+alias void (* PFNGLVERTEXSTREAM4FVATIPROC) (GLenum stream, GLfloat *coords);
+alias void (* PFNGLVERTEXSTREAM4DATIPROC) (GLenum stream, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+alias void (* PFNGLVERTEXSTREAM4DVATIPROC) (GLenum stream, GLdouble *coords);
+alias void (* PFNGLNORMALSTREAM3BATIPROC) (GLenum stream, GLbyte nx, GLbyte ny, GLbyte nz);
+alias void (* PFNGLNORMALSTREAM3BVATIPROC) (GLenum stream, GLbyte *coords);
+alias void (* PFNGLNORMALSTREAM3SATIPROC) (GLenum stream, GLshort nx, GLshort ny, GLshort nz);
+alias void (* PFNGLNORMALSTREAM3SVATIPROC) (GLenum stream, GLshort *coords);
+alias void (* PFNGLNORMALSTREAM3IATIPROC) (GLenum stream, GLint nx, GLint ny, GLint nz);
+alias void (* PFNGLNORMALSTREAM3IVATIPROC) (GLenum stream, GLint *coords);
+alias void (* PFNGLNORMALSTREAM3FATIPROC) (GLenum stream, GLfloat nx, GLfloat ny, GLfloat nz);
+alias void (* PFNGLNORMALSTREAM3FVATIPROC) (GLenum stream, GLfloat *coords);
+alias void (* PFNGLNORMALSTREAM3DATIPROC) (GLenum stream, GLdouble nx, GLdouble ny, GLdouble nz);
+alias void (* PFNGLNORMALSTREAM3DVATIPROC) (GLenum stream, GLdouble *coords);
+alias void (* PFNGLCLIENTACTIVEVERTEXSTREAMATIPROC) (GLenum stream);
+alias void (* PFNGLVERTEXBLENDENVIATIPROC) (GLenum pname, GLint param);
+alias void (* PFNGLVERTEXBLENDENVFATIPROC) (GLenum pname, GLfloat param);
 
 /* GL_ATI_element_array */
-typedef void (* PFNGLELEMENTPOINTERATIPROC) (GLenum type, GLvoid *pointer);
-typedef void (* PFNGLDRAWELEMENTARRAYATIPROC) (GLenum mode, GLsizei count);
-typedef void (* PFNGLDRAWRANGEELEMENTARRAYATIPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count);
+alias void (* PFNGLELEMENTPOINTERATIPROC) (GLenum type, GLvoid *pointer);
+alias void (* PFNGLDRAWELEMENTARRAYATIPROC) (GLenum mode, GLsizei count);
+alias void (* PFNGLDRAWRANGEELEMENTARRAYATIPROC) (GLenum mode, GLuint start, GLuint end, GLsizei count);
 
 /* GL_SUN_mesh_array */
-typedef void (* PFNGLDRAWMESHARRAYSSUNPROC) (GLenum mode, GLint first, GLsizei count, GLsizei width);
+alias void (* PFNGLDRAWMESHARRAYSSUNPROC) (GLenum mode, GLint first, GLsizei count, GLsizei width);
 
 /* GL_NV_occlusion_query */
-typedef void (* PFNGLGENOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
-typedef void (* PFNGLDELETEOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
-typedef GLboolean (* PFNGLISOCCLUSIONQUERYNVPROC) (GLuint id);
-typedef void (* PFNGLBEGINOCCLUSIONQUERYNVPROC) (GLuint id);
-typedef void (* PFNGLENDOCCLUSIONQUERYNVPROC) ();
-typedef void (* PFNGLGETOCCLUSIONQUERYIVNVPROC) (GLuint id, GLenum pname, GLint *params);
-typedef void (* PFNGLGETOCCLUSIONQUERYUIVNVPROC) (GLuint id, GLenum pname, GLuint *params);
+alias void (* PFNGLGENOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
+alias void (* PFNGLDELETEOCCLUSIONQUERIESNVPROC) (GLsizei n, GLuint *ids);
+alias GLboolean (* PFNGLISOCCLUSIONQUERYNVPROC) (GLuint id);
+alias void (* PFNGLBEGINOCCLUSIONQUERYNVPROC) (GLuint id);
+alias void (* PFNGLENDOCCLUSIONQUERYNVPROC) ();
+alias void (* PFNGLGETOCCLUSIONQUERYIVNVPROC) (GLuint id, GLenum pname, GLint *params);
+alias void (* PFNGLGETOCCLUSIONQUERYUIVNVPROC) (GLuint id, GLenum pname, GLuint *params);
 
 /* GL_NV_pixel_data_range */
-typedef void (* PFNGLPIXELDATARANGENVPROC) (GLenum target, GLsizei length, GLvoid *pointer);
-typedef void (* PFNGLFLUSHPIXELDATARANGENVPROC) (GLenum target);
+alias void (* PFNGLPIXELDATARANGENVPROC) (GLenum target, GLsizei length, GLvoid *pointer);
+alias void (* PFNGLFLUSHPIXELDATARANGENVPROC) (GLenum target);
 
 /* GL_NV_point_sprite */
-typedef void (* PFNGLPOINTPARAMETERINVPROC) (GLenum pname, GLint param);
-typedef void (* PFNGLPOINTPARAMETERIVNVPROC) (GLenum pname, GLint *params);
+alias void (* PFNGLPOINTPARAMETERINVPROC) (GLenum pname, GLint param);
+alias void (* PFNGLPOINTPARAMETERIVNVPROC) (GLenum pname, GLint *params);
