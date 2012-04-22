@@ -1112,7 +1112,7 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // calculating the maximum y coordinate of all screens, since Cocoa's
     // "global coordinates" are upside down from CG's...
 
-    NSPoint localPoint = NSMakePoint( x, y );
+    NSPoint localPoint = NSMakePoint( x, _glfwWin.height - y );
     NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
     CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
     double mainScreenHeight = CGDisplayBounds( CGMainDisplayID() ).size.height;
