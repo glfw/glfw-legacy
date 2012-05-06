@@ -254,6 +254,8 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
             if( !( pfd.dwFlags & PFD_GENERIC_ACCELERATED ) &&
                 ( pfd.dwFlags & PFD_GENERIC_FORMAT ) )
             {
+                // If this is true, this pixel format is only supported by the
+                // generic software implementation
                 continue;
             }
 
