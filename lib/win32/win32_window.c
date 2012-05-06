@@ -288,6 +288,12 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         (*found)++;
     }
 
+    if( *found == 0 )
+    {
+        free( result );
+        return NULL;
+    }
+
     return result;
 }
 
