@@ -154,7 +154,7 @@ static int getPixelFormatAttrib(int pixelFormat, int attrib)
 
 static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 {
-    _GLFWfbconfig *result;
+    _GLFWfbconfig *fbconfigs;
     PIXELFORMATDESCRIPTOR pfd;
     int i, count;
 
@@ -175,8 +175,8 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
         return NULL;
     }
 
-    result = (_GLFWfbconfig*) malloc( sizeof( _GLFWfbconfig ) * count );
-    if( !result )
+    fbconfigs = (_GLFWfbconfig*) malloc( sizeof( _GLFWfbconfig ) * count );
+    if( !fbconfigs )
     {
         fprintf(stderr, "Out of memory");
         return NULL;
@@ -184,6 +184,8 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
 
     for( i = 1;  i <= count;  i++ )
     {
+        _GLFWfbconfig *fbconfig = fbconfigs + *found;
+
         if( _glfwWin.has_WGL_ARB_pixel_format )
         {
             // Get pixel format attributes through WGL_ARB_pixel_format
@@ -209,29 +211,29 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
                 continue;
             }
 
-            result[*found].redBits = getPixelFormatAttrib( i, WGL_RED_BITS_ARB );
-            result[*found].greenBits = getPixelFormatAttrib( i, WGL_GREEN_BITS_ARB );
-            result[*found].blueBits = getPixelFormatAttrib( i, WGL_BLUE_BITS_ARB );
-            result[*found].alphaBits = getPixelFormatAttrib( i, WGL_ALPHA_BITS_ARB );
+            fbconfig->redBits = getPixelFormatAttrib( i, WGL_RED_BITS_ARB );
+            fbconfig->greenBits = getPixelFormatAttrib( i, WGL_GREEN_BITS_ARB );
+            fbconfig->blueBits = getPixelFormatAttrib( i, WGL_BLUE_BITS_ARB );
+            fbconfig->alphaBits = getPixelFormatAttrib( i, WGL_ALPHA_BITS_ARB );
 
-            result[*found].depthBits = getPixelFormatAttrib( i, WGL_DEPTH_BITS_ARB );
-            result[*found].stencilBits = getPixelFormatAttrib( i, WGL_STENCIL_BITS_ARB );
+            fbconfig->depthBits = getPixelFormatAttrib( i, WGL_DEPTH_BITS_ARB );
+            fbconfig->stencilBits = getPixelFormatAttrib( i, WGL_STENCIL_BITS_ARB );
 
-            result[*found].accumRedBits = getPixelFormatAttrib( i, WGL_ACCUM_RED_BITS_ARB );
-            result[*found].accumGreenBits = getPixelFormatAttrib( i, WGL_ACCUM_GREEN_BITS_ARB );
-            result[*found].accumBlueBits = getPixelFormatAttrib( i, WGL_ACCUM_BLUE_BITS_ARB );
-            result[*found].accumAlphaBits = getPixelFormatAttrib( i, WGL_ACCUM_ALPHA_BITS_ARB );
+            fbconfig->accumRedBits = getPixelFormatAttrib( i, WGL_ACCUM_RED_BITS_ARB );
+            fbconfig->accumGreenBits = getPixelFormatAttrib( i, WGL_ACCUM_GREEN_BITS_ARB );
+            fbconfig->accumBlueBits = getPixelFormatAttrib( i, WGL_ACCUM_BLUE_BITS_ARB );
+            fbconfig->accumAlphaBits = getPixelFormatAttrib( i, WGL_ACCUM_ALPHA_BITS_ARB );
 
-            result[*found].auxBuffers = getPixelFormatAttrib( i, WGL_AUX_BUFFERS_ARB );
-            result[*found].stereo = getPixelFormatAttrib( i, WGL_STEREO_ARB );
+            fbconfig->auxBuffers = getPixelFormatAttrib( i, WGL_AUX_BUFFERS_ARB );
+            fbconfig->stereo = getPixelFormatAttrib( i, WGL_STEREO_ARB );
 
             if( _glfwWin.has_WGL_ARB_multisample )
             {
-                result[*found].samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
+                fbconfig->samples = getPixelFormatAttrib( i, WGL_SAMPLES_ARB );
             }
             else
             {
-                result[*found].samples = 0;
+                fbconfig->samples = 0;
             }
         }
         else
@@ -265,38 +267,38 @@ static _GLFWfbconfig *getFBConfigs( unsigned int *found )
                 continue;
             }
 
-            result[*found].redBits = pfd.cRedBits;
-            result[*found].greenBits = pfd.cGreenBits;
-            result[*found].blueBits = pfd.cBlueBits;
-            result[*found].alphaBits = pfd.cAlphaBits;
+            fbconfig->redBits = pfd.cRedBits;
+            fbconfig->greenBits = pfd.cGreenBits;
+            fbconfig->blueBits = pfd.cBlueBits;
+            fbconfig->alphaBits = pfd.cAlphaBits;
 
-            result[*found].depthBits = pfd.cDepthBits;
-            result[*found].stencilBits = pfd.cStencilBits;
+            fbconfig->depthBits = pfd.cDepthBits;
+            fbconfig->stencilBits = pfd.cStencilBits;
 
-            result[*found].accumRedBits = pfd.cAccumRedBits;
-            result[*found].accumGreenBits = pfd.cAccumGreenBits;
-            result[*found].accumBlueBits = pfd.cAccumBlueBits;
-            result[*found].accumAlphaBits = pfd.cAccumAlphaBits;
+            fbconfig->accumRedBits = pfd.cAccumRedBits;
+            fbconfig->accumGreenBits = pfd.cAccumGreenBits;
+            fbconfig->accumBlueBits = pfd.cAccumBlueBits;
+            fbconfig->accumAlphaBits = pfd.cAccumAlphaBits;
 
-            result[*found].auxBuffers = pfd.cAuxBuffers;
-            result[*found].stereo = ( pfd.dwFlags & PFD_STEREO ) ? GL_TRUE : GL_FALSE;
+            fbconfig->auxBuffers = pfd.cAuxBuffers;
+            fbconfig->stereo = ( pfd.dwFlags & PFD_STEREO ) ? GL_TRUE : GL_FALSE;
 
             // PFD pixel formats do not support FSAA
-            result[*found].samples = 0;
+            fbconfig->samples = 0;
         }
 
-        result[*found].platformID = i;
+        fbconfig->platformID = i;
 
         (*found)++;
     }
 
     if( *found == 0 )
     {
-        free( result );
+        free( fbconfigs );
         return NULL;
     }
 
-    return result;
+    return fbconfigs;
 }
 
 
