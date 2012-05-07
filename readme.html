@@ -525,7 +525,12 @@ the library.  For systems that do not provide pkg-config, you should look in
 this file for the proper compile and link flags for your system, as determined
 by compile.sh at compile time.</p>
 
-<p>A typical compile and link command-line may look like this:</p>
+<p>A typical compile and link command-line when using the GLFW static library
+may look like this:</p>
+
+<blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --static --libs libglfw`</code></blockquote>
+
+<p>When using the GLFW sharedd library it may look like this:</p>
 
 <blockquote><code>cc `pkg-config --cflags libglfw` -o myprog myprog.c `pkg-config --libs libglfw`</code></blockquote>
 
