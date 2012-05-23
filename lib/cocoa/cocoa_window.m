@@ -253,6 +253,18 @@ static GLboolean initializeAppKit( void )
     }
 }
 
+- (void)windowDidMove:(NSNotification *)notification
+{
+    NSPoint point = [_glfwWin.window mouseLocationOutsideOfEventStream];
+    _glfwInput.MousePosX = point.x;
+    _glfwInput.MousePosY = _glfwWin.height - point.y;
+
+    if( _glfwWin.mousePosCallback )
+    {
+        _glfwWin.mousePosCallback( _glfwInput.MousePosX, _glfwInput.MousePosY );
+    }
+}
+
 - (void)windowDidMiniaturize:(NSNotification *)notification
 {
     _glfwWin.iconified = GL_TRUE;
@@ -494,7 +506,7 @@ static int convertMacKeyCode( unsigned int macKeyCode )
 
         // Cocoa coordinate system has origin at lower left
         _glfwInput.MousePosX = p.x;
-        _glfwInput.MousePosY = [[_glfwWin.window contentView] bounds].size.height - p.y;
+        _glfwInput.MousePosY = _glfwWin.height - p.y;
     }
 
     if( _glfwWin.mousePosCallback )
@@ -833,9 +845,9 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     [_glfwWin.context makeCurrentContext];
 
-    NSPoint point = [[NSCursor currentCursor] hotSpot];
+    NSPoint point = [_glfwWin.window mouseLocationOutsideOfEventStream];
     _glfwInput.MousePosX = point.x;
-    _glfwInput.MousePosY = point.y;
+    _glfwInput.MousePosY = _glfwWin.height - point.y;
 
     return GL_TRUE;
 }
