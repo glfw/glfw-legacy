@@ -65,6 +65,26 @@ mingw-clean:
 
 
 ###########################################################################
+# Cygwin on Windows
+###########################################################################
+
+CYGWIN=PREFIX=/bin TARGET=i686-pc-mingw32-
+
+cygwin-install: win32-cygwin
+	cd lib/win32 && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw install
+
+win32-cygwin:
+	cd lib/win32 && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw
+	cd examples  && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw
+	cd tests     && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw
+
+cygwin-clean:
+	cd lib/win32 && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw clean
+	cd examples  && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw clean
+	cd tests     && env $(CYGWIN) $(MAKE) -f Makefile.win32.cross-mgw clean
+
+
+###########################################################################
 # MSYS on Windows
 ###########################################################################
 
