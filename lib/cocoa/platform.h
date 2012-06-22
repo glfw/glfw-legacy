@@ -226,6 +226,30 @@ GLFWGLOBAL struct {
 } _glfwThrd;
 
 
+//------------------------------------------------------------------------
+// Joystick information & state
+//------------------------------------------------------------------------
+
+typedef struct
+{
+    int present;
+    char product[256];
+
+    IOHIDDeviceInterface** interface;
+
+    int numAxes;
+    int numButtons;
+    int numHats;
+
+    CFMutableArrayRef axes;
+    CFMutableArrayRef buttons;
+    CFMutableArrayRef hats;
+
+} _glfwJoystick;
+
+static _glfwJoystick _glfwJoysticks[GLFW_JOYSTICK_LAST + 1];
+
+
 //========================================================================
 // Macros for encapsulating critical code sections (i.e. making parts
 // of GLFW thread safe)
