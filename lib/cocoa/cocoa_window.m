@@ -764,7 +764,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
 
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
+#if MAC_OS_X_VERSION_MAX_ALLOWED < 1070
         ADD_ATTR( NSOpenGLPFAFullScreen );
+#endif /*MAC_OS_X_VERSION_MAX_ALLOWED*/
+
         ADD_ATTR( NSOpenGLPFANoRecovery );
         ADD_ATTR2( NSOpenGLPFAScreenMask,
                    CGDisplayIDToOpenGLDisplayMask( CGMainDisplayID() ) );

@@ -581,6 +581,7 @@ version of GLFW.</p>
 <h3>v2.7.6</h3>
 <ul>
   <li>[Cocoa] Added joystick support (backported from 3.0)</li>
+  <li>[Cocoa] Bugfix: Fullscreen windows with OpenGL 3.2 core contexts failed to open</li>
   <li>[Win32] Bugfix: A test was missing for whether all available pixel formats had been disqualified</li>
   <li>[X11] Bugfix: The VirtualBox OpenGL implementation does not set the window bit for GLXFBConfigs</li>
 </ul>
@@ -1226,6 +1227,8 @@ their skills.  Special thanks go out to:</p>
 
   <li>Frank Wille, for helping with the AmigaOS port and making GLFW
   compile under IRIX 5.3</li>
+
+  <li>Yaniel, for fixing a bug with fullscreen windows using OpenGL 3.0 contexts on Cocoa</li>
 
   <li>Santi Zupancic, for support, bug reports and testing</li>
 
