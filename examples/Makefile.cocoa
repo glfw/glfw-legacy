@@ -12,7 +12,7 @@ CFLAGS += -I../include
 
 # Linker settings
 LIB = ../lib/cocoa/libglfw.a
-LFLAGS = $(LIB) -framework Cocoa -framework OpenGL
+LFLAGS = $(LIB) -framework Cocoa -framework OpenGL -framework IOKit
 
 # Default: Build all tests
 all: Triangle.app/Contents/MacOS/Triangle \

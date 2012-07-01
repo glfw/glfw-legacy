@@ -13,7 +13,7 @@ CFLAGS += -I../include
 # Linker settings
 LIB       = ../lib/cocoa/libglfw.a
 SOLIB     = ../lib/cocoa/libglfw.dylib
-LFLAGS    = $(LIB) -framework Cocoa -framework OpenGL
+LFLAGS    = $(LIB) -framework Cocoa -framework OpenGL -framework IOKit
 SO_LFLAGS = $(SOLIB) -framework OpenGL
 
 HEADER = ../include/GL/glfw.h
