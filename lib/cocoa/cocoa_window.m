@@ -256,8 +256,8 @@ static GLboolean initializeAppKit( void )
 - (void)windowDidMove:(NSNotification *)notification
 {
     NSPoint point = [_glfwWin.window mouseLocationOutsideOfEventStream];
-    _glfwInput.MousePosX = point.x;
-    _glfwInput.MousePosY = _glfwWin.height - point.y;
+    _glfwInput.MousePosX = lround(floor(point.x));
+    _glfwInput.MousePosY = _glfwWin.height - lround(ceil(point.y));
 
     if( _glfwWin.mousePosCallback )
     {
@@ -1127,7 +1127,7 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     // calculating the maximum y coordinate of all screens, since Cocoa's
     // "global coordinates" are upside down from CG's...
 
-    NSPoint localPoint = NSMakePoint( x, _glfwWin.height - y );
+    NSPoint localPoint = NSMakePoint( x, _glfwWin.height - y - 1 );
     NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
     CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
     double mainScreenHeight = CGDisplayBounds( CGMainDisplayID() ).size.height;
