@@ -564,7 +564,7 @@ command-line for compiling and linking your program is:</p>
 frameworks and libraries to your command-line using the <code>-l</code> and
 <code>-framework</code> switches, i.e.:</p>
 
-<blockquote><code>cc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL</code></blockquote>
+<blockquote><code>cc -o myprog myprog.c -lglfw -framework Cocoa -framework OpenGL -framework IOKit</code></blockquote>
 
 <p>Note that you do not add the .framework extension to a framework when adding
 it from the command-line.</p>
@@ -581,6 +581,7 @@ version of GLFW.</p>
 <h3>v2.7.6</h3>
 <ul>
   <li>[Cocoa] Added joystick support (backported from 3.0)</li>
+  <li>[Cocoa] Added new joystick test (backported from 3.0)</li>
   <li>[Cocoa] Bugfix: Fullscreen windows with OpenGL 3.2 core contexts failed to open</li>
   <li>[Win32] Bugfix: A test was missing for whether all available pixel formats had been disqualified</li>
   <li>[X11] Bugfix: The VirtualBox OpenGL implementation does not set the window bit for GLXFBConfigs</li>
