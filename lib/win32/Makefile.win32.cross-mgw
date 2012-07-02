@@ -123,11 +123,12 @@ libglfw.a: $(OBJS)
 	$(TARGET)$(MKLIB) $(LIBFLAGS) $@ $(OBJS) $(SYSOBJS)
 
 ##########################################################################
-# Rule for building dynamic library
+# Rules for building dynamic library
 ##########################################################################
 glfw.dll: $(DLLOBJS)
+	$(TARGET)$(CC) -shared -o $@ -Wl,--output-def,libglfwdll.def $(DLLOBJS) $(LINKLIBS)
 	$(TARGET)$(CC) -shared -o $@ -Wl,--kill-at $(DLLOBJS) $(LINKFLAGS) $(LINKLIBS)
-	$(TARGET)$(DLLTOOL) --kill-at --output-lib libglfwdll.a --def libglfwdll.def
+	$(TARGET)$(DLLTOOL) --kill-at --output-lib libglfwdll.a --dllname $@ --def libglfwdll.def
 
 libglfw.pc: libglfw.pc.in
 	$(SED) -e 's,\@PREFIX\@,$(PREFIX),' libglfw.pc.in > libglfw.pc
