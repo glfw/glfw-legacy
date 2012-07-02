@@ -1740,16 +1740,6 @@ void _glfwPlatformPollEvents( void )
     // Flag: mouse was not moved (will be changed by _glfwGetNextEvent if
     // there was a mouse move event)
     _glfwInput.MouseMoved = GL_FALSE;
-    if( _glfwWin.mouseLock )
-    {
-        _glfwInput.OldMouseX = _glfwWin.width/2;
-        _glfwInput.OldMouseY = _glfwWin.height/2;
-    }
-    else
-    {
-        _glfwInput.OldMouseX = _glfwInput.MousePosX;
-        _glfwInput.OldMouseY = _glfwInput.MousePosY;
-    }
 
     // Check for new window messages
     while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
@@ -1842,6 +1832,9 @@ void _glfwPlatformHideMouseCursor( void )
 
     // Capture cursor to user window
     SetCapture( _glfwWin.window );
+
+    // Move cursor to the middle of the window
+    _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2, _glfwWin.height / 2 );
 }
 
 
@@ -1873,6 +1866,9 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
     pos.x = x;
     pos.y = y;
     ClientToScreen( _glfwWin.window, &pos );
+
+    _glfwInput.OldMouseX = x;
+    _glfwInput.OldMouseY = y;
 
     SetCursorPos( pos.x, pos.y );
 }

@@ -587,6 +587,8 @@ version of GLFW.</p>
   <li>[Cocoa] Bugfix: Cursor positioning led to nonsensical results for fullscreen windows</li>
   <li>[Cocoa] Bugfix: The GLFW window was flagged as restorable</li>
   <li>[Win32] Bugfix: A test was missing for whether all available pixel formats had been disqualified</li>
+  <li>[Win32] Bugfix: Entering locked cursor mode caused cursor movement to be reported to the mouse position callback</li>
+  <li>[Win32] Bugfix: Setting the cursor position caused cursor movement to be reported to the mouse position callback</li>
   <li>[Win32] Bugfix: A .def file using <code>__stdcall</code> naming conventions was used for the 64-bit DLL on MinGW-w64</li>
   <li>[Win32] Bugfix: A superfluous link flag prevented tests and examples from being built for 64-bit on MinGW-w64</li>
   <li>[X11] Bugfix: The VirtualBox OpenGL implementation does not set the window bit for GLX framebuffer configs</li>

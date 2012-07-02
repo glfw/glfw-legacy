@@ -1850,6 +1850,9 @@ void _glfwPlatformHideMouseCursor( void )
             _glfwWin.pointerGrabbed = GL_TRUE;
         }
     }
+
+    // Move cursor to the middle of the window
+    _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2, _glfwWin.height / 2 );
 }
 
 
