@@ -15,7 +15,7 @@ SOLIB     = ../lib/win32/libglfwdll.a
 LFLAGS    = $(LIB) -lglu32 -lopengl32
 SO_LFLAGS = $(SOLIB) -lglu32 -lopengl32
 
-WINDOWS = -mwindows -e _mainCRTStartup
+WINDOWS = -mwindows
 CONSOLE = -mconsole
 
 BINARIES = accuracy.exe defaults.exe dynamic.exe events.exe fsaa.exe \
