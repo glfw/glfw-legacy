@@ -350,7 +350,7 @@ int _glfwPlatformTerminate( void )
 
     // Restore FOREGROUNDLOCKTIMEOUT system setting
     SystemParametersInfo( SPI_SETFOREGROUNDLOCKTIMEOUT, 0,
-                          (LPVOID) _glfwLibrary.Sys.foregroundLockTimeout,
+                          (LPVOID) (INT_PTR) _glfwLibrary.Sys.foregroundLockTimeout,
                           SPIF_SENDCHANGE );
 
     return GL_TRUE;
