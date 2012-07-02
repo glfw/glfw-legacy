@@ -11,7 +11,7 @@ CFLAGS = -I../include -Wall -O2 -mwin32
 LIB    = ../lib/win32/libglfw.a
 LFLAGS = $(LIB) -lglu32 -lopengl32
 
-WINDOWS = -mwindows -e _mainCRTStartup
+WINDOWS = -mwindows
 CONSOLE = -mconsole
 
 BINARIES = triangle.exe listmodes.exe mthello.exe pong3d.exe mtbench.exe \
