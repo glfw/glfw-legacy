@@ -1116,23 +1116,21 @@ void _glfwPlatformShowMouseCursor( void )
 
 void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
-    // The library seems to assume that after calling this the mouse won't move,
-    // but obviously it will, and escape the app's window, and activate other apps,
-    // and other badness in pain.  I think the API's just silly, but maybe I'm
-    // misunderstanding it...
-
-    // Also, (x, y) are window coords...
-
-    // Also, it doesn't seem possible to write this robustly without
-    // calculating the maximum y coordinate of all screens, since Cocoa's
-    // "global coordinates" are upside down from CG's...
-
-    NSPoint localPoint = NSMakePoint( x, _glfwWin.height - y - 1 );
-    NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
-    CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
-    double mainScreenHeight = CGDisplayBounds( CGMainDisplayID() ).size.height;
-    CGPoint targetPoint = CGPointMake( globalPoint.x - mainScreenOrigin.x,
-                                       mainScreenHeight - globalPoint.y - mainScreenOrigin.y );
-    CGDisplayMoveCursorToPoint( CGMainDisplayID(), targetPoint );
+    if( _glfwWin.fullscreen )
+    {
+        NSPoint globalPoint = NSMakePoint( x, y );
+        CGDisplayMoveCursorToPoint( CGMainDisplayID(), globalPoint );
+    }
+    else
+    {
+        NSPoint localPoint = NSMakePoint( x, _glfwWin.height - y - 1 );
+        NSPoint globalPoint = [_glfwWin.window convertBaseToScreen:localPoint];
+        CGPoint mainScreenOrigin = CGDisplayBounds( CGMainDisplayID() ).origin;
+        double mainScreenHeight = CGDisplayBounds( CGMainDisplayID() ).size.height;
+        CGPoint targetPoint = CGPointMake( globalPoint.x - mainScreenOrigin.x,
+                                          mainScreenHeight - globalPoint.y -
+                                              mainScreenOrigin.y );
+        CGDisplayMoveCursorToPoint( CGMainDisplayID(), targetPoint );
+    }
 }
 
