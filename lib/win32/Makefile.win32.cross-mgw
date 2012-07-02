@@ -30,7 +30,6 @@ MKLIB     = ar
 LIBFLAGS  = -rcs
 
 # DLL
-LINK      = dllwrap
 LINKFLAGS = -s -Wl,--major-image-version,$(VERMAJOR),--minor-image-version,$(VERMINOR)
 LINKLIBS  = -lopengl32 -lwinmm -lgdi32
 
@@ -127,7 +126,7 @@ libglfw.a: $(OBJS)
 # Rule for building dynamic library
 ##########################################################################
 glfw.dll: $(DLLOBJS)
-	$(TARGET)$(LINK) --dllname $@ --def glfwdll_mgw1.def $(DLLOBJS) $(LINKFLAGS) $(LINKLIBS)
+	$(TARGET)$(CC) -shared -o $@ -Wl,--kill-at $(DLLOBJS) $(LINKFLAGS) $(LINKLIBS)
 	$(TARGET)$(DLLTOOL) --kill-at --output-lib libglfwdll.a --def glfwdll_mgw2.def
 
 libglfw.pc: libglfw.pc.in
