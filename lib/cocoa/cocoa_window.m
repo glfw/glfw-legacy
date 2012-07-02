@@ -745,6 +745,11 @@ int  _glfwPlatformOpenWindow( int width, int height,
     [_glfwWin.window setAcceptsMouseMovedEvents:YES];
     [_glfwWin.window center];
 
+    if( [_glfwWin.window respondsToSelector:@selector(setRestorable)] )
+    {
+        [_glfwWin.window setRestorable:NO];
+    }
+
     if( wndconfig->mode == GLFW_FULLSCREEN )
     {
         _glfwLibrary.originalMode = (NSDictionary*)

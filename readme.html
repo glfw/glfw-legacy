@@ -585,6 +585,7 @@ version of GLFW.</p>
   <li>[Cocoa] Bugfix: Fullscreen windows with OpenGL 3.2 core contexts failed to open</li>
   <li>[Cocoa] Bugfix: The cursor position incorrectly rounded during conversion</li>
   <li>[Cocoa] Bugfix: Cursor positioning led to nonsensical results for fullscreen windows</li>
+  <li>[Cocoa] Bugfix: The GLFW window was flagged as restorable</li>
   <li>[Win32] Bugfix: A test was missing for whether all available pixel formats had been disqualified</li>
   <li>[X11] Bugfix: The VirtualBox OpenGL implementation does not set the window bit for GLX framebuffer configs</li>
 </ul>
@@ -1191,6 +1192,9 @@ their skills.  Special thanks go out to:</p>
 
   <li>Glenn Lewis, for helping out with support for the D programming
   language</li>
+
+  <li>Shane Liesegang, for providing a bug fix relating to Cocoa window
+  restoration</li>
 
   <li>Tristam MacDonald, for his bug reports and feedback on the Cocoa port</li>
 
