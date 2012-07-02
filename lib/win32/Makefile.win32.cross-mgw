@@ -127,7 +127,7 @@ libglfw.a: $(OBJS)
 ##########################################################################
 glfw.dll: $(DLLOBJS)
 	$(TARGET)$(CC) -shared -o $@ -Wl,--kill-at $(DLLOBJS) $(LINKFLAGS) $(LINKLIBS)
-	$(TARGET)$(DLLTOOL) --kill-at --output-lib libglfwdll.a --def glfwdll_mgw2.def
+	$(TARGET)$(DLLTOOL) --kill-at --output-lib libglfwdll.a --def libglfwdll.def
 
 libglfw.pc: libglfw.pc.in
 	$(SED) -e 's,\@PREFIX\@,$(PREFIX),' libglfw.pc.in > libglfw.pc
