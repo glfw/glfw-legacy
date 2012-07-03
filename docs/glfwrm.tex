@@ -424,8 +424,10 @@ On Microsoft Windows, if the executable has an icon resource named
 icon is present, the \textbf{IDI\_WINLOGO} icon will be used instead.
 
 On Mac OS X the \GLFW\ window has no icon, but programs using \GLFW\ will use
-the application bundle's icon.  For more information on bundles, see the Bundle
-Programming Guide provided by Apple.
+the application bundle's icon.  Also, the first time a window is opened the menu
+bar is populated with common commands like Hide, Quit and About.  The (minimal)
+about dialog uses information from the application's bundle.  For more
+information on bundles, see the Bundle Programming Guide provided by Apple.
 
 For information on how the availability of different platform-specific
 extensions affect the behavior of this function, see appendix
