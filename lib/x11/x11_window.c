@@ -710,6 +710,8 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 static void initGLXExtensions( void )
 {
     // This needs to include every function pointer loaded below
+    _glfwWin.SwapIntervalEXT             = NULL;
+    _glfwWin.SwapIntervalMESA            = NULL;
     _glfwWin.SwapIntervalSGI             = NULL;
     _glfwWin.GetFBConfigAttribSGIX       = NULL;
     _glfwWin.ChooseFBConfigSGIX          = NULL;
@@ -719,10 +721,34 @@ static void initGLXExtensions( void )
 
     // This needs to include every extension used below
     _glfwWin.has_GLX_SGIX_fbconfig              = GL_FALSE;
+    _glfwWin.has_GLX_EXT_swap_control           = GL_FALSE;
+    _glfwWin.has_GLX_MESA_swap_control          = GL_FALSE;
     _glfwWin.has_GLX_SGI_swap_control           = GL_FALSE;
     _glfwWin.has_GLX_ARB_multisample            = GL_FALSE;
     _glfwWin.has_GLX_ARB_create_context         = GL_FALSE;
     _glfwWin.has_GLX_ARB_create_context_profile = GL_FALSE;
+
+    if( _glfwPlatformExtensionSupported( "GLX_EXT_swap_control" ) )
+    {
+        _glfwWin.SwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)
+            _glfwPlatformGetProcAddress( "glXSwapIntervalEXT" );
+
+        if( _glfwWin.SwapIntervalEXT )
+        {
+            _glfwWin.has_GLX_EXT_swap_control = GL_TRUE;
+        }
+    }
+
+    if( _glfwPlatformExtensionSupported( "GLX_MESA_swap_control" ) )
+    {
+        _glfwWin.SwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)
+            _glfwPlatformGetProcAddress( "glXSwapIntervalMESA" );
+
+        if( _glfwWin.SwapIntervalMESA )
+        {
+            _glfwWin.has_GLX_MESA_swap_control = GL_TRUE;
+        }
+    }
 
     if( _glfwPlatformExtensionSupported( "GLX_SGI_swap_control" ) )
     {
@@ -1661,9 +1687,22 @@ void _glfwPlatformSwapBuffers( void )
 
 void _glfwPlatformSwapInterval( int interval )
 {
-    if( _glfwWin.has_GLX_SGI_swap_control )
+    if( _glfwWin.has_GLX_EXT_swap_control )
     {
-        _glfwWin.SwapIntervalSGI( interval );
+        _glfwWin.SwapIntervalEXT( _glfwLibrary.display,
+                                  _glfwWin.window,
+                                  interval );
+    }
+    else if( _glfwWin.has_GLX_MESA_swap_control )
+    {
+        _glfwWin.SwapIntervalMESA( interval );
+    }
+    else if( _glfwWin.has_GLX_SGI_swap_control )
+    {
+        if( interval > 0 )
+        {
+            _glfwWin.SwapIntervalSGI( interval );
+        }
     }
 }
 
