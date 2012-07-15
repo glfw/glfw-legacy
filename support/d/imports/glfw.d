@@ -39,7 +39,7 @@ extern(System):
 
 const int GLFW_VERSION_MAJOR      = 2;
 const int GLFW_VERSION_MINOR      = 7;
-const int GLFW_VERSION_REVISION   = 6;
+const int GLFW_VERSION_REVISION   = 7;
 
 
 //========================================================================
