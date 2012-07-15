@@ -1123,7 +1123,7 @@ void _glfwPlatformSetMouseCursorPos( int x, int y )
 {
     if( _glfwWin.fullscreen )
     {
-        NSPoint globalPoint = NSMakePoint( x, y );
+        CGPoint globalPoint = CGMakePoint( x, y );
         CGDisplayMoveCursorToPoint( CGMainDisplayID(), globalPoint );
     }
     else
