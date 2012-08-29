@@ -1343,6 +1343,17 @@ int _glfwPlatformOpenWindow( int width, int height,
         }
     }
 
+    if( wndconfig->glDebug )
+    {
+        // Debug contexts are not a hard constraint, so we don't fail here if
+        // the extension isn't available
+
+        if( _glfwWin.has_WGL_ARB_create_context )
+        {
+            recreateContext = GL_TRUE;
+        }
+    }
+
     if( wndconfig->glMajor > 2 )
     {
         if ( wndconfig->glMajor != _glfwWin.glMajor ||
@@ -1352,17 +1363,6 @@ int _glfwPlatformOpenWindow( int width, int height,
             // Otherwise, if we got a version greater than required, that's fine,
             // whereas if we got a version lesser than required, it will be dealt
             // with in glfwOpenWindow
-
-            if( _glfwWin.has_WGL_ARB_create_context )
-            {
-                recreateContext = GL_TRUE;
-            }
-        }
-
-        if( wndconfig->glDebug )
-        {
-            // Debug contexts are not a hard constraint, so we don't fail here
-            // if the extension isn't available
 
             if( _glfwWin.has_WGL_ARB_create_context )
             {
