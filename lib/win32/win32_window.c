@@ -1359,6 +1359,17 @@ int _glfwPlatformOpenWindow( int width, int height,
             }
         }
 
+        if( wndconfig->glDebug )
+        {
+            // Debug contexts are not a hard constraint, so we don't fail here
+            // if the extension isn't available
+
+            if( _glfwWin.has_WGL_ARB_create_context )
+            {
+                recreateContext = GL_TRUE;
+            }
+        }
+
         if( wndconfig->glForward )
         {
             if( !_glfwWin.has_WGL_ARB_create_context )
