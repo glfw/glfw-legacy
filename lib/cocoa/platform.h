@@ -261,5 +261,8 @@ pthread_mutex_unlock( &_glfwThrd.CriticalSection );
 // Time
 void _glfwInitTimer( void );
 
+// Joystick
+void _glfwInitJoysticks( void );
+void _glfwTerminateJoysticks( void );
 
 #endif // _platform_h_
