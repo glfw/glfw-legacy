@@ -666,6 +666,11 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
 
         // We are done, so unset the error handler again (see above)
         XSetErrorHandler( NULL );
+
+        // Copy the debug context hint as there's no way of verifying it
+        // This is the only code path capable of creating a debug context,
+        // so leave it as false (from the earlier memset) otherwise
+        _glfwWin.glDebug = wndconfig->glDebug;
     }
     else
     {

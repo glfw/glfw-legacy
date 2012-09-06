@@ -1042,8 +1042,6 @@ void _glfwPlatformRefreshWindowParams( void )
                        forAttribute:NSOpenGLPFASamples
                    forVirtualScreen:0];
     _glfwWin.samples = value;
-
-    _glfwWin.glDebug = GL_FALSE;
 }
 
 

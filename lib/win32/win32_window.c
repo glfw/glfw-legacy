@@ -380,6 +380,11 @@ static GLboolean createContext( HDC dc, const _GLFWwndconfig* wndconfig, int pix
         {
             return GL_FALSE;
         }
+
+        // Copy the debug context hint as there's no way of verifying it
+        // This is the only code path capable of creating a debug context,
+        // so leave it as false (from the earlier memset) otherwise
+        _glfwWin.glDebug = wndconfig->glDebug;
     }
     else
     {
