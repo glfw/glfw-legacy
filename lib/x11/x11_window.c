@@ -1586,7 +1586,6 @@ void _glfwPlatformSetWindowTitle( const char *title )
 void _glfwPlatformSetWindowSize( int width, int height )
 {
     int     mode = 0, rate, sizeChanged = GL_FALSE;
-    XSizeHints *sizehints;
 
     rate = _glfwWin.refreshRate;
 
@@ -1600,14 +1599,14 @@ void _glfwPlatformSetWindowSize( int width, int height )
     {
         // Update window size restrictions to match new window size
 
-        sizehints = XAllocSizeHints();
-        sizehints->flags = 0;
+        XSizeHints *hints = XAllocSizeHints();
 
-        sizehints->min_width  = sizehints->max_width  = width;
-        sizehints->min_height = sizehints->max_height = height;
+        hints->flags |= (PMinSize | PMaxSize);
+        hints->min_width  = hints->max_width  = width;
+        hints->min_height = hints->max_height = height;
 
-        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, sizehints );
-        XFree( sizehints );
+        XSetWMNormalHints( _glfwLibrary.display, _glfwWin.window, hints );
+        XFree( hints );
     }
 
     // Change window size before changing fullscreen mode?
