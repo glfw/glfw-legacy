@@ -169,7 +169,7 @@ int _glfwPlatformInit( void )
 
 int _glfwPlatformTerminate( void )
 {
-    if( pthread_self() != _glfwThrd.First.ID )
+    if( pthread_self() != _glfwThrd.First.PosixID )
     {
         return GL_FALSE;
     }
