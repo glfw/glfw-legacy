@@ -585,7 +585,7 @@ static void update_map(int num_iter)
             if (fabs(pd) <= 1.0f)
             {
                 /* tx,tz is within the circle */
-                GLfloat new_height = disp + (cos(pd*3.14f)*disp);
+                GLfloat new_height = disp + ((GLfloat) cos(pd*3.14f) * disp);
                 map_vertices[1][ii] += new_height;
             }
         }
