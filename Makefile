@@ -48,8 +48,8 @@ default:
 	@echo "  $(MAKE) cocoa-install      to install the GLFW header and static library"
 	@echo "  $(MAKE) cocoa-dist-install to also install the GLFW dynamic library"
 	@echo "-----------------------------------------------------------------------------"
-	@echo " There are also Microsoft Visual C++ 2008 and 2010 project files available in"
-	@echo " the support/msvc90 and support/msvc100 directories, respectively."
+	@echo " There are also Microsoft Visual C++ 2008, 2010 and 2012 project files "
+	@echo " available in the support/msvc* and directories."
 	@echo "-----------------------------------------------------------------------------"
 
 
