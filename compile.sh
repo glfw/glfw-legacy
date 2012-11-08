@@ -741,7 +741,7 @@ Description: A portable framework for OpenGL development
 Version: 2.7.4
 URL: http://www.glfw.org/
 Requires.private: gl x11 $PKG_LIBS
-Libs: -L\${libdir} -lglfw $LFLAGS_THREAD
+Libs: -L\${libdir} -lglfw $LFLAGS_THREAD $LFLAGS_CLOCK
 Cflags: -I\${includedir} $CFLAGS_THREAD 
 EOF
 
