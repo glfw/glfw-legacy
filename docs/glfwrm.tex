@@ -275,6 +275,9 @@ on other systems it may take only a fraction of a second to complete.
 This function registers a function calling \textbf{glfwTerminate} with the
 atexit facility of the C library.
 
+If \GLFW\ is initialized already, this function returns GL\_TRUE immediately
+without affecting state.
+
 On Mac OS X, this function will change the current directory of the application
 to the \textbf{Contents/Resources} subdirectory of the application's bundle, if
 present.  For more information on bundles, see the Bundle Programming Guide
