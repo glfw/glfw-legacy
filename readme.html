@@ -61,7 +61,7 @@ example and test programs.</p>
 <p>Currently supported compilers and systems are:</p>
 
 <ul>
-  <li>Microsoft Visual C++ 2008 and 2010</li>
+  <li>Microsoft Visual C++ 2008, 2010 and 2012</li>
   <li>MinGW with or without MSYS</li>
   <li>MinGW cross-compilation for Unix-like systems</li>
   <li>OpenWatcom for Windows</li>
@@ -69,9 +69,9 @@ example and test programs.</p>
   <li>Apple GCC or Clang on Mac OS X</li>
 </ul>
 
-<p>There are also project files available for Microsoft Visual C++ 2008 and
-2010 in the <code>support/msvc90</code> and <code>support/msvc100</code>
-directories.</p>
+<p>There are also project files available for Microsoft Visual C++ 2008,
+2010 and 2012 in the <code>support/msvc90</code>,
+<code>support/msvc100</code> and <code>support/msvc110</code> directories.</p>
 
 <p>If your compiler/system is not in the list, you may have to create new
 makefiles in the <code>lib\win32</code>, <code>lib/x11</code> or
@@ -94,11 +94,11 @@ listed below already does this, but you need to do it yourself if you are
 making a custom build.  Without this macro, the GLFW DLL will not export
 functions correctly and code calling the DLL will be incorrectly generated.</p>
 
-<h4>2.1.1 Microsoft Visual C++ 2008 and 2010</h4>
+<h4>2.1.1 Microsoft Visual C++</h4>
 
 <p>Project files for both the static and dynamic versions of the GLFW library
-are provided in the <code>support/msvc90</code> and
-<code>support/msvc100</code> directories.</p>
+are provided in the <code>support/msvc90</code>, <code>support/msvc100</code>
+and <code>support/msvc110</code> directories.</p>
 
 
 <h4>2.1.2 MinGW on Windows</h4>
@@ -1131,6 +1131,7 @@ version of GLFW.</p>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;d</code></td><td>&nbsp;</td><td>D support</td></tr>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc90</code></td><td>&nbsp;</td><td>Project files for Visual C++ 2008</td></tr>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc100</code></td><td>&nbsp;</td><td>Project files for Visual C++ 2010</td></tr>
+<tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;msvc110</code></td><td>&nbsp;</td><td>Project files for Visual C++ 2012</td></tr>
 <tr valign="top"><td><code>&nbsp;&nbsp;&nbsp;pascal</code></td><td>&nbsp;</td><td>Pascal support</td></tr>
 <tr valign="top"><td><code>tests</code></td><td>&nbsp;</td><td>Several test programs in C</td></tr>
 </table>
