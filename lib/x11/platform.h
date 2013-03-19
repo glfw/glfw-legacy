@@ -131,14 +131,14 @@ typedef intptr_t GLFWintptr;
 
 #ifndef GLX_EXT_swap_control
 
-typedef void (*PFNGLXSWAPINTERVALEXT)(Display*,GLXDrawable,int);
+typedef void (*PFNGLXSWAPINTERVALEXTPROC)(Display*,GLXDrawable,int);
 
 #endif /*GLX_MESA_swap_control*/
 
 
 #ifndef GLX_MESA_swap_control
 
-typedef int (*PFNGLXSWAPINTERVALMESA)(int);
+typedef int (*PFNGLXSWAPINTERVALMESAPROC)(int);
 
 #endif /*GLX_MESA_swap_control*/
 
