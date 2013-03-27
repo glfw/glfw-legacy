@@ -723,7 +723,9 @@ static int createContext( const _GLFWwndconfig *wndconfig, GLXFBConfigID fbconfi
         _glfwWin.glDebug = wndconfig->glDebug;
     }
     else
+    {
         _glfwWin.context = createLegacyContext( *fbconfig );
+    }
 
     XFree( fbconfig );
 
