@@ -393,8 +393,11 @@ GLFWGLOBAL struct {
 
     Display        *display;
 
-    // Server-side GLX version
-    int             glxMajor, glxMinor;
+    struct {
+        int         versionMajor, versionMinor;
+        int         eventBase;
+        int         errorBase;
+    } GLX;
 
     struct {
         int         available;
