@@ -104,7 +104,7 @@ libglfw.a: $(OBJS)
 # Rule for building shared library
 ##########################################################################
 libglfw.dylib: $(OBJS)
-	$(CC) -o $@ $(DYLIBFLAGS) $(OBJS)
+	$(CC) -o $@ $(DYLIBFLAGS) $(LFLAGS) $(OBJS)
 
 
 ##########################################################################
