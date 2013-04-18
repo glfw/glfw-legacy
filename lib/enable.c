@@ -45,6 +45,7 @@ static void enableMouseCursor( void )
 
     if( !_glfwWin.opened || !_glfwWin.mouseLock )
     {
+        _glfwWin.oldMouseLockValid = GL_FALSE;      // SHURCOOL: When glfwEnable(GLFW_MOUSE_CURSOR) is called, OldMouseLock is no longer valid
         return;
     }
 
@@ -80,6 +81,7 @@ static void disableMouseCursor( void )
 {
     if( !_glfwWin.opened || _glfwWin.mouseLock )
     {
+        _glfwWin.oldMouseLockValid = GL_FALSE;      // SHURCOOL: When glfwDisable(GLFW_MOUSE_CURSOR) is called, OldMouseLock is no longer valid
         return;
     }
 

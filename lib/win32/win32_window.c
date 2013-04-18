@@ -709,8 +709,8 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 if( !_glfwWin.oldMouseLockValid )
                 {
                     _glfwWin.oldMouseLock = _glfwWin.mouseLock;
+                    glfwEnable( GLFW_MOUSE_CURSOR );        // SHURCOOL: Moved above oldMouseLockValid = GL_TRUE, since glfwEnable() sets oldMouseLockValid to false
                     _glfwWin.oldMouseLockValid = GL_TRUE;
-                    glfwEnable( GLFW_MOUSE_CURSOR );
                 }
             }
             else if( _glfwWin.active || !iconified )
@@ -1580,8 +1580,8 @@ void _glfwPlatformIconifyWindow( void )
     if( !_glfwWin.oldMouseLockValid )
     {
         _glfwWin.oldMouseLock = _glfwWin.mouseLock;
+        glfwEnable( GLFW_MOUSE_CURSOR );        // SHURCOOL: Moved above oldMouseLockValid = GL_TRUE, since glfwEnable() sets oldMouseLockValid to false
         _glfwWin.oldMouseLockValid = GL_TRUE;
-        glfwEnable( GLFW_MOUSE_CURSOR );
     }
 }
 
