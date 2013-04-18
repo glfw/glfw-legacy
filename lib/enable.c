@@ -48,8 +48,10 @@ static void enableMouseCursor( void )
         return;
     }
 
+#ifdef _GLFW_WIN32
     // When glfwEnable(GLFW_MOUSE_CURSOR) is called, OldMouseLock is no longer valid
     _glfwWin.oldMouseLockValid = GL_FALSE;
+#endif
 
     if( !_glfwWin.mouseLock )
     {
