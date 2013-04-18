@@ -369,7 +369,8 @@ struct _GLFWwin_struct {
     GLboolean                      has_WGL_ARB_create_context_profile;
 
     // Various platform specific internal variables
-    int       cursorLocked;
+    int       mouseLockActive;    // Whether the mouse cursor enable is applied
+                                  // to the actual system cursor
     int       desiredRefreshRate; // Desired vertical monitor refresh rate
 
 };

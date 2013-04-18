@@ -1834,7 +1834,7 @@ void _glfwPlatformWaitEvents( void )
 
 void _glfwPlatformHideMouseCursor( void )
 {
-    if( _glfwWin.cursorLocked )
+    if( _glfwWin.mouseLockActive )
     {
         return;
     }
@@ -1850,7 +1850,7 @@ void _glfwPlatformHideMouseCursor( void )
     // Capture cursor to user window
     SetCapture( _glfwWin.window );
 
-    _glfwWin.cursorLocked = GL_TRUE;
+    _glfwWin.mouseLockActive = GL_TRUE;
 }
 
 
@@ -1860,7 +1860,7 @@ void _glfwPlatformHideMouseCursor( void )
 
 void _glfwPlatformShowMouseCursor( void )
 {
-    if( !_glfwWin.cursorLocked )
+    if( !_glfwWin.mouseLockActive )
     {
         return;
     }
@@ -1873,7 +1873,7 @@ void _glfwPlatformShowMouseCursor( void )
 
     ShowCursor( TRUE );
 
-    _glfwWin.cursorLocked = GL_FALSE;
+    _glfwWin.mouseLockActive = GL_FALSE;
 }
 
 
