@@ -740,6 +740,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 {
                     glfwDisable( GLFW_MOUSE_CURSOR );
                 }
+                _glfwWin.oldMouseLockValid = GL_FALSE;
             }
 
             _glfwWin.iconified = iconified;
@@ -1614,6 +1615,7 @@ void _glfwPlatformRestoreWindow( void )
     {
         glfwDisable( GLFW_MOUSE_CURSOR );
     }
+    _glfwWin.oldMouseLockValid = GL_FALSE;
 }
 
 
