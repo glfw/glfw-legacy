@@ -42,6 +42,20 @@
 
 
 //========================================================================
+// Updates the cursor clip rect
+//========================================================================
+
+static void updateClipRect( void )
+{
+    RECT clipRect;
+    GetClientRect( _glfwWin.window, &clipRect );
+    ClientToScreen( _glfwWin.window, (POINT*) &clipRect.left );
+    ClientToScreen( _glfwWin.window, (POINT*) &clipRect.right );
+    ClipCursor( &clipRect );
+}
+
+
+//========================================================================
 // Enable/disable minimize/restore animations
 //========================================================================
 
@@ -674,19 +688,26 @@ static void translateChar( DWORD wParam, DWORD lParam, int action )
 static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                                     WPARAM wParam, LPARAM lParam )
 {
-    int wheelDelta, iconified;
+    int wheelDelta;
 
     switch( uMsg )
     {
         // Window activate message? (iconification?)
         case WM_ACTIVATE:
         {
-            _glfwWin.active = LOWORD(wParam) != WA_INACTIVE ? GL_TRUE : GL_FALSE;
+            int activated = (LOWORD(wParam) != WA_INACTIVE) ? GL_TRUE : GL_FALSE;
+            int iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
 
-            iconified = HIWORD(wParam) ? GL_TRUE : GL_FALSE;
+            if( activated && iconified )
+            {
+                // This is a workaround for window iconification using the
+                // taskbar leading to windows being told they're focused and
+                // iconified and then never told they're defocused
+                activated = GL_FALSE;
+            }
 
             // Were we deactivated/iconified?
-            if( (!_glfwWin.active || iconified) && !_glfwWin.iconified )
+            if( !activated && _glfwWin.active )
             {
                 _glfwInputDeactivation();
 
@@ -706,14 +727,12 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
 
                 // Unlock mouse if locked
-                if( !_glfwWin.oldMouseLockValid )
+                if( _glfwWin.mouseLock )
                 {
-                    _glfwWin.oldMouseLock = _glfwWin.mouseLock;
-                    _glfwWin.oldMouseLockValid = GL_TRUE;
-                    glfwEnable( GLFW_MOUSE_CURSOR );
+                    _glfwPlatformShowMouseCursor();
                 }
             }
-            else if( _glfwWin.active || !iconified )
+            else if( activated && !_glfwWin.active )
             {
                 // If we are in fullscreen mode we need to maximize
                 if( _glfwWin.opened && _glfwWin.fullscreen && _glfwWin.iconified )
@@ -736,13 +755,13 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
 
                 // Lock mouse, if necessary
-                if( _glfwWin.oldMouseLockValid && _glfwWin.oldMouseLock )
+                if( _glfwWin.mouseLock )
                 {
-                    glfwDisable( GLFW_MOUSE_CURSOR );
+                    _glfwPlatformHideMouseCursor();
                 }
-                _glfwWin.oldMouseLockValid = GL_FALSE;
             }
 
+            _glfwWin.active = activated;
             _glfwWin.iconified = iconified;
             return 0;
         }
@@ -880,8 +899,15 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             if( NewMouseX != _glfwInput.OldMouseX ||
                 NewMouseY != _glfwInput.OldMouseY )
             {
+                _glfwInput.MouseMoved = GL_TRUE;
+
                 if( _glfwWin.mouseLock )
                 {
+                    if( !_glfwWin.active )
+                    {
+                        return 0;
+                    }
+
                     _glfwInput.MousePosX += NewMouseX -
                                             _glfwInput.OldMouseX;
                     _glfwInput.MousePosY += NewMouseY -
@@ -894,7 +920,6 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
                 }
                 _glfwInput.OldMouseX = NewMouseX;
                 _glfwInput.OldMouseY = NewMouseY;
-                _glfwInput.MouseMoved = GL_TRUE;
 
                 if( _glfwWin.mousePosCallback )
                 {
@@ -929,11 +954,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             // If the mouse is locked, update the clipping rect
             if( _glfwWin.mouseLock )
             {
-                RECT ClipWindowRect;
-                if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
-                {
-                    ClipCursor( &ClipWindowRect );
-                }
+                updateClipRect();
             }
 
             if( _glfwWin.windowSizeCallback )
@@ -948,11 +969,7 @@ static LRESULT CALLBACK windowProc( HWND hWnd, UINT uMsg,
             // If the mouse is locked, update the clipping rect
             if( _glfwWin.mouseLock )
             {
-                RECT ClipWindowRect;
-                if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
-                {
-                    ClipCursor( &ClipWindowRect );
-                }
+                updateClipRect();
             }
             return 0;
         }
@@ -1575,14 +1592,6 @@ void _glfwPlatformIconifyWindow( void )
         // Change display settings to the desktop resolution
         ChangeDisplaySettings( NULL, CDS_FULLSCREEN );
     }
-
-    // Unlock mouse
-    if( !_glfwWin.oldMouseLockValid )
-    {
-        _glfwWin.oldMouseLock = _glfwWin.mouseLock;
-        _glfwWin.oldMouseLockValid = GL_TRUE;
-        glfwEnable( GLFW_MOUSE_CURSOR );
-    }
 }
 
 
@@ -1609,13 +1618,6 @@ void _glfwPlatformRestoreWindow( void )
 
     // Window is no longer iconified
     _glfwWin.iconified = GL_FALSE;
-
-    // Lock mouse, if necessary
-    if( _glfwWin.oldMouseLockValid && _glfwWin.oldMouseLock )
-    {
-        glfwDisable( GLFW_MOUSE_CURSOR );
-    }
-    _glfwWin.oldMouseLockValid = GL_FALSE;
 }
 
 
@@ -1795,7 +1797,7 @@ void _glfwPlatformPollEvents( void )
     }
 
     // Did we have mouse movement in locked cursor mode?
-    if( _glfwInput.MouseMoved && _glfwWin.mouseLock )
+    if( _glfwInput.MouseMoved && _glfwWin.active && _glfwWin.mouseLock )
     {
         _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2,
                                         _glfwWin.height / 2 );
@@ -1832,21 +1834,23 @@ void _glfwPlatformWaitEvents( void )
 
 void _glfwPlatformHideMouseCursor( void )
 {
-    RECT ClipWindowRect;
+    if( _glfwWin.cursorLocked )
+    {
+        return;
+    }
+
+    // Move cursor to the middle of the window
+    _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2, _glfwWin.height / 2 );
 
     ShowCursor( FALSE );
 
     // Clip cursor to the window
-    if( GetWindowRect( _glfwWin.window, &ClipWindowRect ) )
-    {
-        ClipCursor( &ClipWindowRect );
-    }
+    updateClipRect();
 
     // Capture cursor to user window
     SetCapture( _glfwWin.window );
 
-    // Move cursor to the middle of the window
-    _glfwPlatformSetMouseCursorPos( _glfwWin.width / 2, _glfwWin.height / 2 );
+    _glfwWin.cursorLocked = GL_TRUE;
 }
 
 
@@ -1856,6 +1860,11 @@ void _glfwPlatformHideMouseCursor( void )
 
 void _glfwPlatformShowMouseCursor( void )
 {
+    if( !_glfwWin.cursorLocked )
+    {
+        return;
+    }
+
     // Un-capture cursor
     ReleaseCapture();
 
@@ -1863,6 +1872,8 @@ void _glfwPlatformShowMouseCursor( void )
     ClipCursor( NULL );
 
     ShowCursor( TRUE );
+
+    _glfwWin.cursorLocked = GL_FALSE;
 }
 
 

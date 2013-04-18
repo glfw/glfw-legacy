@@ -369,9 +369,7 @@ struct _GLFWwin_struct {
     GLboolean                      has_WGL_ARB_create_context_profile;
 
     // Various platform specific internal variables
-    int       oldMouseLock;    // Old mouse-lock flag (used for remembering
-                               // mouse-lock state when iconifying)
-    int       oldMouseLockValid;
+    int       cursorLocked;
     int       desiredRefreshRate; // Desired vertical monitor refresh rate
 
 };

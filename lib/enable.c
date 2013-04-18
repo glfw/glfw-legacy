@@ -48,23 +48,26 @@ static void enableMouseCursor( void )
         return;
     }
 
-    // Show mouse cursor
-    _glfwPlatformShowMouseCursor();
-
-    centerPosX = _glfwWin.width / 2;
-    centerPosY = _glfwWin.height / 2;
-
-    if( centerPosX != _glfwInput.MousePosX || centerPosY != _glfwInput.MousePosY )
+    if( _glfwWin.active )
     {
-        _glfwPlatformSetMouseCursorPos( centerPosX, centerPosY );
+        // Show mouse cursor
+        _glfwPlatformShowMouseCursor();
 
-        _glfwInput.MousePosX = centerPosX;
-        _glfwInput.MousePosY = centerPosY;
+        centerPosX = _glfwWin.width / 2;
+        centerPosY = _glfwWin.height / 2;
 
-        if( _glfwWin.mousePosCallback )
+        if( centerPosX != _glfwInput.MousePosX || centerPosY != _glfwInput.MousePosY )
         {
-            _glfwWin.mousePosCallback( _glfwInput.MousePosX,
-                                       _glfwInput.MousePosY );
+            _glfwPlatformSetMouseCursorPos( centerPosX, centerPosY );
+
+            _glfwInput.MousePosX = centerPosX;
+            _glfwInput.MousePosY = centerPosY;
+
+            if( _glfwWin.mousePosCallback )
+            {
+                _glfwWin.mousePosCallback( _glfwInput.MousePosX,
+                                        _glfwInput.MousePosY );
+            }
         }
     }
 
@@ -84,7 +87,10 @@ static void disableMouseCursor( void )
     }
 
     // Hide mouse cursor
-    _glfwPlatformHideMouseCursor();
+    if( _glfwWin.active )
+    {
+        _glfwPlatformHideMouseCursor();
+    }
 
     // From now on the mouse is locked
     _glfwWin.mouseLock = GL_TRUE;
