@@ -32,7 +32,8 @@ threads, and more.</p>
 <p>GLFW 2.7 is expected to be the last major release of the 2.x series, with
 most development now being done on what will become version 3.0.</p>
 
-<p>This release <blink>IS NOT YET DESCRIBED</blink>.</p>
+<p>This release adds fixes for multiple cursor motion bugs on Windows and fixes
+support for the <code>LFLAGS</code> environment variable on OS X.</p>
 
 <p>For a full list of changes, see the
 <a href="#changelog">version history</a>.</p>
@@ -580,10 +581,6 @@ version of GLFW.</p>
 <h3>v2.7.9</h3>
 <ul>
   <li>[Cocoa] Bugfix: The dynamic library makefile rule did not use <code>LFLAGS</code></li>
-</ul>
-
-<h3>v2.7.9</h3>
-<ul>
   <li>[Win32] Bugfix: Enabling or disabling the cursor for an inactive window did nothing (backported from 3.0)</li>
   <li>[Win32] Bugfix: The locked cursor was re-centered when the window was inactive (backported from 3.0)</li>
   <li>[Win32] Bugfix: The cursor clip rectangle included the title bar (backported from 3.0)</li>
