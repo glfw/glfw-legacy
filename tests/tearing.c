@@ -34,6 +34,26 @@
 #include <stdlib.h>
 #include <math.h>
 
+static int swap_interval;
+
+static void set_swap_interval(int interval)
+{
+    char title[256];
+
+    swap_interval = interval;
+    glfwSwapInterval(swap_interval);
+
+    sprintf(title, "Tearing detector (interval %i)", swap_interval);
+
+    glfwSetWindowTitle(title);
+}
+
+static void key_callback(int key, int action)
+{
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+        set_swap_interval(1 - swap_interval);
+}
+
 static void GLFWCALL window_size_callback(int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -57,9 +77,9 @@ int main(void)
         exit(1);
     }
 
-    glfwSetWindowTitle("Tearing Detector");
+    glfwSetKeyCallback(key_callback);
     glfwSetWindowSizeCallback(window_size_callback);
-    glfwSwapInterval(1);
+    set_swap_interval(0);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glColor3f(1.f, 1.f, 1.f);
