@@ -1599,6 +1599,8 @@ void _glfwPlatformCloseWindow( void )
         XFreeCursor( _glfwLibrary.display, _glfwWin.cursor );
         _glfwWin.cursor = (Cursor) 0;
     }
+
+    XFlush( _glfwLibrary.display );
 }
 
 
