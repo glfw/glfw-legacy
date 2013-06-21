@@ -14,8 +14,7 @@ GLFW 2.7.9 is the last release of the 2.x series, having been replaced by
 This release adds fixes for multiple cursor motion bugs on Windows and
 fixes support for the LFLAGS environment variable on OS X.
 
-For a full list of changes, see the
-[change log](#5_change_log).
+For a full list of changes, see the change log below.
 
 
 ## 2. Compiling GLFW and the example programs
@@ -399,8 +398,7 @@ such as `opengl32` and `glu32`):
 
 #### 4.2.3 Unix static library
 
-GLFW supports
-[pkg-config](http://pkgconfig.freedesktop.org/wiki/),
+GLFW supports [pkg-config](http://pkgconfig.freedesktop.org/wiki/),
 and a `libglfw.pc` file is generated and installed when you install
 the library.  For systems that do not provide pkg-config, you should look in
 this file for the proper compile and link flags for your system, as determined
@@ -430,8 +428,7 @@ these frameworks to your project. If, however, you are building your program
 from the command-line, there are two methods for correctly linking your GLFW
 program.
 
-GLFW supports
-[pkg-config](http://pkgconfig.freedesktop.org/wiki/), and a
+GLFW supports [pkg-config](http://pkgconfig.freedesktop.org/wiki/), and a
 libglfw.pc file is generated and installed when you install the library. You
 can find pkg-config in most packaging systems, such as
 [Fink](http://www.finkproject.org/) and
