@@ -472,27 +472,7 @@ For the full change log since version 1.0, see the [version
 history](http://www.glfw.org/changelog.html) page.
 
 
-## 6. Directory structure of the GLFW distribution
-
-Here is an overview of the directory structure of the GLFW distribution:
-
-| Directory       | Contents                               |
-| --------------- | -------------------------------------- |
-| docs            | GLFW manuals in PDF format             |
-| examples        | Several example programs in C          |
-| include/GL      | Here is the GLFW C/C++ include file    |
-| lib             | Platform independent source files      |
-| lib/cocoa       | Mac OS X/Cocoa specific implementation |
-| lib/win32       | Windows specific implementation        |
-| lib/x11         | Unix/X11 specific implementation       |
-| support/d       | D support                              |
-| support/msvc90  | Project files for Visual C++ 2008      |
-| support/msvc100 | Project files for Visual C++ 2010      |
-| support/msvc110 | Project files for Visual C++ 2012      |
-| support/pascal  | Pascal support                         |
-| tests           | Several test programs in C             |
-
-## 7. Contacting the project
+## 6. Contacting the project
 
 The official website for GLFW is [glfw.org](http://www.glfw.org/).
 It contains the latest version of GLFW, news and other information that is
@@ -513,7 +493,7 @@ GLFW or porting it to your favorite platform, we have a
 or you could join us on `#glfw`.
 
 
-## 8. Acknowledgements
+## 7. Acknowledgements
 
 GLFW exists because people around the world donated their time and lent
 their skills.  Special thanks go out to:
