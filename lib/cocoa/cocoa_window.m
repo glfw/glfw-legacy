@@ -650,9 +650,10 @@ int  _glfwPlatformOpenWindow( int width, int height,
     }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1070
-    // Fail if any OpenGL version above 2.1 other than 3.2 was requested
-    if( wndconfig->glMajor > 3 ||
-        ( wndconfig->glMajor == 3 && wndconfig->glMinor != 2 ) )
+    // Fail if any OpenGL version above 2.1 but below 3.2 was requested
+    // If a valid version greater than or equal to 3.2 was requested but is
+    // unavailable, this will be detected later in glfwOpenWindow
+    if( wndconfig->glMajor == 3 && wndconfig->glMinor < 2 )
     {
         return GL_FALSE;
     }
