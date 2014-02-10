@@ -8,8 +8,10 @@ powerful API for handling operating system specific tasks such as opening an
 OpenGL window, reading keyboard, mouse, joystick and time input, creating
 threads, and more.
 
-GLFW 2.7.9 is the last release of the 2.x series, having been replaced by
-[GLFW 3.0](https://github.com/glfw/glfw).
+**GLFW 2.7.9 is the last release of the 2.x series, having been replaced by
+[GLFW 3.0](https://github.com/glfw/glfw)**.  They do not share a repository as
+GLFW 3.0 was based on the now defunct `glfw-lite` branch and was then developed
+in parallel with 2.7.x for several years.
 
 This release adds fixes for multiple cursor motion bugs on Windows and
 fixes support for the LFLAGS environment variable on OS X.
